@@ -3,6 +3,8 @@ import { v4 as uuidv4 } from 'uuid'
 import { saveScan } from '@/lib/store/redis'
 import { scanWebsite } from '@/lib/tools/ai-visibility-scanner/scanner'
 import { generateLlmsTxt, generateJsonLd, generateRecommendations } from '@/lib/tools/ai-visibility-scanner/generator'
+
+export const dynamic = 'force-dynamic'
 import type { ScanResult } from '@/lib/framework/types'
 
 export async function POST(request: NextRequest) {

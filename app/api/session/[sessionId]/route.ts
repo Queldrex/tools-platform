@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import Stripe from 'stripe'
 import { getScan } from '@/lib/store/redis'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+export const dynamic = 'force-dynamic'
 
 export async function GET(
   _request: NextRequest,
@@ -11,6 +11,7 @@ export async function GET(
   const { sessionId } = await params
 
   try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
     const session = await stripe.checkout.sessions.retrieve(sessionId)
     const scanId = session.metadata?.scanId
     if (!scanId) return Response.json({ ready: false })

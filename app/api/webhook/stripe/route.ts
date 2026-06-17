@@ -4,9 +4,10 @@ import { v4 as uuidv4 } from 'uuid'
 import { getScan, saveScan, saveDownloadToken } from '@/lib/store/redis'
 import { sendDeliveryEmail } from '@/lib/email/resend'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
   const body = await request.text()
   const sig = request.headers.get('stripe-signature')
 

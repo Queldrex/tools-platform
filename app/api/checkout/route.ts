@@ -3,9 +3,10 @@ import Stripe from 'stripe'
 import { getScan, saveScan } from '@/lib/store/redis'
 import { AI_VISIBILITY_SCANNER_CONFIG } from '@/lib/tools/ai-visibility-scanner/config'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
   const { scanId } = await request.json()
 
   if (!scanId) {

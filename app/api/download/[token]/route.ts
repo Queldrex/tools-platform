@@ -2,6 +2,8 @@ import { NextRequest } from 'next/server'
 import { getScanByToken } from '@/lib/store/redis'
 import { generateReportZip } from '@/lib/zip/generator'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ token: string }> }

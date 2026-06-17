@@ -1,6 +1,8 @@
 import { NextRequest } from 'next/server'
 import { getScan } from '@/lib/store/redis'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ scanId: string }> }
