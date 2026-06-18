@@ -125,7 +125,12 @@ export default function BlurredPreview({
               </>
             )}
           </button>
-          <p className="text-xs text-white/30 mt-3">Secure checkout via Stripe · Instant delivery · One-time payment</p>
+
+          <p className="text-xs text-white/25 mt-3 max-w-xs mx-auto leading-relaxed">
+            <span className="text-white/40 font-semibold">All sales are final after delivery.</span>{' '}
+            If delivery fails, contact us within 7 days for a full refund.
+          </p>
+          <p className="text-xs text-white/25 mt-1">Secure checkout via Stripe · Instant delivery · One-time payment</p>
         </div>
       </div>
     </div>

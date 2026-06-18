@@ -36,10 +36,14 @@ export default function Footer() {
         <div className="w-full border-t border-white/5" />
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 w-full text-xs text-white/35">
-          <span>© {new Date().getFullYear()} Queldrex LLC. All rights reserved.</span>
-          <div className="flex items-center gap-1.5">
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-            Payments secured by Stripe
+          <span>© {new Date().getFullYear()} Queldrex LLC, a Colorado limited liability company. All rights reserved.</span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1.5">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              Payments secured by Stripe
+            </div>
+            <span className="text-white/15">·</span>
+            <span>This site uses functional cookies only. No tracking or advertising cookies.</span>
           </div>
         </div>
 

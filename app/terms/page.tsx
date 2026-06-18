@@ -70,6 +70,12 @@ export default function TermsPage() {
             <p className="mb-3">
               Queldrex will implement only the specific optimizations described in the service scope confirmed by email. We will not make changes beyond the agreed scope without your written approval.
             </p>
+            <p className="mb-3">
+              Credentials you provide are stored in encrypted form and used solely for the agreed implementation work. All credentials are permanently deleted within 48 hours of project completion. Queldrex does not retain, share, or reuse access credentials under any circumstances.
+            </p>
+            <p className="mb-3">
+              Implementation services may use AI-assisted tools to generate and deploy website files. All AI-generated output is reviewed and validated by Queldrex before deployment. Queldrex LLC is the responsible party for all work performed, regardless of the tools used.
+            </p>
             <p>
               Results from AI visibility optimization depend on third-party AI systems (such as ChatGPT, Perplexity, and Google AI) that are outside our control and may change over time. Queldrex does not guarantee specific outcomes, rankings, or visibility improvements in any AI system.
             </p>

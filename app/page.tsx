@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import PricingSection from '@/components/PricingSection'
 
 const TOOLS = [
   {
@@ -246,31 +245,36 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="hidden lg:block">
-            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/30 text-center mb-3">Featured · Tool 1 of 5 · Live Now</p>
-            <ScoreMock />
+          <div className="hidden lg:flex flex-col gap-2.5">
+            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/25 mb-1">Our Tool Suite · 5 tools</p>
+
+            <Link href="/scanner" className="rounded-xl border p-4 flex items-center gap-3 hover:border-cyan-500/50 transition-colors group" style={{ background: 'rgba(6,182,212,0.08)', borderColor: 'rgba(6,182,212,0.28)' }}>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[9px] font-black uppercase tracking-wider text-black px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Live</span>
+                  <span className="text-sm font-bold text-white">AI Visibility Scanner</span>
+                </div>
+                <p className="text-xs text-white/45 leading-snug">Get found by ChatGPT, Perplexity, Claude &amp; Gemini</p>
+              </div>
+              <span className="text-sm font-black text-white/65 flex-shrink-0">$149</span>
+            </Link>
+
+            {TOOLS.slice(1).map((tool) => (
+              <Link key={tool.name} href={tool.href} className="rounded-xl border p-3.5 flex items-center gap-3 opacity-50 hover:opacity-70 transition-opacity" style={{ background: tool.color, borderColor: tool.border }}>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-white/35 border border-white/12 px-1.5 py-0.5 rounded-full flex-shrink-0">Soon</span>
+                    <span className="text-xs font-semibold text-white/65 truncate">{tool.name}</span>
+                  </div>
+                </div>
+                <span className="text-xs font-bold text-white/30 flex-shrink-0">{tool.price}</span>
+              </Link>
+            ))}
+
+            <p className="text-[10px] text-white/20 text-center mt-1">One-time purchase each · No subscriptions</p>
           </div>
         </div>
       </section>
-
-      {/* STATS BAR */}
-      <div className="border-y border-white/5">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/5">
-            {[
-              { stat: '6', label: 'AI signals checked', sub: 'llms.txt, JSON-LD, schema, OG tags, sitemap, robots.txt' },
-              { stat: '<30s', label: 'Results delivered', sub: 'Full scan and score in under 30 seconds, no account needed' },
-              { stat: '$149', label: 'One-time · no subscriptions', sub: 'Buy once, own the output files forever' },
-            ].map(({ stat, label, sub }) => (
-              <div key={label} className="px-10 py-12">
-                <p className="text-3xl font-black text-white mb-1">{stat}</p>
-                <p className="text-sm font-bold text-white/70 mb-1">{label}</p>
-                <p className="text-xs text-white/35 leading-relaxed">{sub}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
 
       {/* OUR TOOL SUITE */}
       <section id="tools" className="max-w-7xl mx-auto px-6 py-20">
@@ -333,53 +337,42 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
-      <section className="max-w-7xl mx-auto px-6 py-24">
-        <div className="text-center mb-14">
-          <p className="text-cyan-500 text-xs font-bold tracking-[0.32em] uppercase mb-4">How It Works</p>
-          <h2 className="text-4xl font-black text-white mb-4">From URL to fix package in minutes.</h2>
-          <p className="text-white/55 text-base max-w-lg mx-auto">Three steps. No account, no setup, no waiting.</p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-5">
-          {[
-            {
-              n: '01',
-              title: 'Paste your URL',
-              body: 'Enter any public website URL and your email address. We fetch and analyze it in real time — no login, no account.',
-            },
-            {
-              n: '02',
-              title: 'Get your AI Visibility Score',
-              body: 'Your score (0–100) is generated instantly. You see exactly which of the 6 signals are missing and why each one matters for AI discoverability.',
-            },
-            {
-              n: '03',
-              title: 'Download your fix package',
-              body: 'Unlock the $149 bundle: generated llms.txt, LocalBusiness JSON-LD schema, full HTML report, and prioritized fix checklist — delivered to your email in minutes.',
-            },
-          ].map(({ n, title, body }) => (
-            <div
-              key={n}
-              className="rounded-2xl border p-8 flex flex-col"
-              style={{ background: 'rgba(6,182,212,0.04)', borderColor: 'rgba(6,182,212,0.12)' }}
-            >
-              <span className="text-5xl font-black leading-none mb-5" style={{ color: 'rgba(6,182,212,0.2)' }}>{n}</span>
-              <h3 className="text-base font-black text-white mb-3">{title}</h3>
-              <p className="text-white/55 text-sm leading-relaxed">{body}</p>
+      {/* FEATURED TOOL SPOTLIGHT */}
+      <section className="border-t border-white/5 py-20" style={{ background: 'rgba(6,182,212,0.02)' }}>
+        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-14 items-center">
+          <div>
+            <div className="flex items-center gap-3 mb-6">
+              <span className="text-[10px] font-black uppercase tracking-wider text-black px-2.5 py-1 rounded-full" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>
+                Tool 1 · Live Now
+              </span>
+              <span className="text-xs text-white/35 font-semibold">AI Visibility Scanner</span>
             </div>
-          ))}
-        </div>
-        <div className="text-center mt-10">
-          <Link
-            href="/scanner"
-            className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.03]"
-            style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 28px rgba(6,182,212,0.3)' }}
-          >
-            Run Your Free Scan
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </Link>
+            <h2 className="text-3xl font-black text-white leading-tight mb-4">
+              AI search is recommending<br />your competitors. Find out why.
+            </h2>
+            <p className="text-white/60 text-base leading-relaxed mb-4">
+              ChatGPT, Perplexity, Claude, and Gemini answer millions of business questions every day. The sites they recommend have 6 specific technical signals. Most sites are missing all of them.
+            </p>
+            <p className="text-white/45 text-sm leading-relaxed mb-8">
+              We scan your site in under 30 seconds and show you exactly what&apos;s missing. If you want the fix — a generated llms.txt file, LocalBusiness JSON-LD schema, full HTML report, and deployment instructions — that&apos;s $149 one-time, delivered to your inbox in minutes.
+            </p>
+            <div className="flex flex-wrap items-center gap-4">
+              <Link
+                href="/scanner"
+                className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.03]"
+                style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 28px rgba(6,182,212,0.3)' }}
+              >
+                Scan My Site Free
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
+              <span className="text-xs text-white/30">No account · 30 seconds · $149 for the full fix package</span>
+            </div>
+          </div>
+          <div>
+            <ScoreMock />
+          </div>
         </div>
       </section>
 
@@ -482,8 +475,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <PricingSection />
-
       {/* FINAL CTA */}
       <section className="max-w-7xl mx-auto px-6 pb-28">
         <div
@@ -494,21 +485,29 @@ export default function HomePage() {
           }}
         >
           <div>
-            <h3 className="text-2xl font-black text-white mb-2">See where your site stands with AI search.</h3>
+            <h3 className="text-2xl font-black text-white mb-2">Start with Tool 1. More tools in development.</h3>
             <p className="text-white/55 text-sm">
-              Free scan · No account · Results in 30 seconds · Fix package $149 one-time.
+              AI Visibility Scanner · Free scan · No account · $149 one-time for the full fix package.
             </p>
           </div>
-          <Link
-            href="/scanner"
-            className="flex-shrink-0 flex items-center gap-2.5 px-8 py-4 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.03]"
-            style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 28px rgba(6,182,212,0.3)' }}
-          >
-            Scan My Site Free
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
+            <Link
+              href="/scanner"
+              className="flex items-center gap-2.5 px-8 py-4 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.03]"
+              style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 28px rgba(6,182,212,0.3)' }}
+            >
+              Try Tool 1 Free
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+            <Link
+              href="/#tools"
+              className="flex items-center gap-2 px-7 py-4 rounded-xl text-sm font-semibold text-white/60 border border-white/15 hover:border-white/25 hover:text-white transition-all"
+            >
+              See all tools →
+            </Link>
+          </div>
         </div>
       </section>
 

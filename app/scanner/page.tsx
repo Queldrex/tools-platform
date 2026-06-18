@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
+import PricingSection from '@/components/PricingSection'
 import Footer from '@/components/Footer'
 import ScanForm from '@/components/ScanForm'
 import ScoreGauge from '@/components/ScoreGauge'
@@ -335,6 +336,7 @@ export default function ScannerPage() {
         </div>
       </div>
 
+      <PricingSection />
       <Footer />
     </div>
   )
