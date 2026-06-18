@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@upstash/redis": "^1.38.0",
+    "basic-ftp": "^6.0.1",
     "jszip": "^3.10.1",
     "next": "16.2.9",
     "node-html-parser": "^7.1.0",
