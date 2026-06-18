@@ -2,82 +2,130 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import PricingSection from '@/components/PricingSection'
-import UpcomingTools from '@/components/UpcomingTools'
 
-const TOOLS = [
-  {
-    name: 'AI Visibility Scanner',
-    hook: 'ChatGPT won\'t recommend businesses it can\'t find. Most sites are invisible to AI right now.',
-    desc: 'Scan any website for the signals AI assistants use to find and recommend businesses.',
-    price: '$149',
-    status: 'live' as const,
-    href: '/scanner',
-    color: 'rgba(6,182,212,0.15)',
-    border: 'rgba(6,182,212,0.35)',
-  },
+const UPCOMING = [
   {
     name: 'API Schema Drift Scanner',
     hook: 'Your API breaks silently. Users hit errors before you do. Catch drift before it ships.',
-    desc: 'Detect breaking changes between live API responses and your OpenAPI specification.',
-    price: null,
-    status: 'soon' as const,
-    href: null,
-    color: 'rgba(99,102,241,0.1)',
-    border: 'rgba(99,102,241,0.2)',
+    color: 'rgba(99,102,241,0.06)',
+    border: 'rgba(99,102,241,0.18)',
+    price: '$249',
   },
   {
     name: 'Database Migration Middleware',
-    hook: 'One botched migration means downtime, corrupted data, and a very bad morning.',
-    desc: 'Run schema migrations with automatic rollback triggers and zero-downtime deployment.',
-    price: null,
-    status: 'soon' as const,
-    href: null,
-    color: 'rgba(16,185,129,0.08)',
-    border: 'rgba(16,185,129,0.18)',
+    hook: 'One botched migration means downtime and corrupted data. Deploy with confidence.',
+    color: 'rgba(16,185,129,0.05)',
+    border: 'rgba(16,185,129,0.16)',
+    price: '$199',
   },
   {
     name: 'Vibe Coding Security Shield',
-    hook: 'AI writes code fast. It also writes SQL injection holes and exposed secrets.',
-    desc: 'Scan AI-generated code for OWASP top-10 vulnerabilities before shipping to production.',
-    price: null,
-    status: 'soon' as const,
-    href: null,
-    color: 'rgba(245,158,11,0.08)',
-    border: 'rgba(245,158,11,0.18)',
+    hook: 'AI writes code fast. It also writes SQL injection holes. Catch them before they ship.',
+    color: 'rgba(245,158,11,0.05)',
+    border: 'rgba(245,158,11,0.16)',
+    price: '$149',
   },
   {
     name: 'High-Speed Directory Extractor',
-    hook: 'Manual scraping breaks after 50 rows and takes all day. Extract thousands of clean listings in minutes.',
-    desc: 'Extract, deduplicate, and export business listings from any directory at scale.',
-    price: null,
-    status: 'soon' as const,
-    href: null,
-    color: 'rgba(236,72,153,0.08)',
-    border: 'rgba(236,72,153,0.18)',
+    hook: 'Extract thousands of clean, structured listings in minutes, not days.',
+    color: 'rgba(236,72,153,0.05)',
+    border: 'rgba(236,72,153,0.16)',
+    price: '$99',
   },
 ]
 
-function ProductGrid() {
+const FAQ = [
+  {
+    q: 'Who are these tools for?',
+    a: 'Developers, agencies, and business owners who need a specific problem solved without paying for a bloated platform. Each tool does one thing well and costs a fixed amount.',
+  },
+  {
+    q: 'Do I need a subscription?',
+    a: 'No. Every Queldrex tool is a one-time purchase. Pay once, receive the output immediately. No recurring charges, ever.',
+  },
+  {
+    q: 'What exactly do I get for $149?',
+    a: 'A complete AI optimization package: a generated llms.txt file, LocalBusiness JSON-LD schema, full HTML report, prioritized fix checklist, and deployment instructions — delivered to your email in minutes.',
+  },
+  {
+    q: 'What if there is a delivery issue?',
+    a: 'Contact us at hello@queldrex.com within 7 days of purchase. We will resolve the issue or issue a full refund — no questions asked.',
+  },
+  {
+    q: 'When will the other tools launch?',
+    a: 'We build when ready and tested. Email hello@queldrex.com to get notified when a specific tool launches.',
+  },
+]
+
+function ScoreMock() {
+  const signals = [
+    { label: 'llms.txt', pass: false },
+    { label: 'JSON-LD Schema', pass: false },
+    { label: 'LocalBusiness', pass: false },
+    { label: 'Open Graph', pass: true },
+    { label: 'Sitemap', pass: true },
+    { label: 'Robots.txt', pass: true },
+  ]
   return (
-    <div className="w-full flex flex-col gap-2.5">
-      {TOOLS.map((tool) => (
-        <div key={tool.name} className="rounded-xl px-4 py-3.5 flex items-center gap-4 border" style={{ background: tool.color, borderColor: tool.border }}>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2.5 mb-0.5">
-              <span className="text-sm font-bold text-white truncate">{tool.name}</span>
-              {tool.status === 'live'
-                ? <span className="flex-shrink-0 text-[10px] font-black uppercase tracking-wider text-black px-2 py-0.5 rounded-full" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Live</span>
-                : <span className="flex-shrink-0 text-[10px] font-bold uppercase tracking-wider text-white/40 border border-white/15 px-2 py-0.5 rounded-full">Soon</span>
-              }
-            </div>
-            <p className="text-xs text-white/55 leading-snug truncate">{tool.desc}</p>
+    <div
+      className="rounded-2xl border p-7 relative overflow-hidden"
+      style={{ background: '#0d1117', borderColor: 'rgba(239,68,68,0.2)', boxShadow: '0 0 60px rgba(239,68,68,0.06)' }}
+    >
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(239,68,68,0.07) 0%, transparent 70%)' }}
+      />
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <p className="text-[11px] text-white/30 font-mono mb-0.5">yourwebsite.com</p>
+            <p className="text-sm font-bold text-white">AI Visibility Scan</p>
           </div>
-          {tool.price
-            ? <span className="text-sm font-black text-white/60 flex-shrink-0">{tool.price}</span>
-            : <span className="text-xs font-medium text-white/25 flex-shrink-0">TBD</span>
-          }
+          <span
+            className="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border"
+            style={{ color: '#ef4444', borderColor: 'rgba(239,68,68,0.25)', background: 'rgba(239,68,68,0.08)' }}
+          >
+            CRITICAL
+          </span>
         </div>
-      ))}
+
+        <div className="flex items-end gap-2 mb-1">
+          <span className="text-7xl font-black leading-none" style={{ color: '#ef4444' }}>35</span>
+          <span className="text-2xl text-white/25 pb-2">/100</span>
+        </div>
+        <p className="text-xs text-white/35 mb-6">AI assistants cannot find or describe your business</p>
+
+        <div className="space-y-2.5 mb-6">
+          {signals.map((s) => (
+            <div key={s.label} className="flex items-center justify-between">
+              <span className="text-xs text-white/55">{s.label}</span>
+              {s.pass ? (
+                <span className="text-[11px] font-bold text-green-400 flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  Found
+                </span>
+              ) : (
+                <span className="text-[11px] font-bold text-red-400 flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  Missing
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div
+          className="rounded-xl px-4 py-3 text-center border border-white/6"
+          style={{ background: 'rgba(6,182,212,0.06)' }}
+        >
+          <p className="text-xs text-white/40">Fix package generated and ready</p>
+          <p className="text-xs font-bold text-cyan-400 mt-0.5">Unlock for $149 one-time →</p>
+        </div>
+      </div>
     </div>
   )
 }
@@ -87,169 +135,265 @@ export default function HomePage() {
     <div className="min-h-screen" style={{ background: '#070b14' }}>
       <Header />
 
-      {/* Hero */}
+      {/* HERO */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 60% 70% at 20% 50%, rgba(6,182,212,0.07) 0%, transparent 60%)' }} />
-        <div className="max-w-7xl mx-auto px-6 pt-16 pb-8 grid lg:grid-cols-[1fr_480px] gap-16 items-center" style={{ minHeight: 560 }}>
+        <div className="absolute inset-0 pointer-events-none">
+          <div
+            className="absolute inset-0"
+            style={{ background: 'radial-gradient(ellipse 60% 80% at 0% 50%, rgba(6,182,212,0.06) 0%, transparent 60%)' }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{ background: 'radial-gradient(ellipse 40% 60% at 100% 20%, rgba(239,68,68,0.04) 0%, transparent 60%)' }}
+          />
+        </div>
+        <div className="max-w-7xl mx-auto px-6 pt-20 pb-16 grid lg:grid-cols-2 gap-16 items-center">
           <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-cyan-500/25 bg-cyan-500/8 text-cyan-400 text-xs font-bold tracking-widest uppercase mb-8">
-              Queldrex LLC · Software Tools
+            <div
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold tracking-widest uppercase mb-8"
+              style={{ borderColor: 'rgba(6,182,212,0.25)', background: 'rgba(6,182,212,0.08)', color: '#06d6ff' }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+              AI Visibility Scanner · Free Scan
             </div>
-            <h1 className="text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight text-white mb-6">
-              Precision Software.<br/>
-              <span style={{ color: '#06d6ff' }}>One-Time Payment.</span><br/>
-              Built to Ship.
+
+            <h1 className="text-5xl lg:text-[3.5rem] font-black leading-[1.05] tracking-tight text-white mb-6">
+              ChatGPT Won&apos;t<br />
+              Recommend What<br />
+              <span style={{ color: '#06d6ff' }}>It Can&apos;t Find.</span>
             </h1>
-            <p className="text-lg text-white/70 leading-relaxed mb-5 max-w-lg">
-              Queldrex is a software tools company. We build focused, production-ready tools for developers and businesses. Our suite covers AI visibility, API validation, database migrations, security, and data extraction.
+
+            <p className="text-lg text-white/65 leading-relaxed mb-4 max-w-lg">
+              AI assistants are recommending businesses to millions of people every day. The ones getting recommended have 6 specific signals. Most sites are missing all of them.
             </p>
-            <p className="text-base text-white/60 leading-relaxed mb-10 max-w-lg">
-              Every tool is a one-time purchase. You pay once and own the result. No subscriptions, no recurring fees, no account required to get started.
+            <p className="text-base text-white/50 leading-relaxed mb-10 max-w-lg">
+              We scan your site, show you exactly what&apos;s missing, and generate the ready-to-deploy fix files. Free scan. $149 one-time for the full package.
             </p>
+
             <div className="flex flex-wrap items-center gap-4">
-              <Link href="/scanner" className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.03]" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 32px rgba(6,182,212,0.35)' }}>
-                Try Our Free Tool
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+              <Link
+                href="/scanner"
+                className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.03]"
+                style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 32px rgba(6,182,212,0.35)' }}
+              >
+                Scan My Site Free
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
               </Link>
-              <a href="#tools" className="flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold text-white/65 border border-white/15 hover:border-white/25 hover:text-white transition-all">
-                See all tools
+              <a
+                href="#pricing"
+                className="flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold text-white/60 border border-white/15 hover:border-white/25 hover:text-white transition-all"
+              >
+                See what&apos;s included
               </a>
             </div>
+
+            <p className="text-xs text-white/30 mt-5">
+              No account required · Results in under 30 seconds · One-time $149 for the full package
+            </p>
           </div>
 
           <div className="hidden lg:block">
-            <p className="text-xs font-bold tracking-[0.2em] uppercase text-white/35 mb-4">Our Tool Suite</p>
-            <ProductGrid />
+            <ScoreMock />
           </div>
         </div>
       </section>
 
-      {/* Three pillars */}
+      {/* STATS BAR */}
       <div className="border-y border-white/5">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-3 divide-x divide-white/5">
+          <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/5">
             {[
-              { title: 'One-Time Payment', body: 'Every product is a single purchase. No subscriptions, no renewals, no accounts. You pay once and own the result.' },
-              { title: 'Instant Delivery', body: 'Reports, files, and outputs are generated and delivered in minutes. No human review step, no waiting.' },
-              { title: 'Production-Ready Output', body: 'What you receive is ready to use. Not a suggestion or a template. These are actual files you can deploy immediately.' },
-            ].map(({ title, body }) => (
-              <div key={title} className="px-10 py-12" style={{ background: '#070b14' }}>
-                <h3 className="text-sm font-black text-white mb-3">{title}</h3>
-                <p className="text-white/60 text-sm leading-relaxed">{body}</p>
+              { stat: '6', label: 'AI signals checked', sub: 'llms.txt, JSON-LD, schema, OG tags, sitemap, robots.txt' },
+              { stat: '<30s', label: 'Results delivered', sub: 'Full scan and score in under 30 seconds, no account needed' },
+              { stat: '$149', label: 'One-time · no subscriptions', sub: 'Buy once, own the output files forever' },
+            ].map(({ stat, label, sub }) => (
+              <div key={label} className="px-10 py-12">
+                <p className="text-3xl font-black text-white mb-1">{stat}</p>
+                <p className="text-sm font-bold text-white/70 mb-1">{label}</p>
+                <p className="text-xs text-white/35 leading-relaxed">{sub}</p>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* All 5 tools */}
-      <section id="tools" className="max-w-7xl mx-auto px-6 py-28">
-        <div className="mb-12">
-          <p className="text-cyan-500 text-xs font-bold tracking-[0.32em] uppercase mb-4">Our Tools</p>
-          <h2 className="text-4xl font-black text-white mb-4">Five tools. One suite.</h2>
-          <p className="text-white/60 text-base max-w-xl leading-relaxed">
-            Each tool is built to solve one specific problem. Start with the AI Visibility Scanner now. The rest are coming.
-          </p>
+      {/* HOW IT WORKS */}
+      <section className="max-w-7xl mx-auto px-6 py-24">
+        <div className="text-center mb-14">
+          <p className="text-cyan-500 text-xs font-bold tracking-[0.32em] uppercase mb-4">How It Works</p>
+          <h2 className="text-4xl font-black text-white mb-4">From URL to fix package in minutes.</h2>
+          <p className="text-white/55 text-base max-w-lg mx-auto">Three steps. No account, no setup, no waiting.</p>
         </div>
-
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {TOOLS.map((tool) => (
-            <div key={tool.name} className="rounded-2xl border p-7 flex flex-col" style={{ background: tool.status === 'live' ? 'rgba(6,182,212,0.04)' : 'rgba(255,255,255,0.018)', borderColor: tool.border }}>
-              <div className="flex items-start justify-between gap-3 mb-4">
-                <div>
-                  {tool.status === 'live'
-                    ? <span className="inline-block text-[10px] font-black uppercase tracking-wider text-black px-2.5 py-1 rounded-full mb-3" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Available Now</span>
-                    : <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-white/40 border border-white/15 px-2.5 py-1 rounded-full mb-3">In Development</span>
-                  }
-                  <h3 className="text-base font-black text-white leading-snug">{tool.name}</h3>
-                </div>
-                {tool.price
-                  ? <span className="text-xl font-black text-white/55 flex-shrink-0">{tool.price}</span>
-                  : <span className="text-xs font-medium text-white/25 flex-shrink-0 mt-1">Pricing TBD</span>
-                }
-              </div>
-              <p className="text-sm font-semibold text-white/85 leading-snug mb-2">{tool.hook}</p>
-              <p className="text-white/50 text-xs leading-relaxed flex-1 mb-6">{tool.desc}</p>
-              {tool.href
-                ? <Link href={tool.href} className="inline-flex items-center gap-2 text-sm font-bold text-cyan-400 hover:text-cyan-300 transition-colors">
-                    Try it free
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                  </Link>
-                : <a href={`mailto:hello@queldrex.com?subject=Notify%20me%3A%20${encodeURIComponent(tool.name)}`} className="inline-flex items-center gap-2 text-xs font-bold text-white/40 hover:text-cyan-400 transition-colors">
-                    Notify me when it launches
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                  </a>
-              }
+        <div className="grid md:grid-cols-3 gap-5">
+          {[
+            {
+              n: '01',
+              title: 'Paste your URL',
+              body: 'Enter any public website URL and your email address. We fetch and analyze it in real time — no login, no account.',
+            },
+            {
+              n: '02',
+              title: 'Get your AI Visibility Score',
+              body: 'Your score (0–100) is generated instantly. You see exactly which of the 6 signals are missing and why each one matters for AI discoverability.',
+            },
+            {
+              n: '03',
+              title: 'Download your fix package',
+              body: 'Unlock the $149 bundle: generated llms.txt, LocalBusiness JSON-LD schema, full HTML report, and prioritized fix checklist — delivered to your email in minutes.',
+            },
+          ].map(({ n, title, body }) => (
+            <div
+              key={n}
+              className="rounded-2xl border p-8 flex flex-col"
+              style={{ background: 'rgba(6,182,212,0.04)', borderColor: 'rgba(6,182,212,0.12)' }}
+            >
+              <span className="text-5xl font-black leading-none mb-5" style={{ color: 'rgba(6,182,212,0.2)' }}>{n}</span>
+              <h3 className="text-base font-black text-white mb-3">{title}</h3>
+              <p className="text-white/55 text-sm leading-relaxed">{body}</p>
             </div>
           ))}
-
-          <div className="rounded-2xl border border-dashed border-white/10 p-7 flex flex-col items-start justify-between" style={{ background: 'rgba(255,255,255,0.01)' }}>
-            <div>
-              <p className="text-xs font-bold text-white/35 uppercase tracking-wider mb-3">More on the roadmap</p>
-              <p className="text-white/55 text-sm leading-relaxed">
-                Queldrex is an expanding suite. New tools are evaluated and built on a rolling basis based on real developer and business needs.
-              </p>
-            </div>
-            <a href="mailto:hello@queldrex.com?subject=Tool%20Request" className="mt-6 text-xs font-bold text-white/40 hover:text-cyan-400 transition-colors">
-              Suggest a tool
-            </a>
-          </div>
+        </div>
+        <div className="text-center mt-10">
+          <Link
+            href="/scanner"
+            className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.03]"
+            style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 28px rgba(6,182,212,0.3)' }}
+          >
+            Run Your Free Scan
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </Link>
         </div>
       </section>
 
-      {/* About */}
+      {/* ABOUT + FAQ */}
       <section className="border-t border-white/5 py-24">
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-start">
           <div>
             <p className="text-cyan-500 text-xs font-bold tracking-[0.32em] uppercase mb-5">About Queldrex</p>
             <h2 className="text-3xl font-black text-white leading-tight mb-6">
-              Software built by people who use software
+              Built by developers.<br />No fluff. No subscriptions.
             </h2>
-            <p className="text-white/65 text-base leading-relaxed mb-5">
-              Queldrex is a Colorado-based software tools company. We identify gaps in developer and business workflows where good software does not yet exist, and we build tools to fill them. Precisely, professionally, and without unnecessary complexity.
-            </p>
             <p className="text-white/60 text-base leading-relaxed mb-5">
-              Our business model is straightforward: you buy a tool, you get the tool. No account creation, no subscriptions, no vendor lock-in. The output is yours.
+              Queldrex is a Colorado-based software tools company. We build focused, production-ready tools for developers and businesses — each one solving a single specific problem, precisely and without unnecessary complexity.
             </p>
-            <p className="text-white/60 text-base leading-relaxed">
-              We are a small team. Every tool ships when it is ready, not on an arbitrary schedule, and never before it works.
+            <p className="text-white/50 text-base leading-relaxed mb-8">
+              Our business model is simple: you buy a tool, you get the output. No account creation, no subscriptions, no vendor lock-in. The files we generate are yours to deploy immediately.
             </p>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { label: 'One-Time Purchase', sub: 'No recurring fees, ever' },
+                { label: 'Instant Delivery', sub: 'Files sent within minutes' },
+                { label: 'Production-Ready', sub: 'Deploy immediately' },
+                { label: 'Colorado-Based', sub: 'Queldrex LLC' },
+              ].map(({ label, sub }) => (
+                <div
+                  key={label}
+                  className="rounded-xl border p-4"
+                  style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.07)' }}
+                >
+                  <p className="text-sm font-bold text-white mb-0.5">{label}</p>
+                  <p className="text-xs text-white/40">{sub}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="space-y-4">
-            {[
-              { q: 'Who are these tools for?', a: 'Developers, agencies, and business owners who need a specific problem solved without paying for a bloated platform. Our tools do one thing well and cost a fixed amount.' },
-              { q: 'Do I need a subscription?', a: 'No. Every Queldrex tool is a one-time purchase. You pay the listed price and receive the output immediately. There are no recurring charges.' },
-              { q: 'What if I need help implementing?', a: 'We offer a Done-For-You implementation service for the AI Visibility Scanner. If you need professional installation instead of a self-service download, we handle the full deployment. Contact us at hello@queldrex.com to get started.' },
-              { q: 'When will the other tools launch?', a: 'We publish tools when they are ready and tested. You can email us at hello@queldrex.com to be notified when a specific tool becomes available.' },
-            ].map(({ q, a }) => (
-              <div key={q} className="rounded-xl border border-white/8 p-6" style={{ background: 'rgba(255,255,255,0.02)' }}>
-                <h4 className="text-sm font-bold text-white mb-2">{q}</h4>
-                <p className="text-white/60 text-sm leading-relaxed">{a}</p>
-              </div>
+
+          <div>
+            <p className="text-xs font-bold tracking-[0.2em] uppercase text-white/35 mb-5">Frequently Asked Questions</p>
+            <div className="space-y-3">
+              {FAQ.map(({ q, a }) => (
+                <div
+                  key={q}
+                  className="rounded-xl border p-5"
+                  style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.08)' }}
+                >
+                  <h4 className="text-sm font-bold text-white mb-2">{q}</h4>
+                  <p className="text-white/55 text-sm leading-relaxed">{a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* COMING SOON TOOLS */}
+      <section className="border-t border-white/5 py-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-end justify-between gap-4 mb-10">
+            <div>
+              <p className="text-cyan-500 text-xs font-bold tracking-[0.28em] uppercase mb-2">Coming from Queldrex</p>
+              <h3 className="text-2xl font-black text-white">Four more tools in development.</h3>
+            </div>
+            <a
+              href="mailto:hello@queldrex.com?subject=Queldrex%20tools%20updates"
+              className="hidden md:flex items-center gap-1.5 text-sm text-white/40 hover:text-cyan-400 transition-colors"
+            >
+              Get notified when each one launches
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </a>
+          </div>
+          <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            {UPCOMING.map((tool) => (
+              <a
+                key={tool.name}
+                href={`mailto:hello@queldrex.com?subject=Notify%20me%3A%20${encodeURIComponent(tool.name)}`}
+                className="rounded-xl p-5 border flex flex-col gap-3 hover:border-white/20 transition-colors group"
+                style={{ background: tool.color, borderColor: tool.border }}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span
+                      className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border"
+                      style={{ color: 'rgba(255,255,255,0.35)', borderColor: 'rgba(255,255,255,0.12)' }}
+                    >
+                      In Development
+                    </span>
+                    <span className="text-xs font-bold text-white/30">{tool.price}</span>
+                  </div>
+                  <h4 className="text-sm font-bold text-white leading-snug">{tool.name}</h4>
+                </div>
+                <p className="text-xs text-white/50 leading-relaxed flex-1">{tool.hook}</p>
+                <span className="text-xs font-semibold text-white/30 group-hover:text-cyan-400 transition-colors">
+                  Notify me when it launches →
+                </span>
+              </a>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Upcoming tools */}
-      <section className="border-t border-white/5 py-20">
-        <div className="max-w-7xl mx-auto px-6">
-          <UpcomingTools />
-        </div>
-      </section>
-
       <PricingSection />
 
-      {/* Final CTA */}
+      {/* FINAL CTA */}
       <section className="max-w-7xl mx-auto px-6 pb-28">
-        <div className="rounded-3xl p-10 md:p-14 flex flex-col md:flex-row items-center justify-between gap-8" style={{ background: 'linear-gradient(135deg,rgba(6,182,212,0.07) 0%,rgba(6,182,212,0.02) 100%)', border: '1px solid rgba(6,182,212,0.14)' }}>
+        <div
+          className="rounded-3xl p-10 md:p-14 flex flex-col md:flex-row items-center justify-between gap-8"
+          style={{
+            background: 'linear-gradient(135deg,rgba(6,182,212,0.07) 0%,rgba(6,182,212,0.02) 100%)',
+            border: '1px solid rgba(6,182,212,0.14)',
+          }}
+        >
           <div>
-            <h3 className="text-2xl font-black text-white mb-2">Start with the AI Visibility Scanner</h3>
-            <p className="text-white/60 text-sm">Free scan. No account required. Results in under 30 seconds.</p>
+            <h3 className="text-2xl font-black text-white mb-2">See where your site stands with AI search.</h3>
+            <p className="text-white/55 text-sm">
+              Free scan · No account · Results in 30 seconds · Fix package $149 one-time.
+            </p>
           </div>
-          <Link href="/scanner" className="flex-shrink-0 flex items-center gap-2.5 px-8 py-4 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.03]" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 28px rgba(6,182,212,0.3)' }}>
-            Scan your site free
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          <Link
+            href="/scanner"
+            className="flex-shrink-0 flex items-center gap-2.5 px-8 py-4 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.03]"
+            style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 28px rgba(6,182,212,0.3)' }}
+          >
+            Scan My Site Free
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
           </Link>
         </div>
       </section>

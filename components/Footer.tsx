@@ -19,6 +19,8 @@ export default function Footer() {
           <span className="text-white/15">·</span>
           <Link href="/#pricing" className="hover:text-white transition-colors">Pricing</Link>
           <span className="text-white/15">·</span>
+          <Link href="/feedback" className="hover:text-white transition-colors">Feedback</Link>
+          <span className="text-white/15">·</span>
           <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
           <span className="text-white/15">·</span>
           <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
