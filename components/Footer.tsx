@@ -17,7 +17,7 @@ export default function Footer() {
         <nav className="flex flex-wrap justify-center items-center gap-x-8 gap-y-3 text-sm text-white/55">
           <Link href="/scanner" className="hover:text-white transition-colors">AI Visibility Scanner</Link>
           <span className="text-white/15">·</span>
-          <Link href="/#pricing" className="hover:text-white transition-colors">Pricing</Link>
+          <Link href="/scanner" className="hover:text-white transition-colors">Scanner Pricing</Link>
           <span className="text-white/15">·</span>
           <Link href="/feedback" className="hover:text-white transition-colors">Feedback</Link>
           <span className="text-white/15">·</span>
