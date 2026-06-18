@@ -7,10 +7,10 @@ import QueldrexLogo from './Logo'
 
 const TOOLS = [
   { name: 'AI Visibility Scanner', desc: 'Find out if AI can discover your business', price: '$149', href: '/scanner', live: true },
-  { name: 'API Schema Drift Scanner', desc: 'Detect breaking changes in live APIs', price: '$249', href: null, live: false },
-  { name: 'Database Migration Middleware', desc: 'Zero-downtime schema migrations', price: '$199', href: null, live: false },
-  { name: 'Vibe Coding Security Shield', desc: 'Scan AI-generated code for vulnerabilities', price: '$149', href: null, live: false },
-  { name: 'High-Speed Directory Extractor', desc: 'Extract and export directory listings at scale', price: '$99', href: null, live: false },
+  { name: 'API Schema Drift Scanner', desc: 'Detect breaking changes in live APIs', price: '$249', href: '/tools/api-schema-drift', live: false },
+  { name: 'Database Migration Middleware', desc: 'Zero-downtime schema migrations', price: '$199', href: '/tools/database-migration', live: false },
+  { name: 'Vibe Coding Security Shield', desc: 'Scan AI-generated code for vulnerabilities', price: '$149', href: '/tools/vibe-security', live: false },
+  { name: 'High-Speed Directory Extractor', desc: 'Extract and export directory listings at scale', price: '$99', href: '/tools/directory-extractor', live: false },
 ]
 
 export default function Header() {
@@ -70,16 +70,17 @@ export default function Header() {
                             <span className="text-sm font-bold text-white/60 flex-shrink-0">{tool.price}</span>
                           </Link>
                         ) : (
-                          <div key={tool.name} className="flex items-center justify-between gap-3 px-3 py-3 rounded-xl opacity-45 cursor-default">
+                          <Link key={tool.name} href={tool.href!} onClick={() => setToolsOpen(false)}
+                            className="flex items-center justify-between gap-3 px-3 py-3 rounded-xl hover:bg-white/4 transition-colors opacity-60 hover:opacity-80">
                             <div className="min-w-0">
                               <div className="flex items-center gap-2 mb-0.5">
-                                <span className="text-sm font-medium text-white/50">{tool.name}</span>
+                                <span className="text-sm font-medium text-white/70">{tool.name}</span>
                                 <span className="text-[10px] font-bold uppercase tracking-wider text-white/35 border border-white/15 px-1.5 py-0.5 rounded-full flex-shrink-0">Soon</span>
                               </div>
-                              <p className="text-xs text-white/40 truncate">{tool.desc}</p>
+                              <p className="text-xs text-white/45 truncate">{tool.desc}</p>
                             </div>
-                            <span className="text-sm font-bold text-white/30 flex-shrink-0">{tool.price}</span>
-                          </div>
+                            <span className="text-sm font-bold text-white/35 flex-shrink-0">{tool.price}</span>
+                          </Link>
                         )
                       )}
                     </div>
@@ -90,7 +91,7 @@ export default function Header() {
 
             <a href="/#pricing" className="hover:text-white transition-colors" onClick={() => setToolsOpen(false)}>Pricing</a>
             <Link href="/feedback" className="hover:text-white transition-colors" onClick={() => setToolsOpen(false)}>Feedback</Link>
-            <a href="mailto:hello@queldrex.com" className="hover:text-white transition-colors" onClick={() => setToolsOpen(false)}>Contact</a>
+            <Link href="/contact" className="hover:text-white transition-colors" onClick={() => setToolsOpen(false)}>Contact</Link>
           </nav>
 
           <div className="flex items-center gap-3">
@@ -123,7 +124,7 @@ export default function Header() {
             </Link>
             <a href="/#pricing" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Pricing</a>
             <Link href="/feedback" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Feedback</Link>
-            <a href="mailto:hello@queldrex.com" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors">Contact</a>
+            <Link href="/contact" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Contact</Link>
           </nav>
           <div className="p-6">
             <Link href="/scanner" className="flex items-center justify-center gap-2 w-full text-sm font-black text-black py-4 rounded-xl" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 24px rgba(6,182,212,0.35)' }} onClick={() => setMobileOpen(false)}>

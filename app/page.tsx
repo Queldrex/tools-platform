@@ -3,6 +3,54 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import PricingSection from '@/components/PricingSection'
 
+const TOOLS = [
+  {
+    name: 'AI Visibility Scanner',
+    tagline: 'Get found by ChatGPT, Perplexity, Claude, Gemini, and every AI assistant searching your industry.',
+    price: '$149',
+    href: '/scanner',
+    live: true,
+    color: 'rgba(6,182,212,0.08)',
+    border: 'rgba(6,182,212,0.25)',
+  },
+  {
+    name: 'API Schema Drift Scanner',
+    tagline: 'Catch breaking API changes before users do. Auto-generate fixes before they ship.',
+    price: '$249',
+    href: '/tools/api-schema-drift',
+    live: false,
+    color: 'rgba(99,102,241,0.06)',
+    border: 'rgba(99,102,241,0.15)',
+  },
+  {
+    name: 'Database Migration Middleware',
+    tagline: 'Zero-downtime schema migrations to modern cloud databases. No more $9K/min outages.',
+    price: '$199',
+    href: '/tools/database-migration',
+    live: false,
+    color: 'rgba(16,185,129,0.05)',
+    border: 'rgba(16,185,129,0.14)',
+  },
+  {
+    name: 'Vibe Coding Security Shield',
+    tagline: 'Audit AI-generated code against OWASP top 10 before it reaches production.',
+    price: '$149',
+    href: '/tools/vibe-security',
+    live: false,
+    color: 'rgba(245,158,11,0.05)',
+    border: 'rgba(245,158,11,0.14)',
+  },
+  {
+    name: 'High-Speed Directory Extractor',
+    tagline: 'Extract thousands of structured directory listings in minutes, not days.',
+    price: '$99',
+    href: '/tools/directory-extractor',
+    live: false,
+    color: 'rgba(236,72,153,0.05)',
+    border: 'rgba(236,72,153,0.14)',
+  },
+]
+
 const UPCOMING = [
   {
     name: 'API Schema Drift Scanner',
@@ -10,6 +58,7 @@ const UPCOMING = [
     color: 'rgba(99,102,241,0.06)',
     border: 'rgba(99,102,241,0.18)',
     price: '$249',
+    href: '/tools/api-schema-drift',
   },
   {
     name: 'Database Migration Middleware',
@@ -17,6 +66,7 @@ const UPCOMING = [
     color: 'rgba(16,185,129,0.05)',
     border: 'rgba(16,185,129,0.16)',
     price: '$199',
+    href: '/tools/database-migration',
   },
   {
     name: 'Vibe Coding Security Shield',
@@ -24,6 +74,7 @@ const UPCOMING = [
     color: 'rgba(245,158,11,0.05)',
     border: 'rgba(245,158,11,0.16)',
     price: '$149',
+    href: '/tools/vibe-security',
   },
   {
     name: 'High-Speed Directory Extractor',
@@ -31,6 +82,7 @@ const UPCOMING = [
     color: 'rgba(236,72,153,0.05)',
     border: 'rgba(236,72,153,0.16)',
     price: '$99',
+    href: '/tools/directory-extractor',
   },
 ]
 
@@ -154,20 +206,20 @@ export default function HomePage() {
               style={{ borderColor: 'rgba(6,182,212,0.25)', background: 'rgba(6,182,212,0.08)', color: '#06d6ff' }}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-              AI Visibility Scanner · Free Scan
+              Queldrex · Precision Dev Tools · Colorado
             </div>
 
             <h1 className="text-5xl lg:text-[3.5rem] font-black leading-[1.05] tracking-tight text-white mb-6">
-              ChatGPT Won&apos;t<br />
-              Recommend What<br />
-              <span style={{ color: '#06d6ff' }}>It Can&apos;t Find.</span>
+              One problem.<br />
+              One tool.<br />
+              <span style={{ color: '#06d6ff' }}>One payment. Done.</span>
             </h1>
 
             <p className="text-lg text-white/65 leading-relaxed mb-4 max-w-lg">
-              AI assistants are recommending businesses to millions of people every day. The ones getting recommended have 6 specific signals. Most sites are missing all of them.
+              Queldrex builds precision tools for the specific, expensive problems developers and businesses face in the age of AI. Buy once, own the output forever. No subscriptions, no accounts, no lock-in.
             </p>
             <p className="text-base text-white/50 leading-relaxed mb-10 max-w-lg">
-              We scan your site, show you exactly what&apos;s missing, and generate the ready-to-deploy fix files. Free scan. $149 one-time for the full package.
+              Tool 1 is live now: the AI Visibility Scanner. ChatGPT, Perplexity, Claude, and Gemini are recommending businesses every day. We scan your site and generate the files that get you found.
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
@@ -176,25 +228,26 @@ export default function HomePage() {
                 className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.03]"
                 style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 32px rgba(6,182,212,0.35)' }}
               >
-                Scan My Site Free
+                Try Tool 1 Free
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </Link>
               <a
-                href="#pricing"
+                href="#tools"
                 className="flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold text-white/60 border border-white/15 hover:border-white/25 hover:text-white transition-all"
               >
-                See what&apos;s included
+                See all 5 tools ↓
               </a>
             </div>
 
             <p className="text-xs text-white/30 mt-5">
-              No account required · Results in under 30 seconds · One-time $149 for the full package
+              5 tools in development · One-time purchase each · No subscriptions, ever
             </p>
           </div>
 
           <div className="hidden lg:block">
+            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/30 text-center mb-3">Featured · Tool 1 of 5 · Live Now</p>
             <ScoreMock />
           </div>
         </div>
@@ -218,6 +271,67 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* OUR TOOL SUITE */}
+      <section id="tools" className="max-w-7xl mx-auto px-6 py-20">
+        <div className="text-center mb-12">
+          <p className="text-cyan-500 text-xs font-bold tracking-[0.32em] uppercase mb-4">Our Tool Suite</p>
+          <h2 className="text-4xl font-black text-white mb-4">Five tools. One problem each.</h2>
+          <p className="text-white/55 text-base max-w-lg mx-auto">
+            Every tool does one thing precisely. Bought once, owned forever. No subscriptions, no lock-in.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <Link
+            href="/scanner"
+            className="md:col-span-2 xl:col-span-1 rounded-2xl border p-7 flex flex-col gap-4 hover:border-cyan-500/40 transition-colors group relative overflow-hidden"
+            style={{ background: 'rgba(6,182,212,0.08)', borderColor: 'rgba(6,182,212,0.25)' }}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <span className="text-[10px] font-black uppercase tracking-wider text-black px-2.5 py-1 rounded-full" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>
+                Live Now
+              </span>
+              <span className="text-sm font-black text-white/70">$149</span>
+            </div>
+            <div>
+              <h3 className="text-base font-black text-white mb-2">AI Visibility Scanner</h3>
+              <p className="text-sm text-white/55 leading-relaxed">
+                ChatGPT, Perplexity, Claude, Gemini — every AI assistant is answering questions about your industry. We scan your site for the 6 signals that get you recommended. Free scan, $149 for the full fix package.
+              </p>
+            </div>
+            <span className="text-xs font-bold text-cyan-400 flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
+              Try it free
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+            </span>
+          </Link>
+
+          {TOOLS.slice(1).map((tool) => (
+            <Link
+              key={tool.name}
+              href={tool.href}
+              className="rounded-2xl border p-6 flex flex-col gap-3 hover:border-white/20 transition-colors group"
+              style={{ background: tool.color, borderColor: tool.border }}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <span
+                  className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border"
+                  style={{ color: 'rgba(255,255,255,0.35)', borderColor: 'rgba(255,255,255,0.12)' }}
+                >
+                  In Development
+                </span>
+                <span className="text-sm font-bold text-white/30">{tool.price}</span>
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-white mb-1.5">{tool.name}</h3>
+                <p className="text-xs text-white/50 leading-relaxed">{tool.tagline}</p>
+              </div>
+              <span className="text-xs text-white/30 group-hover:text-white/50 transition-colors">
+                Learn more →
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
 
       {/* HOW IT WORKS */}
       <section className="max-w-7xl mx-auto px-6 py-24">
@@ -340,9 +454,9 @@ export default function HomePage() {
           </div>
           <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
             {UPCOMING.map((tool) => (
-              <a
+              <Link
                 key={tool.name}
-                href={`mailto:hello@queldrex.com?subject=Notify%20me%3A%20${encodeURIComponent(tool.name)}`}
+                href={tool.href}
                 className="rounded-xl p-5 border flex flex-col gap-3 hover:border-white/20 transition-colors group"
                 style={{ background: tool.color, borderColor: tool.border }}
               >
@@ -360,9 +474,9 @@ export default function HomePage() {
                 </div>
                 <p className="text-xs text-white/50 leading-relaxed flex-1">{tool.hook}</p>
                 <span className="text-xs font-semibold text-white/30 group-hover:text-cyan-400 transition-colors">
-                  Notify me when it launches →
+                  Learn more →
                 </span>
-              </a>
+              </Link>
             ))}
           </div>
         </div>
