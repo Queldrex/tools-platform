@@ -28,6 +28,12 @@ export async function POST(request: NextRequest) {
   }
 
   const session = event.data.object as Stripe.Checkout.Session
+
+  // DFY tier is handled at checkout creation time — skip here
+  if (session.metadata?.tier === 'dfy') {
+    return Response.json({ received: true })
+  }
+
   const scanId = session.metadata?.scanId
 
   if (!scanId) {

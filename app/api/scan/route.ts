@@ -69,10 +69,11 @@ export async function POST(request: NextRequest) {
 
     return Response.json(completed)
   } catch (err) {
+    console.error('Scan error:', err instanceof Error ? err.message : err)
     return Response.json({
       scanId,
       status: 'ERROR',
-      error: err instanceof Error ? err.message : 'Scan failed. Please check the URL and try again.',
+      error: 'Scan failed. Please check the URL and try again.',
     }, { status: 200 })
   }
 }

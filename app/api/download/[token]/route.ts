@@ -16,7 +16,7 @@ export async function GET(
   }
 
   const zipBuffer = await generateReportZip(scan)
-  const domain = scan.businessInfo.domain || 'report'
+  const domain = (scan.businessInfo.domain || 'report').replace(/[^a-z0-9.-]/gi, '_')
   const filename = `queldrex-ai-report-${domain}.zip`
 
   return new Response(zipBuffer, {

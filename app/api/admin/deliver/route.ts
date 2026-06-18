@@ -7,8 +7,20 @@ import { env } from '@/lib/env'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  const { scanId, secret } = await request.json()
+  // Accept secret in header (preferred) or body (backwards compat)
+  const headerSecret = request.headers.get('x-admin-secret')
+  let scanId: string | undefined
+  let bodySecret: string | undefined
 
+  try {
+    const body = await request.json()
+    scanId = body.scanId
+    bodySecret = body.secret
+  } catch {
+    return Response.json({ error: 'Invalid JSON body' }, { status: 400 })
+  }
+
+  const secret = headerSecret || bodySecret
   if (!secret || secret !== process.env.ADMIN_SECRET) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
@@ -44,10 +56,10 @@ export async function POST(request: NextRequest) {
 
   await saveScan({ ...scan, status: 'DELIVERED', paid: true, downloadToken, paidAt })
 
+  // Never return the downloadUrl — it's a one-time token sent only to the client's email
   return Response.json({
     delivered: true,
     to: scan.emailAddress,
-    downloadUrl,
     score: scan.score,
     domain: scan.businessInfo.domain,
   })

@@ -8,13 +8,15 @@ import type { ImplementationCredentials } from '@/lib/framework/types'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  const { scanId, credentials, secret, sendEmail } = await request.json() as {
+  const headerSecret = request.headers.get('x-admin-secret')
+  const { scanId, credentials, secret: bodySecret, sendEmail } = await request.json() as {
     scanId: string
     credentials: ImplementationCredentials
-    secret: string
+    secret?: string
     sendEmail?: boolean
   }
 
+  const secret = headerSecret || bodySecret
   if (!secret || secret !== process.env.ADMIN_SECRET) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }

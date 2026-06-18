@@ -9,11 +9,24 @@ import { sendDfyAuthorizationEmail } from '@/lib/email/resend'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
-  const { scanId, tier } = await request.json() as { scanId: string; tier?: 'bundle' | 'dfy' }
+  const stripeKey = (process.env.STRIPE_SECRET_KEY || '').replace(/^﻿/, '').trim()
+  if (!stripeKey) return Response.json({ error: 'Payment not configured' }, { status: 503 })
+  const stripe = new Stripe(stripeKey)
+
+  let body: { scanId?: string; tier?: string }
+  try {
+    body = await request.json()
+  } catch {
+    return Response.json({ error: 'Invalid JSON body' }, { status: 400 })
+  }
+
+  const { scanId, tier } = body
 
   if (!scanId) {
     return Response.json({ error: 'scanId is required' }, { status: 400 })
+  }
+  if (tier && tier !== 'bundle' && tier !== 'dfy') {
+    return Response.json({ error: 'Invalid tier' }, { status: 400 })
   }
 
   const scan = await getScan(scanId)
@@ -32,10 +45,11 @@ export async function POST(request: NextRequest) {
     // ── Done-For-You $499 ──────────────────────────────────────────────────
     const dfyToken = uuidv4()
 
-    const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
-      line_items: [
-        {
+    let session: Awaited<ReturnType<typeof stripe.checkout.sessions.create>>
+    try {
+      session = await stripe.checkout.sessions.create({
+        mode: 'payment',
+        line_items: [{
           price_data: {
             currency: 'usd',
             unit_amount: 49900,
@@ -45,18 +59,16 @@ export async function POST(request: NextRequest) {
             },
           },
           quantity: 1,
-        },
-      ],
-      metadata: {
-        scanId,
-        toolId: AI_VISIBILITY_SCANNER_CONFIG.toolId,
-        tier: 'dfy',
-        dfyToken,
-      },
-      customer_email: scan.emailAddress,
-      success_url: `${baseUrl}/book?token=${dfyToken}`,
-      cancel_url: `${baseUrl}/cancel`,
-    })
+        }],
+        metadata: { scanId, toolId: AI_VISIBILITY_SCANNER_CONFIG.toolId, tier: 'dfy', dfyToken },
+        customer_email: scan.emailAddress,
+        success_url: `${baseUrl}/book?token=${dfyToken}`,
+        cancel_url: `${baseUrl}/cancel`,
+      })
+    } catch (err) {
+      console.error('Stripe DFY session error:', err instanceof Error ? err.message : err)
+      return Response.json({ error: 'Payment session could not be created. Please try again.' }, { status: 502 })
+    }
 
     // Pre-create the DFY session in Redis so /book page can read it immediately
     await saveDfySession({
@@ -86,10 +98,11 @@ export async function POST(request: NextRequest) {
   }
 
   // ── Standard Bundle $149 ─────────────────────────────────────────────────
-  const session = await stripe.checkout.sessions.create({
-    mode: 'payment',
-    line_items: [
-      {
+  let bundleSession: Awaited<ReturnType<typeof stripe.checkout.sessions.create>>
+  try {
+    bundleSession = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      line_items: [{
         price_data: {
           currency: AI_VISIBILITY_SCANNER_CONFIG.currency,
           unit_amount: AI_VISIBILITY_SCANNER_CONFIG.price * 100,
@@ -99,19 +112,18 @@ export async function POST(request: NextRequest) {
           },
         },
         quantity: 1,
-      },
-    ],
-    metadata: {
-      scanId,
-      toolId: AI_VISIBILITY_SCANNER_CONFIG.toolId,
-      tier: 'bundle',
-    },
-    customer_email: scan.emailAddress,
-    success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${baseUrl}/cancel`,
-  })
+      }],
+      metadata: { scanId, toolId: AI_VISIBILITY_SCANNER_CONFIG.toolId, tier: 'bundle' },
+      customer_email: scan.emailAddress,
+      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/cancel`,
+    })
+  } catch (err) {
+    console.error('Stripe bundle session error:', err instanceof Error ? err.message : err)
+    return Response.json({ error: 'Payment session could not be created. Please try again.' }, { status: 502 })
+  }
 
-  await saveScan({ ...scan, stripeSessionId: session.id })
+  await saveScan({ ...scan, stripeSessionId: bundleSession.id })
 
-  return Response.json({ checkoutUrl: session.url })
+  return Response.json({ checkoutUrl: bundleSession.url })
 }
