@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import Stripe from 'stripe'
 import { getScan, saveScan } from '@/lib/store/redis'
 import { AI_VISIBILITY_SCANNER_CONFIG } from '@/lib/tools/ai-visibility-scanner/config'
+import { env } from '@/lib/env'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Scan is not complete yet' }, { status: 400 })
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+  const baseUrl = env('NEXT_PUBLIC_BASE_URL', 'https://queldrex.com')
 
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',

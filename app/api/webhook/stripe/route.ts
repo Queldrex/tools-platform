@@ -3,6 +3,7 @@ import Stripe from 'stripe'
 import { v4 as uuidv4 } from 'uuid'
 import { getScan, saveScan, saveDownloadToken } from '@/lib/store/redis'
 import { sendDeliveryEmail } from '@/lib/email/resend'
+import { env } from '@/lib/env'
 
 export const dynamic = 'force-dynamic'
 
@@ -45,7 +46,7 @@ export async function POST(request: NextRequest) {
   const downloadToken = uuidv4()
   await saveDownloadToken(downloadToken, scanId)
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+  const baseUrl = env('NEXT_PUBLIC_BASE_URL', 'https://queldrex.com')
   const downloadUrl = `${baseUrl}/api/download/${downloadToken}`
 
   const paidAt = new Date().toISOString()
