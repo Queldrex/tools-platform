@@ -1,6 +1,20 @@
 import { Redis } from '@upstash/redis'
 import type { ScanResult } from '@/lib/framework/types'
 
+export interface DfySession {
+  token: string
+  scanId: string
+  emailAddress: string
+  domain: string
+  score: number
+  status: 'paid' | 'booked' | 'credentials_submitted' | 'implementing' | 'complete'
+  bookedAt?: string
+  credentials?: string   // JSON string, only populated after client submits form
+  createdAt: string
+}
+
+const DFY_TTL = 60 * 60 * 72  // 72 hours
+
 let _redis: Redis | null = null
 function getRedis(): Redis {
   if (!_redis) {
@@ -32,4 +46,14 @@ export async function getScanByToken(token: string): Promise<ScanResult | null> 
 
 export async function saveDownloadToken(token: string, scanId: string): Promise<void> {
   await getRedis().set(`token:${token}`, scanId, { ex: SCAN_TTL })
+}
+
+export async function saveDfySession(session: DfySession): Promise<void> {
+  await getRedis().set(`dfy:${session.token}`, JSON.stringify(session), { ex: DFY_TTL })
+}
+
+export async function getDfySession(token: string): Promise<DfySession | null> {
+  const data = await getRedis().get<string>(`dfy:${token}`)
+  if (!data) return null
+  return typeof data === 'string' ? JSON.parse(data) : data as DfySession
 }

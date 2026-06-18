@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-const IMPL_EMAIL = 'mailto:hello@queldrex.com?subject=Done-For-You%20Implementation%20Inquiry&body=Hi%20Queldrex%2C%0A%0AI%27m%20interested%20in%20the%20Done-For-You%20Implementation%20service.%0A%0AMy%20website%3A%20%5Benter%20URL%5D%0AMy%20name%3A%20%5Benter%20name%5D%0A%0APlease%20confirm%20scope%20and%20pricing.'
+
 
 function Check() {
   return (
@@ -74,27 +74,27 @@ const TIERS = [
     label: 'Done-For-You',
     price: '$499',
     pricePrefix: 'Starting at',
-    priceSub: 'Custom pricing · one-time',
+    priceSub: 'One-time · any platform',
     accent: false,
     features: [
       'Everything in the Bundle',
       'Professional file installation',
-      'Website configuration',
+      'Works on any platform or host',
       'Schema deployment & validation',
       'AI crawler accessibility check',
       'Final compliance verification',
       '30-day email support',
     ],
     steps: [
-      { title: 'Email us to get started', body: 'Send an email to hello@queldrex.com with your website URL. We will review it and confirm the scope and final price in writing within one business day.' },
-      { title: 'Receive a written scope agreement', body: 'Before any work begins, we confirm exactly what will be installed, the timeline, and the price via email. No work starts without your written approval.' },
-      { title: 'Complete payment via invoice', body: 'We send you a secure Stripe payment link for the agreed amount. Payment is processed by Stripe. No card data is stored by Queldrex.' },
-      { title: 'Provide website access', body: 'Grant us the minimum access needed, typically FTP/SFTP credentials, a CMS admin login, or access to your DNS/hosting panel. We use this only for the agreed implementation work.' },
-      { title: 'We install and validate everything', body: 'Queldrex installs your llms.txt, deploys the JSON-LD schema, updates robots.txt, and verifies that all AI crawler signals are functioning correctly on your live site.' },
-      { title: 'Receive your final report', body: 'We run a post-implementation scan and deliver a written confirmation showing all signals passing. Your 30-day email support period begins from this date.' },
+      { title: 'Run the free scan', body: 'Enter your website URL. You will see your AI Visibility Score and a breakdown of every missing signal before paying anything.' },
+      { title: 'Choose Done-For-You', body: 'From your results page, click "We install everything for you." You will be taken to a secure Stripe checkout for $499 USD, one time.' },
+      { title: 'Book your implementation slot', body: 'After payment, pick a time that works for you using our calendar. Sessions are typically 30 minutes. We do all the work.' },
+      { title: 'Submit your hosting access', body: 'You will receive a secure, private link to submit your credentials. We support FTP/cPanel, WordPress, GitHub (Vercel/Netlify), Shopify, or any platform.' },
+      { title: 'We install everything', body: 'On your booked day, Queldrex installs your llms.txt, JSON-LD schema, and robots.txt directly on your live site. Your credentials are deleted within 48 hours of completion.' },
+      { title: 'Receive your before/after report', body: 'We run a post-implementation scan and email you a full report showing every signal passing, with your score before and after.' },
     ],
-    legal: 'Scope, timeline, and price are confirmed in writing before work begins. You represent that you own or are authorized to modify the website. We implement only the agreed scope. We do not retain your access credentials after work is complete. Cancellations before work commences are eligible for a full refund. Post-commencement refunds are not available. 30-day support covers questions about the implemented work only.',
-    cta: { label: 'Get Started via Email', href: IMPL_EMAIL, style: 'outline' as const, external: true },
+    legal: 'Payment is processed securely by Stripe. By providing hosting credentials, you confirm you own or are authorized to modify the website. We implement only the files listed above. All credentials are encrypted in transit, stored securely, and permanently deleted within 48 hours of completion. Cancellations before work commences are eligible for a full refund. Post-commencement refunds are not available. 30-day support covers questions about the implemented work only.',
+    cta: { label: 'Start with a Free Scan', href: '/scanner', style: 'outline' as const },
   },
 ]
 
@@ -148,10 +148,6 @@ export default function PricingSection() {
                 <Link href={tier.cta.href} className="w-full text-center py-3.5 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.02]" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>
                   {tier.cta.label}
                 </Link>
-              ) : tier.cta.external ? (
-                <a href={tier.cta.href} className="w-full text-center py-3 rounded-xl text-sm font-bold text-white border border-white/15 hover:border-cyan-500/40 hover:text-cyan-400 transition-all">
-                  {tier.cta.label}
-                </a>
               ) : (
                 <Link href={tier.cta.href} className="w-full text-center py-3 rounded-xl text-sm font-bold text-white border border-white/15 hover:border-white/30 hover:bg-white/5 transition-all">
                   {tier.cta.label}
@@ -239,8 +235,8 @@ export default function PricingSection() {
               Run Free Scan
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
             </Link>
-            <a href={IMPL_EMAIL} className="flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-bold text-white/65 border border-white/12 hover:border-white/25 hover:text-white transition-all">
-              Ask about implementation
+            <a href="mailto:hello@queldrex.com" className="flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-bold text-white/65 border border-white/12 hover:border-white/25 hover:text-white transition-all">
+              Questions? Email us
             </a>
           </div>
         </div>

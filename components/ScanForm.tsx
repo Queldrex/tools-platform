@@ -116,6 +116,12 @@ export default function ScanForm({ onScan, loading }: ScanFormProps) {
         )}
       </button>
       <p className="text-xs text-center text-white/20">Free scan · No credit card required · Results in seconds</p>
+      <p className="text-xs text-center text-white/18 leading-relaxed">
+        By scanning, you confirm you own or are authorized to analyze this website.
+        Your URL and email are stored for up to 48 hours solely to deliver your results.
+        We never sell your data. See our{' '}
+        <a href="/privacy" className="text-white/30 hover:text-white/50 underline underline-offset-2">Privacy Policy</a>.
+      </p>
     </form>
   )
 }

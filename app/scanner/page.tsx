@@ -96,12 +96,27 @@ export default function ScannerPage() {
     if (!scanData) return
     setCheckoutLoading(true)
     try {
-      const res = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ scanId: scanData.scanId }) })
+      const res = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ scanId: scanData.scanId, tier: 'bundle' }) })
       const json = await res.json()
       if (!res.ok || !json.checkoutUrl) throw new Error(json.error || 'Could not start checkout.')
       window.location.href = json.checkoutUrl
     } catch (err) {
       setCheckoutLoading(false)
+      alert(err instanceof Error ? err.message : 'Checkout failed.')
+    }
+  }
+
+  const [dfyLoading, setDfyLoading] = useState(false)
+  async function handleDfy() {
+    if (!scanData) return
+    setDfyLoading(true)
+    try {
+      const res = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ scanId: scanData.scanId, tier: 'dfy' }) })
+      const json = await res.json()
+      if (!res.ok || !json.checkoutUrl) throw new Error(json.error || 'Could not start checkout.')
+      window.location.href = json.checkoutUrl
+    } catch (err) {
+      setDfyLoading(false)
       alert(err instanceof Error ? err.message : 'Checkout failed.')
     }
   }
@@ -298,6 +313,8 @@ export default function ScannerPage() {
                 topRecommendation={scanData.topRecommendation}
                 onUnlock={handleUnlock}
                 loading={checkoutLoading}
+                onDfy={handleDfy}
+                dfyLoading={dfyLoading}
               />
             </div>
           </div>

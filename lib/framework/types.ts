@@ -62,7 +62,7 @@ export interface ToolConfig {
 
 // ─── Implementation Engine Types ───────────────────────────────────────────────
 
-export type ImplementationPlatform = 'ftp' | 'wordpress' | 'manual'
+export type ImplementationPlatform = 'ftp' | 'wordpress' | 'github' | 'shopify' | 'manual'
 
 export interface FtpCredentials {
   platform: 'ftp'
@@ -70,22 +70,41 @@ export interface FtpCredentials {
   port?: number
   username: string
   password: string
-  webRoot?: string  // e.g. /public_html, /www — auto-detected if omitted
+  webRoot?: string
   secure?: boolean
 }
 
 export interface WordPressCredentials {
   platform: 'wordpress'
-  siteUrl: string       // e.g. https://example.com
-  username: string      // WP admin username
-  appPassword: string   // WP Application Password (Settings > Users > Application Passwords)
+  siteUrl: string
+  username: string
+  appPassword: string
+}
+
+export interface GitHubCredentials {
+  platform: 'github'
+  repo: string          // owner/repo
+  branch?: string       // default: main
+  token: string         // GitHub personal access token with repo scope
+  publicDir?: string    // e.g. 'public', 'static', 'docs' — auto-detected if omitted
+}
+
+export interface ShopifyCredentials {
+  platform: 'shopify'
+  storeUrl: string      // mystore.myshopify.com
+  apiToken: string      // Admin API access token
 }
 
 export interface ManualCredentials {
   platform: 'manual'
 }
 
-export type ImplementationCredentials = FtpCredentials | WordPressCredentials | ManualCredentials
+export type ImplementationCredentials =
+  | FtpCredentials
+  | WordPressCredentials
+  | GitHubCredentials
+  | ShopifyCredentials
+  | ManualCredentials
 
 export interface ImplementedFile {
   path: string
@@ -105,5 +124,5 @@ export interface ImplementationResult {
   startedAt: string
   completedAt: string
   status: 'success' | 'partial' | 'failed'
-  manualPackageUrl?: string  // for 'manual' platform
+  manualPackageUrl?: string
 }

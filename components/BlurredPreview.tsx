@@ -6,6 +6,8 @@ interface BlurredPreviewProps {
   topRecommendation: string
   onUnlock: () => void
   loading: boolean
+  onDfy?: () => void
+  dfyLoading?: boolean
 }
 
 export default function BlurredPreview({
@@ -14,6 +16,8 @@ export default function BlurredPreview({
   topRecommendation,
   onUnlock,
   loading,
+  onDfy,
+  dfyLoading,
 }: BlurredPreviewProps) {
   return (
     <div className="rounded-2xl border border-white/10 overflow-hidden" style={{ background: '#111827' }}>
@@ -131,6 +135,25 @@ export default function BlurredPreview({
             If delivery fails, contact us within 7 days for a full refund.
           </p>
           <p className="text-xs text-white/25 mt-1">Secure checkout via Stripe · Instant delivery · One-time payment</p>
+
+          {onDfy && (
+            <div className="mt-6 pt-5 border-t border-white/8">
+              <p className="text-xs text-white/35 mb-3 font-semibold">Don&apos;t want to do it yourself?</p>
+              <button
+                onClick={onDfy}
+                disabled={dfyLoading}
+                className="inline-flex items-center gap-2.5 text-sm font-bold text-white/70 border border-white/15 hover:border-white/30 hover:text-white px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
+                {dfyLoading ? 'Redirecting...' : (
+                  <>
+                    We install everything for you
+                    <span className="text-xs font-black text-white/40">$499</span>
+                  </>
+                )}
+              </button>
+              <p className="text-xs text-white/20 mt-2">Pay · Book a slot · We implement on any platform · Before/after report</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

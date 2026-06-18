@@ -306,7 +306,269 @@ function queldrex_output_json_ld() {
 `
 }
 
-// ─── Manual Package (Vercel, Netlify, GitHub Pages, etc.) ────────────────────
+// ─── GitHub API Implementation (Vercel, Netlify, GitHub Pages) ──────────────
+
+const GITHUB_PUBLIC_DIR_CANDIDATES = ['public', 'static', 'docs', 'dist', 'out', '']
+
+async function githubRequest(token: string, path: string, method = 'GET', body?: unknown) {
+  const res = await fetch(`https://api.github.com${path}`, {
+    method,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+      'Content-Type': 'application/json',
+      'User-Agent': 'Queldrex-AI-Scanner/1.0',
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(`GitHub API ${method} ${path}: ${res.status} — ${(err as { message?: string }).message || 'error'}`)
+  }
+  return res.json()
+}
+
+async function githubGetFileSha(token: string, repo: string, branch: string, path: string): Promise<string | null> {
+  try {
+    const data = await githubRequest(token, `/repos/${repo}/contents/${path}?ref=${branch}`) as { sha?: string }
+    return data.sha || null
+  } catch {
+    return null
+  }
+}
+
+async function githubUpsertFile(
+  token: string,
+  repo: string,
+  branch: string,
+  path: string,
+  content: string,
+  message: string
+): Promise<'created' | 'updated'> {
+  const existingSha = await githubGetFileSha(token, repo, branch, path)
+  const encoded = Buffer.from(content, 'utf-8').toString('base64')
+
+  await githubRequest(token, `/repos/${repo}/contents/${path}`, 'PUT', {
+    message,
+    content: encoded,
+    branch,
+    ...(existingSha ? { sha: existingSha } : {}),
+  })
+
+  return existingSha ? 'updated' : 'created'
+}
+
+async function detectGitHubPublicDir(token: string, repo: string, branch: string): Promise<string> {
+  for (const dir of GITHUB_PUBLIC_DIR_CANDIDATES) {
+    try {
+      const path = dir ? `/repos/${repo}/contents/${dir}?ref=${branch}` : `/repos/${repo}/contents?ref=${branch}`
+      const contents = await githubRequest(token, path) as unknown[]
+      if (Array.isArray(contents)) return dir
+    } catch {
+      // not found — try next
+    }
+  }
+  return 'public'
+}
+
+async function implementViaGitHub(
+  scan: ScanResult,
+  creds: Extract<ImplementationCredentials, { platform: 'github' }>
+): Promise<{ files: ImplementedFile[]; errors: string[] }> {
+  const files: ImplementedFile[] = []
+  const errors: string[] = []
+  const branch = creds.branch || 'main'
+
+  try {
+    // Verify token + repo access
+    await githubRequest(creds.token, `/repos/${creds.repo}`)
+  } catch (err) {
+    errors.push(`Cannot access ${creds.repo}: ${err instanceof Error ? err.message : 'check your token and repo name'}`)
+    return { files, errors }
+  }
+
+  const publicDir = creds.publicDir !== undefined
+    ? creds.publicDir
+    : await detectGitHubPublicDir(creds.token, creds.repo, branch)
+
+  const rootPrefix = publicDir ? `${publicDir}/` : ''
+
+  // 1. llms.txt → /public/llms.txt (or repo root)
+  try {
+    const action = await githubUpsertFile(
+      creds.token, creds.repo, branch,
+      `${rootPrefix}llms.txt`,
+      scan.generatedLlmsTxt,
+      'feat: add llms.txt for AI search discoverability (Queldrex)'
+    )
+    files.push({ path: `${rootPrefix}llms.txt`, action, note: `Deployed to ${scan.url}/llms.txt` })
+  } catch (err) {
+    errors.push(`llms.txt upload failed: ${err instanceof Error ? err.message : 'unknown'}`)
+  }
+
+  // 2. robots.txt
+  try {
+    const existingRobotsRes = await fetch(`${scan.url}/robots.txt`)
+    const existingRobots = existingRobotsRes.ok ? await existingRobotsRes.text() : null
+    const { content: robotsContent, action: robotsAction } = buildRobotsTxt(existingRobots, scan.url)
+
+    const action = await githubUpsertFile(
+      creds.token, creds.repo, branch,
+      `${rootPrefix}robots.txt`,
+      robotsContent,
+      'feat: add/update robots.txt with sitemap reference (Queldrex)'
+    )
+    files.push({ path: `${rootPrefix}robots.txt`, action: action === 'updated' ? 'updated' : robotsAction, note: 'Sitemap reference added' })
+  } catch (err) {
+    errors.push(`robots.txt failed: ${err instanceof Error ? err.message : 'unknown'}`)
+  }
+
+  // 3. JSON-LD — inject into layout file if detectable, else create schema snippet
+  // Try common layout files
+  const layoutCandidates = [
+    'app/layout.tsx', 'app/layout.jsx', 'app/layout.js',
+    'pages/_document.tsx', 'pages/_document.jsx', 'pages/_document.js',
+    'src/app/layout.tsx', 'src/pages/_document.tsx',
+  ]
+
+  let injectedLayout = false
+  for (const layoutPath of layoutCandidates) {
+    try {
+      const existing = await githubRequest(creds.token, `/repos/${creds.repo}/contents/${layoutPath}?ref=${branch}`) as { content?: string; sha?: string }
+      if (!existing.content) continue
+
+      const currentCode = Buffer.from(existing.content.replace(/\n/g, ''), 'base64').toString('utf-8')
+      if (currentCode.includes('application/ld+json')) {
+        files.push({ path: layoutPath, action: 'skipped', note: 'JSON-LD already present' })
+        injectedLayout = true
+        break
+      }
+
+      // Inject before </head> or return statement
+      const jsonLdSnippet = `<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(${scan.generatedJsonLd}) }} />`
+      let modified: string | null = null
+
+      if (currentCode.includes('</head>')) {
+        modified = currentCode.replace('</head>', `${jsonLdSnippet}\n</head>`)
+      } else if (currentCode.includes('<head>')) {
+        modified = currentCode.replace('<head>', `<head>\n${jsonLdSnippet}`)
+      }
+
+      if (modified) {
+        await githubUpsertFile(
+          creds.token, creds.repo, branch,
+          layoutPath, modified,
+          'feat: inject LocalBusiness JSON-LD schema (Queldrex)'
+        )
+        files.push({ path: layoutPath, action: 'updated', note: 'Injected LocalBusiness JSON-LD into <head>' })
+        injectedLayout = true
+        break
+      }
+    } catch {
+      // file not found — try next
+    }
+  }
+
+  if (!injectedLayout) {
+    // Create a standalone schema snippet file with instructions
+    const schemaSnippet = `<!-- Paste this into your site's <head> section -->\n<script type="application/ld+json">\n${scan.generatedJsonLd}\n</script>`
+    try {
+      await githubUpsertFile(
+        creds.token, creds.repo, branch,
+        'queldrex-schema.html',
+        schemaSnippet,
+        'feat: add JSON-LD schema snippet (Queldrex) — paste into <head>'
+      )
+      files.push({ path: 'queldrex-schema.html', action: 'created', note: 'Paste contents into your site <head> — could not auto-inject' })
+    } catch (err) {
+      errors.push(`JSON-LD schema file failed: ${err instanceof Error ? err.message : 'unknown'}`)
+    }
+  }
+
+  return { files, errors }
+}
+
+// ─── Shopify Implementation ──────────────────────────────────────────────────
+
+async function implementViaShopify(
+  scan: ScanResult,
+  creds: Extract<ImplementationCredentials, { platform: 'shopify' }>
+): Promise<{ files: ImplementedFile[]; errors: string[] }> {
+  const files: ImplementedFile[] = []
+  const errors: string[] = []
+  const store = creds.storeUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')
+  const headers = {
+    'X-Shopify-Access-Token': creds.apiToken,
+    'Content-Type': 'application/json',
+  }
+
+  // 1. Get active theme
+  let themeId: string
+  try {
+    const themes = await fetch(`https://${store}/admin/api/2024-01/themes.json`, { headers })
+    if (!themes.ok) throw new Error(`${themes.status} — check your API token and store URL`)
+    const data = await themes.json() as { themes: { id: number; role: string }[] }
+    const active = data.themes.find(t => t.role === 'main')
+    if (!active) throw new Error('No active theme found')
+    themeId = String(active.id)
+  } catch (err) {
+    errors.push(`Shopify theme access failed: ${err instanceof Error ? err.message : 'unknown'}`)
+    return { files, errors }
+  }
+
+  // 2. Get theme.liquid and inject JSON-LD
+  try {
+    const assetRes = await fetch(`https://${store}/admin/api/2024-01/themes/${themeId}/assets.json?asset[key]=layout/theme.liquid`, { headers })
+    if (!assetRes.ok) throw new Error('Could not read theme.liquid')
+
+    const assetData = await assetRes.json() as { asset?: { value?: string } }
+    const themeLiquid = assetData.asset?.value || ''
+
+    if (themeLiquid.includes('application/ld+json')) {
+      files.push({ path: 'layout/theme.liquid', action: 'skipped', note: 'JSON-LD already present' })
+    } else {
+      const jsonLdTag = `<script type="application/ld+json">{{ ${JSON.stringify(scan.generatedJsonLd)} | json }}</script>`
+      const modified = themeLiquid.includes('</head>')
+        ? themeLiquid.replace('</head>', `${jsonLdTag}\n</head>`)
+        : themeLiquid
+
+      const updateRes = await fetch(`https://${store}/admin/api/2024-01/themes/${themeId}/assets.json`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({ asset: { key: 'layout/theme.liquid', value: modified } }),
+      })
+      if (!updateRes.ok) throw new Error('Could not update theme.liquid')
+      files.push({ path: 'layout/theme.liquid', action: 'updated', note: 'Injected JSON-LD into <head>' })
+    }
+  } catch (err) {
+    errors.push(`theme.liquid update failed: ${err instanceof Error ? err.message : 'unknown'}`)
+  }
+
+  // 3. Upload llms.txt as a Shopify asset in /assets/llms.txt
+  // Note: Shopify doesn't serve /assets/ files from root — we create a page template instead
+  try {
+    const llmsPageRes = await fetch(`https://${store}/admin/api/2024-01/themes/${themeId}/assets.json`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({
+        asset: {
+          key: 'templates/page.llms.liquid',
+          value: `${scan.generatedLlmsTxt}`,
+        },
+      }),
+    })
+    if (llmsPageRes.ok) {
+      files.push({ path: 'templates/page.llms.liquid', action: 'created', note: 'Create a Shopify page with handle "llms" to serve at /pages/llms' })
+    }
+  } catch {
+    errors.push('llms.txt page template upload failed')
+  }
+
+  return { files, errors }
+}
+
+// ─── Manual Package (Wix, Squarespace, Webflow, etc.) ────────────────────
 
 function buildManualInstructions(scan: ScanResult): string {
   return `# Queldrex AI Visibility Fix Package
@@ -363,6 +625,14 @@ export async function implementFixes(
     errors = result.errors
   } else if (credentials.platform === 'wordpress') {
     const result = await implementViaWordPress(scan, credentials)
+    files = result.files
+    errors = result.errors
+  } else if (credentials.platform === 'github') {
+    const result = await implementViaGitHub(scan, credentials)
+    files = result.files
+    errors = result.errors
+  } else if (credentials.platform === 'shopify') {
+    const result = await implementViaShopify(scan, credentials)
     files = result.files
     errors = result.errors
   } else {
