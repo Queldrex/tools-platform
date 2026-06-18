@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
-export default function BookPage() {
+function BookContent() {
   const params = useSearchParams()
   const token = params.get('token')
   const [loaded, setLoaded] = useState(false)
@@ -99,5 +99,17 @@ export default function BookPage() {
       </main>
       <Footer />
     </div>
+  )
+}
+
+export default function BookPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen text-white flex items-center justify-center" style={{ background: '#070b14' }}>
+        <p className="text-white/30">Loading...</p>
+      </div>
+    }>
+      <BookContent />
+    </Suspense>
   )
 }
