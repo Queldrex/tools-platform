@@ -22,13 +22,15 @@ function extractToken(notes: string | undefined): string | null {
 export async function POST(request: NextRequest) {
   const rawBody = await request.text()
 
-  // Verify signature if secret is configured
+  // Require webhook secret — reject all requests if not configured
   const webhookSecret = process.env.CAL_WEBHOOK_SECRET
-  if (webhookSecret) {
-    const signature = request.headers.get('x-cal-signature-256') || ''
-    if (!verifyCalSignature(rawBody, signature, webhookSecret)) {
-      return Response.json({ error: 'Invalid signature' }, { status: 401 })
-    }
+  if (!webhookSecret) {
+    return Response.json({ error: 'Webhook not configured' }, { status: 503 })
+  }
+
+  const signature = request.headers.get('x-cal-signature-256') || ''
+  if (!verifyCalSignature(rawBody, signature, webhookSecret)) {
+    return Response.json({ error: 'Invalid signature' }, { status: 401 })
   }
 
   let payload: CalWebhookPayload
