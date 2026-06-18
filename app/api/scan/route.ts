@@ -1,11 +1,19 @@
 import { NextRequest } from 'next/server'
 import { v4 as uuidv4 } from 'uuid'
-import { saveScan } from '@/lib/store/redis'
 import { scanWebsite } from '@/lib/tools/ai-visibility-scanner/scanner'
 import { generateLlmsTxt, generateJsonLd, generateRecommendations } from '@/lib/tools/ai-visibility-scanner/generator'
 
 export const dynamic = 'force-dynamic'
-import type { ScanResult } from '@/lib/framework/types'
+
+// Best-effort Redis save — scanner works even if Redis is down
+async function trySaveToRedis(scan: unknown) {
+  try {
+    const { saveScan } = await import('@/lib/store/redis')
+    await saveScan(scan as Parameters<typeof saveScan>[0])
+  } catch {
+    // Redis failure doesn't block the scan
+  }
+}
 
 export async function POST(request: NextRequest) {
   let body: { url?: string; email?: string }
@@ -20,61 +28,51 @@ export async function POST(request: NextRequest) {
   if (!url || typeof url !== 'string' || url.trim().length === 0) {
     return Response.json({ error: 'URL is required' }, { status: 400 })
   }
-
   if (!email || typeof email !== 'string' || !email.includes('@')) {
     return Response.json({ error: 'Valid email address is required' }, { status: 400 })
+  }
+
+  // Honeypot
+  const bodyRaw = body as Record<string, unknown>
+  if (bodyRaw.website_url) {
+    return Response.json({ scanId: uuidv4(), status: 'DONE' })
   }
 
   const scanId = uuidv4()
   const cleanUrl = url.trim()
   const cleanEmail = email.trim().toLowerCase()
 
-  // Save PROCESSING state immediately so status polls return something meaningful
-  const initial: ScanResult = {
-    scanId,
-    toolId: 'ai-visibility-scanner',
-    url: cleanUrl,
-    emailAddress: cleanEmail,
-    status: 'PROCESSING',
-    score: 0,
-    checks: { robotsTxt: false, sitemapXml: false, llmsTxt: false, openGraph: false, jsonLd: false, localBusinessSchema: false },
-    businessInfo: { name: '', description: '', url: cleanUrl, domain: '', title: '', phone: '', email: '', address: '', image: '', social: [], pages: [] },
-    generatedLlmsTxt: '',
-    generatedJsonLd: '',
-    recommendations: [],
-    paid: false,
-    createdAt: new Date().toISOString(),
-  }
-  await saveScan(initial)
-
-  // Run the scan synchronously — Lambda stays alive until we return a response.
-  // This avoids fire-and-forget execution model issues in serverless environments.
   try {
     const { checks, businessInfo, score } = await scanWebsite(cleanUrl)
     const generatedLlmsTxt = generateLlmsTxt(businessInfo)
     const generatedJsonLd = generateJsonLd(businessInfo)
     const recommendations = generateRecommendations(checks, businessInfo)
 
-    const completed: ScanResult = {
-      ...initial,
-      status: 'DONE',
+    const completed = {
+      scanId,
+      toolId: 'ai-visibility-scanner',
+      url: cleanUrl,
+      emailAddress: cleanEmail,
+      status: 'DONE' as const,
       score,
       checks,
       businessInfo,
       generatedLlmsTxt,
       generatedJsonLd,
       recommendations,
+      paid: false,
+      createdAt: new Date().toISOString(),
     }
-    await saveScan(completed)
 
-    return Response.json({ scanId, status: 'DONE' })
+    // Fire-and-forget Redis save (needed for checkout later)
+    trySaveToRedis(completed)
+
+    return Response.json(completed)
   } catch (err) {
-    const failed: ScanResult = {
-      ...initial,
+    return Response.json({
+      scanId,
       status: 'ERROR',
       error: err instanceof Error ? err.message : 'Scan failed. Please check the URL and try again.',
-    }
-    await saveScan(failed)
-    return Response.json({ scanId, status: 'ERROR', error: failed.error }, { status: 200 })
+    }, { status: 200 })
   }
 }

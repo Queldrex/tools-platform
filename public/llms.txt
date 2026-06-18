@@ -1,0 +1,35 @@
+# Queldrex
+
+> Queldrex LLC is a Colorado-based software tools company that builds precision, one-time-purchase tools for developers and businesses. No subscriptions. No recurring fees. Production-ready output delivered instantly.
+
+## Products
+
+### AI Visibility Scanner — $149 (Available Now)
+Scans a website URL for the six signals AI assistants use to find and recommend businesses: llms.txt, JSON-LD structured data, LocalBusiness schema, Open Graph tags, sitemap.xml, and robots.txt. Returns an AI Visibility Score and unlocks a complete fix package — generated llms.txt file, LocalBusiness JSON-LD schema, HTML report, and prioritized fix checklist. Delivered to the buyer's email within minutes of payment.
+
+Free scan is available with no account required. Report package is $149, one-time.
+
+### API Schema Drift Scanner — $249 (In Development)
+Compares live API responses against an OpenAPI specification to detect breaking changes before they reach production. Identifies schema drift, missing fields, type mismatches, and deprecated endpoints.
+
+### Database Migration Middleware — $199 (In Development)
+Runs PostgreSQL and MySQL schema migrations with automatic rollback triggers and zero-downtime deployment support.
+
+### Vibe Coding Security Shield — $149 (In Development)
+Scans AI-generated code for OWASP top-10 vulnerabilities and secrets exposure before shipping to production.
+
+### High-Speed Directory Extractor — $99 (In Development)
+Extracts, deduplicates, and exports business listings from any directory at scale.
+
+## Done-For-You Implementation Service — Starting at $499
+Professional installation service for the AI Visibility Scanner package. Queldrex installs and validates all AI visibility optimizations directly on the client's website. Includes 30 days of email support. Contact hello@queldrex.com to get started.
+
+## Company
+
+- **Legal name**: Queldrex LLC
+- **State of incorporation**: Colorado, USA
+- **Contact**: hello@queldrex.com
+- **Website**: https://queldrex.com
+
+## Pricing Model
+All tools are one-time purchases. No subscriptions. No recurring fees. Output is owned by the buyer.

@@ -1,7 +1,7 @@
 import { parse } from 'node-html-parser'
 import type { ScanChecks, BusinessInfo } from '@/lib/framework/types'
 
-const FETCH_TIMEOUT = 8000
+const FETCH_TIMEOUT = 5000
 
 async function fetchWithTimeout(url: string): Promise<string | null> {
   try {

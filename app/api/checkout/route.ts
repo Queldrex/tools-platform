@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     },
     customer_email: scan.emailAddress,
     success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${baseUrl}/?scan=${scanId}&cancelled=true`,
+    cancel_url: `${baseUrl}/cancel`,
   })
 
   await saveScan({ ...scan, stripeSessionId: session.id })

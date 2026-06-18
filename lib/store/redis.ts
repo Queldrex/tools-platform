@@ -12,7 +12,7 @@ function getRedis(): Redis {
   return _redis
 }
 
-const SCAN_TTL = 60 * 60 * 48 // 48 hours
+const SCAN_TTL = 60 * 60 * 48
 
 export async function saveScan(scan: ScanResult): Promise<void> {
   await getRedis().set(`scan:${scan.scanId}`, JSON.stringify(scan), { ex: SCAN_TTL })
