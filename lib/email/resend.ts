@@ -2,7 +2,8 @@ import { Resend } from 'resend'
 
 let _resend: Resend | null = null
 function getResend(): Resend {
-  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY!)
+  // Strip BOM and any leading/trailing invisible characters that break HTTP headers
+  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY!.replace(/^﻿/, '').trim())
   return _resend
 }
 

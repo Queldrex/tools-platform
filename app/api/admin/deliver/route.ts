@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Scan not found' }, { status: 404 })
   }
 
-  if (scan.status === 'PAID' || scan.status === 'DELIVERED') {
+  if (scan.status === 'DELIVERED') {
     return Response.json({ error: 'Already delivered', status: scan.status }, { status: 409 })
   }
 
