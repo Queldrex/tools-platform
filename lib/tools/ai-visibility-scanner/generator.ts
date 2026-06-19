@@ -148,8 +148,17 @@ export function generateJsonLd(info: BusinessInfo): string {
 
 // --- Recommendations generator ---
 
-export function generateRecommendations(checks: ScanChecks, info: BusinessInfo): Recommendation[] {
+export function generateRecommendations(checks: ScanChecks, info: BusinessInfo, blockedAiBots: string[] = []): Recommendation[] {
   const recs: Recommendation[] = []
+
+  if (blockedAiBots.length > 0) {
+    recs.push({
+      priority: 'HIGH',
+      title: `Your robots.txt is blocking ${blockedAiBots.length} AI crawler${blockedAiBots.length > 1 ? 's' : ''}`,
+      description: `The following AI systems cannot read your website at all because your robots.txt explicitly blocks them: ${blockedAiBots.join(', ')}. This means ChatGPT, Claude, and Perplexity cannot crawl your pages, learn about your business, or recommend you to users — regardless of all other signals.`,
+      fix: `Remove or comment out the Disallow: / rule for these crawlers in your robots.txt file. Replace with:\n\nUser-agent: GPTBot\nAllow: /\n\nUser-agent: ClaudeBot\nAllow: /\n\nUser-agent: PerplexityBot\nAllow: /`,
+    })
+  }
 
   if (!checks.httpsEnabled) {
     recs.push({

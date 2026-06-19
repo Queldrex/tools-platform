@@ -3,7 +3,8 @@ import type { ScanChecks, BusinessInfo } from '@/lib/framework/types'
 
 const FETCH_TIMEOUT = 5000
 
-async function fetchWithTimeout(url: string): Promise<string | null> {
+async function fetchWithTimeout(url: string): Promise<{ text: string | null; ms: number }> {
+  const start = Date.now()
   try {
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT)
@@ -16,11 +17,58 @@ async function fetchWithTimeout(url: string): Promise<string | null> {
       },
     })
     clearTimeout(timer)
-    if (!res.ok) return null
-    return await res.text()
+    if (!res.ok) return { text: null, ms: Date.now() - start }
+    return { text: await res.text(), ms: Date.now() - start }
   } catch {
-    return null
+    return { text: null, ms: Date.now() - start }
   }
+}
+
+async function fetchText(url: string): Promise<string | null> {
+  return (await fetchWithTimeout(url)).text
+}
+
+// Parse robots.txt and return names of AI crawlers that are fully blocked (Disallow: /)
+function parseBlockedAiBots(robotsText: string | null): string[] {
+  if (!robotsText) return []
+
+  const AI_BOTS: { name: string; id: string }[] = [
+    { name: 'ChatGPT (GPTBot)', id: 'gptbot' },
+    { name: 'Claude (ClaudeBot)', id: 'claudebot' },
+    { name: 'Perplexity (PerplexityBot)', id: 'perplexitybot' },
+    { name: 'Bing / Copilot (Bingbot)', id: 'bingbot' },
+    { name: 'Common Crawl (CCBot)', id: 'ccbot' },
+    { name: 'Meta AI', id: 'meta-externalagent' },
+    { name: 'ByteDance AI (Bytespider)', id: 'bytespider' },
+    { name: 'Google AI (Google-Extended)', id: 'google-extended' },
+  ]
+
+  const blocked: string[] = []
+  const lines = robotsText.split('\n')
+  let currentAgents: string[] = []
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim().toLowerCase()
+    if (line === '' || line.startsWith('#')) {
+      currentAgents = []
+      continue
+    }
+    if (line.startsWith('user-agent:')) {
+      const agent = line.slice('user-agent:'.length).trim()
+      currentAgents.push(agent)
+    } else if (line.startsWith('disallow:')) {
+      const path = line.slice('disallow:'.length).trim()
+      if (path === '/') {
+        // Full site block — check each current agent against AI bot list
+        for (const agent of currentAgents) {
+          const match = AI_BOTS.find(b => b.id === agent)
+          if (match && !blocked.includes(match.name)) blocked.push(match.name)
+        }
+      }
+    }
+  }
+
+  return blocked
 }
 
 export function normalizeUrl(input: string): string {
@@ -138,11 +186,36 @@ function extractBusinessInfo(root: ReturnType<typeof parse> | null, url: string)
   )
   const phone = phoneMatch ? phoneMatch[1].replace(/\s+/g, ' ').trim() : ''
 
-  // Email: skip noreply, support@ type addresses, prefer contact/info
+  // Email: prefer contact/info addresses over generic ones
   const emailMatches = root.innerHTML.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g) || []
   const contactEmail = emailMatches.find(e =>
     /^(contact|info|hello|hi|enquiries|sales)@/.test(e)
   ) || emailMatches[0] || ''
+
+  // Address: extract from JSON-LD streetAddress first, then itemprop, then schema markup
+  let address = ''
+  const ldScriptsForAddress = root.querySelectorAll('script[type="application/ld+json"]')
+  for (const el of ldScriptsForAddress) {
+    try {
+      const parsed = JSON.parse(el.text)
+      const items = Array.isArray(parsed) ? parsed : [parsed]
+      for (const item of items) {
+        const addr = item.address?.streetAddress || item.location?.address?.streetAddress
+        if (addr) { address = String(addr); break }
+        if (Array.isArray(item['@graph'])) {
+          for (const node of item['@graph']) {
+            const nodeAddr = node.address?.streetAddress
+            if (nodeAddr) { address = String(nodeAddr); break }
+          }
+        }
+      }
+      if (address) break
+    } catch { continue }
+  }
+  if (!address) {
+    const addrEl = root.querySelector('[itemprop="streetAddress"]')
+    if (addrEl) address = addrEl.text.trim()
+  }
 
   const social: string[] = []
   const seenSocial = new Set<string>()
@@ -168,13 +241,15 @@ function extractBusinessInfo(root: ReturnType<typeof parse> | null, url: string)
     if (!seenPages.has(clean) && pages.length < 12) { seenPages.add(clean); pages.push(clean) }
   }
 
-  return { name, description, url, domain, title, phone, email: contactEmail, address: '', image, social, pages }
+  return { name, description, url, domain, title, phone, email: contactEmail, address, image, social, pages }
 }
 
 export async function scanWebsite(rawUrl: string): Promise<{
   checks: ScanChecks
   businessInfo: BusinessInfo
   score: number
+  blockedAiBots: string[]
+  responseTimeMs: number
 }> {
   const url = normalizeUrl(rawUrl)
 
@@ -183,12 +258,15 @@ export async function scanWebsite(rawUrl: string): Promise<{
   }
 
   // Fetch all signals in parallel for speed
-  const [homepageHtml, robotsText, sitemapText, llmsText] = await Promise.all([
+  const [homepageResult, robotsText, sitemapText, llmsText] = await Promise.all([
     fetchWithTimeout(url),
-    fetchWithTimeout(`${url}/robots.txt`),
-    fetchWithTimeout(`${url}/sitemap.xml`),
-    fetchWithTimeout(`${url}/llms.txt`),
+    fetchText(`${url}/robots.txt`),
+    fetchText(`${url}/sitemap.xml`),
+    fetchText(`${url}/llms.txt`),
   ])
+
+  const homepageHtml = homepageResult.text
+  const responseTimeMs = homepageResult.ms
 
   const root = homepageHtml ? parse(homepageHtml) : null
   const ldScripts = root
@@ -210,10 +288,11 @@ export async function scanWebsite(rawUrl: string): Promise<{
     canonicalTag: !!root && !!root.querySelector('link[rel="canonical"]'),
   }
 
+  const blockedAiBots = parseBlockedAiBots(robotsText)
   const businessInfo = extractBusinessInfo(root, url)
   const score = calculateScore(checks)
 
-  return { checks, businessInfo, score }
+  return { checks, businessInfo, score, blockedAiBots, responseTimeMs }
 }
 
 function calculateScore(checks: ScanChecks): number {

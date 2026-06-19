@@ -43,6 +43,9 @@ export interface ScanResult {
   createdAt: string
   paidAt?: string
   error?: string
+  // Extended diagnostics — shown in UI, not used for scoring
+  blockedAiBots?: string[]
+  responseTimeMs?: number
 }
 
 export interface Recommendation {
