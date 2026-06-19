@@ -27,6 +27,7 @@ function getRedis(): Redis {
 }
 
 const SCAN_TTL = 60 * 60 * 48
+const TOKEN_TTL = 60 * 60 * 24 * 7  // 7 days
 
 export async function saveScan(scan: ScanResult): Promise<void> {
   await getRedis().set(`scan:${scan.scanId}`, JSON.stringify(scan), { ex: SCAN_TTL })
@@ -45,7 +46,7 @@ export async function getScanByToken(token: string): Promise<ScanResult | null> 
 }
 
 export async function saveDownloadToken(token: string, scanId: string): Promise<void> {
-  await getRedis().set(`token:${token}`, scanId, { ex: SCAN_TTL })
+  await getRedis().set(`token:${token}`, scanId, { ex: TOKEN_TTL })
 }
 
 export async function saveDfySession(session: DfySession): Promise<void> {

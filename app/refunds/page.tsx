@@ -31,7 +31,7 @@ export default function RefundsPage() {
           <section>
             <h2 className="text-white font-bold text-base mb-3">1. Digital Products — AI Visibility Report Bundle ($149)</h2>
             <p className="mb-3">
-              All sales of digital products, including the AI Visibility Report Bundle, are <strong className="text-white">final and non-refundable</strong> once the report package has been generated and delivered to your email address.
+              All sales of digital products, including the AI Visibility Report Bundle, are <strong className="text-white">final and non-refundable</strong> once the report package has been generated and delivered to your email address. Where required by law, applicable sales tax is collected and remitted to the relevant tax authority; tax amounts are <strong className="text-white">non-refundable</strong> in all cases as they are remitted at the time of transaction.
             </p>
             <p className="mb-3">
               Because each report is custom-generated for a specific website at the time of purchase and immediately delivered as a downloadable file package, we are unable to &quot;take back&quot; or resell digital goods.

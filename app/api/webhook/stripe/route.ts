@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
   const downloadToken = uuidv4()
   await saveDownloadToken(downloadToken, scanId)
 
-  const downloadUrl = `${baseUrl}/api/download/${downloadToken}`
+  const downloadUrl = `${baseUrl}/download/${downloadToken}`
   const paidAt = new Date().toISOString()
 
   await saveScan({ ...scan, status: 'PAID', paid: true, downloadToken, paidAt })

@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
   await saveDownloadToken(downloadToken, scanId)
 
   const baseUrl = env('NEXT_PUBLIC_BASE_URL', 'https://queldrex.com')
-  const downloadUrl = `${baseUrl}/api/download/${downloadToken}`
+  const downloadUrl = `${baseUrl}/download/${downloadToken}`
   const paidAt = new Date().toISOString()
 
   await saveScan({ ...scan, status: 'PAID', paid: true, downloadToken, paidAt })
