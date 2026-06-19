@@ -8,8 +8,18 @@ export const dynamic = 'force-dynamic'
 // Best-effort Redis save — scanner works even if Redis is down
 async function trySaveToRedis(scan: unknown) {
   try {
-    const { saveScan } = await import('@/lib/store/redis')
-    await saveScan(scan as Parameters<typeof saveScan>[0])
+    const { saveScan, appendScanLog } = await import('@/lib/store/redis')
+    const s = scan as Parameters<typeof saveScan>[0]
+    await saveScan(s)
+    await appendScanLog({
+      scanId: s.scanId,
+      domain: s.businessInfo?.domain || s.url,
+      email: s.emailAddress,
+      score: s.score,
+      paid: false,
+      status: 'DONE',
+      createdAt: s.createdAt || new Date().toISOString(),
+    })
   } catch {
     // Redis failure doesn't block the scan
   }

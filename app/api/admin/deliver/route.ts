@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { v4 as uuidv4 } from 'uuid'
-import { getScan, saveScan, saveDownloadToken } from '@/lib/store/redis'
+import { getScan, saveScan, saveDownloadToken, updateScanLog } from '@/lib/store/redis'
 import { sendDeliveryEmail } from '@/lib/email/resend'
 import { env } from '@/lib/env'
 
@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
   })
 
   await saveScan({ ...scan, status: 'DELIVERED', paid: true, downloadToken, paidAt })
+  await updateScanLog(scanId, { paid: true, paidAt, status: 'DELIVERED' }).catch(() => {})
 
   // Never return the downloadUrl — it's a one-time token sent only to the client's email
   return Response.json({

@@ -57,3 +57,58 @@ export async function getDfySession(token: string): Promise<DfySession | null> {
   if (!data) return null
   return typeof data === 'string' ? JSON.parse(data) : data as DfySession
 }
+
+// ── Permanent scan log ────────────────────────────────────────────────────────
+
+export interface ScanLogEntry {
+  scanId: string
+  domain: string
+  email: string
+  score: number
+  paid: boolean
+  paidAt?: string
+  status: string
+  createdAt: string
+}
+
+const LOG_KEY = 'scanlog'
+
+export async function appendScanLog(entry: ScanLogEntry): Promise<void> {
+  const redis = getRedis()
+  const score = Date.now()
+  // Sorted set: score = unix ms timestamp, member = JSON entry
+  await redis.zadd(LOG_KEY, { score, member: JSON.stringify(entry) })
+}
+
+export async function updateScanLog(scanId: string, updates: Partial<ScanLogEntry>): Promise<void> {
+  const redis = getRedis()
+  // Scan the full log to find and replace the entry
+  const all = await redis.zrange(LOG_KEY, 0, -1, { withScores: true })
+  for (let i = 0; i < all.length; i += 2) {
+    const raw = all[i] as string
+    const ts = all[i + 1] as number
+    try {
+      const entry: ScanLogEntry = typeof raw === 'string' ? JSON.parse(raw) : raw
+      if (entry.scanId === scanId) {
+        const updated = { ...entry, ...updates }
+        await redis.zrem(LOG_KEY, raw)
+        await redis.zadd(LOG_KEY, { score: ts, member: JSON.stringify(updated) })
+        return
+      }
+    } catch { /* skip malformed entries */ }
+  }
+}
+
+export async function getScanLog(limit = 200, offset = 0): Promise<ScanLogEntry[]> {
+  const redis = getRedis()
+  // Return newest first
+  const raw = await redis.zrange(LOG_KEY, offset, offset + limit - 1, { rev: true })
+  return raw.map(r => {
+    try { return typeof r === 'string' ? JSON.parse(r) : r }
+    catch { return null }
+  }).filter(Boolean) as ScanLogEntry[]
+}
+
+export async function getScanLogCount(): Promise<number> {
+  return getRedis().zcard(LOG_KEY)
+}
