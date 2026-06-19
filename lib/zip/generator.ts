@@ -507,14 +507,20 @@ export function generateReportHtml(scan: ScanResult): string {
   const scoreColor = scan.score >= 70 ? '#16a34a' : scan.score >= 40 ? '#d97706' : '#dc2626'
   const ext = scan.extendedChecks
 
+  const esc = (s: string) => s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+
   const recsHtml = scan.recommendations
     .map(
       r => `
     <div style="margin-bottom:20px;padding:16px;border-left:4px solid ${r.priority === 'HIGH' ? '#dc2626' : r.priority === 'MEDIUM' ? '#d97706' : '#6b7280'};background:#fafafa;border-radius:0 8px 8px 0;">
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:${r.priority === 'HIGH' ? '#dc2626' : r.priority === 'MEDIUM' ? '#d97706' : '#6b7280'};margin-bottom:6px;">${r.priority}</div>
-      <div style="font-weight:600;font-size:15px;margin-bottom:8px;">${r.title}</div>
-      <div style="color:#374151;margin-bottom:10px;line-height:1.6;">${r.description}</div>
-      <div style="background:#fff;padding:12px;border-radius:6px;border:1px solid #e5e7eb;font-size:13px;color:#1d4ed8;white-space:pre-wrap;"><strong>Fix:</strong> ${r.fix}</div>
+      <div style="font-weight:600;font-size:15px;margin-bottom:8px;">${esc(r.title)}</div>
+      <div style="color:#374151;margin-bottom:10px;line-height:1.6;">${esc(r.description)}</div>
+      <div style="background:#fff;padding:12px;border-radius:6px;border:1px solid #e5e7eb;font-size:13px;color:#1d4ed8;white-space:pre-wrap;"><strong>Fix:</strong> ${esc(r.fix)}</div>
     </div>`
     )
     .join('')
