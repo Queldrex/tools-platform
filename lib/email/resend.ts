@@ -604,3 +604,46 @@ export async function sendPaymentLinkEmail({ to, name, url, paymentUrl, score }:
 </html>`,
   })
 }
+
+// ── Admin alert emails ────────────────────────────────────────────────────────
+const ADMIN_EMAIL = 'janitor.clean.base@gmail.com'
+
+export async function sendAdminScanAlert({ domain, email, score }: { domain: string; email: string; score: number }) {
+  const adminUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim() + '/admin'
+  const scoreColor = score >= 70 ? '#16a34a' : score >= 40 ? '#d97706' : '#dc2626'
+  await getResend().emails.send({
+    from: 'Queldrex (No Reply) <reports@queldrex.com>',
+    to: ADMIN_EMAIL,
+    subject: `New scan lead: ${domain} — ${score}/100`,
+    html: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;background:#f8fafc;padding:32px;">
+  <div style="max-width:420px;margin:0 auto;background:#0f172a;padding:28px;border-radius:12px;">
+    <div style="font-size:11px;color:#22d3ee;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:12px;">Queldrex · New Scan Lead</div>
+    <div style="font-size:20px;font-weight:800;color:white;margin-bottom:4px;">${domain}</div>
+    <div style="font-size:13px;color:#94a3b8;margin-bottom:20px;">${email}</div>
+    <div style="display:inline-block;background:#1e293b;border-radius:10px;padding:14px 24px;margin-bottom:24px;">
+      <span style="font-size:36px;font-weight:800;color:${scoreColor};">${score}</span><span style="font-size:18px;color:#64748b;">/100</span>
+    </div>
+    <a href="${adminUrl}" style="display:block;background:#22d3ee;color:#0f172a;text-decoration:none;text-align:center;padding:12px;border-radius:8px;font-weight:700;font-size:14px;">Open Admin Panel →</a>
+  </div>
+</body></html>`,
+  })
+}
+
+export async function sendAdminPurchaseAlert({ domain, email, score, product, amount }: { domain: string; email: string; score: number; product: string; amount: string }) {
+  const adminUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim() + '/admin'
+  await getResend().emails.send({
+    from: 'Queldrex (No Reply) <reports@queldrex.com>',
+    to: ADMIN_EMAIL,
+    subject: `💰 New purchase: ${product} — ${domain}`,
+    html: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;background:#f8fafc;padding:32px;">
+  <div style="max-width:420px;margin:0 auto;background:#0f172a;padding:28px;border-radius:12px;">
+    <div style="font-size:11px;color:#22d3ee;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:12px;">Queldrex · New Purchase</div>
+    <div style="font-size:24px;font-weight:800;color:#4ade80;margin-bottom:4px;">${amount}</div>
+    <div style="font-size:15px;font-weight:600;color:white;margin-bottom:4px;">${product}</div>
+    <div style="font-size:13px;color:#94a3b8;margin-bottom:4px;">${domain}</div>
+    <div style="font-size:13px;color:#64748b;margin-bottom:24px;">${email}</div>
+    <a href="${adminUrl}" style="display:block;background:#22d3ee;color:#0f172a;text-decoration:none;text-align:center;padding:12px;border-radius:8px;font-weight:700;font-size:14px;">Open Admin Panel →</a>
+  </div>
+</body></html>`,
+  })
+}

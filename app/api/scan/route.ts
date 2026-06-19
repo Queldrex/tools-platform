@@ -81,9 +81,9 @@ export async function POST(request: NextRequest) {
     // Fire-and-forget Redis save (needed for checkout later)
     trySaveToRedis(completed)
 
-    // Fire-and-forget score email — lead capture
+    // Fire-and-forget score email + admin alert
     const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
-    import('@/lib/email/resend').then(({ sendFreeScoreEmail }) =>
+    import('@/lib/email/resend').then(({ sendFreeScoreEmail, sendAdminScanAlert }) => {
       sendFreeScoreEmail({
         to: cleanEmail,
         domain: completed.businessInfo.domain,
@@ -93,8 +93,13 @@ export async function POST(request: NextRequest) {
         topIssue: completed.recommendations[0]?.title || '',
         shareUrl: `${baseUrl}/share/${scanId}`,
         scanId,
+      }).catch((err: unknown) => console.error('[scan] free score email failed:', err))
+      sendAdminScanAlert({
+        domain: completed.businessInfo.domain,
+        email: cleanEmail,
+        score: completed.score,
       }).catch(() => {})
-    ).catch(() => {})
+    }).catch(() => {})
 
     return Response.json(completed)
   } catch (err) {

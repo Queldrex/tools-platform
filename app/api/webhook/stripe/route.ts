@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import Stripe from 'stripe'
 import { v4 as uuidv4 } from 'uuid'
 import { getScan, saveScan, saveDownloadToken, updateScanLog, getDfySession, saveDfySession } from '@/lib/store/redis'
-import { sendDeliveryEmail, sendDfyAuthorizationEmail } from '@/lib/email/resend'
+import { sendDeliveryEmail, sendDfyAuthorizationEmail, sendAdminPurchaseAlert } from '@/lib/email/resend'
 import { env } from '@/lib/env'
 
 export const dynamic = 'force-dynamic'
@@ -63,6 +63,14 @@ export async function POST(request: NextRequest) {
     await saveDfySession(updated)
     await updateScanLog(scanId, { paid: true, paidAt: new Date().toISOString(), status: 'DFY_PAID' }).catch(() => {})
 
+    sendAdminPurchaseAlert({
+      domain: scan.businessInfo.domain,
+      email: scan.emailAddress,
+      score: scan.score,
+      product: 'Done-For-You ($499)',
+      amount: '$499',
+    }).catch(() => {})
+
     // Auth email sent HERE — only after payment confirmed
     await sendDfyAuthorizationEmail({
       to: scan.emailAddress,
@@ -102,6 +110,14 @@ export async function POST(request: NextRequest) {
 
   await saveScan({ ...scan, status: 'DELIVERED', paid: true, downloadToken, paidAt })
   await updateScanLog(scanId, { paid: true, paidAt, status: 'DELIVERED', downloadToken }).catch(() => {})
+
+  sendAdminPurchaseAlert({
+    domain: scan.businessInfo.domain,
+    email: scan.emailAddress,
+    score: scan.score,
+    product: 'AI Report Bundle ($149)',
+    amount: '$149',
+  }).catch(() => {})
 
   return Response.json({ received: true })
 }

@@ -160,6 +160,13 @@ export default function AdminPage() {
     if (authed && tab === 'applications' && applications.length === 0) loadApplications(secret)
   }, [authed, tab, feedback.length, applications.length, secret, loadFeedback, loadApplications])
 
+  // Auto-refresh scans every 30 seconds while on scans tab
+  useEffect(() => {
+    if (!authed || tab !== 'scans') return
+    const id = setInterval(() => loadScans(secret), 30_000)
+    return () => clearInterval(id)
+  }, [authed, tab, secret, loadScans])
+
   const deliver = async (entry: ScanLogEntry) => {
     setDelivering(entry.scanId)
     try {
