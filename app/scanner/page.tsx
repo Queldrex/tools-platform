@@ -207,7 +207,7 @@ export default function ScannerPage() {
                   price: '$0',
                   color: 'rgba(255,255,255,0.02)',
                   border: 'rgba(255,255,255,0.08)',
-                  items: ['AI Visibility Score (0-100)', 'Missing signal breakdown', 'AI crawler block check', 'Free custom llms.txt download', 'No account required'],
+                  items: ['AI Visibility Score (0-100)', 'Missing signal breakdown', 'AI crawler block check', 'One priority recommendation', 'No account required'],
                 },
                 {
                   tier: 'Full Report Bundle',
@@ -324,25 +324,6 @@ export default function ScannerPage() {
                 <ScoreGauge score={scanData.score} />
               </div>
 
-              {/* Free llms.txt download — highest-value single file, free for all users */}
-              <div className="rounded-xl border border-cyan-500/25 px-5 py-4 flex items-center justify-between gap-4" style={{ background: 'rgba(6,182,212,0.04)' }}>
-                <div className="min-w-0">
-                  <p className="text-sm font-bold text-white mb-0.5">Download your custom llms.txt — Free</p>
-                  <p className="text-xs text-white/45 leading-relaxed">
-                    Your personalized llms.txt file, generated specifically for <span className="text-cyan-400 font-semibold">{scanData.domain}</span>. This is the single highest-impact file you can add to improve AI visibility (worth 25 points).
-                  </p>
-                </div>
-                <a
-                  href={`/api/download/free?scanId=${scanData.scanId}`}
-                  download="llms.txt"
-                  className="flex-shrink-0 inline-flex items-center gap-2 text-xs font-black text-black px-4 py-2.5 rounded-lg transition-all hover:scale-[1.03] whitespace-nowrap"
-                  style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}
-                >
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
-                  Download Free
-                </a>
-              </div>
-
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {(Object.entries(scanData.checks) as [keyof ScanChecks, boolean][]).map(([key, pass]) => {
                   const meta = SIGNAL_LABELS[key]
@@ -444,7 +425,7 @@ export default function ScannerPage() {
                 <p className="text-sm text-white/45">Your complete optimized files are ready. Unlock to view and download.</p>
               </div>
               <BlurredPreview
-                llmsTxtSnippet={scanData.llmsTxtSnippet}
+                llmsTxtSnippet=""
                 jsonLdSnippet=""
                 topRecommendation={scanData.topRecommendation}
                 onUnlock={handleUnlock}

@@ -87,10 +87,9 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Rate limit public endpoints — prevents spam, AI API abuse, and free download scraping
-  const PUBLIC_POST_RATE_LIMITED = ['/api/scan/cite', '/api/feedback', '/api/dfy/apply']
-  const FREE_DOWNLOAD_RATE_LIMITED = pathname === '/api/download/free' && request.method === 'GET'
-  if (PUBLIC_POST_RATE_LIMITED.includes(pathname) && request.method === 'POST' || FREE_DOWNLOAD_RATE_LIMITED) {
+  // Rate limit public submission endpoints — prevents spam and AI API abuse
+  const PUBLIC_RATE_LIMITED = ['/api/scan/cite', '/api/feedback', '/api/dfy/apply']
+  if (PUBLIC_RATE_LIMITED.includes(pathname) && request.method === 'POST') {
     const rl = getPublicRatelimit()
     if (rl) {
       const { success } = await rl.limit(ip)
@@ -126,7 +125,6 @@ export const config = {
     '/api/scan/cite',
     '/api/feedback',
     '/api/dfy/apply',
-    '/api/download/free',
     '/api/admin/:path*',
     '/admin',
     '/admin/:path*',
