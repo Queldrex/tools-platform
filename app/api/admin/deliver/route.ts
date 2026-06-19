@@ -35,11 +35,14 @@ export async function POST(request: NextRequest) {
   }
 
   if (scan.status === 'DELIVERED') {
-    return Response.json({ error: 'Already delivered', status: scan.status }, { status: 409 })
+    return Response.json({ error: 'Already delivered — use Resend instead', status: scan.status }, { status: 409 })
   }
 
-  const downloadToken = uuidv4()
-  await saveDownloadToken(downloadToken, scanId)
+  // Reuse existing token if present (idempotent), otherwise generate new
+  const downloadToken = scan.downloadToken || uuidv4()
+  if (!scan.downloadToken) {
+    await saveDownloadToken(downloadToken, scanId)
+  }
 
   const baseUrl = env('NEXT_PUBLIC_BASE_URL', 'https://queldrex.com')
   const downloadUrl = `${baseUrl}/download/${downloadToken}`

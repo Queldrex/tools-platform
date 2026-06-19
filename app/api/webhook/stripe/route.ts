@@ -86,7 +86,8 @@ export async function POST(request: NextRequest) {
   // ── Bundle $149 ───────────────────────────────────────────────────────────
   const scan = await getScan(scanId)
   if (!scan) {
-    return Response.json({ error: 'Scan not found' }, { status: 404 })
+    // Return 200 so Stripe doesn't retry — scan data expired (48hr TTL)
+    return Response.json({ received: true, note: 'scan_expired' })
   }
 
   // Only skip if fully delivered — PAID alone means email may not have sent yet

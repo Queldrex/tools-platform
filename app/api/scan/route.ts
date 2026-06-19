@@ -5,6 +5,23 @@ import { generateLlmsTxt, generateJsonLd, generateRecommendations } from '@/lib/
 
 export const dynamic = 'force-dynamic'
 
+// Block SSRF — reject private/loopback/link-local IPs
+function isPublicUrl(raw: string): boolean {
+  try {
+    const url = new URL(raw.startsWith('http') ? raw : `https://${raw}`)
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return false
+    const h = url.hostname
+    if (h === 'localhost') return false
+    // IPv4 private ranges
+    if (/^127\./.test(h) || /^10\./.test(h) || /^192\.168\./.test(h) ||
+        /^172\.(1[6-9]|2\d|3[01])\./.test(h) || /^169\.254\./.test(h) ||
+        /^0\./.test(h) || h === '::1') return false
+    return true
+  } catch {
+    return false
+  }
+}
+
 // Best-effort Redis save — scanner works even if Redis is down
 async function trySaveToRedis(scan: unknown) {
   try {
@@ -37,6 +54,9 @@ export async function POST(request: NextRequest) {
 
   if (!url || typeof url !== 'string' || url.trim().length === 0) {
     return Response.json({ error: 'URL is required' }, { status: 400 })
+  }
+  if (!isPublicUrl(url.trim())) {
+    return Response.json({ error: 'Please enter a valid public website URL' }, { status: 400 })
   }
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
   if (!email || typeof email !== 'string' || !emailRegex.test(email.trim())) {

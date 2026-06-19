@@ -33,7 +33,7 @@ export default function PrivacyPage() {
                 <strong className="text-white/80">Email address</strong> — collected when you request a report. Used only to deliver your purchased report package and respond to any support requests.
               </li>
               <li>
-                <strong className="text-white/80">Scan results</strong> — the technical output generated from your submitted URL (AI visibility score, signal checks, generated files). Retained for 48 hours to support delivery, then automatically deleted.
+                <strong className="text-white/80">Scan results</strong> — the technical output generated from your submitted URL (AI visibility score, signal checks, generated files). The full result is retained for 48 hours to support delivery, then automatically deleted. A minimal transaction log entry (domain, email, score, payment status, timestamp) is retained for business records.
               </li>
               <li>
                 <strong className="text-white/80">Payment data</strong> — processed entirely by Stripe. Queldrex does not receive, store, or have access to your payment card information at any point.
@@ -74,8 +74,9 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-base font-bold text-white mb-3">5. Data Retention</h2>
             <ul className="space-y-2.5 pl-4 list-disc">
-              <li><strong className="text-white/80">Scan results and submitted URLs</strong> — automatically deleted after 48 hours.</li>
-              <li><strong className="text-white/80">Email addresses</strong> — retained only as needed to fulfill your order and support requests. You may request deletion at any time.</li>
+              <li><strong className="text-white/80">Full scan results and generated files</strong> — automatically deleted after 48 hours. After this period, the generated llms.txt, schema, and report files are no longer retrievable.</li>
+              <li><strong className="text-white/80">Transaction log</strong> — a minimal record of each scan (domain, email address, AI visibility score, payment status, and timestamp) is retained for business recordkeeping and legal compliance. You may request deletion of your entry by contacting us at <a href="mailto:hello@queldrex.com" className="text-cyan-400 hover:text-cyan-300">hello@queldrex.com</a>.</li>
+              <li><strong className="text-white/80">Email addresses</strong> — retained as part of the transaction log described above, and only used to fulfill your order and respond to support requests. You may request deletion at any time.</li>
               <li><strong className="text-white/80">Payment records</strong> — retained by Stripe per their legal and compliance obligations. We retain only a Stripe transaction reference for our records.</li>
             </ul>
           </section>

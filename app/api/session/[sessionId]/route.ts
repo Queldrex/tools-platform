@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import Stripe from 'stripe'
 import { getScan } from '@/lib/store/redis'
+import { env } from '@/lib/env'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,10 +20,11 @@ export async function GET(
     const scan = await getScan(scanId)
     if (!scan || !scan.downloadToken) return Response.json({ ready: false })
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+    const baseUrl = env('NEXT_PUBLIC_BASE_URL', 'https://queldrex.com')
     return Response.json({
       ready: true,
-      downloadUrl: `${baseUrl}/api/download/${scan.downloadToken}`,
+      // Link to the download page UI, not the raw API endpoint
+      downloadUrl: `${baseUrl}/download/${scan.downloadToken}`,
     })
   } catch {
     return Response.json({ ready: false })
