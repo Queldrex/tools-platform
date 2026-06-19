@@ -159,11 +159,13 @@ function generateReportHtml(scan: ScanResult): string {
     </tr></thead>
     <tbody>
       ${checkRow('llms.txt', scan.checks.llmsTxt, 25)}
-      ${checkRow('JSON-LD Structured Data', scan.checks.jsonLd, 20)}
-      ${checkRow('LocalBusiness Schema', scan.checks.localBusinessSchema, 15)}
-      ${checkRow('sitemap.xml', scan.checks.sitemapXml, 15)}
-      ${checkRow('Open Graph Tags', scan.checks.openGraph, 15)}
-      ${checkRow('robots.txt', scan.checks.robotsTxt, 10)}
+      ${checkRow('LocalBusiness Schema', scan.checks.localBusinessSchema, 20)}
+      ${checkRow('JSON-LD Structured Data', scan.checks.jsonLd, 15)}
+      ${checkRow('sitemap.xml', scan.checks.sitemapXml, 10)}
+      ${checkRow('Open Graph Tags', scan.checks.openGraph, 10)}
+      ${checkRow('HTTPS', scan.checks.httpsEnabled, 10)}
+      ${checkRow('robots.txt', scan.checks.robotsTxt, 5)}
+      ${checkRow('Canonical Tag', scan.checks.canonicalTag, 5)}
     </tbody>
   </table>
 

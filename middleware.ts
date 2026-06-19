@@ -65,8 +65,21 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Rate limit admin endpoints — prevents brute-force on ADMIN_SECRET
-  if (pathname.startsWith('/api/admin/') || pathname.startsWith('/admin')) {
+  // Admin page — require valid session cookie (set by /api/admin/auth)
+  if (pathname === '/admin' || pathname.startsWith('/admin/')) {
+    const adminSecret = (process.env.ADMIN_SECRET || '').replace(/^﻿/, '').trim()
+    const cookieHeader = request.headers.get('cookie') || ''
+    const sessionCookie = cookieHeader.split(';').find(c => c.trim().startsWith('admin_session='))
+    const sessionValue = sessionCookie?.split('=')[1]?.trim()
+    const expectedValue = adminSecret.slice(-16)
+
+    if (!adminSecret || sessionValue !== expectedValue) {
+      return NextResponse.redirect(new URL('/admin-login', request.url))
+    }
+  }
+
+  // Rate limit all admin API endpoints — prevents brute-force on ADMIN_SECRET
+  if (pathname.startsWith('/api/admin/')) {
     const rl = getAdminRatelimit()
     if (rl) {
       const { success } = await rl.limit(ip)
@@ -83,5 +96,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/api/scan', '/api/admin/:path*', '/admin'],
+  matcher: ['/api/scan', '/api/admin/:path*', '/admin', '/admin/:path*'],
 }

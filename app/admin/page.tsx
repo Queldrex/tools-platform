@@ -30,7 +30,10 @@ export default function AdminPage() {
       const res = await fetch('/api/admin/log', {
         headers: { 'x-admin-secret': s },
       })
-      if (res.status === 401) { setError('Wrong secret'); setLoading(false); return }
+      if (res.status === 401) {
+        window.location.href = '/admin-login'
+        return
+      }
       const data = await res.json()
       setEntries(data.entries || [])
       setTotal(data.total || 0)

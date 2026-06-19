@@ -24,11 +24,13 @@ interface ScanData {
 
 const SIGNAL_LABELS: Record<keyof ScanChecks, { label: string; desc: string }> = {
   llmsTxt:             { label: 'llms.txt',          desc: 'No llms.txt file found at root level' },
-  jsonLd:              { label: 'JSON-LD',            desc: 'No valid JSON-LD structured data found' },
-  openGraph:           { label: 'AI Metadata',        desc: 'Missing OpenGraph, Twitter, and AI metadata' },
-  robotsTxt:           { label: 'Crawler Access',     desc: 'Robots and crawler accessibility issues detected' },
-  sitemapXml:          { label: 'Sitemap',            desc: 'No sitemap.xml detected for AI crawlers' },
   localBusinessSchema: { label: 'LocalBusiness',      desc: 'No LocalBusiness schema markup found' },
+  jsonLd:              { label: 'JSON-LD',            desc: 'No valid JSON-LD structured data found' },
+  sitemapXml:          { label: 'Sitemap',            desc: 'No sitemap.xml detected for AI crawlers' },
+  openGraph:           { label: 'AI Metadata',        desc: 'Missing OpenGraph metadata tags' },
+  httpsEnabled:        { label: 'HTTPS',              desc: 'Site is not served over HTTPS — AI crawlers deprioritize HTTP sites' },
+  robotsTxt:           { label: 'Crawler Access',     desc: 'No robots.txt found for crawler guidance' },
+  canonicalTag:        { label: 'Canonical URL',      desc: 'No canonical tag found — AI may cite wrong URL variant' },
 }
 
 function getStatusInfo(score: number) {
@@ -80,7 +82,7 @@ export default function ScannerPage() {
       setScanData({
         scanId: json.scanId!,
         score: json.score ?? 0,
-        checks: json.checks ?? { robotsTxt: false, sitemapXml: false, llmsTxt: false, openGraph: false, jsonLd: false, localBusinessSchema: false },
+        checks: json.checks ?? { robotsTxt: false, sitemapXml: false, llmsTxt: false, openGraph: false, jsonLd: false, localBusinessSchema: false, httpsEnabled: false, canonicalTag: false },
         businessName: json.businessInfo?.name || '',
         domain: json.businessInfo?.domain || '',
         topRecommendation: json.recommendations?.[0]?.title || '',

@@ -151,6 +151,16 @@ export function generateJsonLd(info: BusinessInfo): string {
 export function generateRecommendations(checks: ScanChecks, info: BusinessInfo): Recommendation[] {
   const recs: Recommendation[] = []
 
+  if (!checks.httpsEnabled) {
+    recs.push({
+      priority: 'HIGH',
+      title: 'Switch to HTTPS immediately',
+      description:
+        'Your site is served over HTTP, not HTTPS. All major AI crawlers (Googlebot, GPTBot, ClaudeBot, PerplexityBot) deprioritize or skip HTTP-only sites. Browsers also show a security warning, which destroys customer trust.',
+      fix: 'Contact your hosting provider — most offer free SSL via Let\'s Encrypt. In cPanel click "SSL/TLS" → "Let\'s Encrypt". In Cloudflare enable "Always Use HTTPS" in SSL settings. This is the single most important fix on this list.',
+    })
+  }
+
   if (!checks.llmsTxt) {
     recs.push({
       priority: 'HIGH',
@@ -196,6 +206,16 @@ export function generateRecommendations(checks: ScanChecks, info: BusinessInfo):
       description:
         'A sitemap tells AI crawlers and search engines every page that exists on your site. Without one, service pages, location pages, and blog posts may never be discovered.',
       fix: `Generate a sitemap at ${info.url}/sitemap.xml. In WordPress, install Yoast SEO — it auto-generates one. In Shopify, it is created automatically. Once live, submit it in Google Search Console under Sitemaps.`,
+    })
+  }
+
+  if (!checks.canonicalTag) {
+    recs.push({
+      priority: 'LOW',
+      title: 'Missing canonical URL tag',
+      description:
+        'A canonical tag tells AI systems and search engines which URL is the authoritative version of your page. Without it, AI citation engines may link to the wrong URL variant (with or without www, trailing slash, etc.).',
+      fix: 'Add <link rel="canonical" href="' + info.url + '/"> inside your <head>. In WordPress, Yoast SEO adds this automatically. In Squarespace it is set under Pages → SEO.',
     })
   }
 

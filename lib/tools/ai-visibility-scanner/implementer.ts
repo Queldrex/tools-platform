@@ -236,48 +236,35 @@ async function implementViaWordPress(
     return { files, errors }
   }
 
-  // 2. Inject JSON-LD via wp_head using custom settings
-  // We store the JSON-LD in a WP option and output it via REST API settings
+  // 2. Create mu-plugin for JSON-LD via WordPress File API
+  // mu-plugins auto-load without activation — safest WP injection method
   try {
-    const optRes = await fetch(`${base}/wp-json/wp/v2/settings`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        queldrex_json_ld: scan.generatedJsonLd,
-      }),
-    })
+    const pluginContent = buildWordPressPlugin(scan.generatedJsonLd, scan.businessInfo.domain)
 
-    if (optRes.ok) {
-      files.push({
-        path: `${base}/ (wp_options: queldrex_json_ld)`,
-        action: 'created',
-        note: 'JSON-LD stored in WordPress options — requires Queldrex plugin to output to <head>',
-      })
-    } else {
-      // Settings API doesn't support custom keys by default — fall back to creating a custom plugin note
-      files.push({
-        path: `${base}/ (JSON-LD)`,
-        action: 'skipped',
-        note: 'WordPress Settings API requires a registered option. Upload the plugin ZIP manually.',
-      })
-    }
+    // WordPress doesn't have a REST endpoint to write plugin files — note limitation
+    files.push({
+      path: `wp-content/mu-plugins/queldrex-ai.php`,
+      action: 'skipped',
+      note: 'Upload queldrex-ai.php to wp-content/mu-plugins/ via FTP or File Manager — it will auto-activate',
+    })
+    // Attach the plugin file content so the admin email can include it
+    ;(files[files.length - 1] as ImplementedFile & { content?: string }).content = pluginContent
   } catch (err) {
-    errors.push(`WordPress settings API error: ${err instanceof Error ? err.message : 'unknown'}`)
+    errors.push(`WordPress plugin build failed: ${err instanceof Error ? err.message : 'unknown'}`)
   }
 
-  // 3. Check if llms.txt exists (WordPress can serve static files from root)
+  // 3. Check if llms.txt already exists
   try {
     const llmsCheck = await fetch(`${base}/llms.txt`)
-    if (llmsCheck.ok && llmsCheck.status === 200) {
-      files.push({ path: `${base}/llms.txt`, action: 'skipped', note: 'Already exists' })
+    if (llmsCheck.ok) {
+      files.push({ path: `${base}/llms.txt`, action: 'skipped', note: 'Already exists — no action needed' })
     } else {
-      // Cannot upload llms.txt via WP REST API — instruct manual upload or FTP
       files.push({
         path: `${base}/llms.txt`,
         action: 'skipped',
-        note: 'llms.txt cannot be uploaded via WordPress REST API — use FTP credentials or the manual package',
+        note: 'Upload llms.txt to your WordPress root directory via FTP or cPanel File Manager',
       })
-      errors.push('llms.txt requires FTP access or manual upload to WordPress root directory')
+      errors.push('llms.txt requires FTP/File Manager upload to WordPress root — cannot be written via REST API')
     }
   } catch {
     errors.push('Could not check llms.txt status')
@@ -545,24 +532,30 @@ async function implementViaShopify(
     errors.push(`theme.liquid update failed: ${err instanceof Error ? err.message : 'unknown'}`)
   }
 
-  // 3. Upload llms.txt as a Shopify asset in /assets/llms.txt
-  // Note: Shopify doesn't serve /assets/ files from root — we create a page template instead
+  // 3. llms.txt on Shopify — Shopify cannot serve files at domain root (/llms.txt).
+  // Best available option: create a page template served at /pages/llms-txt.
+  // AI bots that check /llms.txt won't find it, but we document the limitation clearly.
   try {
     const llmsPageRes = await fetch(`https://${store}/admin/api/2024-01/themes/${themeId}/assets.json`, {
       method: 'PUT',
       headers,
       body: JSON.stringify({
         asset: {
-          key: 'templates/page.llms.liquid',
-          value: `${scan.generatedLlmsTxt}`,
+          key: 'templates/page.llms-txt.liquid',
+          value: `<pre>{{ page.content }}</pre>`,
         },
       }),
     })
     if (llmsPageRes.ok) {
-      files.push({ path: 'templates/page.llms.liquid', action: 'created', note: 'Create a Shopify page with handle "llms" to serve at /pages/llms' })
+      files.push({
+        path: 'templates/page.llms-txt.liquid',
+        action: 'created',
+        note: 'Shopify cannot serve /llms.txt from domain root. Create a Page in Shopify Admin with handle "llms-txt" and paste your llms.txt content there. It will be accessible at /pages/llms-txt. Consider Cloudflare Workers to proxy /llms.txt if needed.',
+      })
+      errors.push('Shopify limitation: /llms.txt cannot be served from the domain root — a page template was created as the closest alternative')
     }
   } catch {
-    errors.push('llms.txt page template upload failed')
+    errors.push('llms.txt page template upload failed — Shopify does not support serving files from domain root')
   }
 
   return { files, errors }
@@ -588,7 +581,7 @@ function buildManualInstructions(scan: ScanResult): string {
    For Cloudflare Pages: place in /public/llms.txt
 
 ### 2. JSON-LD Schema — Add to your <head>
-   File: schema.json (included in your ZIP — paste the <script> tag)
+   File: schema-install.html (included in your ZIP — paste the <script> tag)
 
    For Next.js App Router: paste in app/layout.tsx inside <head>
    For Next.js Pages:      paste in pages/_document.tsx inside <Head>
@@ -641,7 +634,7 @@ export async function implementFixes(
     files = [
       { path: 'DEPLOYMENT.md', action: 'created', note: 'Step-by-step deployment guide' },
       { path: 'llms.txt', action: 'created', note: `Upload to ${scan.url}/llms.txt` },
-      { path: 'schema.json', action: 'created', note: 'Paste <script> tag into your <head>' },
+      { path: 'schema-install.html', action: 'created', note: 'Paste <script> tag into your <head>' },
       { path: 'robots.txt', action: 'created', note: 'Add Sitemap directive to your robots.txt' },
     ]
     // Return instructions in the result for the caller to include in the ZIP

@@ -206,6 +206,8 @@ export async function scanWebsite(rawUrl: string): Promise<{
         !!root.querySelector('meta[property="og:url"]')),
     jsonLd: ldScripts.length > 0,
     localBusinessSchema: checkLocalBusinessSchema(ldScripts),
+    httpsEnabled: url.startsWith('https://'),
+    canonicalTag: !!root && !!root.querySelector('link[rel="canonical"]'),
   }
 
   const businessInfo = extractBusinessInfo(root, url)
@@ -216,11 +218,13 @@ export async function scanWebsite(rawUrl: string): Promise<{
 
 function calculateScore(checks: ScanChecks): number {
   let score = 0
-  if (checks.robotsTxt) score += 10
-  if (checks.sitemapXml) score += 15
-  if (checks.openGraph) score += 15
-  if (checks.jsonLd) score += 20
-  if (checks.localBusinessSchema) score += 15
+  if (checks.httpsEnabled) score += 10
+  if (checks.robotsTxt) score += 5
+  if (checks.sitemapXml) score += 10
+  if (checks.canonicalTag) score += 5
+  if (checks.openGraph) score += 10
+  if (checks.jsonLd) score += 15
+  if (checks.localBusinessSchema) score += 20
   if (checks.llmsTxt) score += 25
   return score
 }

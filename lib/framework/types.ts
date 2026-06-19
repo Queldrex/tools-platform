@@ -7,6 +7,8 @@ export interface ScanChecks {
   openGraph: boolean
   jsonLd: boolean
   localBusinessSchema: boolean
+  httpsEnabled: boolean
+  canonicalTag: boolean
 }
 
 export interface BusinessInfo {
