@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import Stripe from 'stripe'
 import { v4 as uuidv4 } from 'uuid'
 import { getScan, saveScan, saveDownloadToken, updateScanLog, getDfySession, saveDfySession } from '@/lib/store/redis'
-import { sendDeliveryEmail, sendDfyAuthorizationEmail } from '@/lib/email/resend'
+import { sendReceiptEmail, sendDeliveryEmail, sendDfyAuthorizationEmail } from '@/lib/email/resend'
 import { env } from '@/lib/env'
 
 export const dynamic = 'force-dynamic'
@@ -93,13 +93,18 @@ export async function POST(request: NextRequest) {
 
   await saveScan({ ...scan, status: 'PAID', paid: true, downloadToken, paidAt })
 
+  await sendReceiptEmail({
+    to: scan.emailAddress,
+    businessName: scan.businessInfo.domain,
+    orderId: session.id,
+    amountPaid: session.amount_total ?? 14900,
+  })
+
   await sendDeliveryEmail({
     to: scan.emailAddress,
     businessName: scan.businessInfo.domain,
     downloadUrl,
     score: scan.score,
-    orderId: session.id,
-    amountPaid: session.amount_total ?? 14900,
   })
 
   await saveScan({ ...scan, status: 'DELIVERED', paid: true, downloadToken, paidAt })
