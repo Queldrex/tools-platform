@@ -60,7 +60,7 @@ export async function sendFreeScoreEmail({
         <div style="font-size:11px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">AI Visibility Score</div>
         <div style="font-size:68px;font-weight:900;line-height:1;color:${scoreColor};margin-bottom:4px;">${score}<span style="font-size:28px;color:#d1d5db;">/100</span></div>
         <div style="display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;background:${scoreColor}18;color:${scoreColor};border:1px solid ${scoreColor}30;">${scoreLabel}</div>
-        <div style="margin-top:10px;font-size:13px;color:#6b7280;">${passingSignals} of 8 AI signals passing</div>
+        <div style="margin-top:10px;font-size:13px;color:#6b7280;">${passingSignals} of 8 core signals passing</div>
       </div>
 
       ${botWarning}
@@ -129,7 +129,12 @@ export async function sendDeliveryEmail({ to, businessName, downloadUrl, score }
     from: 'Queldrex <reports@queldrex.com>',
     replyTo: 'hello@queldrex.com',
     to,
-    subject: `Order confirmed — AI Visibility Report for ${businessName}`,
+    subject: `Your AI Visibility Report is ready — ${businessName}`,
+    headers: {
+      'List-Unsubscribe': '<mailto:hello@queldrex.com?subject=unsubscribe>',
+      'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      'X-Entity-Ref-ID': `queldrex-delivery-${Date.now()}`,
+    },
     html: `<!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
