@@ -54,10 +54,10 @@ export async function POST(request: NextRequest) {
   const cleanEmail = email.trim().toLowerCase()
 
   try {
-    const { checks, businessInfo, score, blockedAiBots, responseTimeMs } = await scanWebsite(cleanUrl)
+    const { checks, extendedChecks, businessInfo, score, blockedAiBots, responseTimeMs } = await scanWebsite(cleanUrl)
     const generatedLlmsTxt = generateLlmsTxt(businessInfo)
     const generatedJsonLd = generateJsonLd(businessInfo)
-    const recommendations = generateRecommendations(checks, businessInfo, blockedAiBots)
+    const recommendations = generateRecommendations(checks, businessInfo, blockedAiBots, extendedChecks)
 
     const completed = {
       scanId,
@@ -75,6 +75,7 @@ export async function POST(request: NextRequest) {
       createdAt: new Date().toISOString(),
       blockedAiBots,
       responseTimeMs,
+      extendedChecks,
     }
 
     // Fire-and-forget Redis save (needed for checkout later)

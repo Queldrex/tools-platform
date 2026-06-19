@@ -25,6 +25,14 @@ export interface BusinessInfo {
   pages: string[]
 }
 
+export interface ExtendedChecks {
+  faqSchema: boolean       // FAQPage JSON-LD — primary driver of Google AI Overviews snippets
+  reviewSchema: boolean    // AggregateRating schema — authority signal AI uses for trust
+  aboutPage: boolean       // /about or /team page exists — E-E-A-T authorship signal
+  contentFresh: boolean    // dateModified within 1 year — recency signal
+  jsHeavy: boolean         // Site appears JS-rendered — AI crawlers see near-empty content
+}
+
 export interface ScanResult {
   scanId: string
   toolId: string
@@ -46,6 +54,8 @@ export interface ScanResult {
   // Extended diagnostics — shown in UI, not used for scoring
   blockedAiBots?: string[]
   responseTimeMs?: number
+  extendedChecks?: ExtendedChecks
+  aiCitation?: string | null   // raw Claude response about the business, null if not run
 }
 
 export interface Recommendation {

@@ -1,5 +1,5 @@
 import { parse } from 'node-html-parser'
-import type { ScanChecks, BusinessInfo } from '@/lib/framework/types'
+import type { ScanChecks, BusinessInfo, ExtendedChecks } from '@/lib/framework/types'
 
 const FETCH_TIMEOUT = 5000
 
@@ -26,6 +26,114 @@ async function fetchWithTimeout(url: string): Promise<{ text: string | null; ms:
 
 async function fetchText(url: string): Promise<string | null> {
   return (await fetchWithTimeout(url)).text
+}
+
+// ─── Extended check helpers ────────────────────────────────────────────────────
+
+function checkFaqSchema(ldScripts: string[]): boolean {
+  for (const script of ldScripts) {
+    try {
+      const parsed = JSON.parse(script)
+      const items = Array.isArray(parsed) ? parsed : [parsed]
+      for (const item of items) {
+        if (item['@type'] === 'FAQPage') return true
+        if (Array.isArray(item['@graph'])) {
+          if (item['@graph'].some((n: Record<string, unknown>) => n['@type'] === 'FAQPage')) return true
+        }
+      }
+    } catch { continue }
+  }
+  return false
+}
+
+function checkReviewSchema(ldScripts: string[]): boolean {
+  for (const script of ldScripts) {
+    try {
+      const parsed = JSON.parse(script)
+      const items = Array.isArray(parsed) ? parsed : [parsed]
+      for (const item of items) {
+        if (item['aggregateRating'] || item['review']) return true
+        if (item['@type'] === 'AggregateRating') return true
+        if (Array.isArray(item['@graph'])) {
+          if (item['@graph'].some((n: Record<string, unknown>) => n['aggregateRating'] || n['@type'] === 'AggregateRating')) return true
+        }
+      }
+    } catch { continue }
+  }
+  return false
+}
+
+function checkAboutPage(root: ReturnType<typeof parse> | null): boolean {
+  if (!root) return false
+  const ABOUT_PATTERNS = /\/(about|about-us|about_us|our-story|team|who-we-are|our-team)(\/|$|\?)/i
+  const ABOUT_TEXT = /^(about|about us|our story|our team|who we are|meet the team)$/i
+  for (const link of root.querySelectorAll('a[href]')) {
+    const href = link.getAttribute('href') || ''
+    const text = link.text.trim()
+    if (ABOUT_PATTERNS.test(href) || ABOUT_TEXT.test(text)) return true
+  }
+  if (root.querySelector('[rel="author"], [itemprop="author"], [name="author"]')) return true
+  return false
+}
+
+function checkContentFresh(root: ReturnType<typeof parse> | null, ldScripts: string[]): boolean {
+  const oneYearAgo = new Date()
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
+
+  if (root) {
+    const modifiedOg = root.querySelector('meta[property="article:modified_time"]')?.getAttribute('content')
+    if (modifiedOg && new Date(modifiedOg) > oneYearAgo) return true
+    const publishedOg = root.querySelector('meta[property="article:published_time"]')?.getAttribute('content')
+    if (publishedOg && new Date(publishedOg) > oneYearAgo) return true
+  }
+
+  for (const script of ldScripts) {
+    try {
+      const parsed = JSON.parse(script)
+      const items = Array.isArray(parsed) ? parsed : [parsed]
+      for (const item of items) {
+        const d = item.dateModified || item.datePublished
+        if (d && new Date(d) > oneYearAgo) return true
+        if (Array.isArray(item['@graph'])) {
+          for (const node of item['@graph']) {
+            const nd = node.dateModified || node.datePublished
+            if (nd && new Date(nd) > oneYearAgo) return true
+          }
+        }
+      }
+    } catch { continue }
+  }
+  return false
+}
+
+function detectJsHeavy(html: string): boolean {
+  // Strip all scripts, styles, and HTML tags, count remaining readable text
+  const readable = html
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  // Less than 400 chars of readable text but has scripts = likely JS-rendered SPA
+  if (readable.length < 400 && html.includes('<script')) {
+    return html.length > 2000  // Not just a 404/empty page
+  }
+  return false
+}
+
+function checkExtended(
+  root: ReturnType<typeof parse> | null,
+  ldScripts: string[],
+  rawHtml: string | null
+): ExtendedChecks {
+  return {
+    faqSchema: checkFaqSchema(ldScripts),
+    reviewSchema: checkReviewSchema(ldScripts),
+    aboutPage: checkAboutPage(root),
+    contentFresh: checkContentFresh(root, ldScripts),
+    jsHeavy: rawHtml ? detectJsHeavy(rawHtml) : false,
+  }
 }
 
 // Parse robots.txt and return names of AI crawlers that are fully blocked (Disallow: /)
@@ -246,6 +354,7 @@ function extractBusinessInfo(root: ReturnType<typeof parse> | null, url: string)
 
 export async function scanWebsite(rawUrl: string): Promise<{
   checks: ScanChecks
+  extendedChecks: ExtendedChecks
   businessInfo: BusinessInfo
   score: number
   blockedAiBots: string[]
@@ -289,10 +398,11 @@ export async function scanWebsite(rawUrl: string): Promise<{
   }
 
   const blockedAiBots = parseBlockedAiBots(robotsText)
+  const extendedChecks = checkExtended(root, ldScripts, homepageHtml)
   const businessInfo = extractBusinessInfo(root, url)
   const score = calculateScore(checks)
 
-  return { checks, businessInfo, score, blockedAiBots, responseTimeMs }
+  return { checks, extendedChecks, businessInfo, score, blockedAiBots, responseTimeMs }
 }
 
 function calculateScore(checks: ScanChecks): number {

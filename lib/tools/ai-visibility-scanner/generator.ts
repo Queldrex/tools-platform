@@ -1,4 +1,4 @@
-import type { BusinessInfo, ScanChecks, Recommendation } from '@/lib/framework/types'
+import type { BusinessInfo, ScanChecks, ExtendedChecks, Recommendation } from '@/lib/framework/types'
 
 // Detect schema.org business type from business name/description
 function detectBusinessType(info: BusinessInfo): string {
@@ -148,7 +148,7 @@ export function generateJsonLd(info: BusinessInfo): string {
 
 // --- Recommendations generator ---
 
-export function generateRecommendations(checks: ScanChecks, info: BusinessInfo, blockedAiBots: string[] = []): Recommendation[] {
+export function generateRecommendations(checks: ScanChecks, info: BusinessInfo, blockedAiBots: string[] = [], extended?: ExtendedChecks): Recommendation[] {
   const recs: Recommendation[] = []
 
   if (blockedAiBots.length > 0) {
@@ -235,6 +235,58 @@ export function generateRecommendations(checks: ScanChecks, info: BusinessInfo, 
       description:
         'robots.txt signals to all crawlers — including AI bots — which parts of your site they are allowed to access. Missing it can cause AI systems to skip your site entirely as a precaution.',
       fix: `Create a plain text file at ${info.url}/robots.txt with the following content:\n\nUser-agent: *\nAllow: /\n\nSitemap: ${info.url}/sitemap.xml`,
+    })
+  }
+
+  // ── Extended signal recommendations ────────────────────────────────────────
+
+  if (extended?.jsHeavy) {
+    recs.push({
+      priority: 'HIGH',
+      title: 'Your site is JavaScript-rendered — AI crawlers see near-empty content',
+      description:
+        'AI crawlers like GPTBot, ClaudeBot, and PerplexityBot do not execute JavaScript. Your site appears to be a single-page application (SPA) or heavily JS-rendered — meaning AI bots see an almost empty page with no business name, no phone number, no schema, and no readable content. This single issue explains most or all of your missing signals.',
+      fix: 'Enable server-side rendering (SSR) so every page sends complete HTML before JavaScript runs. In Next.js this is the default. In React (Vite/CRA), migrate to Next.js or use react-snap for pre-rendering. In the meantime, add JSON-LD via a <script> tag that is embedded in the server HTML — this at least gets your schema seen even without full SSR.',
+    })
+  }
+
+  if (extended && !extended.faqSchema) {
+    recs.push({
+      priority: 'MEDIUM',
+      title: 'Add FAQPage schema to appear in Google AI Overviews',
+      description:
+        'FAQPage JSON-LD is one of the primary signals Google uses to generate AI Overview snippets — the AI-generated answers that now appear above organic results. Businesses with FAQ schema are significantly more likely to be cited directly in AI Overviews than those without it.',
+      fix: 'Add a FAQPage schema block to your most important service page or homepage. Example:\n\n{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What services do you offer?","acceptedAnswer":{"@type":"Answer","text":"[Your answer here]"}}]}\n\nPlace it in a <script type="application/ld+json"> tag in your <head>.',
+    })
+  }
+
+  if (extended && !extended.reviewSchema) {
+    recs.push({
+      priority: 'MEDIUM',
+      title: 'Add AggregateRating schema to show AI your star rating',
+      description:
+        'AggregateRating schema tells AI systems and search engines your business\'s review score. AI assistants use this as an authority signal when deciding whether to recommend a business. Without it, your 5-star Google reviews are invisible to AI.',
+      fix: 'Add aggregateRating to your existing LocalBusiness JSON-LD:\n\n"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","reviewCount":"127","bestRating":"5"}\n\nUpdate ratingValue and reviewCount to match your actual Google or Yelp reviews.',
+    })
+  }
+
+  if (extended && !extended.aboutPage) {
+    recs.push({
+      priority: 'LOW',
+      title: 'Add an About page to strengthen E-E-A-T signals',
+      description:
+        'E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) is how AI systems judge whether a source is credible enough to cite. An About page with author bios, credentials, years in business, and team photos is one of the clearest E-E-A-T signals a small business can add.',
+      fix: `Create an /about page for ${info.domain} that includes: your name and credentials, how long you've been in business, your team (even if it's just you), your license numbers if applicable, and a photo. Then add author markup to your JSON-LD: "founder":{"@type":"Person","name":"[Your Name]"}`,
+    })
+  }
+
+  if (extended && !extended.contentFresh) {
+    recs.push({
+      priority: 'LOW',
+      title: 'Add content freshness signals so AI knows your site is active',
+      description:
+        'AI systems weight recency when deciding which sources to cite. A site with no dateModified or datePublished signals looks stale — even if the business is thriving. Adding freshness metadata takes under 5 minutes and signals to every AI crawler that your content is current.',
+      fix: 'Add dateModified and datePublished to your LocalBusiness JSON-LD:\n\n"dateModified":"' + new Date().toISOString().split('T')[0] + '"\n\nAlso add this meta tag to your homepage <head>:\n<meta property="article:modified_time" content="' + new Date().toISOString() + '">',
     })
   }
 
