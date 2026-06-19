@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 let _resend: Resend | null = null
 function getResend() {
-  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY!)
+  if (!_resend) _resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^﻿/, '').trim())
   return _resend
 }
 

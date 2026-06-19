@@ -1,6 +1,6 @@
 ﻿'use client'
 
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import PricingSection from '@/components/PricingSection'
@@ -122,32 +122,6 @@ export default function ScannerPage() {
     }
   }
 
-  // AI citation — lazy-loaded after scan results appear
-  const [citation, setCitation] = useState<string | null | 'loading' | 'unconfigured'>('loading')
-  const [citationModel, setCitationModel] = useState<string | null>(null)
-
-  const fetchCitation = useCallback(async (domain: string, businessName: string) => {
-    setCitation('loading')
-    try {
-      const res = await fetch('/api/scan/cite', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ domain, businessName }),
-      })
-      const json = await res.json() as { citation: string | null; configured: boolean; model: string | null }
-      if (!json.configured) { setCitation('unconfigured'); return }
-      setCitation(json.citation)
-      setCitationModel(json.model)
-    } catch {
-      setCitation(null)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (scanData && state === 'results') {
-      fetchCitation(scanData.domain, scanData.businessName)
-    }
-  }, [scanData, state, fetchCitation])
 
   const [dfyLoading, setDfyLoading] = useState(false)
   async function handleDfy() {
@@ -365,43 +339,6 @@ export default function ScannerPage() {
                 </div>
               </div>
 
-              {/* AI Citation Test — only render when configured and not failed */}
-              {citation !== 'unconfigured' && citation !== null && (
-              <div className="rounded-xl border border-white/8 p-5" style={{ background: 'rgba(255,255,255,0.02)' }}>
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" style={{ display: citation === 'loading' ? 'block' : 'none' }} />
-                  <span className="text-xs font-bold uppercase tracking-widest text-white/40">Live AI Citation Test</span>
-                  {citationModel && <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ background: 'rgba(6,182,212,0.08)', color: '#22d3ee', border: '1px solid rgba(6,182,212,0.15)' }}>{citationModel}</span>}
-                </div>
-                <p className="text-[11px] text-white/30 mb-3 leading-relaxed">
-                  We asked an AI model: &ldquo;What do you know about {scanData.businessName || scanData.domain}?&rdquo;
-                </p>
-                {citation === 'loading' && (
-                  <div className="flex items-center gap-2 text-xs text-white/30">
-                    <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                    Querying AI...
-                  </div>
-                )}
-                {citation !== 'loading' && citation !== null && (
-                  <div>
-                    <div className="rounded-lg p-4 border border-white/8 mb-3" style={{ background: 'rgba(0,0,0,0.2)' }}>
-                      <p className="text-sm text-white/75 leading-relaxed italic">&ldquo;{citation}&rdquo;</p>
-                    </div>
-                    {citation.toLowerCase().includes("don't have") || citation.toLowerCase().includes("do not have") || citation.toLowerCase().includes("no specific") || citation.toLowerCase().includes("not aware") || citation.toLowerCase().includes("i don") ? (
-                      <div className="flex items-start gap-2 p-3 rounded-lg" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
-                        <svg className="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
-                        <p className="text-xs text-red-300/80 leading-relaxed"><strong className="text-red-400">AI doesn&apos;t know this business exists.</strong> When users ask ChatGPT or Claude to recommend a {scanData.domain.replace(/\.(com|net|org|io)$/, '')} in your area, your name won&apos;t come up. The fix package changes this.</p>
-                      </div>
-                    ) : (
-                      <div className="flex items-start gap-2 p-3 rounded-lg" style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.15)' }}>
-                        <svg className="w-3.5 h-3.5 text-green-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <p className="text-xs text-green-300/80 leading-relaxed"><strong className="text-green-400">AI has some knowledge of this business.</strong> The full fix package will expand and correct this — ensuring every AI assistant cites you accurately.</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-              )}
 
               {scanData.blockedAiBots.length > 0 && (
                 <div className="rounded-xl border border-red-500/30 p-5" style={{ background: 'rgba(239,68,68,0.05)' }}>
