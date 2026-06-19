@@ -646,3 +646,44 @@ export async function sendAdminPurchaseAlert({ domain, email, score, product, am
 </body></html>`,
   })
 }
+
+export async function sendAdminDownloadAlert({
+  domain, email, scanId, downloadUrl, score, timestamp,
+}: { domain: string; email: string; scanId: string; downloadUrl: string; score: number; timestamp: string }) {
+  const adminUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim() + '/admin'
+  await getResend().emails.send({
+    from: 'Queldrex (No Reply) <reports@queldrex.com>',
+    to: ADMIN_EMAIL,
+    subject: `📥 Download confirmed: ${domain}`,
+    html: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;background:#f8fafc;padding:32px;">
+  <div style="max-width:480px;margin:0 auto;background:#0f172a;padding:28px;border-radius:12px;">
+    <div style="font-size:11px;color:#22d3ee;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:12px;">Queldrex · Download Confirmed</div>
+    <div style="font-size:20px;font-weight:800;color:white;margin-bottom:4px;">${domain}</div>
+    <div style="font-size:13px;color:#94a3b8;margin-bottom:20px;">${email}</div>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+      <tr>
+        <td style="font-size:12px;color:#64748b;padding:6px 0;">Scan ID</td>
+        <td style="font-size:12px;color:#cbd5e1;text-align:right;font-family:monospace;">${scanId}</td>
+      </tr>
+      <tr>
+        <td style="font-size:12px;color:#64748b;padding:6px 0;">Score</td>
+        <td style="font-size:12px;color:#4ade80;text-align:right;font-weight:700;">${score}/100</td>
+      </tr>
+      <tr>
+        <td style="font-size:12px;color:#64748b;padding:6px 0;">Downloaded At</td>
+        <td style="font-size:12px;color:#cbd5e1;text-align:right;">${timestamp}</td>
+      </tr>
+      <tr>
+        <td style="font-size:12px;color:#64748b;padding:6px 0;">Status</td>
+        <td style="font-size:12px;color:#4ade80;text-align:right;font-weight:700;">DOWNLOADED ✓</td>
+      </tr>
+    </table>
+    <div style="background:#1e293b;border-radius:8px;padding:12px;margin-bottom:20px;">
+      <div style="font-size:11px;color:#64748b;margin-bottom:4px;">Download URL (for your records)</div>
+      <div style="font-size:11px;color:#22d3ee;word-break:break-all;font-family:monospace;">${downloadUrl}</div>
+    </div>
+    <a href="${adminUrl}" style="display:block;background:#22d3ee;color:#0f172a;text-decoration:none;text-align:center;padding:12px;border-radius:8px;font-weight:700;font-size:14px;">Open Admin Panel →</a>
+  </div>
+</body></html>`,
+  })
+}

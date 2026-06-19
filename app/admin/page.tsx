@@ -167,6 +167,8 @@ export default function AdminPage() {
     return () => clearInterval(id)
   }, [authed, tab, secret, loadScans])
 
+  const [resending, setResending] = useState<string | null>(null)
+
   const deliver = async (entry: ScanLogEntry) => {
     setDelivering(entry.scanId)
     try {
@@ -186,6 +188,27 @@ export default function AdminPage() {
       alert('Network error')
     }
     setDelivering(null)
+  }
+
+  const resend = async (entry: ScanLogEntry) => {
+    setResending(entry.scanId)
+    try {
+      const res = await fetch('/api/admin/resend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        body: JSON.stringify({ scanId: entry.scanId }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        const url = data.downloadUrl || ''
+        alert(`Resent to ${data.to}\n\nDownload URL:\n${url}`)
+      } else {
+        alert(data.error || 'Resend failed')
+      }
+    } catch {
+      alert('Network error')
+    }
+    setResending(null)
   }
 
   const filtered = entries.filter(e => {
@@ -322,25 +345,36 @@ export default function AdminPage() {
                         {new Date(entry.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                       </td>
                       <td style={{ padding: '12px 16px' }}>
-                        {!entry.paid && (
-                          <button
-                            onClick={() => deliver(entry)}
-                            disabled={delivering === entry.scanId}
-                            style={{ padding: '4px 12px', borderRadius: 6, fontSize: 12, cursor: 'pointer', fontWeight: 500, background: '#1e1b4b', color: '#818cf8', border: '1px solid #312e81' }}
-                          >
-                            {delivering === entry.scanId ? 'Sending...' : 'Deliver'}
-                          </button>
-                        )}
-                        {entry.paid && entry.downloadToken && (
-                          <a
-                            href={`${BASE_URL}/download/${entry.downloadToken}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ padding: '4px 12px', borderRadius: 6, fontSize: 12, fontWeight: 500, background: '#052e16', color: '#4ade80', border: '1px solid #166534', textDecoration: 'none' }}
-                          >
-                            View
-                          </a>
-                        )}
+                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                          {!entry.paid && (
+                            <button
+                              onClick={() => deliver(entry)}
+                              disabled={delivering === entry.scanId}
+                              style={{ padding: '4px 12px', borderRadius: 6, fontSize: 12, cursor: 'pointer', fontWeight: 500, background: '#1e1b4b', color: '#818cf8', border: '1px solid #312e81' }}
+                            >
+                              {delivering === entry.scanId ? 'Sending...' : 'Deliver'}
+                            </button>
+                          )}
+                          {entry.paid && (
+                            <button
+                              onClick={() => resend(entry)}
+                              disabled={resending === entry.scanId}
+                              style={{ padding: '4px 12px', borderRadius: 6, fontSize: 12, cursor: 'pointer', fontWeight: 500, background: '#1c2a3a', color: '#60a5fa', border: '1px solid #1e40af' }}
+                            >
+                              {resending === entry.scanId ? 'Sending...' : 'Resend'}
+                            </button>
+                          )}
+                          {entry.paid && entry.downloadToken && (
+                            <a
+                              href={`${BASE_URL}/download/${entry.downloadToken}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ padding: '4px 12px', borderRadius: 6, fontSize: 12, fontWeight: 500, background: '#052e16', color: '#4ade80', border: '1px solid #166534', textDecoration: 'none' }}
+                            >
+                              View
+                            </a>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}

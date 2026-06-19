@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { getScanByToken } from '@/lib/store/redis'
+import { getScanByToken, updateScanLog } from '@/lib/store/redis'
 import {
   generateReportZip,
   generateLlmsTxt,
@@ -12,7 +12,6 @@ import {
   generateRecommendationsMd,
   generateReportHtml,
 } from '@/lib/zip/generator'
-import { updateScanLog } from '@/lib/store/redis'
 
 export const dynamic = 'force-dynamic'
 
@@ -41,11 +40,6 @@ export async function GET(
 
   const fileParam = request.nextUrl.searchParams.get('file')
 
-  // Track download (fire-and-forget)
-  if (scan.scanId) {
-    updateScanLog(scan.scanId, { downloadedAt: new Date().toISOString() }).catch(() => {})
-  }
-
   if (fileParam) {
     const entry = FILE_MAP[fileParam]
     if (!entry) {
@@ -58,6 +52,24 @@ export async function GET(
         'Content-Disposition': `attachment; filename="${entry.ext}"`,
       },
     })
+  }
+
+  // Track ZIP download and notify admin (fire-and-forget, only on full ZIP)
+  if (scan.scanId) {
+    const ts = new Date().toISOString()
+    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
+    const downloadUrl = `${baseUrl}/download/${token}`
+    updateScanLog(scan.scanId, { downloadedAt: ts }).catch(() => {})
+    import('@/lib/email/resend').then(({ sendAdminDownloadAlert }) =>
+      sendAdminDownloadAlert({
+        domain: scan.businessInfo.domain,
+        email: scan.emailAddress,
+        scanId: scan.scanId,
+        downloadUrl,
+        score: scan.score,
+        timestamp: ts,
+      }).catch(() => {})
+    ).catch(() => {})
   }
 
   // Default: serve the full ZIP
