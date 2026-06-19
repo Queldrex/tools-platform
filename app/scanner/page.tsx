@@ -365,8 +365,8 @@ export default function ScannerPage() {
                 </div>
               </div>
 
-              {/* AI Citation Test — only render when configured */}
-              {citation !== 'unconfigured' && (
+              {/* AI Citation Test — only render when configured and not failed */}
+              {citation !== 'unconfigured' && citation !== null && (
               <div className="rounded-xl border border-white/8 p-5" style={{ background: 'rgba(255,255,255,0.02)' }}>
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" style={{ display: citation === 'loading' ? 'block' : 'none' }} />
