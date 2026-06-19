@@ -20,6 +20,7 @@ export async function sendDeliveryEmail({ to, businessName, downloadUrl, score }
 
   await getResend().emails.send({
     from: 'Queldrex <reports@queldrex.com>',
+    replyTo: 'hello@queldrex.com',
     to,
     subject: `Your AI Visibility Report is ready — ${businessName}`,
     html: `
@@ -73,6 +74,7 @@ interface CredentialsRequestEmailProps {
 export async function sendCredentialsRequestEmail({ to, domain, credentialsUrl, formattedTime }: CredentialsRequestEmailProps) {
   await getResend().emails.send({
     from: 'Queldrex <reports@queldrex.com>',
+    replyTo: 'hello@queldrex.com',
     to,
     subject: `Action required: Submit hosting access for ${domain}`,
     html: `
@@ -151,6 +153,7 @@ export async function sendDfyAuthorizationEmail({ to, domain, score, credentials
 
   await getResend().emails.send({
     from: 'Queldrex <reports@queldrex.com>',
+    replyTo: 'hello@queldrex.com',
     to,
     subject: `Implementation Confirmed — Action Required for ${domain}`,
     html: `
@@ -316,6 +319,7 @@ export async function sendImplementationEmail({ to, result, afterScore }: Implem
 
   await getResend().emails.send({
     from: 'Queldrex <reports@queldrex.com>',
+    replyTo: 'hello@queldrex.com',
     to,
     subject: `Implementation ${statusLabel} — ${result.domain}`,
     html: `
