@@ -112,115 +112,13 @@ export async function sendFreeScoreEmail({
   })
 }
 
-// ─── Email 1: Receipt / Invoice ───────────────────────────────────────────────
-
-interface ReceiptEmailProps {
-  to: string
-  businessName: string
-  orderId: string
-  amountPaid: number  // cents
-}
-
-export async function sendReceiptEmail({ to, businessName, orderId, amountPaid }: ReceiptEmailProps) {
-  const orderRef = `#QX-${orderId.slice(-8).toUpperCase()}`
-  const amountFormatted = `$${(amountPaid / 100).toFixed(2)}`
-  const dateFormatted = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-
-  await getResend().emails.send({
-    from: 'Queldrex <reports@queldrex.com>',
-    replyTo: 'hello@queldrex.com',
-    to,
-    subject: `Payment received — Order ${orderRef}`,
-    html: `<!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-<div style="max-width:560px;margin:40px auto;padding:0 16px 40px;">
-
-  <!-- Header -->
-  <div style="background:#0f172a;padding:32px 40px;border-radius:16px 16px 0 0;text-align:center;">
-    <div style="color:#22d3ee;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Queldrex</div>
-    <div style="color:white;font-size:24px;font-weight:800;">Payment Received</div>
-    <div style="color:#94a3b8;font-size:13px;margin-top:6px;">Thank you for your purchase.</div>
-  </div>
-
-  <!-- Body -->
-  <div style="background:white;padding:36px 40px;border-radius:0 0 16px 16px;box-shadow:0 4px 16px rgba(0,0,0,0.06);">
-
-    <!-- Confirmation badge -->
-    <div style="text-align:center;margin-bottom:28px;">
-      <div style="display:inline-block;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:50%;width:56px;height:56px;line-height:56px;font-size:26px;margin-bottom:12px;">✓</div>
-      <div style="font-size:16px;font-weight:700;color:#15803d;">Payment confirmed</div>
-      <div style="font-size:13px;color:#6b7280;margin-top:4px;">Your report is being prepared — check your inbox for a second email with your download link.</div>
-    </div>
-
-    <!-- Invoice table -->
-    <div style="border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;margin-bottom:24px;">
-      <div style="background:#f8fafc;padding:12px 20px;border-bottom:1px solid #e2e8f0;">
-        <span style="font-size:12px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:0.06em;">Invoice / Receipt</span>
-      </div>
-      <div style="padding:20px;">
-        <table style="width:100%;border-collapse:collapse;font-size:13px;">
-          <tr><td style="padding:6px 0;color:#6b7280;width:130px;">Order number</td><td style="padding:6px 0;color:#0f172a;font-weight:700;">${orderRef}</td></tr>
-          <tr><td style="padding:6px 0;color:#6b7280;">Date</td><td style="padding:6px 0;color:#374151;">${dateFormatted}</td></tr>
-          <tr><td style="padding:6px 0;color:#6b7280;">Sold by</td><td style="padding:6px 0;color:#374151;">Queldrex LLC (queldrex.com)</td></tr>
-          <tr><td style="padding:6px 0;color:#6b7280;">Bill to</td><td style="padding:6px 0;color:#374151;">${to}</td></tr>
-          <tr style="border-top:1px solid #f1f5f9;">
-            <td colspan="2" style="padding:14px 0 6px;">
-              <table style="width:100%;border-collapse:collapse;">
-                <thead>
-                  <tr style="border-bottom:1px solid #e2e8f0;">
-                    <th style="text-align:left;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;padding-bottom:8px;">Description</th>
-                    <th style="text-align:right;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;padding-bottom:8px;">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td style="padding:10px 0;font-size:13px;color:#1e293b;">AI Visibility Report — ${businessName}<br><span style="font-size:11px;color:#9ca3af;">Digital product · Instant delivery</span></td>
-                    <td style="padding:10px 0;font-size:13px;color:#1e293b;text-align:right;font-weight:600;">${amountFormatted}</td>
-                  </tr>
-                </tbody>
-                <tfoot>
-                  <tr style="border-top:2px solid #0f172a;">
-                    <td style="padding:10px 0;font-size:14px;font-weight:800;color:#0f172a;">Total</td>
-                    <td style="padding:10px 0;font-size:14px;font-weight:800;color:#0f172a;text-align:right;">${amountFormatted}</td>
-                  </tr>
-                </tfoot>
-              </table>
-            </td>
-          </tr>
-        </table>
-        <p style="margin:12px 0 0;font-size:11px;color:#9ca3af;line-height:1.6;">Payment processed securely by Stripe. Tax collected where applicable per applicable law. This email is your official receipt. All sales are final — no refunds on digital products per our <a href="https://queldrex.com/refunds" style="color:#6b7280;">Refund Policy</a>.</p>
-      </div>
-    </div>
-
-    <p style="margin:0;font-size:13px;color:#374151;text-align:center;">Questions? Reply to this email or contact <a href="mailto:hello@queldrex.com" style="color:#0891b2;font-weight:600;">hello@queldrex.com</a></p>
-  </div>
-
-  <!-- Legal footer -->
-  <div style="padding:20px 8px 0;text-align:center;">
-    <p style="margin:0 0 4px;font-size:11px;color:#94a3b8;">Queldrex LLC, a Colorado limited liability company &nbsp;·&nbsp; queldrex.com</p>
-    <p style="margin:0;font-size:11px;color:#94a3b8;">
-      <a href="https://queldrex.com/privacy" style="color:#94a3b8;">Privacy</a> &nbsp;·&nbsp;
-      <a href="https://queldrex.com/terms" style="color:#94a3b8;">Terms</a> &nbsp;·&nbsp;
-      <a href="https://queldrex.com/refunds" style="color:#94a3b8;">Refund Policy</a>
-    </p>
-  </div>
-</div>
-</body>
-</html>`,
-  })
-}
-
-// ─── Email 2: Download + Instructions ─────────────────────────────────────────
+// ─── Email: Download + Instructions (Stripe handles the receipt automatically) ─
 
 interface DeliveryEmailProps {
   to: string
   businessName: string
   downloadUrl: string
   score: number
-  orderId?: string
-  amountPaid?: number  // cents, e.g. 14900
 }
 
 export async function sendDeliveryEmail({ to, businessName, downloadUrl, score }: DeliveryEmailProps) {

@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { v4 as uuidv4 } from 'uuid'
 import { getScan, saveScan, saveDownloadToken, updateScanLog } from '@/lib/store/redis'
-import { sendReceiptEmail, sendDeliveryEmail } from '@/lib/email/resend'
+import { sendDeliveryEmail } from '@/lib/email/resend'
 import { env } from '@/lib/env'
 
 export const dynamic = 'force-dynamic'
@@ -46,13 +46,6 @@ export async function POST(request: NextRequest) {
   const paidAt = new Date().toISOString()
 
   await saveScan({ ...scan, status: 'PAID', paid: true, downloadToken, paidAt })
-
-  await sendReceiptEmail({
-    to: scan.emailAddress,
-    businessName: scan.businessInfo.name || scan.businessInfo.domain,
-    orderId: scan.stripeSessionId || downloadToken,
-    amountPaid: 14900,
-  })
 
   await sendDeliveryEmail({
     to: scan.emailAddress,
