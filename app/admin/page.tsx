@@ -13,9 +13,21 @@ interface ScanLogEntry {
   createdAt: string
 }
 
+interface FeedbackEntry {
+  id: string
+  category: string
+  name: string
+  email: string
+  message: string
+  createdAt: string
+}
+
 export default function AdminPage() {
   const [secret, setSecret] = useState('')
   const [authed, setAuthed] = useState(false)
+  const [tab, setTab] = useState<'scans' | 'feedback'>('scans')
+
+  // Scans
   const [entries, setEntries] = useState<ScanLogEntry[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -23,17 +35,16 @@ export default function AdminPage() {
   const [delivering, setDelivering] = useState<string | null>(null)
   const [filter, setFilter] = useState<'all' | 'paid' | 'unpaid'>('all')
 
-  const load = useCallback(async (s: string) => {
+  // Feedback
+  const [feedback, setFeedback] = useState<FeedbackEntry[]>([])
+  const [fbLoading, setFbLoading] = useState(false)
+
+  const loadScans = useCallback(async (s: string) => {
     setLoading(true)
     setError('')
     try {
-      const res = await fetch('/api/admin/log', {
-        headers: { 'x-admin-secret': s },
-      })
-      if (res.status === 401) {
-        window.location.href = '/admin-login'
-        return
-      }
+      const res = await fetch('/api/admin/log', { headers: { 'x-admin-secret': s } })
+      if (res.status === 401) { window.location.href = '/admin-login'; return }
       const data = await res.json()
       setEntries(data.entries || [])
       setTotal(data.total || 0)
@@ -44,10 +55,28 @@ export default function AdminPage() {
     setLoading(false)
   }, [])
 
+  const loadFeedback = useCallback(async (s: string) => {
+    setFbLoading(true)
+    try {
+      const res = await fetch('/api/admin/feedback', { headers: { 'x-admin-secret': s } })
+      if (res.ok) {
+        const data = await res.json()
+        setFeedback(data.entries || [])
+      }
+    } catch { /* ignore */ }
+    setFbLoading(false)
+  }, [])
+
   const login = (e: React.FormEvent) => {
     e.preventDefault()
-    load(secret)
+    loadScans(secret)
   }
+
+  useEffect(() => {
+    if (authed && tab === 'feedback' && feedback.length === 0) {
+      loadFeedback(secret)
+    }
+  }, [authed, tab, feedback.length, secret, loadFeedback])
 
   const deliver = async (entry: ScanLogEntry) => {
     setDelivering(entry.scanId)
@@ -112,100 +141,138 @@ export default function AdminPage() {
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
           <h1 style={{ fontSize: 22, fontWeight: 700 }}>Queldrex Admin</h1>
-          <button onClick={() => load(secret)} style={{ padding: '6px 16px', borderRadius: 6, background: '#222', color: '#aaa', border: '1px solid #333', cursor: 'pointer', fontSize: 13 }}>
+          <button onClick={() => { loadScans(secret); if (tab === 'feedback') loadFeedback(secret) }} style={{ padding: '6px 16px', borderRadius: 6, background: '#222', color: '#aaa', border: '1px solid #333', cursor: 'pointer', fontSize: 13 }}>
             Refresh
           </button>
         </div>
 
-        {/* Stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }}>
-          {[
-            { label: 'Total Scans', value: total },
-            { label: 'Paid', value: paidCount },
-            { label: 'Unpaid', value: entries.length - paidCount },
-            { label: 'Conversion', value: `${conversionRate}%` },
-          ].map(stat => (
-            <div key={stat.label} style={{ background: '#111', border: '1px solid #222', borderRadius: 10, padding: '16px 20px' }}>
-              <div style={{ fontSize: 26, fontWeight: 700 }}>{stat.value}</div>
-              <div style={{ fontSize: 12, color: '#666', marginTop: 4 }}>{stat.label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Filter */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
-          {(['all', 'paid', 'unpaid'] as const).map(f => (
-            <button key={f} onClick={() => setFilter(f)} style={{
-              padding: '6px 16px', borderRadius: 6, fontSize: 13, cursor: 'pointer', fontWeight: filter === f ? 600 : 400,
-              background: filter === f ? '#6366f1' : '#111', color: filter === f ? '#fff' : '#888', border: '1px solid #333',
+        {/* Tabs */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
+          {(['scans', 'feedback'] as const).map(t => (
+            <button key={t} onClick={() => setTab(t)} style={{
+              padding: '8px 20px', borderRadius: 8, fontSize: 13, cursor: 'pointer', fontWeight: tab === t ? 600 : 400,
+              background: tab === t ? '#6366f1' : '#111', color: tab === t ? '#fff' : '#888', border: '1px solid #333',
             }}>
-              {f.charAt(0).toUpperCase() + f.slice(1)}
+              {t.charAt(0).toUpperCase() + t.slice(1)}
+              {t === 'feedback' && feedback.length > 0 && (
+                <span style={{ marginLeft: 6, background: '#f87171', color: '#fff', borderRadius: 99, padding: '1px 7px', fontSize: 11 }}>{feedback.length}</span>
+              )}
             </button>
           ))}
         </div>
 
-        {/* Table */}
-        <div style={{ background: '#111', border: '1px solid #222', borderRadius: 10, overflow: 'hidden' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid #222' }}>
-                {['Domain', 'Email', 'Score', 'Status', 'Date', 'Action'].map(h => (
-                  <th key={h} style={{ padding: '12px 16px', textAlign: 'left', color: '#666', fontWeight: 500 }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.length === 0 && (
-                <tr><td colSpan={6} style={{ padding: 32, textAlign: 'center', color: '#444' }}>No entries</td></tr>
-              )}
-              {filtered.map(entry => (
-                <tr key={entry.scanId} style={{ borderBottom: '1px solid #1a1a1a' }}>
-                  <td style={{ padding: '12px 16px', fontWeight: 500 }}>{entry.domain}</td>
-                  <td style={{ padding: '12px 16px', color: '#aaa' }}>{entry.email}</td>
-                  <td style={{ padding: '12px 16px' }}>
-                    <span style={{
-                      color: entry.score >= 80 ? '#4ade80' : entry.score >= 50 ? '#facc15' : '#f87171',
-                      fontWeight: 600,
-                    }}>
-                      {entry.score}/100
-                    </span>
-                  </td>
-                  <td style={{ padding: '12px 16px' }}>
-                    <span style={{
-                      padding: '2px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600,
-                      background: entry.paid ? '#14532d' : '#1c1c1c',
-                      color: entry.paid ? '#4ade80' : '#666',
-                      border: `1px solid ${entry.paid ? '#166534' : '#333'}`,
-                    }}>
-                      {entry.status}
-                    </span>
-                  </td>
-                  <td style={{ padding: '12px 16px', color: '#555' }}>
-                    {new Date(entry.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                  </td>
-                  <td style={{ padding: '12px 16px' }}>
-                    {!entry.paid && (
-                      <button
-                        onClick={() => deliver(entry)}
-                        disabled={delivering === entry.scanId}
-                        style={{
-                          padding: '4px 12px', borderRadius: 6, fontSize: 12, cursor: 'pointer', fontWeight: 500,
-                          background: '#1e1b4b', color: '#818cf8', border: '1px solid #312e81',
-                        }}
-                      >
-                        {delivering === entry.scanId ? 'Sending...' : 'Deliver'}
-                      </button>
-                    )}
-                  </td>
-                </tr>
+        {tab === 'scans' && (
+          <>
+            {/* Stats */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }}>
+              {[
+                { label: 'Total Scans', value: total },
+                { label: 'Paid', value: paidCount },
+                { label: 'Unpaid', value: entries.length - paidCount },
+                { label: 'Conversion', value: `${conversionRate}%` },
+              ].map(stat => (
+                <div key={stat.label} style={{ background: '#111', border: '1px solid #222', borderRadius: 10, padding: '16px 20px' }}>
+                  <div style={{ fontSize: 26, fontWeight: 700 }}>{stat.value}</div>
+                  <div style={{ fontSize: 12, color: '#666', marginTop: 4 }}>{stat.label}</div>
+                </div>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </div>
 
-        <p style={{ marginTop: 16, fontSize: 12, color: '#333' }}>
-          Showing {filtered.length} of {total} total scans
-        </p>
+            {/* Filter */}
+            <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+              {(['all', 'paid', 'unpaid'] as const).map(f => (
+                <button key={f} onClick={() => setFilter(f)} style={{
+                  padding: '6px 16px', borderRadius: 6, fontSize: 13, cursor: 'pointer', fontWeight: filter === f ? 600 : 400,
+                  background: filter === f ? '#6366f1' : '#111', color: filter === f ? '#fff' : '#888', border: '1px solid #333',
+                }}>
+                  {f.charAt(0).toUpperCase() + f.slice(1)}
+                </button>
+              ))}
+            </div>
+
+            {/* Table */}
+            <div style={{ background: '#111', border: '1px solid #222', borderRadius: 10, overflow: 'hidden' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid #222' }}>
+                    {['Domain', 'Email', 'Score', 'Status', 'Date', 'Action'].map(h => (
+                      <th key={h} style={{ padding: '12px 16px', textAlign: 'left', color: '#666', fontWeight: 500 }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.length === 0 && (
+                    <tr><td colSpan={6} style={{ padding: 32, textAlign: 'center', color: '#444' }}>No entries</td></tr>
+                  )}
+                  {filtered.map(entry => (
+                    <tr key={entry.scanId} style={{ borderBottom: '1px solid #1a1a1a' }}>
+                      <td style={{ padding: '12px 16px', fontWeight: 500 }}>{entry.domain}</td>
+                      <td style={{ padding: '12px 16px', color: '#aaa' }}>{entry.email}</td>
+                      <td style={{ padding: '12px 16px' }}>
+                        <span style={{ color: entry.score >= 80 ? '#4ade80' : entry.score >= 50 ? '#facc15' : '#f87171', fontWeight: 600 }}>
+                          {entry.score}/100
+                        </span>
+                      </td>
+                      <td style={{ padding: '12px 16px' }}>
+                        <span style={{
+                          padding: '2px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600,
+                          background: entry.paid ? '#14532d' : '#1c1c1c',
+                          color: entry.paid ? '#4ade80' : '#666',
+                          border: `1px solid ${entry.paid ? '#166534' : '#333'}`,
+                        }}>
+                          {entry.status}
+                        </span>
+                      </td>
+                      <td style={{ padding: '12px 16px', color: '#555' }}>
+                        {new Date(entry.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                      </td>
+                      <td style={{ padding: '12px 16px' }}>
+                        {!entry.paid && (
+                          <button
+                            onClick={() => deliver(entry)}
+                            disabled={delivering === entry.scanId}
+                            style={{ padding: '4px 12px', borderRadius: 6, fontSize: 12, cursor: 'pointer', fontWeight: 500, background: '#1e1b4b', color: '#818cf8', border: '1px solid #312e81' }}
+                          >
+                            {delivering === entry.scanId ? 'Sending...' : 'Deliver'}
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p style={{ marginTop: 16, fontSize: 12, color: '#333' }}>Showing {filtered.length} of {total} total scans</p>
+          </>
+        )}
+
+        {tab === 'feedback' && (
+          <div>
+            {fbLoading && <p style={{ color: '#666' }}>Loading...</p>}
+            {!fbLoading && feedback.length === 0 && (
+              <p style={{ color: '#444', padding: 32, textAlign: 'center' }}>No feedback yet</p>
+            )}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {feedback.map(entry => (
+                <div key={entry.id} style={{ background: '#111', border: '1px solid #222', borderRadius: 10, padding: '20px 24px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                      <span style={{ padding: '2px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, background: '#1e1b4b', color: '#818cf8', border: '1px solid #312e81' }}>
+                        {entry.category}
+                      </span>
+                      {entry.name && <span style={{ fontSize: 13, fontWeight: 600 }}>{entry.name}</span>}
+                      {entry.email && <span style={{ fontSize: 12, color: '#666' }}>{entry.email}</span>}
+                    </div>
+                    <span style={{ fontSize: 12, color: '#444' }}>
+                      {new Date(entry.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                  <p style={{ fontSize: 14, color: '#ccc', lineHeight: 1.6, whiteSpace: 'pre-wrap', margin: 0 }}>{entry.message}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

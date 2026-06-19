@@ -117,3 +117,37 @@ export async function getScanLog(limit = 200, offset = 0): Promise<ScanLogEntry[
 export async function getScanLogCount(): Promise<number> {
   return getRedis().zcard(LOG_KEY)
 }
+
+// ── Feedback log ──────────────────────────────────────────────────────────────
+
+export interface FeedbackEntry {
+  id: string
+  category: string
+  name: string
+  email: string
+  message: string
+  createdAt: string
+}
+
+const FB_KEY = 'feedbacklog'
+const fbEntryKey = (id: string) => `feedback:entry:${id}`
+
+export async function saveFeedback(entry: FeedbackEntry): Promise<void> {
+  const redis = getRedis()
+  await Promise.all([
+    redis.zadd(FB_KEY, { score: Date.now(), member: entry.id }),
+    redis.set(fbEntryKey(entry.id), JSON.stringify(entry)),
+  ])
+}
+
+export async function getFeedbackLog(limit = 100): Promise<FeedbackEntry[]> {
+  const redis = getRedis()
+  const ids = await redis.zrange(FB_KEY, 0, limit - 1, { rev: true }) as string[]
+  if (ids.length === 0) return []
+  const raws = await Promise.all(ids.map(id => redis.get<string>(fbEntryKey(id))))
+  return raws.map(r => {
+    if (!r) return null
+    try { return typeof r === 'string' ? JSON.parse(r) : r }
+    catch { return null }
+  }).filter(Boolean) as FeedbackEntry[]
+}
