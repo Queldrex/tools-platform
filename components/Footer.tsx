@@ -25,6 +25,8 @@ export default function Footer() {
           <span className="text-white/15">·</span>
           <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
           <span className="text-white/15">·</span>
+          <Link href="/refunds" className="hover:text-white transition-colors">Refund Policy</Link>
+          <span className="text-white/15">·</span>
           <a href="mailto:hello@queldrex.com" className="hover:text-white transition-colors">hello@queldrex.com</a>
         </nav>
 
