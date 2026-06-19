@@ -254,26 +254,80 @@ export default function AdminPage() {
             )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {feedback.map(entry => (
-                <div key={entry.id} style={{ background: '#111', border: '1px solid #222', borderRadius: 10, padding: '20px 24px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                    <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                      <span style={{ padding: '2px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, background: '#1e1b4b', color: '#818cf8', border: '1px solid #312e81' }}>
-                        {entry.category}
-                      </span>
-                      {entry.name && <span style={{ fontSize: 13, fontWeight: 600 }}>{entry.name}</span>}
-                      {entry.email && <span style={{ fontSize: 12, color: '#666' }}>{entry.email}</span>}
-                    </div>
-                    <span style={{ fontSize: 12, color: '#444' }}>
-                      {new Date(entry.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                    </span>
-                  </div>
-                  <p style={{ fontSize: 14, color: '#ccc', lineHeight: 1.6, whiteSpace: 'pre-wrap', margin: 0 }}>{entry.message}</p>
-                </div>
+                <FeedbackCard key={entry.id} entry={entry} />
               ))}
             </div>
           </div>
         )}
       </div>
     </div>
+  )
+}
+
+function FeedbackCard({ entry }: { entry: FeedbackEntry }) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <>
+      <div
+        onClick={() => setOpen(true)}
+        style={{
+          background: '#111', border: '1px solid #222', borderRadius: 10,
+          padding: '16px 20px', cursor: 'pointer', transition: 'border-color 0.15s',
+        }}
+        onMouseEnter={e => (e.currentTarget.style.borderColor = '#6366f1')}
+        onMouseLeave={e => (e.currentTarget.style.borderColor = '#222')}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <span style={{ padding: '2px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, background: '#1e1b4b', color: '#818cf8', border: '1px solid #312e81' }}>
+              {entry.category}
+            </span>
+            {entry.name && <span style={{ fontSize: 13, fontWeight: 600 }}>{entry.name}</span>}
+            {entry.email && <span style={{ fontSize: 12, color: '#555' }}>{entry.email}</span>}
+          </div>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <span style={{ fontSize: 12, color: '#444' }}>
+              {new Date(entry.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+            </span>
+            <span style={{ fontSize: 12, color: '#6366f1' }}>View →</span>
+          </div>
+        </div>
+        <p style={{ fontSize: 13, color: '#666', margin: '8px 0 0', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+          {entry.message}
+        </p>
+      </div>
+
+      {open && (
+        <div
+          onClick={() => setOpen(false)}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: 24 }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{ background: '#111', border: '1px solid #333', borderRadius: 12, padding: 32, maxWidth: 560, width: '100%', maxHeight: '80vh', overflowY: 'auto' }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
+              <span style={{ padding: '3px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, background: '#1e1b4b', color: '#818cf8', border: '1px solid #312e81' }}>
+                {entry.category}
+              </span>
+              <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', color: '#666', fontSize: 20, cursor: 'pointer', lineHeight: 1 }}>✕</button>
+            </div>
+            {(entry.name || entry.email) && (
+              <div style={{ marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid #222' }}>
+                {entry.name && <p style={{ margin: '0 0 4px', fontSize: 15, fontWeight: 600 }}>{entry.name}</p>}
+                {entry.email && (
+                  <a href={`mailto:${entry.email}`} style={{ fontSize: 13, color: '#6366f1', textDecoration: 'none' }}>{entry.email}</a>
+                )}
+              </div>
+            )}
+            <p style={{ fontSize: 15, color: '#ccc', lineHeight: 1.7, whiteSpace: 'pre-wrap', margin: '0 0 20px' }}>{entry.message}</p>
+            <p style={{ fontSize: 12, color: '#444', margin: 0 }}>
+              {new Date(entry.createdAt).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+            </p>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
