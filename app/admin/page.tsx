@@ -22,10 +22,23 @@ interface FeedbackEntry {
   createdAt: string
 }
 
+interface DfyApplication {
+  id: string
+  scanId?: string
+  name: string
+  email: string
+  url: string
+  platform: string
+  score?: number
+  message: string
+  status: 'new' | 'contacted' | 'payment_sent' | 'paid' | 'rejected'
+  createdAt: string
+}
+
 export default function AdminPage() {
   const [secret, setSecret] = useState('')
   const [authed, setAuthed] = useState(false)
-  const [tab, setTab] = useState<'scans' | 'feedback'>('scans')
+  const [tab, setTab] = useState<'scans' | 'applications' | 'feedback'>('scans')
 
   // Scans
   const [entries, setEntries] = useState<ScanLogEntry[]>([])
@@ -34,6 +47,53 @@ export default function AdminPage() {
   const [error, setError] = useState('')
   const [delivering, setDelivering] = useState<string | null>(null)
   const [filter, setFilter] = useState<'all' | 'paid' | 'unpaid'>('all')
+
+  // Applications
+  const [applications, setApplications] = useState<DfyApplication[]>([])
+  const [appsLoading, setAppsLoading] = useState(false)
+  const [sendingPayment, setSendingPayment] = useState<string | null>(null)
+
+  const loadApplications = useCallback(async (s: string) => {
+    setAppsLoading(true)
+    try {
+      const res = await fetch('/api/admin/applications', { headers: { 'x-admin-secret': s } })
+      if (res.ok) {
+        const data = await res.json()
+        setApplications(data.applications || [])
+      }
+    } catch { /* ignore */ }
+    setAppsLoading(false)
+  }, [])
+
+  const sendPaymentLink = async (app: DfyApplication) => {
+    setSendingPayment(app.id)
+    try {
+      const res = await fetch('/api/admin/send-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        body: JSON.stringify({ applicationId: app.id }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setApplications(prev => prev.map(a => a.id === app.id ? { ...a, status: 'payment_sent' } : a))
+        alert(`Payment link sent to ${app.email}`)
+      } else {
+        alert(data.error || 'Failed to send payment link')
+      }
+    } catch {
+      alert('Network error')
+    }
+    setSendingPayment(null)
+  }
+
+  const rejectApplication = async (id: string) => {
+    await fetch('/api/admin/applications', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+      body: JSON.stringify({ id, status: 'rejected' }),
+    })
+    setApplications(prev => prev.map(a => a.id === id ? { ...a, status: 'rejected' } : a))
+  }
 
   // Feedback
   const [feedback, setFeedback] = useState<FeedbackEntry[]>([])
@@ -93,10 +153,9 @@ export default function AdminPage() {
   }
 
   useEffect(() => {
-    if (authed && tab === 'feedback' && feedback.length === 0) {
-      loadFeedback(secret)
-    }
-  }, [authed, tab, feedback.length, secret, loadFeedback])
+    if (authed && tab === 'feedback' && feedback.length === 0) loadFeedback(secret)
+    if (authed && tab === 'applications' && applications.length === 0) loadApplications(secret)
+  }, [authed, tab, feedback.length, applications.length, secret, loadFeedback, loadApplications])
 
   const deliver = async (entry: ScanLogEntry) => {
     setDelivering(entry.scanId)
@@ -168,12 +227,15 @@ export default function AdminPage() {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
-          {(['scans', 'feedback'] as const).map(t => (
+          {(['scans', 'applications', 'feedback'] as const).map(t => (
             <button key={t} onClick={() => setTab(t)} style={{
               padding: '8px 20px', borderRadius: 8, fontSize: 13, cursor: 'pointer', fontWeight: tab === t ? 600 : 400,
               background: tab === t ? '#6366f1' : '#111', color: tab === t ? '#fff' : '#888', border: '1px solid #333',
             }}>
               {t.charAt(0).toUpperCase() + t.slice(1)}
+              {t === 'applications' && applications.filter(a => a.status === 'new').length > 0 && (
+                <span style={{ marginLeft: 6, background: '#f87171', color: '#fff', borderRadius: 99, padding: '1px 7px', fontSize: 11 }}>{applications.filter(a => a.status === 'new').length}</span>
+              )}
               {t === 'feedback' && feedback.filter(f => !readIds.has(f.id)).length > 0 && (
                 <span style={{ marginLeft: 6, background: '#f87171', color: '#fff', borderRadius: 99, padding: '1px 7px', fontSize: 11 }}>{feedback.filter(f => !readIds.has(f.id)).length}</span>
               )}
@@ -264,6 +326,98 @@ export default function AdminPage() {
             </div>
             <p style={{ marginTop: 16, fontSize: 12, color: '#333' }}>Showing {filtered.length} of {total} total scans</p>
           </>
+        )}
+
+        {tab === 'applications' && (
+          <div>
+            {appsLoading && <p style={{ color: '#666' }}>Loading...</p>}
+            {!appsLoading && applications.length === 0 && (
+              <p style={{ color: '#444', padding: 32, textAlign: 'center' }}>No applications yet</p>
+            )}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {applications.map(app => {
+                const statusColors: Record<string, { bg: string; color: string; border: string }> = {
+                  new:           { bg: '#1e1b4b', color: '#818cf8', border: '#312e81' },
+                  contacted:     { bg: '#1c3a2a', color: '#4ade80', border: '#166534' },
+                  payment_sent:  { bg: '#1c2a3a', color: '#60a5fa', border: '#1e40af' },
+                  paid:          { bg: '#14532d', color: '#4ade80', border: '#166534' },
+                  rejected:      { bg: '#1c1c1c', color: '#555', border: '#333' },
+                }
+                const sc = statusColors[app.status] || statusColors.new
+                return (
+                  <div key={app.id} style={{ background: '#111', border: `1px solid ${app.status === 'new' ? '#312e81' : '#222'}`, borderRadius: 10, padding: '20px 24px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+                      <div>
+                        <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 4 }}>
+                          {app.status === 'new' && <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#f87171', flexShrink: 0, display: 'inline-block' }} />}
+                          <span style={{ fontSize: 15, fontWeight: 700 }}>{app.name}</span>
+                          <span style={{ fontSize: 12, color: '#555' }}>{app.email}</span>
+                        </div>
+                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                          <span style={{ fontSize: 13, color: '#6366f1' }}>{app.url}</span>
+                          <span style={{ fontSize: 11, color: '#555' }}>·</span>
+                          <span style={{ fontSize: 12, color: '#666' }}>{app.platform}</span>
+                          {app.score !== undefined && (
+                            <>
+                              <span style={{ fontSize: 11, color: '#555' }}>·</span>
+                              <span style={{ fontSize: 12, fontWeight: 600, color: app.score >= 80 ? '#4ade80' : app.score >= 50 ? '#facc15' : '#f87171' }}>Score: {app.score}/100</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                        <span style={{ padding: '2px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, background: sc.bg, color: sc.color, border: `1px solid ${sc.border}` }}>
+                          {app.status.replace('_', ' ')}
+                        </span>
+                        <span style={{ fontSize: 12, color: '#444' }}>
+                          {new Date(app.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                    </div>
+
+                    <p style={{ fontSize: 13, color: '#aaa', lineHeight: 1.6, margin: '0 0 16px', padding: '12px 16px', background: 'rgba(255,255,255,0.02)', borderRadius: 8, border: '1px solid #1a1a1a' }}>
+                      {app.message}
+                    </p>
+
+                    {app.status !== 'rejected' && app.status !== 'paid' && (
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        {app.status !== 'payment_sent' && (
+                          <button
+                            onClick={() => sendPaymentLink(app)}
+                            disabled={sendingPayment === app.id}
+                            style={{ padding: '6px 16px', borderRadius: 6, fontSize: 12, cursor: 'pointer', fontWeight: 600, background: '#1e1b4b', color: '#818cf8', border: '1px solid #312e81' }}
+                          >
+                            {sendingPayment === app.id ? 'Sending…' : '💳 Send Payment Link'}
+                          </button>
+                        )}
+                        {app.status === 'payment_sent' && (
+                          <button
+                            onClick={() => sendPaymentLink(app)}
+                            disabled={sendingPayment === app.id}
+                            style={{ padding: '6px 16px', borderRadius: 6, fontSize: 12, cursor: 'pointer', fontWeight: 600, background: '#1c2a3a', color: '#60a5fa', border: '1px solid #1e40af' }}
+                          >
+                            {sendingPayment === app.id ? 'Sending…' : '🔄 Resend Payment Link'}
+                          </button>
+                        )}
+                        <button
+                          onClick={() => rejectApplication(app.id)}
+                          style={{ padding: '6px 16px', borderRadius: 6, fontSize: 12, cursor: 'pointer', fontWeight: 500, background: '#1c1c1c', color: '#666', border: '1px solid #333' }}
+                        >
+                          Reject
+                        </button>
+                        <a
+                          href={`mailto:${app.email}?subject=Your Queldrex Application&body=Hi ${app.name},%0D%0A%0D%0AThanks for applying...`}
+                          style={{ padding: '6px 16px', borderRadius: 6, fontSize: 12, fontWeight: 500, background: '#1c1c1c', color: '#888', border: '1px solid #333', textDecoration: 'none' }}
+                        >
+                          ✉️ Email
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
         )}
 
         {tab === 'feedback' && (

@@ -463,3 +463,49 @@ export async function sendImplementationEmail({ to, result, afterScore }: Implem
 </html>`,
   })
 }
+
+export async function sendPaymentLinkEmail({ to, name, url, paymentUrl, score }: {
+  to: string
+  name: string
+  url: string
+  paymentUrl: string
+  score?: number
+}) {
+  await getResend().emails.send({
+    from: 'Queldrex <reports@queldrex.com>',
+    to,
+    replyTo: 'hello@queldrex.com',
+    subject: 'Your Queldrex implementation is ready — complete your order',
+    html: `<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <div style="max-width:560px;margin:40px auto;padding:0 20px;">
+    <div style="background:#070b14;padding:28px 32px;border-radius:12px 12px 0 0;text-align:center;">
+      <div style="color:#06b6d4;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px;">Queldrex</div>
+      <div style="color:white;font-size:22px;font-weight:800;">Your spot is reserved, ${name.split(' ')[0]}.</div>
+    </div>
+    <div style="background:white;padding:32px;border-radius:0 0 12px 12px;box-shadow:0 4px 6px rgba(0,0,0,0.05);">
+      <p style="color:#374151;font-size:15px;line-height:1.6;margin:0 0 20px;">
+        Following our conversation, everything is confirmed. Click below to complete your payment and we'll get started on your AI visibility implementation for <strong>${url}</strong>.
+      </p>
+      ${score !== undefined ? `
+      <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:16px 20px;margin-bottom:24px;text-align:center;">
+        <div style="font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Current AI Visibility Score</div>
+        <div style="font-size:36px;font-weight:800;color:${score >= 80 ? '#16a34a' : score >= 50 ? '#d97706' : '#dc2626'};">${score}<span style="font-size:18px;color:#9ca3af;">/100</span></div>
+        <div style="font-size:12px;color:#6b7280;margin-top:4px;">We'll bring this to 80+ or better.</div>
+      </div>` : ''}
+      <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:20px;margin-bottom:28px;">
+        <div style="font-size:13px;font-weight:700;color:#111827;margin-bottom:12px;">What's included:</div>
+        ${['llms.txt — tells every AI exactly what your business does','LocalBusiness JSON-LD schema — machine-readable identity card','robots.txt — ensures all AI crawlers can access your site','Before/after visibility report confirming every signal fixed'].map(item =>
+          `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:13px;color:#374151;"><span style="color:#16a34a;font-size:16px;flex-shrink:0;">✓</span>${item}</div>`
+        ).join('')}
+      </div>
+      <a href="${paymentUrl}" style="display:block;background:linear-gradient(135deg,#06b6d4,#0891b2);color:white;text-decoration:none;text-align:center;padding:16px 24px;border-radius:10px;font-size:15px;font-weight:800;margin-bottom:20px;">Complete Payment — $499 →</a>
+      <p style="font-size:12px;color:#9ca3af;text-align:center;margin:0;">Secure payment via Stripe. Questions? Reply to this email or reach us at <a href="mailto:hello@queldrex.com" style="color:#06b6d4;">hello@queldrex.com</a></p>
+    </div>
+  </div>
+</body>
+</html>`,
+  })
+}

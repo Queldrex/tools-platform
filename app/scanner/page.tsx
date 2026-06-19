@@ -124,18 +124,10 @@ export default function ScannerPage() {
 
 
   const [dfyLoading, setDfyLoading] = useState(false)
-  async function handleDfy() {
+  function handleDfy() {
     if (!scanData) return
-    setDfyLoading(true)
-    try {
-      const res = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ scanId: scanData.scanId, tier: 'dfy' }) })
-      const json = await res.json()
-      if (!res.ok || !json.checkoutUrl) throw new Error(json.error || 'Could not start checkout.')
-      window.location.href = json.checkoutUrl
-    } catch (err) {
-      setDfyLoading(false)
-      alert(err instanceof Error ? err.message : 'Checkout failed.')
-    }
+    const params = new URLSearchParams({ scanId: scanData.scanId, url: scanData.domain, score: String(scanData.score) })
+    window.location.href = `/apply?${params}`
   }
 
   return (

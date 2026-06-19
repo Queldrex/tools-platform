@@ -118,6 +118,56 @@ export async function getScanLogCount(): Promise<number> {
   return getRedis().zcard(LOG_KEY)
 }
 
+// ── DFY Applications ─────────────────────────────────────────────────────────
+
+export interface DfyApplication {
+  id: string
+  scanId?: string
+  name: string
+  email: string
+  url: string
+  platform: string
+  score?: number
+  message: string
+  status: 'new' | 'contacted' | 'payment_sent' | 'paid' | 'rejected'
+  createdAt: string
+}
+
+const APP_KEY = 'dfyapps'
+const appEntryKey = (id: string) => `dfyapp:${id}`
+
+export async function saveDfyApplication(app: DfyApplication): Promise<void> {
+  const redis = getRedis()
+  await Promise.all([
+    redis.zadd(APP_KEY, { score: Date.now(), member: app.id }),
+    redis.set(appEntryKey(app.id), JSON.stringify(app)),
+  ])
+}
+
+export async function getDfyApplication(id: string): Promise<DfyApplication | null> {
+  const raw = await getRedis().get<string>(appEntryKey(id))
+  if (!raw) return null
+  try { return typeof raw === 'string' ? JSON.parse(raw) : raw } catch { return null }
+}
+
+export async function updateDfyApplication(id: string, updates: Partial<DfyApplication>): Promise<void> {
+  const existing = await getDfyApplication(id)
+  if (!existing) return
+  await getRedis().set(appEntryKey(id), JSON.stringify({ ...existing, ...updates }))
+}
+
+export async function getDfyApplications(limit = 100): Promise<DfyApplication[]> {
+  const redis = getRedis()
+  const ids = await redis.zrange(APP_KEY, 0, limit - 1, { rev: true }) as string[]
+  if (ids.length === 0) return []
+  const raws = await Promise.all(ids.map(id => redis.get<string>(appEntryKey(id))))
+  return raws.map(r => {
+    if (!r) return null
+    try { return typeof r === 'string' ? JSON.parse(r) : r }
+    catch { return null }
+  }).filter(Boolean) as DfyApplication[]
+}
+
 // ── Feedback log ──────────────────────────────────────────────────────────────
 
 export interface FeedbackEntry {
