@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
   })
 
   await saveScan({ ...scan, status: 'DELIVERED', paid: true, downloadToken, paidAt })
-  await updateScanLog(scanId, { paid: true, paidAt, status: 'DELIVERED' }).catch(() => {})
+  await updateScanLog(scanId, { paid: true, paidAt, status: 'DELIVERED', downloadToken }).catch(() => {})
 
   return Response.json({ received: true })
 }

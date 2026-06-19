@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
   })
 
   await saveScan({ ...scan, status: 'DELIVERED', paid: true, downloadToken, paidAt })
-  await updateScanLog(scanId, { paid: true, paidAt, status: 'DELIVERED' }).catch(() => {})
+  await updateScanLog(scanId, { paid: true, paidAt, status: 'DELIVERED', downloadToken }).catch(() => {})
 
   // Never return the downloadUrl — it's a one-time token sent only to the client's email
   return Response.json({
