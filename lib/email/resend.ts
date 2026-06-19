@@ -131,11 +131,6 @@ export async function sendDeliveryEmail({ to, businessName, downloadUrl, score }
     replyTo: 'hello@queldrex.com',
     to,
     subject: `Your AI Visibility Report is ready — ${businessName}`,
-    headers: {
-      'List-Unsubscribe': '<mailto:hello@queldrex.com?subject=unsubscribe>',
-      'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
-      'X-Entity-Ref-ID': `queldrex-delivery-${Date.now()}`,
-    },
     html: `<!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
@@ -160,10 +155,14 @@ export async function sendDeliveryEmail({ to, businessName, downloadUrl, score }
     </div>
 
     <!-- Download CTA -->
-    <a href="${downloadUrl}" style="display:block;background:linear-gradient(135deg,#06b6d4,#0891b2);color:white;text-decoration:none;text-align:center;padding:18px;border-radius:12px;font-weight:800;font-size:17px;margin-bottom:8px;">
-      &#8659; Download Your Report Package
+    <a href="${downloadUrl}" style="display:block;background:linear-gradient(135deg,#06b6d4,#0891b2);color:white;text-decoration:none;text-align:center;padding:18px;border-radius:12px;font-weight:800;font-size:17px;margin-bottom:12px;">
+      Download Your Report &rarr;
     </a>
-    <p style="margin:0 0 28px;text-align:center;font-size:12px;color:#94a3b8;">Link expires in 48 hours &nbsp;·&nbsp; One-time download &nbsp;·&nbsp; ~15 KB zip file</p>
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 16px;margin-bottom:24px;text-align:center;">
+      <p style="margin:0 0 4px;font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.06em;font-weight:600;">Or copy this link into your browser</p>
+      <a href="${downloadUrl}" style="font-size:12px;color:#0891b2;word-break:break-all;">${downloadUrl}</a>
+      <p style="margin:6px 0 0;font-size:11px;color:#94a3b8;">This private link expires in 7 days &nbsp;·&nbsp; For your eyes only — do not share</p>
+    </div>
 
     <!-- What's in the package -->
     <div style="margin-bottom:28px;">
