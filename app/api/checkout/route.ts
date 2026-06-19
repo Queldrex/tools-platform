@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
             currency: 'usd',
             unit_amount: 49900,
             product_data: {
-              name: `Done-For-You AI Visibility — ${scan.businessInfo.name || scan.businessInfo.domain}`,
+              name: `Done-For-You AI Visibility — ${scan.businessInfo.domain}`,
               description: 'Professional installation of llms.txt, JSON-LD schema, robots.txt, and sitemap on your website. Includes 30-day email support.',
             },
           },
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
           currency: AI_VISIBILITY_SCANNER_CONFIG.currency,
           unit_amount: AI_VISIBILITY_SCANNER_CONFIG.price * 100,
           product_data: {
-            name: `AI Visibility Report — ${scan.businessInfo.name || scan.businessInfo.domain}`,
+            name: `AI Visibility Report — ${scan.businessInfo.domain}`,
             description: 'Generated llms.txt, JSON-LD schema, full HTML report, and prioritized fix checklist — delivered to your inbox instantly.',
           },
         },
