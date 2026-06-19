@@ -38,6 +38,26 @@ export default function AdminPage() {
   // Feedback
   const [feedback, setFeedback] = useState<FeedbackEntry[]>([])
   const [fbLoading, setFbLoading] = useState(false)
+  const [readIds, setReadIds] = useState<Set<string>>(new Set())
+
+  const markRead = (id: string) => {
+    setReadIds(prev => {
+      const next = new Set(prev)
+      next.add(id)
+      try {
+        const stored = JSON.parse(localStorage.getItem('fb_read') || '[]') as string[]
+        localStorage.setItem('fb_read', JSON.stringify([...new Set([...stored, id])]))
+      } catch { /* ignore */ }
+      return next
+    })
+  }
+
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('fb_read') || '[]') as string[]
+      setReadIds(new Set(stored))
+    } catch { /* ignore */ }
+  }, [])
 
   const loadScans = useCallback(async (s: string) => {
     setLoading(true)
@@ -154,8 +174,8 @@ export default function AdminPage() {
               background: tab === t ? '#6366f1' : '#111', color: tab === t ? '#fff' : '#888', border: '1px solid #333',
             }}>
               {t.charAt(0).toUpperCase() + t.slice(1)}
-              {t === 'feedback' && feedback.length > 0 && (
-                <span style={{ marginLeft: 6, background: '#f87171', color: '#fff', borderRadius: 99, padding: '1px 7px', fontSize: 11 }}>{feedback.length}</span>
+              {t === 'feedback' && feedback.filter(f => !readIds.has(f.id)).length > 0 && (
+                <span style={{ marginLeft: 6, background: '#f87171', color: '#fff', borderRadius: 99, padding: '1px 7px', fontSize: 11 }}>{feedback.filter(f => !readIds.has(f.id)).length}</span>
               )}
             </button>
           ))}
@@ -254,7 +274,7 @@ export default function AdminPage() {
             )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {feedback.map(entry => (
-                <FeedbackCard key={entry.id} entry={entry} />
+                <FeedbackCard key={entry.id} entry={entry} isRead={readIds.has(entry.id)} onRead={() => markRead(entry.id)} />
               ))}
             </div>
           </div>
@@ -264,26 +284,34 @@ export default function AdminPage() {
   )
 }
 
-function FeedbackCard({ entry }: { entry: FeedbackEntry }) {
+function FeedbackCard({ entry, isRead, onRead }: { entry: FeedbackEntry; isRead: boolean; onRead: () => void }) {
   const [open, setOpen] = useState(false)
+
+  const handleOpen = () => {
+    setOpen(true)
+    onRead()
+  }
 
   return (
     <>
       <div
-        onClick={() => setOpen(true)}
+        onClick={handleOpen}
         style={{
-          background: '#111', border: '1px solid #222', borderRadius: 10,
+          background: isRead ? '#111' : '#13111f',
+          border: `1px solid ${isRead ? '#222' : '#312e81'}`,
+          borderRadius: 10,
           padding: '16px 20px', cursor: 'pointer', transition: 'border-color 0.15s',
         }}
         onMouseEnter={e => (e.currentTarget.style.borderColor = '#6366f1')}
-        onMouseLeave={e => (e.currentTarget.style.borderColor = '#222')}
+        onMouseLeave={e => (e.currentTarget.style.borderColor = isRead ? '#222' : '#312e81')}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            {!isRead && <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#f87171', flexShrink: 0 }} />}
             <span style={{ padding: '2px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, background: '#1e1b4b', color: '#818cf8', border: '1px solid #312e81' }}>
               {entry.category}
             </span>
-            {entry.name && <span style={{ fontSize: 13, fontWeight: 600 }}>{entry.name}</span>}
+            {entry.name && <span style={{ fontSize: 13, fontWeight: isRead ? 400 : 600 }}>{entry.name}</span>}
             {entry.email && <span style={{ fontSize: 12, color: '#555' }}>{entry.email}</span>}
           </div>
           <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
@@ -293,7 +321,7 @@ function FeedbackCard({ entry }: { entry: FeedbackEntry }) {
             <span style={{ fontSize: 12, color: '#6366f1' }}>View →</span>
           </div>
         </div>
-        <p style={{ fontSize: 13, color: '#666', margin: '8px 0 0', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+        <p style={{ fontSize: 13, color: isRead ? '#555' : '#aaa', margin: '8px 0 0', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
           {entry.message}
         </p>
       </div>
