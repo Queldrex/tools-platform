@@ -95,9 +95,12 @@ function generateRecommendationsMd(scan: ScanResult): string {
 }
 
 function generateReportHtml(scan: ScanResult): string {
-  const checkRow = (label: string, passed: boolean, points: number) => `
+  const checkRow = (label: string, passed: boolean, points: number, note?: string) => `
     <tr>
-      <td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;">${label}</td>
+      <td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;">
+        <span>${label}</span>
+        ${note ? `<div style="font-size:11px;color:#9ca3af;margin-top:2px;">${note}</div>` : ''}
+      </td>
       <td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;text-align:center;">
         ${passed
           ? `<span style="color:#16a34a;font-weight:600;">✓ Found</span>`
@@ -108,7 +111,24 @@ function generateReportHtml(scan: ScanResult): string {
       </td>
     </tr>`
 
+  const advancedRow = (label: string, passed: boolean, note: string) => `
+    <tr>
+      <td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;">
+        <span>${label}</span>
+        <div style="font-size:11px;color:#9ca3af;margin-top:2px;">${note}</div>
+      </td>
+      <td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;text-align:center;">
+        ${passed
+          ? `<span style="color:#16a34a;font-weight:600;">✓ Detected</span>`
+          : `<span style="color:#dc2626;font-weight:600;">✗ Not found</span>`}
+      </td>
+      <td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;text-align:center;">
+        <span style="color:#9ca3af;font-size:11px;">bonus</span>
+      </td>
+    </tr>`
+
   const scoreColor = scan.score >= 70 ? '#16a34a' : scan.score >= 40 ? '#d97706' : '#dc2626'
+  const ext = scan.extendedChecks
 
   const recsHtml = scan.recommendations
     .map(
@@ -117,7 +137,7 @@ function generateReportHtml(scan: ScanResult): string {
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:${r.priority === 'HIGH' ? '#dc2626' : r.priority === 'MEDIUM' ? '#d97706' : '#6b7280'};margin-bottom:6px;">${r.priority}</div>
       <div style="font-weight:600;font-size:15px;margin-bottom:8px;">${r.title}</div>
       <div style="color:#374151;margin-bottom:10px;line-height:1.6;">${r.description}</div>
-      <div style="background:#fff;padding:12px;border-radius:6px;border:1px solid #e5e7eb;font-size:13px;color:#1d4ed8;"><strong>Fix:</strong> ${r.fix}</div>
+      <div style="background:#fff;padding:12px;border-radius:6px;border:1px solid #e5e7eb;font-size:13px;color:#1d4ed8;white-space:pre-wrap;"><strong>Fix:</strong> ${r.fix}</div>
     </div>`
     )
     .join('')
@@ -137,6 +157,7 @@ function generateReportHtml(scan: ScanResult): string {
     table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 32px; }
     th { background: #f8fafc; padding: 12px 16px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; font-weight: 600; }
     .section-title { font-size: 20px; font-weight: 700; margin: 32px 0 16px; }
+    .section-subtitle { font-size: 13px; color: #6b7280; margin: -10px 0 16px; }
     .footer { text-align: center; color: #9ca3af; font-size: 13px; margin-top: 48px; }
   </style>
 </head>
@@ -152,22 +173,39 @@ function generateReportHtml(scan: ScanResult): string {
     </div>
   </div>
 
-  <div class="section-title">Signal Checklist</div>
+  <div class="section-title">Core Signal Checklist</div>
+  <p class="section-subtitle">These 8 signals determine your AI Visibility Score.</p>
   <table>
     <thead><tr>
       <th>Signal</th><th style="text-align:center;">Status</th><th style="text-align:center;">Points</th>
     </tr></thead>
     <tbody>
-      ${checkRow('llms.txt', scan.checks.llmsTxt, 25)}
-      ${checkRow('LocalBusiness Schema', scan.checks.localBusinessSchema, 20)}
-      ${checkRow('JSON-LD Structured Data', scan.checks.jsonLd, 15)}
-      ${checkRow('sitemap.xml', scan.checks.sitemapXml, 10)}
-      ${checkRow('Open Graph Tags', scan.checks.openGraph, 10)}
-      ${checkRow('HTTPS', scan.checks.httpsEnabled, 10)}
-      ${checkRow('robots.txt', scan.checks.robotsTxt, 5)}
-      ${checkRow('Canonical Tag', scan.checks.canonicalTag, 5)}
+      ${checkRow('llms.txt', scan.checks.llmsTxt, 25, 'Tells AI assistants exactly what your business does')}
+      ${checkRow('LocalBusiness Schema', scan.checks.localBusinessSchema, 20, 'Machine-readable business identity for AI & search')}
+      ${checkRow('JSON-LD Structured Data', scan.checks.jsonLd, 15, 'Any structured data detectable by AI crawlers')}
+      ${checkRow('sitemap.xml', scan.checks.sitemapXml, 10, 'Helps AI crawlers discover all your pages')}
+      ${checkRow('Open Graph / AI Metadata', scan.checks.openGraph, 10, 'og:title, og:description read by AI link previewers')}
+      ${checkRow('HTTPS', scan.checks.httpsEnabled, 10, 'AI crawlers skip HTTP-only sites')}
+      ${checkRow('Crawler Access (robots.txt)', scan.checks.robotsTxt, 5, 'Controls which bots can read your site')}
+      ${checkRow('Canonical Tag', scan.checks.canonicalTag, 5, 'Tells AI which URL is the authoritative version')}
     </tbody>
   </table>
+
+  ${ext ? `
+  <div class="section-title">Advanced Analysis</div>
+  <p class="section-subtitle">5 bonus signals that increase AI citation likelihood. Not counted in your score.</p>
+  <table>
+    <thead><tr>
+      <th>Signal</th><th style="text-align:center;">Status</th><th style="text-align:center;"></th>
+    </tr></thead>
+    <tbody>
+      ${advancedRow('FAQ Schema', ext.faqSchema, 'Google AI Overviews — FAQPage JSON-LD drives AI snippets')}
+      ${advancedRow('Review / Rating Schema', ext.reviewSchema, 'Authority signal — AggregateRating tells AI your star rating')}
+      ${advancedRow('About / Team Page', ext.aboutPage, 'E-E-A-T signal — establishes expertise and trustworthiness')}
+      ${advancedRow('Content Freshness', ext.contentFresh, 'Recency signal — dateModified within the last 12 months')}
+      ${advancedRow('JS Rendering', !ext.jsHeavy, 'Crawlability — site content visible without JavaScript')}
+    </tbody>
+  </table>` : ''}
 
   <div class="section-title">Recommendations</div>
   ${recsHtml}
