@@ -9,7 +9,7 @@ interface ScanLogEntry {
   score: number
   paid: boolean
   paidAt?: string
-  downloadedAt?: string
+  downloadToken?: string
   status: string
   createdAt: string
 }
@@ -36,10 +36,12 @@ interface DfyApplication {
   createdAt: string
 }
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com'
+
 export default function AdminPage() {
   const [secret, setSecret] = useState('')
   const [authed, setAuthed] = useState(false)
-  const [tab, setTab] = useState<'scans' | 'applications' | 'feedback'>('scans')
+  const [tab, setTab] = useState<'scans' | 'downloads' | 'applications' | 'feedback'>('scans')
 
   // Scans
   const [entries, setEntries] = useState<ScanLogEntry[]>([])
@@ -168,10 +170,8 @@ export default function AdminPage() {
       })
       const data = await res.json()
       if (res.ok) {
-        setEntries(prev => prev.map(e =>
-          e.scanId === entry.scanId ? { ...e, paid: true, status: 'DELIVERED' } : e
-        ))
         alert(`Delivered to ${data.to}`)
+        loadScans(secret)
       } else {
         alert(data.error || 'Delivery failed')
       }
@@ -187,8 +187,9 @@ export default function AdminPage() {
     return true
   })
 
+  const downloads = entries.filter(e => e.paid && e.downloadToken)
+
   const paidCount = entries.filter(e => e.paid).length
-  const downloadedCount = entries.filter(e => e.downloadedAt).length
   const conversionRate = entries.length > 0 ? ((paidCount / entries.length) * 100).toFixed(1) : '0'
 
   if (!authed) {
@@ -229,12 +230,15 @@ export default function AdminPage() {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
-          {(['scans', 'applications', 'feedback'] as const).map(t => (
+          {(['scans', 'downloads', 'applications', 'feedback'] as const).map(t => (
             <button key={t} onClick={() => setTab(t)} style={{
               padding: '8px 20px', borderRadius: 8, fontSize: 13, cursor: 'pointer', fontWeight: tab === t ? 600 : 400,
               background: tab === t ? '#6366f1' : '#111', color: tab === t ? '#fff' : '#888', border: '1px solid #333',
             }}>
-              {t.charAt(0).toUpperCase() + t.slice(1)}
+              {t === 'downloads' ? 'Downloads' : t.charAt(0).toUpperCase() + t.slice(1)}
+              {t === 'downloads' && downloads.length > 0 && (
+                <span style={{ marginLeft: 6, background: '#0891b2', color: '#fff', borderRadius: 99, padding: '1px 7px', fontSize: 11 }}>{downloads.length}</span>
+              )}
               {t === 'applications' && applications.filter(a => a.status === 'new').length > 0 && (
                 <span style={{ marginLeft: 6, background: '#f87171', color: '#fff', borderRadius: 99, padding: '1px 7px', fontSize: 11 }}>{applications.filter(a => a.status === 'new').length}</span>
               )}
@@ -248,11 +252,10 @@ export default function AdminPage() {
         {tab === 'scans' && (
           <>
             {/* Stats */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 16, marginBottom: 32 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }}>
               {[
                 { label: 'Total Scans', value: total },
                 { label: 'Paid', value: paidCount },
-                { label: 'Downloads', value: downloadedCount },
                 { label: 'Unpaid', value: entries.length - paidCount },
                 { label: 'Conversion', value: `${conversionRate}%` },
               ].map(stat => (
@@ -280,14 +283,14 @@ export default function AdminPage() {
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid #222' }}>
-                    {['Domain', 'Email', 'Score', 'Status', 'Downloaded', 'Date', 'Action'].map(h => (
+                    {['Domain', 'Email', 'Score', 'Status', 'Date', 'Action'].map(h => (
                       <th key={h} style={{ padding: '12px 16px', textAlign: 'left', color: '#666', fontWeight: 500 }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.length === 0 && (
-                    <tr><td colSpan={7} style={{ padding: 32, textAlign: 'center', color: '#444' }}>No entries</td></tr>
+                    <tr><td colSpan={6} style={{ padding: 32, textAlign: 'center', color: '#444' }}>No entries</td></tr>
                   )}
                   {filtered.map(entry => (
                     <tr key={entry.scanId} style={{ borderBottom: '1px solid #1a1a1a' }}>
@@ -308,15 +311,6 @@ export default function AdminPage() {
                           {entry.status}
                         </span>
                       </td>
-                      <td style={{ padding: '12px 16px' }}>
-                        {entry.downloadedAt ? (
-                          <span title={new Date(entry.downloadedAt).toLocaleString()} style={{ color: '#4ade80', fontSize: 12 }}>
-                            ✓ {new Date(entry.downloadedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                          </span>
-                        ) : (
-                          <span style={{ color: '#333', fontSize: 12 }}>—</span>
-                        )}
-                      </td>
                       <td style={{ padding: '12px 16px', color: '#555' }}>
                         {new Date(entry.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                       </td>
@@ -330,6 +324,16 @@ export default function AdminPage() {
                             {delivering === entry.scanId ? 'Sending...' : 'Deliver'}
                           </button>
                         )}
+                        {entry.paid && entry.downloadToken && (
+                          <a
+                            href={`${BASE_URL}/download/${entry.downloadToken}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ padding: '4px 12px', borderRadius: 6, fontSize: 12, fontWeight: 500, background: '#052e16', color: '#4ade80', border: '1px solid #166534', textDecoration: 'none' }}
+                          >
+                            View
+                          </a>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -337,6 +341,70 @@ export default function AdminPage() {
               </table>
             </div>
             <p style={{ marginTop: 16, fontSize: 12, color: '#333' }}>Showing {filtered.length} of {total} total scans</p>
+          </>
+        )}
+
+        {tab === 'downloads' && (
+          <>
+            <div style={{ marginBottom: 20 }}>
+              <p style={{ fontSize: 13, color: '#555' }}>
+                Customers who purchased the $149 bundle and received a download link. Tokens expire 7 days after issuance.
+              </p>
+            </div>
+            {loading && <p style={{ color: '#666' }}>Loading...</p>}
+            {!loading && downloads.length === 0 && (
+              <p style={{ color: '#444', padding: 32, textAlign: 'center' }}>No downloads yet — entries appear here after delivery via Stripe webhook or the Deliver button.</p>
+            )}
+            {downloads.length > 0 && (
+              <div style={{ background: '#111', border: '1px solid #222', borderRadius: 10, overflow: 'hidden' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid #222' }}>
+                      {['Domain', 'Email', 'Score', 'Delivered', 'Download Link'].map(h => (
+                        <th key={h} style={{ padding: '12px 16px', textAlign: 'left', color: '#666', fontWeight: 500 }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {downloads.map(entry => (
+                      <tr key={entry.scanId} style={{ borderBottom: '1px solid #1a1a1a' }}>
+                        <td style={{ padding: '12px 16px', fontWeight: 500 }}>{entry.domain}</td>
+                        <td style={{ padding: '12px 16px', color: '#aaa' }}>{entry.email}</td>
+                        <td style={{ padding: '12px 16px' }}>
+                          <span style={{ color: entry.score >= 80 ? '#4ade80' : entry.score >= 50 ? '#facc15' : '#f87171', fontWeight: 600 }}>
+                            {entry.score}/100
+                          </span>
+                        </td>
+                        <td style={{ padding: '12px 16px', color: '#555' }}>
+                          {entry.paidAt
+                            ? new Date(entry.paidAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+                            : '—'}
+                        </td>
+                        <td style={{ padding: '12px 16px' }}>
+                          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                            <a
+                              href={`${BASE_URL}/download/${entry.downloadToken}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ padding: '4px 12px', borderRadius: 6, fontSize: 12, fontWeight: 500, background: '#052e16', color: '#4ade80', border: '1px solid #166534', textDecoration: 'none' }}
+                            >
+                              Open Page
+                            </a>
+                            <button
+                              onClick={() => { navigator.clipboard.writeText(`${BASE_URL}/download/${entry.downloadToken}`) }}
+                              style={{ padding: '4px 12px', borderRadius: 6, fontSize: 12, fontWeight: 500, background: '#1c1c1c', color: '#888', border: '1px solid #333', cursor: 'pointer' }}
+                            >
+                              Copy Link
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            {downloads.length > 0 && <p style={{ marginTop: 12, fontSize: 12, color: '#333' }}>{downloads.length} download{downloads.length !== 1 ? 's' : ''} issued</p>}
           </>
         )}
 
