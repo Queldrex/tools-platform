@@ -300,7 +300,7 @@ export default function HomePage() {
             <div>
               <h3 className="text-base font-black text-white mb-2">AI Visibility Scanner</h3>
               <p className="text-sm text-white/55 leading-relaxed">
-                ChatGPT, Perplexity, Claude, Gemini — every AI assistant is answering questions about your industry. We scan your site for the 6 signals that get you recommended. Free scan, $149 for the full fix package.
+                ChatGPT, Perplexity, Claude, Gemini — every AI assistant is answering questions about your industry. We scan your site for 13 signals that get you recommended. Free scan, $149 for the full fix package.
               </p>
             </div>
             <span className="text-xs font-bold text-cyan-400 flex items-center gap-1.5 group-hover:gap-2.5 transition-all">

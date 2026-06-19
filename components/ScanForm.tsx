@@ -91,6 +91,7 @@ export default function ScanForm({ onScan, loading }: ScanFormProps) {
           />
         </div>
         {errors.email && <p className="mt-1.5 text-xs text-red-400">{errors.email}</p>}
+        {!errors.email && <p className="mt-1.5 text-xs text-white/25">Your free score report will be emailed here. If you don&apos;t see it within 2 minutes, check your spam folder.</p>}
       </div>
 
       <button

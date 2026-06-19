@@ -149,7 +149,7 @@ export default function ScannerPage() {
               ChatGPT, Claude, and Perplexity are recommending businesses to millions of users every day. The ones getting recommended have something most sites are missing.
             </p>
             <p className="text-base text-white/50 leading-relaxed mb-10 max-w-xl mx-auto">
-              We scan your site for 8 signals AI assistants look for — including whether ChatGPT and Claude are being blocked from reading your site. You get a score, a breakdown, and the exact files to fix it.
+              We scan your site for 13 signals AI assistants look for — including whether ChatGPT and Claude are being blocked from reading your site. You get a score, a breakdown, and the exact files to fix it.
             </p>
 
             <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 mb-10 max-w-3xl mx-auto">
