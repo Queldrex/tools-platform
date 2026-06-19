@@ -373,12 +373,12 @@ export default function ScannerPage() {
                   {citationModel && <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ background: 'rgba(6,182,212,0.08)', color: '#22d3ee', border: '1px solid rgba(6,182,212,0.15)' }}>{citationModel}</span>}
                 </div>
                 <p className="text-[11px] text-white/30 mb-3 leading-relaxed">
-                  We asked Claude: &ldquo;What do you know about {scanData.businessName || scanData.domain}?&rdquo;
+                  We asked an AI model: &ldquo;What do you know about {scanData.businessName || scanData.domain}?&rdquo;
                 </p>
                 {citation === 'loading' && (
                   <div className="flex items-center gap-2 text-xs text-white/30">
                     <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                    Querying Claude...
+                    Querying AI...
                   </div>
                 )}
                 {citation === 'unconfigured' && (
@@ -397,7 +397,7 @@ export default function ScannerPage() {
                     ) : (
                       <div className="flex items-start gap-2 p-3 rounded-lg" style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.15)' }}>
                         <svg className="w-3.5 h-3.5 text-green-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <p className="text-xs text-green-300/80 leading-relaxed"><strong className="text-green-400">Claude has some knowledge of this business.</strong> The full fix package will expand and correct this — ensuring every AI assistant cites you accurately.</p>
+                        <p className="text-xs text-green-300/80 leading-relaxed"><strong className="text-green-400">AI has some knowledge of this business.</strong> The full fix package will expand and correct this — ensuring every AI assistant cites you accurately.</p>
                       </div>
                     )}
                   </div>
