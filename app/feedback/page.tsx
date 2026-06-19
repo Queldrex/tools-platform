@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
-const CATEGORIES = ['Bug Report', 'Feature Request', 'Pricing', 'General'] as const
+const CATEGORIES = ['Report Issue', 'Request a Tool', 'Bug Report', 'Feature Request', 'General'] as const
 type Category = typeof CATEGORIES[number]
 
 export default function FeedbackPage() {

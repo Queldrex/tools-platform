@@ -35,7 +35,7 @@ export async function sendFreeScoreEmail({
     : ''
 
   await getResend().emails.send({
-    from: 'Queldrex <reports@queldrex.com>',
+    from: 'Queldrex (No Reply) <reports@queldrex.com>',
     replyTo: 'hello@queldrex.com',
     to,
     subject: `Your AI visibility score for ${domain}: ${score}/100`,
@@ -102,8 +102,9 @@ export async function sendFreeScoreEmail({
       </a>
 
       <p style="margin:0;color:#9ca3af;font-size:11px;text-align:center;line-height:1.8;">
+        <strong style="color:#9ca3af;">Do not reply to this email</strong> — for questions contact <a href="mailto:hello@queldrex.com" style="color:#9ca3af;">hello@queldrex.com</a><br>
         This email was sent because you entered ${to} when scanning ${domain}.<br>
-        <a href="${baseUrl}/privacy" style="color:#9ca3af;">Privacy Policy</a> · Queldrex LLC
+        <a href="${baseUrl}/privacy" style="color:#9ca3af;">Privacy Policy</a> &nbsp;·&nbsp; Queldrex LLC, a Colorado limited liability company
       </p>
     </div>
   </div>
@@ -126,7 +127,7 @@ export async function sendDeliveryEmail({ to, businessName, downloadUrl, score }
   const scoreLabel = score >= 70 ? 'Good' : score >= 40 ? 'Needs Work' : 'Critical'
 
   await getResend().emails.send({
-    from: 'Queldrex <reports@queldrex.com>',
+    from: 'Queldrex (No Reply) <reports@queldrex.com>',
     replyTo: 'hello@queldrex.com',
     to,
     subject: `Your AI Visibility Report is ready — ${businessName}`,
@@ -236,7 +237,7 @@ export async function sendDeliveryEmail({ to, businessName, downloadUrl, score }
 
     <!-- Need help -->
     <div style="text-align:center;margin-bottom:8px;">
-      <p style="margin:0;font-size:13px;color:#374151;">Questions about your report? Reply to this email or contact <a href="mailto:hello@queldrex.com" style="color:#0891b2;font-weight:600;">hello@queldrex.com</a></p>
+      <p style="margin:0;font-size:13px;color:#374151;">Do not reply to this email — it is sent from an unmonitored address. For questions or support, contact <a href="mailto:hello@queldrex.com" style="color:#0891b2;font-weight:600;">hello@queldrex.com</a></p>
     </div>
 
   </div>
@@ -271,7 +272,7 @@ interface CredentialsRequestEmailProps {
 
 export async function sendCredentialsRequestEmail({ to, domain, credentialsUrl, formattedTime }: CredentialsRequestEmailProps) {
   await getResend().emails.send({
-    from: 'Queldrex <reports@queldrex.com>',
+    from: 'Queldrex (No Reply) <reports@queldrex.com>',
     replyTo: 'hello@queldrex.com',
     to,
     subject: `Action required: Submit hosting access for ${domain}`,
@@ -327,8 +328,8 @@ export async function sendCredentialsRequestEmail({ to, domain, credentialsUrl, 
       </div>
 
       <p style="margin:0;color:#9ca3af;font-size:12px;text-align:center;">
-        Questions? Reply to this email · <a href="https://queldrex.com/terms" style="color:#6b7280;">Terms</a> · <a href="https://queldrex.com/privacy" style="color:#6b7280;">Privacy</a>
-        <br>Queldrex LLC · queldrex.com
+        Do not reply to this email — contact <a href="mailto:hello@queldrex.com" style="color:#6b7280;">hello@queldrex.com</a> &nbsp;·&nbsp; <a href="https://queldrex.com/terms" style="color:#6b7280;">Terms</a> &nbsp;·&nbsp; <a href="https://queldrex.com/privacy" style="color:#6b7280;">Privacy</a>
+        <br>Queldrex LLC, a Colorado limited liability company · queldrex.com
       </p>
     </div>
   </div>
@@ -350,7 +351,7 @@ export async function sendDfyAuthorizationEmail({ to, domain, score, credentials
   const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
 
   await getResend().emails.send({
-    from: 'Queldrex <reports@queldrex.com>',
+    from: 'Queldrex (No Reply) <reports@queldrex.com>',
     replyTo: 'hello@queldrex.com',
     to,
     subject: `Implementation Confirmed — Action Required for ${domain}`,
@@ -434,8 +435,8 @@ export async function sendDfyAuthorizationEmail({ to, domain, score, credentials
       </div>
 
       <p style="margin:0;color:#9ca3af;font-size:12px;text-align:center;">
-        Questions? Reply to this email or contact <a href="mailto:hello@queldrex.com" style="color:#6b7280;">hello@queldrex.com</a>
-        <br>Queldrex LLC · queldrex.com
+        Do not reply to this email — contact <a href="mailto:hello@queldrex.com" style="color:#6b7280;">hello@queldrex.com</a>
+        <br>Queldrex LLC, a Colorado limited liability company · queldrex.com
       </p>
     </div>
   </div>
@@ -447,7 +448,7 @@ export async function sendDfyAuthorizationEmail({ to, domain, score, credentials
 export async function sendAdminNotification({ domain, token, platform }: { domain: string; token: string; platform: string }) {
   const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
   await getResend().emails.send({
-    from: 'Queldrex <reports@queldrex.com>',
+    from: 'Queldrex (No Reply) <reports@queldrex.com>',
     to: 'hello@queldrex.com',
     subject: `[Action Required] DFY credentials submitted — ${domain}`,
     html: `
@@ -516,7 +517,7 @@ export async function sendImplementationEmail({ to, result, afterScore }: Implem
     : ''
 
   await getResend().emails.send({
-    from: 'Queldrex <reports@queldrex.com>',
+    from: 'Queldrex (No Reply) <reports@queldrex.com>',
     replyTo: 'hello@queldrex.com',
     to,
     subject: `Implementation ${statusLabel} — ${result.domain}`,
@@ -566,7 +567,7 @@ export async function sendPaymentLinkEmail({ to, name, url, paymentUrl, score }:
   score?: number
 }) {
   await getResend().emails.send({
-    from: 'Queldrex <reports@queldrex.com>',
+    from: 'Queldrex (No Reply) <reports@queldrex.com>',
     to,
     replyTo: 'hello@queldrex.com',
     subject: 'Your Queldrex implementation is ready — complete your order',
@@ -596,7 +597,7 @@ export async function sendPaymentLinkEmail({ to, name, url, paymentUrl, score }:
         ).join('')}
       </div>
       <a href="${paymentUrl}" style="display:block;background:linear-gradient(135deg,#06b6d4,#0891b2);color:white;text-decoration:none;text-align:center;padding:16px 24px;border-radius:10px;font-size:15px;font-weight:800;margin-bottom:20px;">Complete Payment — $499 →</a>
-      <p style="font-size:12px;color:#9ca3af;text-align:center;margin:0;">Secure payment via Stripe. Questions? Reply to this email or reach us at <a href="mailto:hello@queldrex.com" style="color:#06b6d4;">hello@queldrex.com</a></p>
+      <p style="font-size:12px;color:#9ca3af;text-align:center;margin:0;">Do not reply to this email — for questions contact <a href="mailto:hello@queldrex.com" style="color:#06b6d4;">hello@queldrex.com</a></p>
     </div>
   </div>
 </body>
