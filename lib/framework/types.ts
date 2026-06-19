@@ -29,6 +29,7 @@ export interface ExtendedChecks {
   faqSchema: boolean       // FAQPage JSON-LD — primary driver of Google AI Overviews snippets
   reviewSchema: boolean    // AggregateRating schema — authority signal AI uses for trust
   aboutPage: boolean       // /about or /team page exists — E-E-A-T authorship signal
+  contactPage: boolean     // /contact page exists — trust signal for AI and users
   contentFresh: boolean    // dateModified within 1 year — recency signal
   jsHeavy: boolean         // Site appears JS-rendered — AI crawlers see near-empty content
 }

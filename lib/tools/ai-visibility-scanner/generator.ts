@@ -275,6 +275,16 @@ export function generateRecommendations(checks: ScanChecks, info: BusinessInfo, 
     })
   }
 
+  if (extended && !extended.contactPage) {
+    recs.push({
+      priority: 'LOW',
+      title: 'Add a Contact page to increase AI trust signals',
+      description:
+        'AI systems and search engines use the presence of a Contact page as a trust signal — it indicates a real, accountable business. Sites without accessible contact information score lower on trustworthiness and are less likely to be cited as authoritative sources.',
+      fix: `Create a /contact page for ${info.domain} with at minimum: a contact email, phone number (if applicable), business hours, and a contact form or clear call-to-action. Also add your contact info to your LocalBusiness JSON-LD: "telephone":"[your number]","email":"[your email]"`,
+    })
+  }
+
   if (extended && !extended.aboutPage) {
     recs.push({
       priority: 'LOW',

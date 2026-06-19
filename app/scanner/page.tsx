@@ -1,6 +1,6 @@
 ﻿'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import PricingSection from '@/components/PricingSection'
@@ -23,12 +23,14 @@ interface ScanData {
   businessName: string
   domain: string
   topRecommendation: string
+  llmsTxtSnippet: string
 }
 
 const EXTENDED_LABELS: Record<keyof ExtendedChecks, { label: string; desc: string; why: string }> = {
   faqSchema:    { label: 'FAQ Schema',       desc: 'No FAQPage schema — excluded from Google AI Overviews snippets', why: 'Google AI Overviews' },
   reviewSchema: { label: 'Review Schema',    desc: 'No AggregateRating schema — AI cannot show your star rating', why: 'Authority signal' },
   aboutPage:    { label: 'About / Team',     desc: 'No About page found — E-E-A-T authorship signal missing', why: 'E-E-A-T' },
+  contactPage:  { label: 'Contact Page',     desc: 'No Contact page found — reduces AI and search trust signals', why: 'Trust signal' },
   contentFresh: { label: 'Content Freshness',desc: 'No dateModified found — AI systems deprioritize stale content', why: 'Recency signal' },
   jsHeavy:      { label: 'JS Rendering',     desc: 'Site appears JS-rendered — AI crawlers see near-empty content', why: 'Crawlability' },
 }
@@ -73,6 +75,8 @@ export default function ScannerPage() {
   const [errorMsg, setErrorMsg] = useState('')
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [scannedDomain, setScannedDomain] = useState('')
+  const [citation, setCitation] = useState<{ citation: string | null; model: string | null; configured: boolean } | null>(null)
+  const [citationLoading, setCitationLoading] = useState(false)
   const formRef = useRef<HTMLDivElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
 
@@ -87,19 +91,20 @@ export default function ScannerPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url, email }),
       })
-      let json: { status?: string; error?: string; scanId?: string; score?: number; checks?: ScanChecks; extendedChecks?: ExtendedChecks; businessInfo?: { name?: string; domain?: string }; recommendations?: { title: string }[]; blockedAiBots?: string[]; responseTimeMs?: number }
+      let json: { status?: string; error?: string; scanId?: string; score?: number; checks?: ScanChecks; extendedChecks?: ExtendedChecks; businessInfo?: { name?: string; domain?: string }; recommendations?: { title: string }[]; blockedAiBots?: string[]; responseTimeMs?: number; generatedLlmsTxt?: string }
       try { json = await res.json() } catch { throw new Error('Unexpected server response. Please try again.') }
       if (!res.ok || json.status === 'ERROR') throw new Error(json.error || 'Scan failed. Check the URL and try again.')
       setScanData({
         scanId: json.scanId!,
         score: json.score ?? 0,
         checks: json.checks ?? { robotsTxt: false, sitemapXml: false, llmsTxt: false, openGraph: false, jsonLd: false, localBusinessSchema: false, httpsEnabled: false, canonicalTag: false },
-        extendedChecks: json.extendedChecks ?? { faqSchema: false, reviewSchema: false, aboutPage: false, contentFresh: false, jsHeavy: false },
+        extendedChecks: json.extendedChecks ?? { faqSchema: false, reviewSchema: false, aboutPage: false, contactPage: false, contentFresh: false, jsHeavy: false },
         blockedAiBots: json.blockedAiBots ?? [],
         responseTimeMs: json.responseTimeMs ?? 0,
         businessName: json.businessInfo?.name || '',
         domain: json.businessInfo?.domain || '',
         topRecommendation: json.recommendations?.[0]?.title || '',
+        llmsTxtSnippet: json.generatedLlmsTxt?.split('\n').slice(0, 12).join('\n') || '',
       })
       setState('results')
     } catch (err) {
@@ -122,6 +127,24 @@ export default function ScannerPage() {
     }
   }
 
+
+  useEffect(() => {
+    if (state !== 'results' || !scanData) return
+    setCitation(null)
+    setCitationLoading(true)
+    fetch('/api/scan/cite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ domain: scanData.domain, businessName: scanData.businessName }),
+    })
+      .then(r => r.json())
+      .then((data: { citation?: string | null; model?: string | null; configured?: boolean }) => {
+        setCitation({ citation: data.citation ?? null, model: data.model ?? null, configured: data.configured ?? false })
+        setCitationLoading(false)
+      })
+      .catch(() => setCitationLoading(false))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state])
 
   const [dfyLoading, setDfyLoading] = useState(false)
   function handleDfy() {
@@ -184,7 +207,7 @@ export default function ScannerPage() {
                   price: '$0',
                   color: 'rgba(255,255,255,0.02)',
                   border: 'rgba(255,255,255,0.08)',
-                  items: ['AI Visibility Score (0-100)', 'Missing signal breakdown', 'AI crawler block check', 'One priority recommendation', 'No account required'],
+                  items: ['AI Visibility Score (0-100)', 'Missing signal breakdown', 'AI crawler block check', 'Free custom llms.txt download', 'No account required'],
                 },
                 {
                   tier: 'Full Report Bundle',
@@ -301,6 +324,25 @@ export default function ScannerPage() {
                 <ScoreGauge score={scanData.score} />
               </div>
 
+              {/* Free llms.txt download — highest-value single file, free for all users */}
+              <div className="rounded-xl border border-cyan-500/25 px-5 py-4 flex items-center justify-between gap-4" style={{ background: 'rgba(6,182,212,0.04)' }}>
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-white mb-0.5">Download your custom llms.txt — Free</p>
+                  <p className="text-xs text-white/45 leading-relaxed">
+                    Your personalized llms.txt file, generated specifically for <span className="text-cyan-400 font-semibold">{scanData.domain}</span>. This is the single highest-impact file you can add to improve AI visibility (worth 25 points).
+                  </p>
+                </div>
+                <a
+                  href={`/api/download/free?scanId=${scanData.scanId}`}
+                  download="llms.txt"
+                  className="flex-shrink-0 inline-flex items-center gap-2 text-xs font-black text-black px-4 py-2.5 rounded-lg transition-all hover:scale-[1.03] whitespace-nowrap"
+                  style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+                  Download Free
+                </a>
+              </div>
+
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {(Object.entries(scanData.checks) as [keyof ScanChecks, boolean][]).map(([key, pass]) => {
                   const meta = SIGNAL_LABELS[key]
@@ -312,7 +354,7 @@ export default function ScannerPage() {
               <div className="rounded-xl border border-white/6 p-4" style={{ background: 'rgba(255,255,255,0.015)' }}>
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-xs font-bold uppercase tracking-widest text-white/30">Advanced Analysis</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider" style={{ background: 'rgba(6,182,212,0.1)', color: '#22d3ee', border: '1px solid rgba(6,182,212,0.2)' }}>5 signals</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider" style={{ background: 'rgba(6,182,212,0.1)', color: '#22d3ee', border: '1px solid rgba(6,182,212,0.2)' }}>6 signals</span>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
                   {(Object.entries(scanData.extendedChecks) as [keyof ExtendedChecks, boolean][]).map(([key, value]) => {
@@ -367,6 +409,33 @@ export default function ScannerPage() {
                   </p>
                 </div>
               )}
+
+              {/* AI Citation — what AI currently knows about this business */}
+              {(citationLoading || (citation?.configured && citation)) && (
+                <div className="rounded-xl border border-white/8 p-5" style={{ background: 'rgba(255,255,255,0.02)' }}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-xs font-bold uppercase tracking-widest text-white/30">What AI Currently Knows About You</span>
+                    {citation?.model && !citationLoading && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider" style={{ background: 'rgba(139,92,246,0.1)', color: '#a78bfa', border: '1px solid rgba(139,92,246,0.2)' }}>
+                        via {citation.model}
+                      </span>
+                    )}
+                  </div>
+                  {citationLoading ? (
+                    <div className="flex items-center gap-2 text-sm text-white/30">
+                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                      Asking AI about your business...
+                    </div>
+                  ) : citation?.citation ? (
+                    <p className="text-sm text-white/65 leading-relaxed">{citation.citation}</p>
+                  ) : (
+                    <div className="rounded-lg border border-red-500/25 px-4 py-3" style={{ background: 'rgba(239,68,68,0.06)' }}>
+                      <p className="text-sm text-red-400 font-semibold mb-1">AI has no information about this business.</p>
+                      <p className="text-xs text-white/45 leading-relaxed">When users ask AI assistants about your services, they get nothing back. The fix package below adds the structured data that puts you on AI&apos;s radar.</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="space-y-4">
@@ -375,7 +444,7 @@ export default function ScannerPage() {
                 <p className="text-sm text-white/45">Your complete optimized files are ready. Unlock to view and download.</p>
               </div>
               <BlurredPreview
-                llmsTxtSnippet=""
+                llmsTxtSnippet={scanData.llmsTxtSnippet}
                 jsonLdSnippet=""
                 topRecommendation={scanData.topRecommendation}
                 onUnlock={handleUnlock}

@@ -131,12 +131,14 @@ function checkExtended(
     faqSchema: checkFaqSchema(ldScripts),
     reviewSchema: checkReviewSchema(ldScripts),
     aboutPage: checkAboutPage(root),
+    contactPage: checkContactPage(root),
     contentFresh: checkContentFresh(root, ldScripts),
     jsHeavy: rawHtml ? detectJsHeavy(rawHtml) : false,
   }
 }
 
 // Parse robots.txt and return names of AI crawlers that are fully blocked (Disallow: /)
+// Handles: specific bot rules, wildcard User-agent: *, and Allow: / overrides
 function parseBlockedAiBots(robotsText: string | null): string[] {
   if (!robotsText) return []
 
@@ -151,32 +153,58 @@ function parseBlockedAiBots(robotsText: string | null): string[] {
     { name: 'Google AI (Google-Extended)', id: 'google-extended' },
   ]
 
-  const blocked: string[] = []
-  const lines = robotsText.split('\n')
-  let currentAgents: string[] = []
+  // Parse into rule groups: each group has agents + their disallow/allow rules
+  type RuleGroup = { agents: string[]; disallows: string[]; allows: string[] }
+  const groups: RuleGroup[] = []
+  let current: RuleGroup = { agents: [], disallows: [], allows: [] }
 
-  for (const rawLine of lines) {
+  for (const rawLine of robotsText.split('\n')) {
     const line = rawLine.trim().toLowerCase()
     if (line === '' || line.startsWith('#')) {
-      currentAgents = []
+      if (current.agents.length > 0) { groups.push(current); current = { agents: [], disallows: [], allows: [] } }
       continue
     }
     if (line.startsWith('user-agent:')) {
       const agent = line.slice('user-agent:'.length).trim()
-      currentAgents.push(agent)
-    } else if (line.startsWith('disallow:')) {
-      const path = line.slice('disallow:'.length).trim()
-      if (path === '/') {
-        // Full site block — check each current agent against AI bot list
-        for (const agent of currentAgents) {
-          const match = AI_BOTS.find(b => b.id === agent)
-          if (match && !blocked.includes(match.name)) blocked.push(match.name)
-        }
+      // New user-agent after directives = new group
+      if (current.disallows.length > 0 || current.allows.length > 0) {
+        groups.push(current)
+        current = { agents: [], disallows: [], allows: [] }
       }
+      current.agents.push(agent)
+    } else if (line.startsWith('disallow:')) {
+      current.disallows.push(line.slice('disallow:'.length).trim())
+    } else if (line.startsWith('allow:')) {
+      current.allows.push(line.slice('allow:'.length).trim())
     }
+  }
+  if (current.agents.length > 0) groups.push(current)
+
+  const wildcardGroup = groups.find(g => g.agents.includes('*'))
+
+  const blocked: string[] = []
+  for (const bot of AI_BOTS) {
+    // Specific rule takes precedence over wildcard
+    const specific = groups.find(g => g.agents.includes(bot.id))
+    const applicable = specific ?? wildcardGroup
+    if (!applicable) continue
+    const siteBlocked = applicable.disallows.includes('/') && !applicable.allows.includes('/')
+    if (siteBlocked && !blocked.includes(bot.name)) blocked.push(bot.name)
   }
 
   return blocked
+}
+
+function checkContactPage(root: ReturnType<typeof parse> | null): boolean {
+  if (!root) return false
+  const CONTACT_PATH = /\/(contact|contact-us|contact_us|reach-us|get-in-touch|reach-out)(\/|$|\?)/i
+  const CONTACT_TEXT = /^(contact|contact us|reach us|get in touch|talk to us|reach out)$/i
+  for (const link of root.querySelectorAll('a[href]')) {
+    const href = link.getAttribute('href') || ''
+    const text = link.text.trim()
+    if (CONTACT_PATH.test(href) || CONTACT_TEXT.test(text)) return true
+  }
+  return false
 }
 
 export function normalizeUrl(input: string): string {
