@@ -98,6 +98,8 @@ export async function POST(request: NextRequest) {
     businessName: scan.businessInfo.domain,
     downloadUrl,
     score: scan.score,
+    orderId: session.id,
+    amountPaid: session.amount_total ?? 14900,
   })
 
   await saveScan({ ...scan, status: 'DELIVERED', paid: true, downloadToken, paidAt })

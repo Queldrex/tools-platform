@@ -117,52 +117,161 @@ interface DeliveryEmailProps {
   businessName: string
   downloadUrl: string
   score: number
+  orderId?: string
+  amountPaid?: number  // cents, e.g. 14900
 }
 
-export async function sendDeliveryEmail({ to, businessName, downloadUrl, score }: DeliveryEmailProps) {
+export async function sendDeliveryEmail({ to, businessName, downloadUrl, score, orderId, amountPaid }: DeliveryEmailProps) {
+  const scoreColor = score >= 70 ? '#16a34a' : score >= 40 ? '#d97706' : '#dc2626'
   const scoreLabel = score >= 70 ? 'Good' : score >= 40 ? 'Needs Work' : 'Critical'
+  const orderRef = orderId ? `#QX-${orderId.slice(-8).toUpperCase()}` : '#QX-MANUAL'
+  const amountFormatted = amountPaid ? `$${(amountPaid / 100).toFixed(2)}` : '$149.00'
+  const dateFormatted = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
 
   await getResend().emails.send({
     from: 'Queldrex <reports@queldrex.com>',
     replyTo: 'hello@queldrex.com',
     to,
-    subject: `Your AI Visibility Report is ready — ${businessName}`,
-    html: `
-<!DOCTYPE html>
+    subject: `Order confirmed — AI Visibility Report for ${businessName}`,
+    html: `<!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-  <div style="max-width:560px;margin:40px auto;padding:0 20px;">
-    <div style="background:#0f172a;padding:32px;border-radius:16px 16px 0 0;text-align:center;">
-      <div style="color:#94a3b8;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Queldrex</div>
-      <div style="color:white;font-size:24px;font-weight:700;">Your AI Visibility Report</div>
-    </div>
-    <div style="background:white;padding:32px;border-radius:0 0 16px 16px;box-shadow:0 4px 6px rgba(0,0,0,0.05);">
-      <p style="margin:0 0 16px;color:#374151;">Your report for <strong>${businessName}</strong> is ready.</p>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+<div style="max-width:600px;margin:40px auto;padding:0 16px 40px;">
 
-      <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:20px;margin-bottom:24px;text-align:center;">
-        <div style="font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">AI Visibility Score</div>
-        <div style="font-size:52px;font-weight:800;color:${score >= 70 ? '#16a34a' : score >= 40 ? '#d97706' : '#dc2626'};">${score}<span style="font-size:24px;color:#9ca3af;">/100</span></div>
-        <div style="font-size:13px;color:#6b7280;">${scoreLabel}</div>
-      </div>
-
-      <p style="margin:0 0 24px;color:#374151;">Your package includes:</p>
-      <ul style="margin:0 0 24px;padding-left:20px;color:#374151;line-height:2;">
-        <li>Full AI Visibility Report (HTML)</li>
-        <li>Generated llms.txt — ready to upload</li>
-        <li>LocalBusiness JSON-LD schema — ready to paste</li>
-        <li>Prioritized recommendations</li>
-      </ul>
-
-      <a href="${downloadUrl}" style="display:block;background:#0f172a;color:white;text-decoration:none;text-align:center;padding:16px;border-radius:10px;font-weight:600;font-size:16px;margin-bottom:16px;">
-        Download Your Report
-      </a>
-
-      <p style="margin:0;color:#9ca3af;font-size:12px;text-align:center;">
-        This link expires in 48 hours. Questions? Reply to this email.
-      </p>
-    </div>
+  <!-- Header -->
+  <div style="background:linear-gradient(135deg,#0f172a,#1e3a5f);padding:36px 40px;border-radius:16px 16px 0 0;text-align:center;">
+    <div style="color:#22d3ee;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:10px;">Queldrex · AI Visibility Scanner</div>
+    <div style="color:white;font-size:26px;font-weight:800;margin-bottom:6px;">Order Confirmed</div>
+    <div style="color:#94a3b8;font-size:14px;">Your report is ready to download below.</div>
   </div>
+
+  <!-- Body -->
+  <div style="background:white;padding:36px 40px;border-radius:0 0 16px 16px;box-shadow:0 4px 16px rgba(0,0,0,0.06);">
+
+    <!-- Score -->
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:24px;text-align:center;margin-bottom:28px;">
+      <div style="font-size:11px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">AI Visibility Score — ${businessName}</div>
+      <div style="font-size:60px;font-weight:900;line-height:1;color:${scoreColor};margin-bottom:6px;">${score}<span style="font-size:26px;color:#cbd5e1;">/100</span></div>
+      <div style="display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;background:${scoreColor}18;color:${scoreColor};border:1px solid ${scoreColor}30;">${scoreLabel}</div>
+    </div>
+
+    <!-- Download CTA -->
+    <a href="${downloadUrl}" style="display:block;background:linear-gradient(135deg,#06b6d4,#0891b2);color:white;text-decoration:none;text-align:center;padding:18px;border-radius:12px;font-weight:800;font-size:17px;margin-bottom:8px;">
+      &#8659; Download Your Report Package
+    </a>
+    <p style="margin:0 0 28px;text-align:center;font-size:12px;color:#94a3b8;">Link expires in 48 hours &nbsp;·&nbsp; One-time download &nbsp;·&nbsp; ~15 KB zip file</p>
+
+    <!-- What's in the package -->
+    <div style="margin-bottom:28px;">
+      <div style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:14px;">What's in your package (5 files):</div>
+      <table style="width:100%;border-collapse:collapse;">
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:12px 0;vertical-align:top;width:130px;">
+            <span style="font-family:monospace;font-size:12px;background:#f8fafc;border:1px solid #e2e8f0;padding:3px 8px;border-radius:4px;color:#374151;">report.html</span>
+          </td>
+          <td style="padding:12px 0 12px 12px;vertical-align:top;">
+            <div style="font-size:13px;font-weight:600;color:#1e293b;margin-bottom:2px;">Full AI Visibility Report</div>
+            <div style="font-size:12px;color:#6b7280;">Open in any browser. Shows your 13-signal score breakdown and all recommendations with severity rankings.</div>
+          </td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:12px 0;vertical-align:top;">
+            <span style="font-family:monospace;font-size:12px;background:#f8fafc;border:1px solid #e2e8f0;padding:3px 8px;border-radius:4px;color:#374151;">llms.txt</span>
+          </td>
+          <td style="padding:12px 0 12px 12px;vertical-align:top;">
+            <div style="font-size:13px;font-weight:600;color:#1e293b;margin-bottom:2px;">AI Identity File — upload-ready</div>
+            <div style="font-size:12px;color:#6b7280;">Upload this file to your website root so it's accessible at <strong>${businessName}/llms.txt</strong>. Tells ChatGPT, Claude, and Perplexity exactly what your business does.</div>
+          </td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:12px 0;vertical-align:top;">
+            <span style="font-family:monospace;font-size:12px;background:#f8fafc;border:1px solid #e2e8f0;padding:3px 8px;border-radius:4px;color:#374151;">schema-install.html</span>
+          </td>
+          <td style="padding:12px 0 12px 12px;vertical-align:top;">
+            <div style="font-size:13px;font-weight:600;color:#1e293b;margin-bottom:2px;">JSON-LD Schema — paste-ready</div>
+            <div style="font-size:12px;color:#6b7280;">Open this file, copy the &lt;script&gt; block, and paste it into your site's &lt;head&gt;. Works with WordPress (Yoast/Rank Math), Shopify (theme.liquid), or any HTML page.</div>
+          </td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:12px 0;vertical-align:top;">
+            <span style="font-family:monospace;font-size:12px;background:#f8fafc;border:1px solid #e2e8f0;padding:3px 8px;border-radius:4px;color:#374151;">recommendations.md</span>
+          </td>
+          <td style="padding:12px 0 12px 12px;vertical-align:top;">
+            <div style="font-size:13px;font-weight:600;color:#1e293b;margin-bottom:2px;">Prioritized Fix Checklist</div>
+            <div style="font-size:12px;color:#6b7280;">Step-by-step fixes ranked High → Medium → Low priority. Open in any text editor, Notion, or Obsidian.</div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:12px 0;vertical-align:top;">
+            <span style="font-family:monospace;font-size:12px;background:#f8fafc;border:1px solid #e2e8f0;padding:3px 8px;border-radius:4px;color:#374151;">README.txt</span>
+          </td>
+          <td style="padding:12px 0 12px 12px;vertical-align:top;">
+            <div style="font-size:13px;font-weight:600;color:#1e293b;margin-bottom:2px;">Quick-Start Instructions</div>
+            <div style="font-size:12px;color:#6b7280;">Step-by-step guide for installing all files on your website, with platform-specific notes.</div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Installation steps -->
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:22px;margin-bottom:28px;">
+      <div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:14px;">How to install (4 steps, ~10 minutes):</div>
+      ${[
+        ['Upload llms.txt', `Use FTP, cPanel File Manager, or your hosting panel to upload <code>llms.txt</code> to your website's root folder — the same folder that contains your homepage. Verify it's live by visiting <strong>${businessName}/llms.txt</strong> in your browser.`],
+        ['Add the JSON-LD schema', `Open <code>schema-install.html</code> and copy the entire <code>&lt;script type="application/ld+json"&gt;</code> block. Paste it into the <code>&lt;head&gt;</code> section of every page on your site. In WordPress: Yoast SEO → Schema, or paste via a Custom HTML widget. In Shopify: Online Store → Themes → Edit Code → <code>theme.liquid</code>.`],
+        ['Review your report', `Open <code>report.html</code> in any browser. It shows your full 13-signal breakdown and exactly which fixes will have the most impact. Work through the High Priority items first.`],
+        ['Re-scan in 24–48 hours', `After installing, return to <a href="https://queldrex.com/scanner" style="color:#0891b2;">queldrex.com/scanner</a> and re-scan your site. DNS and crawl caches take time to refresh — your score should increase within 1–2 days.`],
+      ].map(([title, body], i) => `
+      <div style="display:flex;gap:14px;margin-bottom:${i < 3 ? '14px' : '0'};">
+        <div style="width:26px;height:26px;min-width:26px;border-radius:50%;background:#0f172a;color:white;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px;">${i + 1}</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:3px;">${title}</div>
+          <div style="font-size:12px;color:#4b5563;line-height:1.6;">${body}</div>
+        </div>
+      </div>`).join('')}
+    </div>
+
+    <!-- Receipt / Invoice -->
+    <div style="border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;margin-bottom:28px;">
+      <div style="background:#f8fafc;padding:12px 20px;border-bottom:1px solid #e2e8f0;">
+        <div style="font-size:12px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:0.06em;">Order Receipt</div>
+      </div>
+      <div style="padding:16px 20px;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <tr><td style="padding:5px 0;color:#6b7280;width:120px;">Order</td><td style="padding:5px 0;color:#1e293b;font-weight:600;">${orderRef}</td></tr>
+          <tr><td style="padding:5px 0;color:#6b7280;">Date</td><td style="padding:5px 0;color:#1e293b;">${dateFormatted}</td></tr>
+          <tr><td style="padding:5px 0;color:#6b7280;">Item</td><td style="padding:5px 0;color:#1e293b;">AI Visibility Report — ${businessName}</td></tr>
+          <tr><td style="padding:5px 0;color:#6b7280;">Delivery</td><td style="padding:5px 0;color:#1e293b;">Digital download (email)</td></tr>
+          <tr style="border-top:1px solid #f1f5f9;"><td style="padding:10px 0 5px;color:#6b7280;font-weight:600;">Total Paid</td><td style="padding:10px 0 5px;color:#0f172a;font-weight:800;font-size:15px;">${amountFormatted}</td></tr>
+        </table>
+        <p style="margin:10px 0 0;font-size:11px;color:#9ca3af;">Payment processed securely by Stripe. This email serves as your receipt. All sales are final — no refunds on digital products.</p>
+      </div>
+    </div>
+
+    <!-- Need help -->
+    <div style="text-align:center;margin-bottom:8px;">
+      <p style="margin:0;font-size:13px;color:#374151;">Questions about your report? Reply to this email or contact <a href="mailto:hello@queldrex.com" style="color:#0891b2;font-weight:600;">hello@queldrex.com</a></p>
+    </div>
+
+  </div>
+
+  <!-- Legal footer -->
+  <div style="padding:20px 8px 0;text-align:center;">
+    <p style="margin:0 0 6px;font-size:11px;color:#94a3b8;">
+      Queldrex LLC, a Colorado limited liability company &nbsp;·&nbsp; queldrex.com
+    </p>
+    <p style="margin:0 0 6px;font-size:11px;color:#94a3b8;">
+      <a href="https://queldrex.com/privacy" style="color:#94a3b8;">Privacy Policy</a> &nbsp;·&nbsp;
+      <a href="https://queldrex.com/terms" style="color:#94a3b8;">Terms of Service</a> &nbsp;·&nbsp;
+      <a href="https://queldrex.com/refunds" style="color:#94a3b8;">Refund Policy</a>
+    </p>
+    <p style="margin:0;font-size:11px;color:#cbd5e1;">
+      This email was sent to ${to} because you purchased an AI Visibility Report at queldrex.com.
+    </p>
+  </div>
+
+</div>
 </body>
 </html>`,
   })
