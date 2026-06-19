@@ -19,10 +19,21 @@ export async function PATCH(request: NextRequest) {
   if (!secret || secret !== process.env.ADMIN_SECRET)
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { id, status } = await request.json()
-  if (!id || !status) return Response.json({ error: 'id and status required' }, { status: 400 })
-  if (!ALLOWED_STATUSES.includes(status)) return Response.json({ error: 'Invalid status' }, { status: 400 })
+  const body = await request.json() as { id?: string; status?: string; implemented?: boolean }
+  const { id, status, implemented } = body
+  if (!id) return Response.json({ error: 'id required' }, { status: 400 })
 
-  await updateDfyApplication(id, { status })
+  const updates: Record<string, unknown> = {}
+  if (status !== undefined) {
+    if (!ALLOWED_STATUSES.includes(status as typeof ALLOWED_STATUSES[number])) {
+      return Response.json({ error: 'Invalid status' }, { status: 400 })
+    }
+    updates.status = status
+  }
+  if (implemented !== undefined) updates.implemented = implemented
+
+  if (Object.keys(updates).length === 0) return Response.json({ error: 'Nothing to update' }, { status: 400 })
+
+  await updateDfyApplication(id, updates as Parameters<typeof updateDfyApplication>[1])
   return Response.json({ ok: true })
 }

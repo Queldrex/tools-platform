@@ -34,6 +34,8 @@ interface DfyApplication {
   message: string
   status: 'new' | 'contacted' | 'payment_sent' | 'paid' | 'rejected'
   createdAt: string
+  dfyToken?: string
+  implemented?: boolean
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com'
@@ -96,6 +98,75 @@ export default function AdminPage() {
       body: JSON.stringify({ id, status: 'rejected' }),
     })
     setApplications(prev => prev.map(a => a.id === id ? { ...a, status: 'rejected' } : a))
+  }
+
+  const [implementing, setImplementing] = useState<string | null>(null)
+  const [implementResult, setImplementResult] = useState<Record<string, unknown> | null>(null)
+  const [implementError, setImplementError] = useState('')
+
+  const runImplementation = async (app: DfyApplication) => {
+    if (!app.dfyToken || !app.scanId) {
+      alert('Missing dfyToken or scanId — cannot implement. Check that payment was processed via Stripe.')
+      return
+    }
+    setImplementing(app.id)
+    setImplementResult(null)
+    setImplementError('')
+    try {
+      // Step 1: Fetch stored credentials
+      const credsRes = await fetch(`/api/dfy/credentials?token=${app.dfyToken}`, {
+        headers: { 'x-admin-secret': secret },
+      })
+      if (!credsRes.ok) {
+        const err = await credsRes.json()
+        throw new Error(err.error || 'Could not fetch credentials')
+      }
+      const session = await credsRes.json() as { credentials?: { platform: string; fields?: Record<string, string> } | null; status?: string }
+
+      if (!session.credentials || session.credentials.platform === 'manual') {
+        // No automated credentials — mark as manual and notify admin
+        setImplementResult({ status: 'manual', message: `Platform: ${session.credentials?.platform || 'not submitted yet'}. Status: ${session.status}. Customer has not submitted credentials or chose manual install. Coordinate directly with ${app.email}.` })
+        setImplementing(null)
+        return
+      }
+
+      // Step 2: Build ImplementationCredentials from stored session
+      const { platform, fields = {} } = session.credentials
+      let credentials: Record<string, unknown> = { platform }
+      if (platform === 'ftp') {
+        credentials = { platform: 'ftp', host: fields.host, port: fields.port ? parseInt(fields.port) : 21, username: fields.username, password: fields.password, webRoot: fields.webRoot, secure: fields.secure === 'true' }
+      } else if (platform === 'wordpress') {
+        credentials = { platform: 'wordpress', siteUrl: fields.siteUrl, username: fields.username, appPassword: fields.appPassword }
+      } else if (platform === 'github') {
+        credentials = { platform: 'github', repo: fields.repo, branch: fields.branch || 'main', token: fields.token, publicDir: fields.publicDir }
+      } else if (platform === 'shopify') {
+        credentials = { platform: 'shopify', storeUrl: fields.storeUrl, apiToken: fields.apiToken }
+      }
+
+      // Step 3: Run implementation
+      const implRes = await fetch('/api/admin/implement', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        body: JSON.stringify({ scanId: app.scanId, credentials, sendEmail: true }),
+      })
+      const result = await implRes.json()
+      if (!implRes.ok) throw new Error(result.error || 'Implementation failed')
+
+      setImplementResult(result)
+      setApplications(prev => prev.map(a => a.id === app.id ? { ...a, implemented: true } : a))
+      await updateDfyApplication(app.id)
+    } catch (err) {
+      setImplementError(err instanceof Error ? err.message : 'Implementation failed')
+    }
+    setImplementing(null)
+  }
+
+  const updateDfyApplication = async (id: string) => {
+    await fetch('/api/admin/applications', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+      body: JSON.stringify({ id, implemented: true }),
+    }).catch(() => {})
   }
 
   // Feedback
@@ -532,6 +603,74 @@ export default function AdminPage() {
                         >
                           ✉️ Email
                         </a>
+                      </div>
+                    )}
+
+                    {/* Paid DFY — show implementation controls */}
+                    {app.status === 'paid' && (
+                      <div style={{ marginTop: 4 }}>
+                        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                          <button
+                            onClick={() => runImplementation(app)}
+                            disabled={implementing === app.id || app.implemented}
+                            style={{
+                              padding: '6px 18px', borderRadius: 6, fontSize: 12, cursor: app.implemented ? 'default' : 'pointer',
+                              fontWeight: 700, border: '1px solid',
+                              background: app.implemented ? '#052e16' : '#14532d',
+                              color: app.implemented ? '#4ade80' : '#86efac',
+                              borderColor: app.implemented ? '#166534' : '#16a34a',
+                              opacity: implementing === app.id ? 0.7 : 1,
+                            }}
+                          >
+                            {implementing === app.id ? '⚙️ Implementing…' : app.implemented ? '✓ Implemented' : '⚙️ Run Implementation'}
+                          </button>
+                          {app.dfyToken && (
+                            <span style={{ fontSize: 11, color: '#555', fontFamily: 'monospace' }}>
+                              token: {app.dfyToken.slice(0, 8)}…
+                            </span>
+                          )}
+                          {!app.dfyToken && (
+                            <span style={{ fontSize: 11, color: '#f87171' }}>No dfyToken — payment may not have fully processed yet. Refresh.</span>
+                          )}
+                          <a
+                            href={`mailto:${app.email}?subject=Your AI Visibility Implementation — Queldrex&body=Hi ${app.name},%0D%0A%0D%0AYour implementation is complete!`}
+                            style={{ padding: '6px 14px', borderRadius: 6, fontSize: 12, fontWeight: 500, background: '#1c1c1c', color: '#888', border: '1px solid #333', textDecoration: 'none' }}
+                          >
+                            ✉️ Email
+                          </a>
+                        </div>
+
+                        {/* Implementation result */}
+                        {implementing === null && implementResult && (
+                          <div style={{ marginTop: 12, padding: '12px 16px', borderRadius: 8, background: '#052e16', border: '1px solid #166534', fontSize: 12 }}>
+                            {'status' in implementResult && implementResult.status === 'manual' ? (
+                              <p style={{ color: '#fbbf24', margin: 0 }}>⚠️ {String(implementResult.message)}</p>
+                            ) : (
+                              <>
+                                <p style={{ color: '#4ade80', fontWeight: 700, marginBottom: 6 }}>
+                                  Implementation {String(implementResult.status || 'complete')} — Score: {String(implementResult.beforeScore ?? '?')} → {String(implementResult.afterScore ?? '?')}
+                                </p>
+                                {Array.isArray(implementResult.filesImplemented) && implementResult.filesImplemented.length > 0 && (
+                                  <ul style={{ margin: 0, padding: '0 0 0 16px', color: '#86efac' }}>
+                                    {(implementResult.filesImplemented as Array<{path: string; action: string}>).map((f, i) => (
+                                      <li key={i}>{f.action}: {f.path}</li>
+                                    ))}
+                                  </ul>
+                                )}
+                                {Array.isArray(implementResult.errors) && implementResult.errors.length > 0 && (
+                                  <ul style={{ margin: '8px 0 0', padding: '0 0 0 16px', color: '#f87171' }}>
+                                    {(implementResult.errors as string[]).map((e, i) => <li key={i}>{e}</li>)}
+                                  </ul>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        )}
+                        {implementError && implementing === null && (
+                          <div style={{ marginTop: 10, padding: '10px 14px', borderRadius: 8, background: '#1c0a0a', border: '1px solid #7f1d1d', color: '#f87171', fontSize: 12 }}>
+                            {implementError}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

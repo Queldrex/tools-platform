@@ -110,21 +110,37 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-base font-bold text-white mb-3">9. Children&apos;s Privacy</h2>
+            <h2 className="text-base font-bold text-white mb-3">9. California Residents — CCPA Rights</h2>
+            <p className="mb-3">
+              If you are a California resident, the California Consumer Privacy Act (CCPA) grants you the following rights in addition to those in Section 8:
+            </p>
+            <ul className="space-y-2 pl-4 list-disc">
+              <li><strong className="text-white/80">Right to Know</strong> — you may request disclosure of the categories and specific pieces of personal information we have collected about you.</li>
+              <li><strong className="text-white/80">Right to Delete</strong> — you may request deletion of personal information we have collected, subject to certain exceptions.</li>
+              <li><strong className="text-white/80">Right to Opt-Out of Sale</strong> — we do not sell personal information to third parties. There is nothing to opt out of.</li>
+              <li><strong className="text-white/80">Right to Non-Discrimination</strong> — we will not discriminate against you for exercising any CCPA right.</li>
+            </ul>
+            <p className="mt-3">
+              To exercise your CCPA rights, contact us at <a href="mailto:hello@queldrex.com" className="text-cyan-400 hover:text-cyan-300">hello@queldrex.com</a>. We will respond within 45 days as required by law.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-base font-bold text-white mb-3">10. Children&apos;s Privacy</h2>
             <p>
               Our services are not directed at or intended for use by individuals under the age of 18. We do not knowingly collect personal data from minors. If you believe we have inadvertently collected such data, contact us immediately and we will delete it.
             </p>
           </section>
 
           <section>
-            <h2 className="text-base font-bold text-white mb-3">10. Changes to This Policy</h2>
+            <h2 className="text-base font-bold text-white mb-3">11. Changes to This Policy</h2>
             <p>
               We may update this Privacy Policy when our services or legal requirements change. We will post the updated policy on this page with a revised date. Continued use of our services after an update constitutes acceptance of the revised policy.
             </p>
           </section>
 
           <section>
-            <h2 className="text-base font-bold text-white mb-3">11. Contact</h2>
+            <h2 className="text-base font-bold text-white mb-3">12. Contact</h2>
             <p>
               For any questions or concerns about this Privacy Policy, or to exercise your rights, contact us at <a href="mailto:hello@queldrex.com" className="text-cyan-400 hover:text-cyan-300">hello@queldrex.com</a>. We respond to all inquiries within one business day.
             </p>

@@ -134,6 +134,8 @@ export interface DfyApplication {
   message: string
   status: 'new' | 'contacted' | 'payment_sent' | 'paid' | 'rejected'
   createdAt: string
+  dfyToken?: string        // set when Stripe DFY payment is confirmed
+  implemented?: boolean    // set true after admin triggers implementation
 }
 
 const APP_KEY = 'dfyapps'

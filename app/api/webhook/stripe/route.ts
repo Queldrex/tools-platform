@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import Stripe from 'stripe'
 import { v4 as uuidv4 } from 'uuid'
-import { getScan, saveScan, saveDownloadToken, updateScanLog, getDfySession, saveDfySession } from '@/lib/store/redis'
+import { getScan, saveScan, saveDownloadToken, updateScanLog, getDfySession, saveDfySession, updateDfyApplication } from '@/lib/store/redis'
 import { sendDeliveryEmail, sendDfyAuthorizationEmail, sendAdminPurchaseAlert } from '@/lib/email/resend'
 import { env } from '@/lib/env'
 
@@ -62,6 +62,12 @@ export async function POST(request: NextRequest) {
         }
     await saveDfySession(updated)
     await updateScanLog(scanId, { paid: true, paidAt: new Date().toISOString(), status: 'DFY_PAID' }).catch(() => {})
+
+    // Link dfyToken back to the application so admin can trigger implementation
+    const applicationId = session.metadata?.applicationId
+    if (applicationId) {
+      await updateDfyApplication(applicationId, { status: 'paid', dfyToken }).catch(() => {})
+    }
 
     sendAdminPurchaseAlert({
       domain: scan.businessInfo.domain,
