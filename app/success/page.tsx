@@ -1,15 +1,17 @@
 'use client'
 
 import { useEffect, useState, Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import QueldrexLogo from '@/components/Logo'
 
 function SuccessContent() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const sessionId = searchParams.get('session_id')
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [countdown, setCountdown] = useState<number | null>(null)
 
   useEffect(() => {
     if (!sessionId) { setLoading(false); return }
@@ -24,13 +26,21 @@ function SuccessContent() {
             setDownloadUrl(json.downloadUrl)
             setLoading(false)
             clearInterval(interval)
+            setCountdown(8)
           }
         }
       } catch { /* continue polling */ }
-      if (attempts >= 15) { setLoading(false); clearInterval(interval) }
+      if (attempts >= 15) { setLoading(false); clearInterval(interval); setCountdown(8) }
     }, 2000)
     return () => clearInterval(interval)
   }, [sessionId])
+
+  useEffect(() => {
+    if (countdown === null) return
+    if (countdown === 0) { router.push('/scanner'); return }
+    const t = setTimeout(() => setCountdown(c => (c ?? 1) - 1), 1000)
+    return () => clearTimeout(t)
+  }, [countdown, router])
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: '#070b14' }}>
@@ -79,7 +89,7 @@ function SuccessContent() {
 
           <div className="mt-6 pt-6 border-t border-white/5">
             <p className="text-xs text-white/20 mb-4">Your package includes:</p>
-            <div className="grid grid-cols-2 gap-2 text-sm">
+            <div className="grid grid-cols-2 gap-2 text-sm mb-6">
               {['llms.txt file', 'JSON-LD schema', 'HTML report', 'Fix checklist'].map(item => (
                 <div key={item} className="flex items-center gap-1.5 text-white/40">
                   <svg className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,6 +99,14 @@ function SuccessContent() {
                 </div>
               ))}
             </div>
+            <Link
+              href="/scanner"
+              className="block text-center text-sm text-white/40 hover:text-white/70 transition-colors"
+            >
+              {countdown !== null
+                ? `Returning to scanner in ${countdown}s…`
+                : 'Scan another website →'}
+            </Link>
           </div>
         </div>
       </main>
