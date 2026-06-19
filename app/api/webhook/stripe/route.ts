@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server'
 import Stripe from 'stripe'
 import { v4 as uuidv4 } from 'uuid'
-import { getScan, saveScan, saveDownloadToken, updateScanLog } from '@/lib/store/redis'
-import { sendDeliveryEmail } from '@/lib/email/resend'
+import { getScan, saveScan, saveDownloadToken, updateScanLog, getDfySession, saveDfySession } from '@/lib/store/redis'
+import { sendDeliveryEmail, sendDfyAuthorizationEmail } from '@/lib/email/resend'
 import { env } from '@/lib/env'
 
 export const dynamic = 'force-dynamic'
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
   let event: Stripe.Event
   try {
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret)
-  } catch (err) {
+  } catch {
     return Response.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
@@ -33,18 +33,49 @@ export async function POST(request: NextRequest) {
   }
 
   const session = event.data.object as Stripe.Checkout.Session
-
-  // DFY tier is handled at checkout creation time — skip here
-  if (session.metadata?.tier === 'dfy') {
-    return Response.json({ received: true })
-  }
-
   const scanId = session.metadata?.scanId
-
   if (!scanId) {
     return Response.json({ error: 'No scanId in metadata' }, { status: 400 })
   }
 
+  const baseUrl = env('NEXT_PUBLIC_BASE_URL', 'https://queldrex.com')
+
+  // ── DFY $499 ──────────────────────────────────────────────────────────────
+  if (session.metadata?.tier === 'dfy') {
+    const dfyToken = session.metadata.dfyToken
+    if (!dfyToken) return Response.json({ received: true })
+
+    const [scan, existingSession] = await Promise.all([
+      getScan(scanId),
+      getDfySession(dfyToken),
+    ])
+
+    if (!scan) return Response.json({ received: true })
+
+    // Mark session as paid (was pending_payment)
+    const updated = existingSession
+      ? { ...existingSession, status: 'paid' as const }
+      : {
+          token: dfyToken, scanId, emailAddress: scan.emailAddress,
+          domain: scan.businessInfo.domain, score: scan.score,
+          status: 'paid' as const, createdAt: new Date().toISOString(),
+        }
+    await saveDfySession(updated)
+    await updateScanLog(scanId, { paid: true, paidAt: new Date().toISOString(), status: 'DFY_PAID' }).catch(() => {})
+
+    // Auth email sent HERE — only after payment confirmed
+    await sendDfyAuthorizationEmail({
+      to: scan.emailAddress,
+      domain: scan.businessInfo.domain,
+      score: scan.score,
+      credentialsUrl: `${baseUrl}/impl/${dfyToken}`,
+      bookingUrl: `${baseUrl}/book?token=${dfyToken}`,
+    }).catch(() => {})
+
+    return Response.json({ received: true })
+  }
+
+  // ── Bundle $149 ───────────────────────────────────────────────────────────
   const scan = await getScan(scanId)
   if (!scan) {
     return Response.json({ error: 'Scan not found' }, { status: 404 })
@@ -57,16 +88,14 @@ export async function POST(request: NextRequest) {
   const downloadToken = uuidv4()
   await saveDownloadToken(downloadToken, scanId)
 
-  const baseUrl = env('NEXT_PUBLIC_BASE_URL', 'https://queldrex.com')
   const downloadUrl = `${baseUrl}/api/download/${downloadToken}`
-
   const paidAt = new Date().toISOString()
 
   await saveScan({ ...scan, status: 'PAID', paid: true, downloadToken, paidAt })
 
   await sendDeliveryEmail({
     to: scan.emailAddress,
-    businessName: scan.businessInfo.name || scan.businessInfo.domain,
+    businessName: scan.businessInfo.domain,
     downloadUrl,
     score: scan.score,
   })

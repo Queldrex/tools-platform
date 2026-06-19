@@ -7,9 +7,9 @@ export interface DfySession {
   emailAddress: string
   domain: string
   score: number
-  status: 'paid' | 'booked' | 'credentials_submitted' | 'implementing' | 'complete'
+  status: 'pending_payment' | 'paid' | 'booked' | 'credentials_submitted' | 'implementing' | 'complete'
   bookedAt?: string
-  credentials?: string   // JSON string, only populated after client submits form
+  credentials?: string
   createdAt: string
 }
 
@@ -58,7 +58,16 @@ export async function getDfySession(token: string): Promise<DfySession | null> {
   return typeof data === 'string' ? JSON.parse(data) : data as DfySession
 }
 
+export async function updateDfySession(token: string, updates: Partial<DfySession>): Promise<void> {
+  const existing = await getDfySession(token)
+  if (!existing) return
+  await saveDfySession({ ...existing, ...updates })
+}
+
 // ── Permanent scan log ────────────────────────────────────────────────────────
+// Storage: sorted set `scanlog` (score=timestamp, member=scanId)
+//          + string `scanlog:entry:{scanId}` (full JSON)
+// Updates are O(1) — only the entry string is rewritten, sorted set untouched.
 
 export interface ScanLogEntry {
   scanId: string
@@ -72,41 +81,37 @@ export interface ScanLogEntry {
 }
 
 const LOG_KEY = 'scanlog'
+const entryKey = (scanId: string) => `scanlog:entry:${scanId}`
 
 export async function appendScanLog(entry: ScanLogEntry): Promise<void> {
   const redis = getRedis()
   const score = Date.now()
-  // Sorted set: score = unix ms timestamp, member = JSON entry
-  await redis.zadd(LOG_KEY, { score, member: JSON.stringify(entry) })
+  await Promise.all([
+    redis.zadd(LOG_KEY, { score, member: entry.scanId }),
+    redis.set(entryKey(entry.scanId), JSON.stringify(entry)),
+  ])
 }
 
 export async function updateScanLog(scanId: string, updates: Partial<ScanLogEntry>): Promise<void> {
   const redis = getRedis()
-  // Scan the full log to find and replace the entry
-  const all = await redis.zrange(LOG_KEY, 0, -1, { withScores: true })
-  for (let i = 0; i < all.length; i += 2) {
-    const raw = all[i] as string
-    const ts = all[i + 1] as number
-    try {
-      const entry: ScanLogEntry = typeof raw === 'string' ? JSON.parse(raw) : raw
-      if (entry.scanId === scanId) {
-        const updated = { ...entry, ...updates }
-        await redis.zrem(LOG_KEY, raw)
-        await redis.zadd(LOG_KEY, { score: ts, member: JSON.stringify(updated) })
-        return
-      }
-    } catch { /* skip malformed entries */ }
-  }
+  const raw = await redis.get<string>(entryKey(scanId))
+  if (!raw) return
+  const existing: ScanLogEntry = typeof raw === 'string' ? JSON.parse(raw) : raw
+  await redis.set(entryKey(scanId), JSON.stringify({ ...existing, ...updates }))
 }
 
 export async function getScanLog(limit = 200, offset = 0): Promise<ScanLogEntry[]> {
   const redis = getRedis()
-  // Return newest first
-  const raw = await redis.zrange(LOG_KEY, offset, offset + limit - 1, { rev: true })
-  return raw.map(r => {
-    try { return typeof r === 'string' ? JSON.parse(r) : r }
-    catch { return null }
-  }).filter(Boolean) as ScanLogEntry[]
+  const scanIds = await redis.zrange(LOG_KEY, offset, offset + limit - 1, { rev: true }) as string[]
+  if (scanIds.length === 0) return []
+  const raws = await Promise.all(scanIds.map(id => redis.get<string>(entryKey(id))))
+  return raws
+    .map(r => {
+      if (!r) return null
+      try { return typeof r === 'string' ? JSON.parse(r) : r }
+      catch { return null }
+    })
+    .filter(Boolean) as ScanLogEntry[]
 }
 
 export async function getScanLogCount(): Promise<number> {

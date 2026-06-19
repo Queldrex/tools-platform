@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { getDfySession, saveDfySession } from '@/lib/store/redis'
 import { encryptCredentials, decryptCredentials } from '@/lib/crypto'
+import { sendAdminNotification } from '@/lib/email/resend'
 
 export const dynamic = 'force-dynamic'
 
@@ -43,6 +44,13 @@ export async function POST(request: NextRequest) {
     status: 'credentials_submitted',
     credentials: encrypted,
   })
+
+  // Notify admin immediately — non-fatal
+  sendAdminNotification({
+    domain: session.domain,
+    token,
+    platform: platform || 'unknown',
+  }).catch(() => {})
 
   return Response.json({ ok: true })
 }

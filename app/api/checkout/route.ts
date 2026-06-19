@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { getScan, saveScan, saveDfySession } from '@/lib/store/redis'
 import { AI_VISIBILITY_SCANNER_CONFIG } from '@/lib/tools/ai-visibility-scanner/config'
 import { env } from '@/lib/env'
-import { sendDfyAuthorizationEmail } from '@/lib/email/resend'
 
 export const dynamic = 'force-dynamic'
 
@@ -70,29 +69,19 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: 'Payment session could not be created. Please try again.' }, { status: 502 })
     }
 
-    // Pre-create the DFY session in Redis so /book page can read it immediately
+    // Pre-create session as pending_payment so /book page loads on redirect.
+    // Auth email is sent ONLY after Stripe webhook confirms payment.
     await saveDfySession({
       token: dfyToken,
       scanId,
       emailAddress: scan.emailAddress,
       domain: scan.businessInfo.domain,
       score: scan.score,
-      status: 'paid',
+      status: 'pending_payment',
       createdAt: new Date().toISOString(),
     })
 
     await saveScan({ ...scan, stripeSessionId: session.id })
-
-    // Send authorization + disclosure email immediately after payment
-    const credentialsUrl = `${baseUrl}/impl/${dfyToken}`
-    const bookingUrl = `${baseUrl}/book?token=${dfyToken}`
-    await sendDfyAuthorizationEmail({
-      to: scan.emailAddress,
-      domain: scan.businessInfo.domain,
-      score: scan.score,
-      credentialsUrl,
-      bookingUrl,
-    }).catch(() => {/* non-fatal — user lands on /book page regardless */})
 
     return Response.json({ checkoutUrl: session.url })
   }

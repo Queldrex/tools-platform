@@ -243,6 +243,33 @@ export async function sendDfyAuthorizationEmail({ to, domain, score, credentials
   })
 }
 
+export async function sendAdminNotification({ domain, token, platform }: { domain: string; token: string; platform: string }) {
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
+  await getResend().emails.send({
+    from: 'Queldrex <reports@queldrex.com>',
+    to: 'hello@queldrex.com',
+    subject: `[Action Required] DFY credentials submitted — ${domain}`,
+    html: `
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="font-family:system-ui,sans-serif;padding:32px;background:#f8fafc;">
+  <div style="max-width:480px;margin:0 auto;background:white;padding:28px;border-radius:12px;border:1px solid #e5e7eb;">
+    <h2 style="margin:0 0 16px;color:#0f172a;">Credentials ready for implementation</h2>
+    <table style="width:100%;font-size:14px;border-collapse:collapse;">
+      <tr><td style="padding:8px 0;color:#6b7280;width:100px;">Domain</td><td style="padding:8px 0;font-weight:600;">${domain}</td></tr>
+      <tr><td style="padding:8px 0;color:#6b7280;">Platform</td><td style="padding:8px 0;">${platform}</td></tr>
+    </table>
+    <a href="${baseUrl}/admin" style="display:block;margin-top:20px;background:#0f172a;color:white;text-decoration:none;text-align:center;padding:12px;border-radius:8px;font-weight:600;">
+      Open Admin Dashboard →
+    </a>
+    <p style="margin:16px 0 0;font-size:12px;color:#9ca3af;text-align:center;">Token: ${token}</p>
+  </div>
+</body>
+</html>`,
+  })
+}
+
 interface ImplementationEmailProps {
   to: string
   result: ImplementationResult
