@@ -7,48 +7,59 @@ import Footer from '@/components/Footer'
 
 type Platform = 'ftp' | 'wordpress' | 'github' | 'shopify' | 'wix' | 'squarespace' | 'webflow' | 'other'
 
-// Closed platforms — no credentials needed, manual implementation
 const MANUAL_PLATFORMS = new Set<Platform>(['wix', 'squarespace', 'webflow', 'other'])
 
 const PLATFORMS: { id: Platform; label: string; desc: string }[] = [
-  { id: 'ftp',         label: 'FTP / cPanel',                 desc: 'Shared hosting — Bluehost, GoDaddy, SiteGround, DreamHost, HostGator, Namecheap, etc.' },
-  { id: 'wordpress',   label: 'WordPress',                    desc: 'Self-hosted WordPress on any host. We use an application password — no admin login needed.' },
+  { id: 'ftp',         label: 'FTP / cPanel',                    desc: 'Shared hosting — Bluehost, GoDaddy, SiteGround, DreamHost, HostGator, Namecheap, etc.' },
+  { id: 'wordpress',   label: 'WordPress',                       desc: 'Self-hosted WordPress on any host. We use an application password — no admin login needed.' },
   { id: 'github',      label: 'Vercel / Netlify / GitHub Pages', desc: 'Git-deployed sites. We commit files directly to your repo and they auto-deploy.' },
-  { id: 'shopify',     label: 'Shopify',                      desc: 'We inject schema into your theme via the Shopify Admin API.' },
-  { id: 'wix',         label: 'Wix',                          desc: 'No credentials needed. We apply fixes manually via your site — done within 48 hours.' },
-  { id: 'squarespace', label: 'Squarespace',                  desc: 'No credentials needed. We apply fixes manually via your site — done within 48 hours.' },
-  { id: 'webflow',     label: 'Webflow',                      desc: 'No credentials needed. We apply fixes manually via your site — done within 48 hours.' },
-  { id: 'other',       label: 'Other / Not Sure',             desc: 'Custom CMS, Framer, or anything else. Tell us what it is and we\'ll handle it.' },
+  { id: 'shopify',     label: 'Shopify',                         desc: 'We inject schema into your theme via the Shopify Admin API.' },
+  { id: 'wix',         label: 'Wix',                             desc: 'No credentials needed. We apply fixes manually via your site — done within 48 hours.' },
+  { id: 'squarespace', label: 'Squarespace',                     desc: 'No credentials needed. We apply fixes manually via your site — done within 48 hours.' },
+  { id: 'webflow',     label: 'Webflow',                         desc: 'No credentials needed. We apply fixes manually via your site — done within 48 hours.' },
+  { id: 'other',       label: 'Other / Not Sure',                desc: "Custom CMS, Framer, or anything else. Tell us what it is and we'll handle it." },
 ]
 
 const FIELD_LABELS: Partial<Record<Platform, { label: string; key: string; type?: string; placeholder: string; hint?: string }[]>> = {
   ftp: [
-    { label: 'FTP Host',                   key: 'host',      placeholder: 'ftp.yourdomain.com',  hint: 'Found in your hosting control panel under FTP accounts' },
-    { label: 'FTP Port',                   key: 'port',      placeholder: '21 (default)',         hint: 'Leave blank for standard port 21' },
-    { label: 'FTP Username',               key: 'username',  placeholder: 'your-ftp-username' },
-    { label: 'FTP Password',               key: 'password',  type: 'password', placeholder: 'your-ftp-password' },
-    { label: 'Web Root Path (optional)',   key: 'webRoot',   placeholder: '/public_html',         hint: 'We auto-detect this if left blank. Common: /public_html, /www, /htdocs' },
+    { label: 'FTP Host',                 key: 'host',      placeholder: 'ftp.yourdomain.com',  hint: 'Found in your hosting control panel under FTP accounts' },
+    { label: 'FTP Port',                 key: 'port',      placeholder: '21 (default)',         hint: 'Leave blank for standard port 21' },
+    { label: 'FTP Username',             key: 'username',  placeholder: 'your-ftp-username' },
+    { label: 'FTP Password',             key: 'password',  type: 'password', placeholder: 'your-ftp-password' },
+    { label: 'Web Root Path (optional)', key: 'webRoot',   placeholder: '/public_html',         hint: 'We auto-detect this if left blank. Common: /public_html, /www, /htdocs' },
   ],
   wordpress: [
-    { label: 'WordPress Site URL',         key: 'siteUrl',     placeholder: 'https://yoursite.com',              hint: 'The URL where WordPress is installed' },
-    { label: 'Admin Username',             key: 'username',    placeholder: 'admin' },
-    { label: 'Application Password',       key: 'appPassword', type: 'password', placeholder: 'xxxx xxxx xxxx xxxx xxxx xxxx', hint: 'WordPress Admin → Users → Your Profile → Application Passwords → Add New' },
+    { label: 'WordPress Site URL',     key: 'siteUrl',     placeholder: 'https://yoursite.com',              hint: 'The URL where WordPress is installed' },
+    { label: 'Admin Username',         key: 'username',    placeholder: 'admin' },
+    { label: 'Application Password',   key: 'appPassword', type: 'password', placeholder: 'xxxx xxxx xxxx xxxx xxxx xxxx', hint: 'WordPress Admin → Users → Your Profile → Application Passwords → Add New' },
   ],
   github: [
-    { label: 'GitHub Repository',          key: 'repo',      placeholder: 'username/repository-name', hint: 'Example: acme-corp/website' },
-    { label: 'Branch',                     key: 'branch',    placeholder: 'main',                      hint: 'The branch Vercel/Netlify deploys from (usually main or master)' },
-    { label: 'GitHub Personal Access Token', key: 'token',   type: 'password', placeholder: 'ghp_xxxxxxxxxxxxxxxxxxxx', hint: 'GitHub → Settings → Developer settings → Personal access tokens → Generate (need: repo full control)' },
-    { label: 'Public folder (optional)',   key: 'publicDir', placeholder: 'public',                    hint: 'Where static files live. Usually: public (Next.js/Nuxt), static (Hugo), docs (GitHub Pages). Leave blank to auto-detect.' },
+    { label: 'GitHub Repository',              key: 'repo',      placeholder: 'username/repository-name', hint: 'Example: acme-corp/website' },
+    { label: 'Branch',                         key: 'branch',    placeholder: 'main',                      hint: 'The branch Vercel/Netlify deploys from (usually main or master)' },
+    { label: 'GitHub Personal Access Token',   key: 'token',     type: 'password', placeholder: 'ghp_xxxxxxxxxxxxxxxxxxxx', hint: 'GitHub → Settings → Developer settings → Personal access tokens → Generate (need: repo full control)' },
+    { label: 'Public folder (optional)',       key: 'publicDir', placeholder: 'public',                    hint: 'Where static files live. Usually: public (Next.js/Nuxt), static (Hugo), docs (GitHub Pages). Leave blank to auto-detect.' },
   ],
   shopify: [
-    { label: 'Shopify Store URL',          key: 'storeUrl',  placeholder: 'yourstore.myshopify.com', hint: 'Do NOT include https://' },
-    { label: 'Admin API Access Token',     key: 'apiToken',  type: 'password', placeholder: 'shpat_xxxxxxxxxxxxxxxxxxxx', hint: 'Shopify Admin → Settings → Apps → Develop apps → Create app → Admin API access token (need: write_themes)' },
+    { label: 'Shopify Store URL',        key: 'storeUrl', placeholder: 'yourstore.myshopify.com', hint: 'Do NOT include https://' },
+    { label: 'Admin API Access Token',   key: 'apiToken', type: 'password', placeholder: 'shpat_xxxxxxxxxxxxxxxxxxxx', hint: 'Shopify Admin → Settings → Apps → Develop apps → Create app → Admin API access token (need: write_themes)' },
   ],
   other: [
-    { label: 'Platform / CMS',            key: 'platform',  placeholder: 'e.g. Framer, custom PHP, Drupal…',  hint: 'Tell us what your site runs on so we can prepare the right approach' },
-    { label: 'Any notes (optional)',       key: 'notes',     placeholder: 'Hosting provider, CMS version, anything relevant' },
+    { label: 'Platform / CMS',       key: 'platform', placeholder: 'e.g. Framer, custom PHP, Drupal…', hint: 'Tell us what your site runs on so we can prepare the right approach' },
+    { label: 'Any notes (optional)', key: 'notes',    placeholder: 'Hosting provider, CMS version, anything relevant' },
   ],
 }
+
+const SIGNALS = [
+  { name: 'llms.txt',               desc: 'AI-readable site description for ChatGPT, Perplexity, Claude, and Google AI',              pts: '+25 pts' },
+  { name: 'JSON-LD Schema',         desc: 'LocalBusiness or Organization structured data so AI understands who and where you are',    pts: '+20 pts' },
+  { name: 'JSON-LD (FAQ + Review)', desc: 'FAQ Schema and Review Schema added where applicable',                                      pts: 'Advanced' },
+  { name: 'robots.txt',             desc: 'AI bot permissions (GPTBot, ClaudeBot, PerplexityBot, Googlebot, Google-Extended)',        pts: '+5 pts' },
+  { name: 'sitemap.xml',            desc: 'Full page index so AI crawlers discover all your content',                                 pts: '+10 pts' },
+  { name: 'Open Graph + Canonical', desc: 'Social sharing metadata and canonical URL tag',                                            pts: '+10 pts' },
+  { name: 'HTTPS Verification',     desc: 'Confirm SSL is active and properly configured',                                            pts: '+10 pts' },
+  { name: 'About / Team page',      desc: 'Add or update your About page with AI-indexable content',                                  pts: 'Advanced' },
+  { name: 'Content Freshness',      desc: 'dateModified schema on key pages to signal active content',                                pts: 'Advanced' },
+]
 
 export default function ImplCredentialsPage() {
   const params = useParams()
@@ -56,15 +67,17 @@ export default function ImplCredentialsPage() {
 
   const [platform, setPlatform] = useState<Platform | null>(null)
   const [fields, setFields] = useState<Record<string, string>>({})
+  const [agreed, setAgreed] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
 
   const isManual = platform !== null && MANUAL_PLATFORMS.has(platform)
+  const canSubmit = platform !== null && agreed
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!platform) return
+    if (!platform || !agreed) return
     setSubmitting(true)
     setError('')
 
@@ -97,12 +110,12 @@ export default function ImplCredentialsPage() {
             </svg>
           </div>
           <h1 className="text-2xl font-black text-white mb-3">
-            {isManual ? 'Got it — we\'ll handle everything.' : 'All set.'}
+            {isManual ? "Got it — we'll handle everything." : 'All set.'}
           </h1>
           <p className="text-white/60 leading-relaxed">
             {isManual
-              ? `Your site is on ${PLATFORMS.find(p => p.id === platform)?.label}. We'll apply your AI visibility fixes manually within 48 hours and email you a before/after report confirming every signal that changed.`
-              : "We have your details. On your booked implementation day, we'll connect, make all the changes, and email you a before/after visibility report confirming everything passed."
+              ? `Your site is on ${PLATFORMS.find(p => p.id === platform)?.label}. We'll apply all AI visibility fixes manually within 48 hours and email you a before/after report confirming every change.`
+              : "We have your details. On your booked implementation day, we'll connect, make all changes, and email you a before/after visibility report confirming everything passed."
             }
           </p>
           <p className="text-white/35 text-sm mt-6">Questions? <a href="mailto:hello@queldrex.com" className="text-cyan-400">hello@queldrex.com</a></p>
@@ -121,16 +134,41 @@ export default function ImplCredentialsPage() {
           <p className="text-cyan-500 text-xs font-bold tracking-[0.28em] uppercase mb-3">Done-For-You Implementation</p>
           <h1 className="text-3xl font-black text-white mb-3">Submit your hosting details</h1>
           <p className="text-white/55 text-sm leading-relaxed max-w-lg">
-            This link is private and tied to your order. We use these details only to install your AI visibility files. Credentials are deleted immediately after implementation.
+            This link is private and tied to your order. We use these details only to install your AI visibility files.
           </p>
         </div>
 
+        {/* What we'll implement */}
+        <div className="rounded-2xl border border-white/8 p-6 mb-8" style={{ background: 'rgba(255,255,255,0.02)' }}>
+          <p className="text-xs font-bold text-white/40 uppercase tracking-wider mb-4">What We Will Implement</p>
+          <div className="space-y-3">
+            {SIGNALS.map(s => (
+              <div key={s.name} className="flex items-start gap-3">
+                <span className="text-green-400 mt-0.5 flex-shrink-0">
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                </span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm font-semibold text-white">{s.name}</span>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded" style={{ background: s.pts.startsWith('+') ? 'rgba(34,197,94,0.1)' : 'rgba(6,182,212,0.1)', color: s.pts.startsWith('+') ? '#4ade80' : '#06d6ff', border: `1px solid ${s.pts.startsWith('+') ? 'rgba(34,197,94,0.2)' : 'rgba(6,182,212,0.2)'}` }}>{s.pts}</span>
+                  </div>
+                  <p className="text-xs text-white/40 mt-0.5 leading-relaxed">{s.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-white/30 mt-4 pt-4 border-t border-white/8">
+            Signals marked <span className="text-cyan-400/70">Advanced</span> are implemented where your platform allows. Coverage is confirmed in your before/after report.
+          </p>
+        </div>
+
+        {/* Security notice */}
         <div className="flex items-start gap-3 rounded-xl border border-amber-500/20 p-4 mb-8" style={{ background: 'rgba(245,158,11,0.06)' }}>
           <svg className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
           </svg>
           <p className="text-xs text-amber-300/80 leading-relaxed">
-            Your credentials are transmitted over HTTPS and stored encrypted. We access your site only during the agreed implementation window and delete all credentials immediately after.
+            Your credentials are transmitted over HTTPS and stored encrypted. We access your site only during the agreed implementation window and delete all credentials permanently within 48 hours of completion.
           </p>
         </div>
 
@@ -182,9 +220,9 @@ export default function ImplCredentialsPage() {
                 <div>
                   <p className="text-sm font-bold text-green-300 mb-1">No credentials needed for {PLATFORMS.find(p => p.id === platform)?.label}</p>
                   <p className="text-xs text-white/50 leading-relaxed">
-                    {platform === 'wix' && 'Wix doesn\'t support external FTP access. We\'ll log in via your shared Wix account and apply all fixes manually — JSON-LD via custom code injection and llms.txt content via a workaround page.'}
-                    {platform === 'squarespace' && 'Squarespace doesn\'t allow FTP. We\'ll apply your JSON-LD schema via the code injection panel and handle llms.txt via the best available workaround.'}
-                    {platform === 'webflow' && 'Webflow sites are deployed via their platform. We\'ll add your JSON-LD via custom code in your site settings and handle static file hosting separately.'}
+                    {platform === 'wix' && "Wix doesn't support external FTP access. We'll log in via your shared Wix account and apply all fixes manually — JSON-LD via custom code injection and llms.txt content via a workaround page."}
+                    {platform === 'squarespace' && "Squarespace doesn't allow FTP. We'll apply your JSON-LD schema via the code injection panel and handle llms.txt via the best available workaround."}
+                    {platform === 'webflow' && "Webflow sites are deployed via their platform. We'll add your JSON-LD via custom code in your site settings and handle static file hosting separately."}
                   </p>
                   <p className="text-xs text-white/40 mt-3">
                     <strong className="text-white/60">Timeline:</strong> Fixes applied within 48 hours. You&apos;ll receive a before/after report by email when complete.
@@ -194,11 +232,11 @@ export default function ImplCredentialsPage() {
             </div>
           )}
 
-          {/* Credential fields for technical platforms + "other" */}
+          {/* Credential fields for technical platforms */}
           {platform && !isManual && FIELD_LABELS[platform] && (
             <div className="rounded-2xl border border-white/8 p-6 space-y-5" style={{ background: '#111827' }}>
               <p className="text-xs font-bold text-white/40 uppercase tracking-wider">
-                {PLATFORMS.find(p2 => p2.id === platform)?.label} Details
+                {PLATFORMS.find(p2 => p2.id === platform)?.label} Access Details
               </p>
               {(FIELD_LABELS[platform] ?? []).map(f => (
                 <div key={f.key}>
@@ -219,7 +257,7 @@ export default function ImplCredentialsPage() {
             </div>
           )}
 
-          {/* "Other" platform — ask what it is */}
+          {/* "Other" platform */}
           {platform === 'other' && (
             <div className="rounded-2xl border border-white/8 p-6 space-y-5" style={{ background: '#111827' }}>
               <p className="text-xs font-bold text-white/40 uppercase tracking-wider">Tell us about your setup</p>
@@ -240,6 +278,40 @@ export default function ImplCredentialsPage() {
             </div>
           )}
 
+          {/* Service Agreement */}
+          {platform && (
+            <div className="rounded-2xl border border-white/10 p-6 space-y-4" style={{ background: '#0d1117' }}>
+              <p className="text-xs font-bold text-white/50 uppercase tracking-wider">Done-For-You Service Agreement</p>
+              <div className="text-xs text-white/45 leading-relaxed space-y-3 max-h-56 overflow-y-auto pr-1 border border-white/6 rounded-xl p-4" style={{ background: 'rgba(0,0,0,0.2)' }}>
+                <p>This Service Agreement (&quot;Agreement&quot;) is between <strong className="text-white/70">Queldrex LLC</strong>, a Colorado limited liability company (&quot;Provider&quot;), and you (&quot;Client&quot;), effective upon submission of this form.</p>
+
+                <p><strong className="text-white/70">1. Scope of Services.</strong> Provider will implement the following AI visibility signals on the website identified by this order: llms.txt, JSON-LD structured data (LocalBusiness / Organization schema), FAQ Schema and Review Schema where applicable, robots.txt with AI bot permissions, sitemap.xml, Open Graph metadata and canonical URL tag, HTTPS configuration verification, About/Team page content optimization, and content freshness signals (dateModified schema). Implementation scope may vary by platform.</p>
+
+                <p><strong className="text-white/70">2. Access and Authorization.</strong> Client grants Provider limited, temporary access to the website solely to implement the services above. Client confirms they own the website or are legally authorized to grant this access on behalf of the website owner. Provider will access the site only during the agreed implementation window.</p>
+
+                <p><strong className="text-white/70">3. Data Security.</strong> All credentials are transmitted via HTTPS encryption and stored in encrypted format. Provider will permanently delete all credentials within 48 hours of implementation completion.</p>
+
+                <p><strong className="text-white/70">4. Timeline and Deliverables.</strong> For platforms requiring credentials (FTP, WordPress, GitHub, Shopify): implementation is performed on the booked slot. For manual platforms (Wix, Squarespace, Webflow): implementation is completed within 48 hours of this submission. Client will receive a before/after AI visibility report confirming every signal implemented.</p>
+
+                <p><strong className="text-white/70">5. Limitation of Liability.</strong> Provider&apos;s liability is limited to the amount paid for this service. Provider is not responsible for changes to third-party platforms, AI crawling behavior, or search ranking outcomes after implementation.</p>
+
+                <p><strong className="text-white/70">6. Governing Law.</strong> This Agreement is governed by the laws of the State of Colorado. By submitting this form, Client acknowledges reading and agreeing to this Agreement and to Queldrex&apos;s <a href="/terms" className="text-cyan-400">Terms of Service</a> and <a href="/refunds" className="text-cyan-400">Refund Policy</a>.</p>
+              </div>
+
+              <label className="flex items-start gap-3 cursor-pointer group mt-2">
+                <input
+                  type="checkbox"
+                  checked={agreed}
+                  onChange={e => setAgreed(e.target.checked)}
+                  className="mt-0.5 flex-shrink-0 w-4 h-4 rounded accent-cyan-500"
+                />
+                <span className="text-sm text-white/70 group-hover:text-white/90 transition-colors leading-relaxed">
+                  I have read and agree to the Service Agreement above. I confirm I own or am authorized to modify this website, and I authorize Queldrex LLC to make the technical changes described above on my behalf.
+                </span>
+              </label>
+            </div>
+          )}
+
           {error && (
             <p className="text-red-400 text-sm rounded-lg border border-red-500/20 p-3" style={{ background: 'rgba(239,68,68,0.06)' }}>
               {error}
@@ -249,19 +321,13 @@ export default function ImplCredentialsPage() {
           {platform && (
             <button
               type="submit"
-              disabled={submitting}
-              className="w-full py-4 rounded-xl text-sm font-black text-black disabled:opacity-60 disabled:cursor-not-allowed transition-all hover:scale-[1.01]"
-              style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 24px rgba(6,182,212,0.25)' }}
+              disabled={submitting || !canSubmit}
+              className="w-full py-4 rounded-xl text-sm font-black text-black disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-[1.01]"
+              style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: canSubmit ? '0 0 24px rgba(6,182,212,0.25)' : 'none' }}
             >
-              {submitting ? 'Submitting…' : isManual ? 'Confirm — Apply My Fixes' : 'Submit Hosting Details'}
+              {submitting ? 'Submitting…' : !agreed ? 'Accept Service Agreement to Continue' : isManual ? 'Confirm — Apply My Fixes' : 'Submit Hosting Details'}
             </button>
           )}
-
-          <p className="text-xs text-white/25 text-center leading-relaxed">
-            By submitting, you confirm you own or are authorized to modify this website, per our{' '}
-            <a href="/terms" className="text-white/40 hover:text-white/60">Terms of Service</a>.
-            {!isManual && ' All credentials are permanently deleted within 48 hours of implementation.'}
-          </p>
 
         </form>
       </main>
