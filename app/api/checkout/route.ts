@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
         metadata: { scanId, toolId: AI_VISIBILITY_SCANNER_CONFIG.toolId, tier: 'dfy', dfyToken },
         customer_email: scan.emailAddress,
         automatic_tax: { enabled: true },
+        allow_promotion_codes: true,
         success_url: `${baseUrl}/book?token=${dfyToken}`,
         cancel_url: `${baseUrl}/cancel`,
       })
@@ -106,6 +107,7 @@ export async function POST(request: NextRequest) {
       metadata: { scanId, toolId: AI_VISIBILITY_SCANNER_CONFIG.toolId, tier: 'bundle' },
       customer_email: scan.emailAddress,
       automatic_tax: { enabled: true },
+      allow_promotion_codes: true,
       success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/cancel`,
     })
