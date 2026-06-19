@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useRef } from 'react'
 import Link from 'next/link'
@@ -78,7 +78,7 @@ export default function ScannerPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url, email }),
       })
-      let json: { status?: string; error?: string; scanId?: string; score?: number; checks?: ScanChecks; blockedAiBots?: string[]; responseTimeMs?: number; businessInfo?: { name?: string; domain?: string }; recommendations?: { title: string }[] }
+      let json: { status?: string; error?: string; scanId?: string; score?: number; checks?: ScanChecks; businessInfo?: { name?: string; domain?: string }; recommendations?: { title: string }[]; blockedAiBots?: string[]; responseTimeMs?: number }
       try { json = await res.json() } catch { throw new Error('Unexpected server response. Please try again.') }
       if (!res.ok || json.status === 'ERROR') throw new Error(json.error || 'Scan failed. Check the URL and try again.')
       setScanData({
@@ -131,7 +131,7 @@ export default function ScannerPage() {
     <div className="min-h-screen text-white" style={{ background: '#070b14' }}>
       <Header />
 
-      {/* Marketing hero — visible before scanning */}
+      {/* Marketing hero */}
       {state === 'idle' && (
         <section className="relative overflow-hidden border-b border-white/5">
           <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 70% 60% at 50% 0%, rgba(6,182,212,0.07) 0%, transparent 60%)' }} />
@@ -149,7 +149,6 @@ export default function ScannerPage() {
               We scan your site for 8 signals AI assistants look for — including whether ChatGPT and Claude are being blocked from reading your site. You get a score, a breakdown, and the exact files to fix it.
             </p>
 
-            {/* What we check */}
             <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 mb-10 max-w-3xl mx-auto">
               {['llms.txt', 'JSON-LD', 'LocalBusiness', 'Open Graph', 'Sitemap', 'HTTPS', 'Canonical', 'Robots.txt'].map((s) => (
                 <div key={s} className="rounded-lg px-2 py-2.5 border border-white/8 text-center" style={{ background: 'rgba(6,182,212,0.04)' }}>
@@ -171,7 +170,6 @@ export default function ScannerPage() {
         </section>
       )}
 
-      {/* What you get — visible before scanning */}
       {state === 'idle' && (
         <section className="border-b border-white/5">
           <div className="max-w-5xl mx-auto px-6 py-14">
@@ -183,7 +181,7 @@ export default function ScannerPage() {
                   price: '$0',
                   color: 'rgba(255,255,255,0.02)',
                   border: 'rgba(255,255,255,0.08)',
-                  items: ['AI Visibility Score (0–100)', 'Missing signal breakdown', 'One priority recommendation', 'No account required'],
+                  items: ['AI Visibility Score (0-100)', 'Missing signal breakdown', 'AI crawler block check', 'One priority recommendation', 'No account required'],
                 },
                 {
                   tier: 'Full Report Bundle',
@@ -220,7 +218,6 @@ export default function ScannerPage() {
         </section>
       )}
 
-      {/* Scan form */}
       <div className="max-w-7xl mx-auto px-6 pt-10 pb-2">
         <div className="flex items-center gap-2 text-xs text-white/30 mb-6">
           <Link href="/" className="hover:text-white transition-colors">
@@ -252,36 +249,24 @@ export default function ScannerPage() {
         </div>
       </div>
 
-      {/* Results area */}
       <div ref={resultsRef} className="max-w-7xl mx-auto px-6 pb-24">
         {state === 'scanning' && (
           <div className="rounded-2xl border border-white/8 p-12 text-center" style={{ background: 'rgba(255,255,255,0.02)' }}>
             <div className="w-16 h-16 mx-auto mb-5 rounded-full flex items-center justify-center" style={{ background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.2)' }}>
               <svg className="w-7 h-7 text-cyan-400 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
             </div>
-            <h2 className="text-xl font-bold text-white mb-2">Scanning {scannedDomain}…</h2>
+            <h2 className="text-xl font-bold text-white mb-2">Scanning {scannedDomain}...</h2>
             <p className="text-white/45 text-sm max-w-xs mx-auto">Checking 8 AI visibility signals and generating your fix package.</p>
           </div>
         )}
 
         {state === 'results' && scanData && (
           <div className="grid xl:grid-cols-[1fr_420px] gap-6">
-            {/* Left: Audit panel */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-bold text-white">Audit Results</h2>
                 <div className="flex items-center gap-3">
                   <span className="text-xs text-white/25">Scanned {new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}</span>
-                  <a
-                    href={`/share/${scanData.scanId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-white/40 hover:text-cyan-400 transition-colors font-semibold flex items-center gap-1"
-                    title="Share your score"
-                  >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
-                    Share
-                  </a>
                   <button onClick={() => { setState('idle'); setScanData(null) }} className="text-xs text-cyan-500 hover:text-cyan-300 transition-colors font-semibold">Scan another</button>
                 </div>
               </div>
@@ -305,44 +290,6 @@ export default function ScannerPage() {
                 )
               })()}
 
-              {/* CRITICAL: AI crawler blocking warning */}
-              {scanData.blockedAiBots.length > 0 && (
-                <div className="rounded-xl px-5 py-4 border flex items-start gap-3" style={{ background: 'rgba(239,68,68,0.06)', borderColor: 'rgba(239,68,68,0.3)' }}>
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)' }}>
-                    <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
-                  </div>
-                  <div>
-                    <p className="text-sm font-black text-red-400 mb-1">CRITICAL: {scanData.blockedAiBots.length} AI crawler{scanData.blockedAiBots.length > 1 ? 's' : ''} blocked</p>
-                    <p className="text-xs text-red-300/70 leading-relaxed">Your robots.txt is actively blocking: <span className="text-red-300 font-semibold">{scanData.blockedAiBots.join(', ')}</span>. These AI systems cannot read your site at all — no other signal matters until this is fixed.</p>
-                  </div>
-                </div>
-              )}
-
-              {/* Response time & quick stats row */}
-              <div className="grid grid-cols-3 gap-3">
-                <div className="rounded-xl border border-white/8 px-4 py-3 text-center" style={{ background: 'rgba(255,255,255,0.02)' }}>
-                  <p className="text-xs text-white/35 uppercase tracking-wider mb-1">Response</p>
-                  <p className={`text-lg font-black ${scanData.responseTimeMs < 1000 ? 'text-green-400' : scanData.responseTimeMs < 3000 ? 'text-amber-400' : 'text-red-400'}`}>
-                    {scanData.responseTimeMs < 1000 ? `${scanData.responseTimeMs}ms` : `${(scanData.responseTimeMs / 1000).toFixed(1)}s`}
-                  </p>
-                  <p className="text-[10px] text-white/25 mt-0.5">{scanData.responseTimeMs < 1000 ? 'Fast' : scanData.responseTimeMs < 3000 ? 'Moderate' : 'Slow'}</p>
-                </div>
-                <div className="rounded-xl border border-white/8 px-4 py-3 text-center" style={{ background: 'rgba(255,255,255,0.02)' }}>
-                  <p className="text-xs text-white/35 uppercase tracking-wider mb-1">Signals</p>
-                  <p className="text-lg font-black text-white">
-                    {Object.values(scanData.checks).filter(Boolean).length}<span className="text-white/30 text-sm">/8</span>
-                  </p>
-                  <p className="text-[10px] text-white/25 mt-0.5">Passing</p>
-                </div>
-                <div className="rounded-xl border border-white/8 px-4 py-3 text-center" style={{ background: 'rgba(255,255,255,0.02)' }}>
-                  <p className="text-xs text-white/35 uppercase tracking-wider mb-1">AI Bots</p>
-                  <p className={`text-lg font-black ${scanData.blockedAiBots.length === 0 ? 'text-green-400' : 'text-red-400'}`}>
-                    {scanData.blockedAiBots.length === 0 ? 'All OK' : `${scanData.blockedAiBots.length} blocked`}
-                  </p>
-                  <p className="text-[10px] text-white/25 mt-0.5">{scanData.blockedAiBots.length === 0 ? 'Crawlable' : 'Fix needed'}</p>
-                </div>
-              </div>
-
               <div className="rounded-xl border border-white/8 p-5" style={{ background: 'rgba(255,255,255,0.02)' }}>
                 <ScoreGauge score={scanData.score} />
               </div>
@@ -353,9 +300,40 @@ export default function ScannerPage() {
                   return <SignalCard key={key} label={meta.label} desc={meta.desc} pass={pass} />
                 })}
               </div>
+
+              {scanData.blockedAiBots.length > 0 && (
+                <div className="rounded-xl border border-red-500/30 p-5" style={{ background: 'rgba(239,68,68,0.05)' }}>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)' }}>
+                      <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-red-400 mb-1">AI Crawlers Are Being Blocked</p>
+                      <p className="text-xs text-white/55 mb-3 leading-relaxed">
+                        Your robots.txt is preventing these AI assistants from reading your site. They cannot recommend your business to users.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {scanData.blockedAiBots.map(bot => (
+                          <span key={bot} className="text-xs font-semibold px-2.5 py-1 rounded-full" style={{ background: 'rgba(239,68,68,0.12)', color: '#fca5a5', border: '1px solid rgba(239,68,68,0.25)' }}>
+                            {bot}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {scanData.responseTimeMs > 3000 && (
+                <div className="rounded-xl border border-amber-500/25 px-5 py-4 flex items-center gap-3" style={{ background: 'rgba(245,158,11,0.04)' }}>
+                  <svg className="w-4 h-4 text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <p className="text-xs text-amber-400/80">
+                    <span className="font-bold">Slow load: {(scanData.responseTimeMs / 1000).toFixed(1)}s.</span> AI crawlers may time out before indexing your content. Aim for under 2 seconds.
+                  </p>
+                </div>
+              )}
             </div>
 
-            {/* Right: Preview + Unlock */}
             <div className="space-y-4">
               <div>
                 <h2 className="text-lg font-bold text-white mb-1">Generated Optimization Preview</h2>
@@ -378,7 +356,6 @@ export default function ScannerPage() {
           <div className="text-center py-12 text-white/25 text-sm">Results will appear here after your scan.</div>
         )}
 
-        {/* Post-scan upsell */}
         {state === 'results' && (
           <div className="mt-16 pt-12 border-t border-white/6">
             <UpcomingTools />
@@ -386,7 +363,6 @@ export default function ScannerPage() {
         )}
       </div>
 
-      {/* Trust bar */}
       <div className="border-t border-white/5 py-8" style={{ background: 'rgba(6,182,212,0.02)' }}>
         <div className="max-w-4xl mx-auto px-6">
           <div className="grid grid-cols-3 gap-6 text-center">

@@ -80,6 +80,21 @@ export async function POST(request: NextRequest) {
     // Fire-and-forget Redis save (needed for checkout later)
     trySaveToRedis(completed)
 
+    // Fire-and-forget score email — lead capture
+    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
+    import('@/lib/email/resend').then(({ sendFreeScoreEmail }) =>
+      sendFreeScoreEmail({
+        to: cleanEmail,
+        domain: completed.businessInfo.domain,
+        score: completed.score,
+        passingSignals: Object.values(completed.checks).filter(Boolean).length,
+        blockedAiBots: completed.blockedAiBots,
+        topIssue: completed.recommendations[0]?.title || '',
+        shareUrl: `${baseUrl}/share/${scanId}`,
+        scanId,
+      }).catch(() => {})
+    ).catch(() => {})
+
     return Response.json(completed)
   } catch (err) {
     console.error('Scan error:', err instanceof Error ? err.message : err)

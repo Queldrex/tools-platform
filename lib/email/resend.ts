@@ -8,6 +8,110 @@ function getResend(): Resend {
   return _resend
 }
 
+interface FreeScoreEmailProps {
+  to: string
+  domain: string
+  score: number
+  passingSignals: number
+  blockedAiBots: string[]
+  topIssue: string
+  shareUrl: string
+  scanId: string
+}
+
+export async function sendFreeScoreEmail({
+  to, domain, score, passingSignals, blockedAiBots, topIssue, shareUrl, scanId,
+}: FreeScoreEmailProps) {
+  const scoreColor = score >= 70 ? '#16a34a' : score >= 40 ? '#d97706' : '#dc2626'
+  const scoreLabel = score >= 70 ? 'Good' : score >= 40 ? 'Needs Work' : 'Critical'
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
+  const reportUrl = `${baseUrl}/scanner`
+
+  const botWarning = blockedAiBots.length > 0
+    ? `<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:16px;margin-bottom:20px;">
+        <div style="font-weight:700;color:#dc2626;font-size:13px;margin-bottom:6px;">⚠ CRITICAL: AI crawlers are blocked</div>
+        <div style="font-size:13px;color:#7f1d1d;line-height:1.6;">Your robots.txt is blocking <strong>${blockedAiBots.join(', ')}</strong>. These AI systems cannot read your website at all — even after fixing other signals. This must be fixed first.</div>
+      </div>`
+    : ''
+
+  await getResend().emails.send({
+    from: 'Queldrex <reports@queldrex.com>',
+    replyTo: 'hello@queldrex.com',
+    to,
+    subject: `Your AI visibility score for ${domain}: ${score}/100`,
+    html: `
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <div style="max-width:540px;margin:40px auto;padding:0 20px;">
+
+    <!-- Header -->
+    <div style="background:#0f172a;padding:32px;border-radius:16px 16px 0 0;text-align:center;">
+      <div style="color:#22d3ee;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:10px;">Queldrex · AI Visibility Scanner</div>
+      <div style="color:white;font-size:22px;font-weight:800;">Your free scan is ready</div>
+      <div style="color:#94a3b8;font-size:13px;margin-top:6px;">${domain}</div>
+    </div>
+
+    <div style="background:white;padding:32px;border-radius:0 0 16px 16px;box-shadow:0 4px 6px rgba(0,0,0,0.05);">
+
+      <!-- Score -->
+      <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:24px;margin-bottom:24px;text-align:center;">
+        <div style="font-size:11px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">AI Visibility Score</div>
+        <div style="font-size:68px;font-weight:900;line-height:1;color:${scoreColor};margin-bottom:4px;">${score}<span style="font-size:28px;color:#d1d5db;">/100</span></div>
+        <div style="display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;background:${scoreColor}18;color:${scoreColor};border:1px solid ${scoreColor}30;">${scoreLabel}</div>
+        <div style="margin-top:10px;font-size:13px;color:#6b7280;">${passingSignals} of 8 AI signals passing</div>
+      </div>
+
+      ${botWarning}
+
+      <!-- Top issue -->
+      ${topIssue ? `<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:16px;margin-bottom:24px;">
+        <div style="font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Top priority fix</div>
+        <div style="font-size:14px;color:#78350f;font-weight:600;">${topIssue}</div>
+      </div>` : ''}
+
+      <!-- What's in the full report -->
+      <div style="margin-bottom:24px;">
+        <div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:12px;">Unlock your full report for $149:</div>
+        <table style="width:100%;border-collapse:collapse;">
+          ${[
+            ['Complete llms.txt file', 'Upload-ready. Tells ChatGPT, Claude & Perplexity exactly what your business does.'],
+            ['LocalBusiness JSON-LD schema', 'Paste-ready structured data for AI search and Google Knowledge Panel.'],
+            ['robots.txt fix', 'Correct AI bot permissions so every crawler can read your site.'],
+            ['HTML Report + action checklist', 'Full breakdown with step-by-step fixes for every signal.'],
+          ].map(([title, desc], i) => `
+          <tr style="border-bottom:1px solid #f1f5f9;">
+            <td style="padding:12px 0;vertical-align:top;">
+              <span style="color:#16a34a;font-weight:700;margin-right:8px;">✓</span>
+              <span style="font-weight:600;color:#1e293b;font-size:13px;">${title}</span>
+              <div style="font-size:12px;color:#6b7280;margin-top:2px;padding-left:20px;">${desc}</div>
+            </td>
+          </tr>`).join('')}
+        </table>
+      </div>
+
+      <!-- CTA -->
+      <a href="${baseUrl}/scanner?scanId=${scanId}" style="display:block;background:linear-gradient(135deg,#06b6d4,#0891b2);color:white;text-decoration:none;text-align:center;padding:17px;border-radius:12px;font-weight:800;font-size:16px;margin-bottom:12px;">
+        Get Your Full Report — $149 →
+      </a>
+
+      <!-- Share -->
+      <a href="${shareUrl}" style="display:block;background:#f8fafc;color:#374151;text-decoration:none;text-align:center;padding:13px;border-radius:10px;font-weight:600;font-size:13px;border:1px solid #e5e7eb;margin-bottom:24px;">
+        Share your score →
+      </a>
+
+      <p style="margin:0;color:#9ca3af;font-size:11px;text-align:center;line-height:1.8;">
+        This email was sent because you entered ${to} when scanning ${domain}.<br>
+        <a href="${baseUrl}/privacy" style="color:#9ca3af;">Privacy Policy</a> · Queldrex LLC
+      </p>
+    </div>
+  </div>
+</body>
+</html>`,
+  })
+}
+
 interface DeliveryEmailProps {
   to: string
   businessName: string
