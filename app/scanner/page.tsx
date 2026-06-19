@@ -124,6 +124,7 @@ export default function ScannerPage() {
 
   // AI citation — lazy-loaded after scan results appear
   const [citation, setCitation] = useState<string | null | 'loading' | 'unconfigured'>('loading')
+  const [citationModel, setCitationModel] = useState<string | null>(null)
 
   const fetchCitation = useCallback(async (domain: string, businessName: string) => {
     setCitation('loading')
@@ -133,9 +134,10 @@ export default function ScannerPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ domain, businessName }),
       })
-      const json = await res.json() as { citation: string | null; configured: boolean }
+      const json = await res.json() as { citation: string | null; configured: boolean; model: string | null }
       if (!json.configured) { setCitation('unconfigured'); return }
       setCitation(json.citation)
+      setCitationModel(json.model)
     } catch {
       setCitation(null)
     }
@@ -368,7 +370,7 @@ export default function ScannerPage() {
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" style={{ display: citation === 'loading' ? 'block' : 'none' }} />
                   <span className="text-xs font-bold uppercase tracking-widest text-white/40">Live AI Citation Test</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ background: 'rgba(6,182,212,0.08)', color: '#22d3ee', border: '1px solid rgba(6,182,212,0.15)' }}>Claude Haiku</span>
+                  {citationModel && <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ background: 'rgba(6,182,212,0.08)', color: '#22d3ee', border: '1px solid rgba(6,182,212,0.15)' }}>{citationModel}</span>}
                 </div>
                 <p className="text-[11px] text-white/30 mb-3 leading-relaxed">
                   We asked Claude: &ldquo;What do you know about {scanData.businessName || scanData.domain}?&rdquo;
