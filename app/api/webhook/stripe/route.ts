@@ -89,21 +89,24 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Scan not found' }, { status: 404 })
   }
 
-  if (scan.status === 'PAID' || scan.status === 'DELIVERED') {
+  // Only skip if fully delivered — PAID alone means email may not have sent yet
+  if (scan.status === 'DELIVERED') {
     return Response.json({ received: true })
   }
 
-  const downloadToken = uuidv4()
-  await saveDownloadToken(downloadToken, scanId)
+  // Re-use existing token if already generated (idempotent retry)
+  const downloadToken = scan.downloadToken || uuidv4()
+  if (!scan.downloadToken) {
+    await saveDownloadToken(downloadToken, scanId)
+  }
 
   const downloadUrl = `${baseUrl}/download/${downloadToken}`
-  const paidAt = new Date().toISOString()
+  const paidAt = scan.paidAt || new Date().toISOString()
 
-  await saveScan({ ...scan, status: 'PAID', paid: true, downloadToken, paidAt })
-
+  // Send delivery email BEFORE marking DELIVERED — if it throws, Stripe will retry
   await sendDeliveryEmail({
     to: scan.emailAddress,
-    businessName: scan.businessInfo.domain,
+    businessName: scan.businessInfo.name || scan.businessInfo.domain,
     downloadUrl,
     score: scan.score,
   })

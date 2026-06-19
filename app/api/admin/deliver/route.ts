@@ -45,8 +45,7 @@ export async function POST(request: NextRequest) {
   const downloadUrl = `${baseUrl}/download/${downloadToken}`
   const paidAt = new Date().toISOString()
 
-  await saveScan({ ...scan, status: 'PAID', paid: true, downloadToken, paidAt })
-
+  // Send email BEFORE marking DELIVERED so errors surface cleanly
   await sendDeliveryEmail({
     to: scan.emailAddress,
     businessName: scan.businessInfo.name || scan.businessInfo.domain,
