@@ -9,6 +9,7 @@ interface ScanLogEntry {
   score: number
   paid: boolean
   paidAt?: string
+  downloadedAt?: string
   status: string
   createdAt: string
 }
@@ -187,6 +188,7 @@ export default function AdminPage() {
   })
 
   const paidCount = entries.filter(e => e.paid).length
+  const downloadedCount = entries.filter(e => e.downloadedAt).length
   const conversionRate = entries.length > 0 ? ((paidCount / entries.length) * 100).toFixed(1) : '0'
 
   if (!authed) {
@@ -246,10 +248,11 @@ export default function AdminPage() {
         {tab === 'scans' && (
           <>
             {/* Stats */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 16, marginBottom: 32 }}>
               {[
                 { label: 'Total Scans', value: total },
                 { label: 'Paid', value: paidCount },
+                { label: 'Downloads', value: downloadedCount },
                 { label: 'Unpaid', value: entries.length - paidCount },
                 { label: 'Conversion', value: `${conversionRate}%` },
               ].map(stat => (
@@ -277,14 +280,14 @@ export default function AdminPage() {
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid #222' }}>
-                    {['Domain', 'Email', 'Score', 'Status', 'Date', 'Action'].map(h => (
+                    {['Domain', 'Email', 'Score', 'Status', 'Downloaded', 'Date', 'Action'].map(h => (
                       <th key={h} style={{ padding: '12px 16px', textAlign: 'left', color: '#666', fontWeight: 500 }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.length === 0 && (
-                    <tr><td colSpan={6} style={{ padding: 32, textAlign: 'center', color: '#444' }}>No entries</td></tr>
+                    <tr><td colSpan={7} style={{ padding: 32, textAlign: 'center', color: '#444' }}>No entries</td></tr>
                   )}
                   {filtered.map(entry => (
                     <tr key={entry.scanId} style={{ borderBottom: '1px solid #1a1a1a' }}>
@@ -304,6 +307,15 @@ export default function AdminPage() {
                         }}>
                           {entry.status}
                         </span>
+                      </td>
+                      <td style={{ padding: '12px 16px' }}>
+                        {entry.downloadedAt ? (
+                          <span title={new Date(entry.downloadedAt).toLocaleString()} style={{ color: '#4ade80', fontSize: 12 }}>
+                            ✓ {new Date(entry.downloadedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                          </span>
+                        ) : (
+                          <span style={{ color: '#333', fontSize: 12 }}>—</span>
+                        )}
                       </td>
                       <td style={{ padding: '12px 16px', color: '#555' }}>
                         {new Date(entry.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}

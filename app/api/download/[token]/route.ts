@@ -7,9 +7,12 @@ import {
   generateSitemapXml,
   generateSchemaHtml,
   generateOgHtml,
+  generateFaqSchemaHtml,
+  generateReviewSchemaHtml,
   generateRecommendationsMd,
   generateReportHtml,
 } from '@/lib/zip/generator'
+import { updateScanLog } from '@/lib/store/redis'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,6 +22,8 @@ const FILE_MAP: Record<string, { mime: string; ext: string; fn: (s: Parameters<t
   'sitemap.xml':           { mime: 'application/xml',       ext: 'sitemap.xml',           fn: generateSitemapXml },
   'schema-install.html':   { mime: 'text/html',             ext: 'schema-install.html',   fn: generateSchemaHtml },
   'og-and-canonical.html': { mime: 'text/html',             ext: 'og-and-canonical.html', fn: generateOgHtml },
+  'faq-schema.html':       { mime: 'text/html',             ext: 'faq-schema.html',       fn: generateFaqSchemaHtml },
+  'review-schema.html':    { mime: 'text/html',             ext: 'review-schema.html',    fn: generateReviewSchemaHtml },
   'recommendations.md':    { mime: 'text/markdown',         ext: 'recommendations.md',    fn: generateRecommendationsMd },
   'report.html':           { mime: 'text/html',             ext: 'report.html',           fn: generateReportHtml },
 }
@@ -35,6 +40,11 @@ export async function GET(
   }
 
   const fileParam = request.nextUrl.searchParams.get('file')
+
+  // Track download (fire-and-forget)
+  if (scan.scanId) {
+    updateScanLog(scan.scanId, { downloadedAt: new Date().toISOString() }).catch(() => {})
+  }
 
   if (fileParam) {
     const entry = FILE_MAP[fileParam]

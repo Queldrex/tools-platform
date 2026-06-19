@@ -109,12 +109,16 @@ export function generateJsonLd(info: BusinessInfo): string {
   const businessType = detectBusinessType(info)
   const socialUrls = filterSocialUrls(info.social)
 
+  const today = new Date().toISOString().split('T')[0]
+
   const entity: Record<string, unknown> = {
     '@type': businessType,
     '@id': `${info.url}/#business`,
     name: info.name,
     url: info.url,
     description: info.description || `${info.name} provides professional services at ${info.domain}.`,
+    dateModified: today,
+    datePublished: today,
   }
 
   if (info.image) entity.image = info.image
@@ -136,6 +140,7 @@ export function generateJsonLd(info: BusinessInfo): string {
     name: info.name,
     description: info.description || '',
     publisher: { '@id': `${info.url}/#business` },
+    dateModified: today,
   }
 
   const schema = {

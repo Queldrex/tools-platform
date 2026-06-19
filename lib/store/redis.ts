@@ -77,6 +77,8 @@ export interface ScanLogEntry {
   score: number
   paid: boolean
   paidAt?: string
+  downloadedAt?: string
+  downloadToken?: string
   status: string
   createdAt: string
 }

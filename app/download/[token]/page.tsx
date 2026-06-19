@@ -16,13 +16,13 @@ const FILES = [
     label: 'llms.txt',
     fixes: 'llms.txt signal (+25 pts)',
     desc: 'Upload to your website root. Tells ChatGPT, Claude, and Perplexity exactly what your business does.',
-    steps: ['Upload to your website root (same folder as your homepage)', 'Verify it\'s live by visiting your-domain.com/llms.txt in your browser'],
+    steps: ['Upload to your website root (same folder as your homepage)', "Verify it's live by visiting your-domain.com/llms.txt in your browser"],
     color: '#06b6d4',
   },
   {
     key: 'robots.txt',
     label: 'robots.txt',
-    fixes: 'Crawler Access signal (+5 pts)',
+    fixes: 'Crawler Access (+5 pts)',
     desc: 'Permits all AI bots to read your site. Upload to your website root.',
     steps: ['Upload to your website root', 'Verify at your-domain.com/robots.txt'],
     color: '#8b5cf6',
@@ -30,26 +30,42 @@ const FILES = [
   {
     key: 'sitemap.xml',
     label: 'sitemap.xml',
-    fixes: 'Sitemap signal (+10 pts)',
-    desc: 'Helps AI crawlers discover all your pages. Add your other pages then upload to root.',
-    steps: ['Open the file and add your other page URLs following the pattern inside', 'Upload to your website root', 'Verify at your-domain.com/sitemap.xml'],
+    fixes: 'Sitemap (+10 pts)',
+    desc: 'Helps AI crawlers discover all your pages. Open it first and add your other page URLs, then upload to root.',
+    steps: ['Open in a text editor and add your other page URLs following the pattern inside', 'Upload to your website root', 'Verify at your-domain.com/sitemap.xml'],
     color: '#10b981',
   },
   {
     key: 'schema-install.html',
     label: 'schema-install.html',
     fixes: 'JSON-LD (+15 pts) + LocalBusiness (+20 pts)',
-    desc: 'Open this file, copy the <script> block, and paste it into your site\'s <head> on every page.',
-    steps: ['Open the file in a text editor', 'Copy everything inside (the <script type="application/ld+json"> block)', 'Paste it into the <head> section of every page — or use Yoast/Rank Math in WordPress, theme.liquid in Shopify'],
+    desc: "Copy the <script> block inside and paste it into your site's <head> on every page. Includes dateModified for content freshness.",
+    steps: ['Open in a text editor', 'Copy the entire <script type="application/ld+json"> block', 'Paste into <head> of every page — or use Yoast/Rank Math in WordPress, theme.liquid in Shopify'],
     color: '#f59e0b',
   },
   {
     key: 'og-and-canonical.html',
     label: 'og-and-canonical.html',
     fixes: 'AI Metadata (+10 pts) + Canonical URL (+5 pts)',
-    desc: 'Open this file, copy all the <meta> and <link> tags, paste into your site\'s <head>.',
-    steps: ['Open the file in a text editor', 'Copy all the <meta> and <link rel="canonical"> tags', 'Paste into the <head> of every page — same location as the schema above'],
+    desc: "Copy all <meta> and <link> tags inside and paste into your site's <head> on every page.",
+    steps: ['Open in a text editor', 'Copy all the <meta> and <link rel="canonical"> tags', 'Paste into <head> of every page — same location as the schema above'],
     color: '#ef4444',
+  },
+  {
+    key: 'faq-schema.html',
+    label: 'faq-schema.html',
+    fixes: 'FAQ Schema (AI Overviews)',
+    desc: "Fill in your real questions & answers, then paste the <script> block into your homepage <head>. Increases chances of being cited in Google AI Overviews.",
+    steps: ['Open in a text editor', 'Replace the placeholder questions and answers with your REAL FAQ content', 'Copy the <script> block and paste into your homepage <head>'],
+    color: '#f97316',
+  },
+  {
+    key: 'review-schema.html',
+    label: 'review-schema.html',
+    fixes: 'Review Schema (star rating to AI)',
+    desc: 'Fill in your real Google/Yelp rating and review count, then paste into your homepage <head>. Shows AI your star rating.',
+    steps: ['Open in a text editor', 'Replace [YOUR AVERAGE RATING] with your real rating (e.g. 4.9)', 'Replace [YOUR TOTAL REVIEW COUNT] with your real number', 'Paste the <script> block into your homepage <head>'],
+    color: '#a855f7',
   },
 ]
 
@@ -104,7 +120,7 @@ export default async function DownloadPage({
           <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
-          Download Everything (ZIP — all 8 files)
+          Download Everything (ZIP — all 10 files)
         </a>
         <p className="text-center text-xs text-white/25 mb-10">Or download files individually below</p>
 
