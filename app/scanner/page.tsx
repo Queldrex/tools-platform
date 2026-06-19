@@ -365,7 +365,8 @@ export default function ScannerPage() {
                 </div>
               </div>
 
-              {/* AI Citation Test */}
+              {/* AI Citation Test — only render when configured */}
+              {citation !== 'unconfigured' && (
               <div className="rounded-xl border border-white/8 p-5" style={{ background: 'rgba(255,255,255,0.02)' }}>
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" style={{ display: citation === 'loading' ? 'block' : 'none' }} />
@@ -381,10 +382,7 @@ export default function ScannerPage() {
                     Querying AI...
                   </div>
                 )}
-                {citation === 'unconfigured' && (
-                  <p className="text-xs text-white/25 italic">AI Citation Test requires ANTHROPIC_API_KEY — add it to Vercel to enable.</p>
-                )}
-                {citation !== 'loading' && citation !== 'unconfigured' && citation !== null && (
+                {citation !== 'loading' && citation !== null && (
                   <div>
                     <div className="rounded-lg p-4 border border-white/8 mb-3" style={{ background: 'rgba(0,0,0,0.2)' }}>
                       <p className="text-sm text-white/75 leading-relaxed italic">&ldquo;{citation}&rdquo;</p>
@@ -402,10 +400,8 @@ export default function ScannerPage() {
                     )}
                   </div>
                 )}
-                {citation === null && (
-                  <p className="text-xs text-white/25">Citation test unavailable — check API configuration.</p>
-                )}
               </div>
+              )}
 
               {scanData.blockedAiBots.length > 0 && (
                 <div className="rounded-xl border border-red-500/30 p-5" style={{ background: 'rgba(239,68,68,0.05)' }}>
