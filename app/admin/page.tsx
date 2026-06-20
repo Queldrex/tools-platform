@@ -62,6 +62,15 @@ export default function AdminPage() {
   const [loginAttempts, setLoginAttempts] = useState(0)
   const [loginLocked, setLoginLocked] = useState(false)
 
+  // Notification system — replaces alert() with in-page toasts with error codes
+  const [notifications, setNotifications] = useState<Array<{ id: string; type: 'success' | 'error' | 'warning'; title: string; detail?: string; code?: string }>>([])
+
+  const notify = useCallback((type: 'success' | 'error' | 'warning', title: string, detail?: string, code?: string) => {
+    const id = Math.random().toString(36).slice(2)
+    setNotifications(prev => [...prev.slice(-4), { id, type, title, detail, code }])
+    setTimeout(() => setNotifications(prev => prev.filter(n => n.id !== id)), 7000)
+  }, [])
+
   const loadApplications = useCallback(async (s: string) => {
     setAppsLoading(true)
     try {
@@ -85,12 +94,12 @@ export default function AdminPage() {
       const data = await res.json()
       if (res.ok) {
         setApplications(prev => prev.map(a => a.id === app.id ? { ...a, status: 'payment_sent' } : a))
-        alert(`Payment link sent to ${app.email}`)
+        notify('success', `Payment link sent to ${app.email}`)
       } else {
-        alert(data.error || 'Failed to send payment link')
+        notify('error', 'Failed to send payment link', data.error, `HTTP ${res.status}`)
       }
-    } catch {
-      alert('Network error')
+    } catch (e) {
+      notify('error', 'Network error', String(e), 'NETWORK_ERROR')
     }
     setSendingPayment(null)
   }
@@ -106,18 +115,18 @@ export default function AdminPage() {
       const data = await res.json()
       if (res.ok) {
         setApplications(prev => prev.map(a => a.id === app.id ? { ...a, status: 'contacted' } : a))
-        alert(`Discovery email sent to ${app.email}`)
+        notify('success', `Discovery email sent to ${app.email}`)
       } else {
-        alert(data.error || 'Failed to send discovery email')
+        notify('error', 'Failed to send discovery email', data.error, `HTTP ${res.status}`)
       }
-    } catch {
-      alert('Network error')
+    } catch (e) {
+      notify('error', 'Network error', String(e), 'NETWORK_ERROR')
     }
     setSendingDiscovery(null)
   }
 
   const completeDfy = async (app: DfyApplication) => {
-    if (!confirm(`Mark "${app.name}" complete? This will permanently delete their credentials and email them confirmation. Cannot be undone.`)) return
+    if (!window.confirm(`Mark "${app.name}" complete?\n\nThis permanently deletes their credentials from our system and emails them a deletion receipt.\n\nThis cannot be undone.`)) return
     setCompleting(app.id)
     try {
       const res = await fetch('/api/admin/complete-dfy', {
@@ -128,12 +137,12 @@ export default function AdminPage() {
       const data = await res.json()
       if (res.ok) {
         setApplications(prev => prev.map(a => a.id === app.id ? { ...a, status: 'complete', implemented: true } : a))
-        alert(`Done. Credentials deleted at ${new Date(data.deletedAt).toLocaleString()}. Deletion email sent to ${app.email}.`)
+        notify('success', `Credentials deleted — receipt sent to ${app.email}`, `Deleted at ${new Date(data.deletedAt).toLocaleString()}`)
       } else {
-        alert(data.error || 'Failed to complete')
+        notify('error', 'Failed to complete', data.error, `HTTP ${res.status}`)
       }
-    } catch {
-      alert('Network error')
+    } catch (e) {
+      notify('error', 'Network error', String(e), 'NETWORK_ERROR')
     }
     setCompleting(null)
   }
@@ -153,7 +162,7 @@ export default function AdminPage() {
 
   const runImplementation = async (app: DfyApplication) => {
     if (!app.dfyToken || !app.scanId) {
-      alert('Missing dfyToken or scanId — cannot implement. Check that payment was processed via Stripe.')
+      notify('error', 'Cannot run implementation', 'Missing dfyToken or scanId — verify Stripe payment completed.', 'MISSING_TOKEN')
       return
     }
     setImplementing(app.id)
@@ -309,13 +318,13 @@ export default function AdminPage() {
       })
       const data = await res.json()
       if (res.ok) {
-        alert(`Delivered to ${data.to}`)
+        notify('success', `Report delivered to ${data.to}`)
         loadScans(secret)
       } else {
-        alert(data.error || 'Delivery failed')
+        notify('error', 'Delivery failed', data.error, `HTTP ${res.status}`)
       }
-    } catch {
-      alert('Network error')
+    } catch (e) {
+      notify('error', 'Network error', String(e), 'NETWORK_ERROR')
     }
     setDelivering(null)
   }
@@ -330,13 +339,12 @@ export default function AdminPage() {
       })
       const data = await res.json()
       if (res.ok) {
-        const url = data.downloadUrl || ''
-        alert(`Resent to ${data.to}\n\nDownload URL:\n${url}`)
+        notify('success', `Report resent to ${data.to}`, data.downloadUrl ? `Download: ${data.downloadUrl}` : undefined)
       } else {
-        alert(data.error || 'Resend failed')
+        notify('error', 'Resend failed', data.error, `HTTP ${res.status}`)
       }
-    } catch {
-      alert('Network error')
+    } catch (e) {
+      notify('error', 'Network error', String(e), 'NETWORK_ERROR')
     }
     setResending(null)
   }
@@ -451,6 +459,29 @@ export default function AdminPage() {
           </button>
         ))}
       </div>
+
+      {/* Notification toasts */}
+      {notifications.length > 0 && (
+        <div style={{ position: 'fixed', top: 116, right: 20, zIndex: 100, display: 'flex', flexDirection: 'column', gap: 8, maxWidth: 380 }}>
+          {notifications.map(n => (
+            <div key={n.id} style={{ background: n.type === 'success' ? '#0d2218' : n.type === 'warning' ? '#1c1400' : '#1c0a0a', border: `1px solid ${n.type === 'success' ? '#166534' : n.type === 'warning' ? '#78350f' : '#7f1d1d'}`, borderRadius: 10, padding: '12px 16px', boxShadow: '0 4px 24px rgba(0,0,0,0.6)' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: n.detail || n.code ? 4 : 0 }}>
+                    <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: n.type === 'success' ? '#14532d' : n.type === 'warning' ? '#78350f' : '#7f1d1d', color: n.type === 'success' ? '#4ade80' : n.type === 'warning' ? '#fbbf24' : '#f87171' }}>
+                      {n.type === 'success' ? 'SUCCESS' : n.type === 'warning' ? 'WARNING' : 'ERROR'}
+                    </span>
+                    {n.code && <span style={{ fontSize: 10, fontFamily: 'monospace', color: '#475569', background: '#0d1117', padding: '1px 6px', borderRadius: 4 }}>{n.code}</span>}
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#e2e8f0', lineHeight: 1.4 }}>{n.title}</div>
+                  {n.detail && <div style={{ fontSize: 11, color: '#64748b', marginTop: 2, lineHeight: 1.4 }}>{n.detail}</div>}
+                </div>
+                <button onClick={() => setNotifications(prev => prev.filter(x => x.id !== n.id))} style={{ background: 'none', border: 'none', color: '#475569', cursor: 'pointer', fontSize: 16, lineHeight: 1, flexShrink: 0, padding: '0 2px' }}>✕</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Content */}
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '28px 24px' }}>
@@ -849,7 +880,7 @@ export default function AdminPage() {
 
         {tab === 'legal' && <LegalTab />}
 
-        {tab === 'test' && <TestTab secret={secret} baseUrl={BASE_URL} />}
+        {tab === 'test' && <TestTab secret={secret} baseUrl={BASE_URL} notify={notify} />}
       </div>
     </div>
   )
@@ -1009,7 +1040,7 @@ function daysUntilReview(dateStr: string, intervalDays: number): number {
   return Math.ceil((reviewMs - Date.now()) / 86_400_000)
 }
 
-function TestTab({ secret, baseUrl }: { secret: string; baseUrl: string }) {
+function TestTab({ secret, baseUrl, notify }: { secret: string; baseUrl: string; notify: (type: 'success' | 'error' | 'warning', title: string, detail?: string, code?: string) => void }) {
   const [health, setHealth] = useState<Record<string, { ok: boolean; detail: string }> | null>(null)
   const [healthLoading, setHealthLoading] = useState(false)
   const [seededApp, setSeededApp] = useState<{ applicationId: string; dfyToken: string | null; links: { admin: string; implPage: string | null } } | null>(null)
@@ -1022,7 +1053,10 @@ function TestTab({ secret, baseUrl }: { secret: string; baseUrl: string }) {
       const res = await fetch('/api/admin/test', { headers: { 'x-admin-secret': secret } })
       const data = await res.json()
       setHealth(data.checks)
-    } catch { setHealth(null) }
+      const failed = Object.entries(data.checks as Record<string, { ok: boolean; detail: string }>).filter(([, v]) => !v.ok)
+      if (failed.length === 0) notify('success', 'All systems operational')
+      else failed.forEach(([key, v]) => notify('error', `${key} check failed`, v.detail, `CHECK_${key.toUpperCase()}`))
+    } catch (e) { notify('error', 'Health check failed', String(e), 'HEALTH_CHECK_ERROR') }
     setHealthLoading(false)
   }
 
@@ -1035,9 +1069,9 @@ function TestTab({ secret, baseUrl }: { secret: string; baseUrl: string }) {
         body: JSON.stringify({ stage }),
       })
       const data = await res.json()
-      if (data.ok) setSeededApp(data)
-      else alert(data.error || 'Seed failed')
-    } catch { alert('Network error') }
+      if (data.ok) { setSeededApp(data); notify('success', `Test application seeded at stage: ${stage}`, `ID: ${data.applicationId}`) }
+      else notify('error', 'Seed failed', data.error, `HTTP ${res.status}`)
+    } catch (e) { notify('error', 'Network error', String(e), 'NETWORK_ERROR') }
     setSeeding(false)
   }
 
@@ -1046,9 +1080,9 @@ function TestTab({ secret, baseUrl }: { secret: string; baseUrl: string }) {
     try {
       const res = await fetch('/api/admin/test', { method: 'DELETE', headers: { 'x-admin-secret': secret } })
       const data = await res.json()
-      alert(`Cleaned up ${data.deleted} test application(s).`)
+      notify('success', `Cleaned up ${data.deleted} test application(s)`)
       setSeededApp(null)
-    } catch { alert('Network error') }
+    } catch (e) { notify('error', 'Cleanup failed', String(e), 'CLEANUP_ERROR') }
     setCleaning(false)
   }
 
@@ -1058,8 +1092,8 @@ function TestTab({ secret, baseUrl }: { secret: string; baseUrl: string }) {
   return (
     <div>
       <div style={{ marginBottom: 24 }}>
-        <h2 style={{ fontSize: 18, fontWeight: 700, margin: '0 0 4px' }}>🧪 System Test Panel</h2>
-        <p style={{ color: '#666', fontSize: 13, margin: 0 }}>Health check all services and run end-to-end flow tests.</p>
+        <h2 style={{ fontSize: 18, fontWeight: 700, margin: '0 0 4px' }}>System Test Panel</h2>
+        <p style={{ color: '#64748b', fontSize: 13, margin: 0 }}>Health check all services and run end-to-end flow tests. Error codes appear as notification toasts.</p>
       </div>
 
       {/* Health Check */}
