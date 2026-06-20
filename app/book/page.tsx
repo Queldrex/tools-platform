@@ -69,16 +69,32 @@ function BookContent() {
           </p>
         </div>
 
-        {/* Google Calendar embed */}
-        <div className="rounded-2xl overflow-hidden border border-white/10" style={{ background: '#111827' }}>
-          <iframe
-            src={BOOKING_URL}
-            width="100%"
-            height="650"
-            frameBorder="0"
-            style={{ display: 'block' }}
-            title="Book your implementation slot"
-          />
+        {/* Booking CTA */}
+        <div className="rounded-2xl border border-white/10 p-10 text-center" style={{ background: '#111827' }}>
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-6" style={{ background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.2)' }}>
+            <svg className="w-7 h-7 text-cyan-400" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <h2 className="text-xl font-black text-white mb-2">Pick your implementation slot</h2>
+          <p className="text-white/50 text-sm mb-8 max-w-sm mx-auto leading-relaxed">
+            Opens Google Calendar in a new tab. Choose any available time — sessions take about 30 minutes.
+          </p>
+          <a
+            href={`${BOOKING_URL}?token=${token}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl font-black text-black text-base transition-all hover:scale-[1.02]"
+            style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 28px rgba(6,182,212,0.3)' }}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            Book My Slot →
+          </a>
+          <p className="text-white/20 text-xs mt-5">
+            Don&apos;t forget to paste your token when prompted: <span className="text-cyan-400/50 font-mono break-all">{token}</span>
+          </p>
         </div>
 
         <p className="text-center text-white/30 text-xs mt-6">
