@@ -1,94 +1,214 @@
+'use client'
+
+import { useState } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
-export const metadata = {
-  title: 'API Schema Drift Scanner — Coming Soon | Queldrex',
-  description: 'Catch breaking API changes before users do. Auto-generate fixes before they ship. Join the waitlist.',
+const EXAMPLE_A = JSON.stringify({
+  openapi: '3.0.0',
+  info: { title: 'My API', version: '1.0.0' },
+  paths: {
+    '/users': {
+      get: {
+        parameters: [{ name: 'limit', in: 'query', required: false, schema: { type: 'integer' } }],
+        responses: { '200': { content: { 'application/json': { schema: { properties: { id: {}, name: {}, email: {} } } } } } }
+      }
+    },
+    '/users/{id}': {
+      get: {
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        responses: { '200': { content: { 'application/json': { schema: { properties: { id: {}, name: {}, email: {}, role: {} } } } } } }
+      },
+      delete: { parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }], responses: {} }
+    }
+  }
+}, null, 2)
+
+const EXAMPLE_B = JSON.stringify({
+  openapi: '3.0.0',
+  info: { title: 'My API', version: '2.0.0' },
+  paths: {
+    '/users': {
+      get: {
+        parameters: [
+          { name: 'limit', in: 'query', required: false, schema: { type: 'integer' } },
+          { name: 'org_id', in: 'query', required: true, schema: { type: 'string' } }
+        ],
+        responses: { '200': { content: { 'application/json': { schema: { properties: { id: {}, name: {}, email: {}, createdAt: {} } } } } } }
+      }
+    },
+    '/users/{id}': {
+      get: {
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+        responses: { '200': { content: { 'application/json': { schema: { properties: { id: {}, name: {}, email: {} } } } } } }
+      }
+    },
+    '/users/{id}/profile': {
+      get: { parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }], responses: {} }
+    }
+  }
+}, null, 2)
+
+interface DriftItem { type: string; path: string; method?: string; detail: string }
+interface DriftResult {
+  breaking: DriftItem[]
+  additive: DriftItem[]
+  unchanged: number
+  summary: { breakingCount: number; additiveCount: number; unchangedCount: number }
 }
 
 export default function ApiSchemaDriftPage() {
+  const [specA, setSpecA] = useState('')
+  const [specB, setSpecB] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [result, setResult] = useState<DriftResult | null>(null)
+  const [error, setError] = useState('')
+  const [compareCount, setCompareCount] = useState(0)
+
+  const compare = async () => {
+    if (!specA.trim() || !specB.trim()) return
+    if (compareCount >= 1) return
+    setLoading(true)
+    setError('')
+    setResult(null)
+    try {
+      const res = await fetch('/api/tools/api-schema-drift', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ specA, specB }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Comparison failed')
+      setResult(data)
+      setCompareCount(c => c + 1)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Comparison failed')
+    }
+    setLoading(false)
+  }
+
   return (
     <div className="min-h-screen" style={{ background: '#070b14' }}>
       <Header />
-
-      <main className="max-w-4xl mx-auto px-6 py-20">
-        <Link
-          href="/"
-          className="text-xs font-semibold text-white/35 hover:text-white/60 transition-colors flex items-center gap-1.5 mb-12"
-        >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Queldrex
+      <main className="max-w-6xl mx-auto px-6 py-12">
+        <Link href="/tools" className="text-xs font-semibold text-white/35 hover:text-white/60 transition-colors flex items-center gap-1.5 mb-10">
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
+          All Tools
         </Link>
 
-        <div className="flex items-center gap-3 mb-6">
-          <span
-            className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border"
-            style={{ color: 'rgba(99,102,241,0.8)', borderColor: 'rgba(99,102,241,0.3)', background: 'rgba(99,102,241,0.08)' }}
-          >
-            In Development
-          </span>
-          <span className="text-sm font-bold text-white/30">$249 one-time</span>
+        <div className="flex flex-wrap items-center gap-3 mb-5">
+          <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: 'rgb(99,102,241)', borderColor: 'rgba(99,102,241,0.3)', background: 'rgba(99,102,241,0.08)' }}>Live</span>
+          <span className="text-sm font-bold text-white/30">Pro Tool · $249 or $29/month</span>
         </div>
 
-        <h1 className="text-4xl lg:text-5xl font-black text-white leading-tight mb-6">
-          API Schema Drift<br />
-          <span style={{ color: 'rgb(99,102,241)' }}>Scanner.</span>
-        </h1>
+        <h1 className="text-4xl font-black text-white mb-3">API Schema <span style={{ color: 'rgb(99,102,241)' }}>Drift Scanner</span></h1>
+        <p className="text-white/55 text-base mb-8 max-w-2xl">Paste two OpenAPI specs and instantly see every breaking change, additive change, and unchanged endpoint. Catch API regressions before they reach users.</p>
 
-        <p className="text-xl text-white/65 leading-relaxed mb-4 max-w-2xl">
-          Your API breaks silently. A field gets renamed, a required param gets added, a response format changes — and users start hitting 500 errors before your monitoring even fires.
-        </p>
-        <p className="text-base text-white/50 leading-relaxed mb-12 max-w-2xl">
-          The API Schema Drift Scanner compares your live API responses against your documented schema, identifies every breaking change, and generates the exact fix needed. One scan, one report, one payment.
-        </p>
-
-        <div className="grid sm:grid-cols-3 gap-4 mb-14">
-          {[
-            { title: 'Breaking changes', body: 'Renamed fields, removed params, changed types — caught before they ship.' },
-            { title: 'Schema comparison', body: 'Live API responses vs. OpenAPI / JSON Schema. Drift identified line by line.' },
-            { title: 'Fix package', body: 'Auto-generated fix instructions and updated schema file — ready to deploy.' },
-          ].map(({ title, body }) => (
-            <div
-              key={title}
-              className="rounded-xl border p-5"
-              style={{ background: 'rgba(99,102,241,0.06)', borderColor: 'rgba(99,102,241,0.16)' }}
-            >
-              <h3 className="text-sm font-bold text-white mb-2">{title}</h3>
-              <p className="text-xs text-white/50 leading-relaxed">{body}</p>
+        <div className="grid md:grid-cols-2 gap-4 mb-4">
+          {[{ label: 'Current Spec (A)', value: specA, set: setSpecA, example: EXAMPLE_A, side: 'A' }, { label: 'New Spec (B)', value: specB, set: setSpecB, example: EXAMPLE_B, side: 'B' }].map(({ label, value, set, example, side }) => (
+            <div key={side} className="rounded-2xl border p-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold text-white/50 uppercase tracking-wider">{label}</span>
+                <button onClick={() => set(example)} className="text-xs text-white/30 hover:text-white/60 transition-colors">Load example →</button>
+              </div>
+              <textarea
+                value={value}
+                onChange={e => set(e.target.value)}
+                placeholder='{"openapi":"3.0.0","paths":{...}}'
+                rows={12}
+                className="w-full text-xs text-white/70 placeholder-white/20 outline-none resize-none font-mono"
+                style={{ background: '#0a0f1a', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 8, padding: '12px 14px' }}
+              />
             </div>
           ))}
         </div>
 
-        <div
-          className="rounded-2xl border p-8 md:p-10"
-          style={{ background: 'rgba(99,102,241,0.06)', borderColor: 'rgba(99,102,241,0.18)' }}
-        >
-          <h2 className="text-2xl font-black text-white mb-3">Get notified when it launches.</h2>
-          <p className="text-white/55 text-sm mb-6">
-            Send us your email and we will notify you the day this tool goes live. No spam — one email when it ships.
-          </p>
-          <a
-            href="mailto:hello@queldrex.com?subject=Notify%20me%3A%20API%20Schema%20Drift%20Scanner"
-            className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.03]"
-            style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 28px rgba(6,182,212,0.3)' }}
+        <div className="flex justify-center mb-6">
+          <button
+            onClick={compare}
+            disabled={loading || !specA.trim() || !specB.trim()}
+            className="flex items-center gap-2 px-8 py-3.5 rounded-xl text-sm font-black text-white transition-all hover:scale-[1.02] disabled:opacity-50"
+            style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)', boxShadow: '0 0 24px rgba(99,102,241,0.35)' }}
           >
-            Notify me when it launches
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </a>
-          <p className="text-xs text-white/30 mt-4">
-            Or try our live tool while you wait:{' '}
-            <Link href="/scanner" className="text-cyan-500 hover:text-cyan-400 transition-colors">
-              AI Visibility Scanner — free scan
-            </Link>
-          </p>
+            {loading ? 'Comparing…' : 'Compare Schemas'}
+          </button>
         </div>
-      </main>
 
+        {error && <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>}
+
+        {compareCount >= 1 && (
+          <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.2)' }}>
+            <svg className="w-10 h-10 mx-auto mb-4" style={{ color: 'rgb(99,102,241)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+            <h3 className="text-xl font-black text-white mb-2">Unlimited comparisons with Pro</h3>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro includes all tools plus monthly AI visibility monitoring — $29/month, cancel anytime.</p>
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <Link href="/monitor" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro — $29/month</Link>
+              <Link href="/pricing" className="text-sm text-white/45 hover:text-white transition-colors">See all features →</Link>
+            </div>
+          </div>
+        )}
+
+        {result && (
+          <div className="space-y-4">
+            {/* Summary */}
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { label: 'Breaking Changes', count: result.summary.breakingCount, color: '#f87171', bg: 'rgba(248,113,113,0.08)', border: 'rgba(248,113,113,0.2)' },
+                { label: 'Additive Changes', count: result.summary.additiveCount, color: '#4ade80', bg: 'rgba(74,222,128,0.08)', border: 'rgba(74,222,128,0.2)' },
+                { label: 'Unchanged', count: result.summary.unchangedCount, color: '#94a3b8', bg: 'rgba(148,163,184,0.05)', border: 'rgba(148,163,184,0.12)' },
+              ].map(s => (
+                <div key={s.label} className="rounded-xl border p-4 text-center" style={{ background: s.bg, borderColor: s.border }}>
+                  <div className="text-3xl font-black" style={{ color: s.color }}>{s.count}</div>
+                  <div className="text-xs font-bold mt-1" style={{ color: s.color }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+
+            {result.breaking.length > 0 && (
+              <div>
+                <div className="text-xs font-bold uppercase tracking-widest text-red-400 mb-2">Breaking Changes</div>
+                {result.breaking.map((b, i) => (
+                  <div key={i} className="rounded-xl border p-4 mb-2" style={{ background: '#0d1117', borderColor: 'rgba(248,113,113,0.2)' }}>
+                    <div className="flex items-start gap-3">
+                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded flex-shrink-0 mt-0.5" style={{ background: 'rgba(248,113,113,0.15)', color: '#f87171', border: '1px solid rgba(248,113,113,0.3)' }}>BREAKING</span>
+                      <div>
+                        {b.method && <span className="text-xs font-mono font-bold text-white/50 mr-2">{b.method}</span>}
+                        <span className="text-xs font-mono text-white/70">{b.path}</span>
+                        <p className="text-xs text-white/50 mt-1">{b.detail}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {result.additive.length > 0 && (
+              <div>
+                <div className="text-xs font-bold uppercase tracking-widest text-green-400 mb-2">Additive Changes</div>
+                {result.additive.map((a, i) => (
+                  <div key={i} className="rounded-xl border p-4 mb-2" style={{ background: '#0d1117', borderColor: 'rgba(74,222,128,0.15)' }}>
+                    <div className="flex items-start gap-3">
+                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded flex-shrink-0 mt-0.5" style={{ background: 'rgba(74,222,128,0.12)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.25)' }}>ADDITIVE</span>
+                      <div>
+                        <span className="text-xs font-mono text-white/70">{a.path}</span>
+                        <p className="text-xs text-white/50 mt-1">{a.detail}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {result.breaking.length === 0 && result.additive.length === 0 && (
+              <div className="rounded-xl border p-8 text-center" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
+                <div className="text-lg font-black text-white mb-1">No changes detected</div>
+                <div className="text-sm text-white/40">Both specs appear identical.</div>
+              </div>
+            )}
+          </div>
+        )}
+      </main>
       <Footer />
     </div>
   )
