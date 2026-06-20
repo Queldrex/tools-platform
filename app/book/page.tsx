@@ -6,7 +6,7 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
-const BOOKING_URL = process.env.NEXT_PUBLIC_CAL_URL || 'https://calendar.google.com/appointments/schedules/AcZssZ3ZmKkDchOBweBeJ6JqS1ZRXYE6ZbZGJtwgIL2Ncv4Vkv5R6owavfNwZM4OGDT04IchOXFeD1Yh'
+const BOOKING_URL = (process.env.NEXT_PUBLIC_CAL_URL || 'https://calendar.google.com/appointments/schedules/AcZssZ3ZmKkDchOBweBeJ6JqS1ZRXYE6ZbZGJtwgIL2Ncv4Vkv5R6owavfNwZM4OGDT04IchOXFeD1Yh').replace(/^﻿/, '').trim()
 
 function BookContent() {
   const params = useSearchParams()
