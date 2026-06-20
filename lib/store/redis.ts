@@ -1,4 +1,5 @@
 import { Redis } from '@upstash/redis'
+import { randomUUID } from 'crypto'
 import type { ScanResult } from '@/lib/framework/types'
 
 export interface DfySession {
@@ -270,4 +271,119 @@ export async function getSecurityLog(limit = 100): Promise<SecurityLogEntry[]> {
     if (!r) return null
     try { return typeof r === 'string' ? JSON.parse(r) : r } catch { return null }
   }).filter(Boolean) as SecurityLogEntry[]
+}
+
+// ── AI Visibility Monitor Subscriptions ───────────────────────────────────────
+
+export interface MonitorSubscription {
+  id: string
+  email: string
+  domain: string
+  stripeSubscriptionId: string
+  stripeCustomerId: string
+  status: 'active' | 'cancelled' | 'past_due'
+  lastScore?: number
+  lastScanAt?: string
+  scoreHistory?: Array<{ score: number; scannedAt: string }>
+  createdAt: string
+}
+
+const MON_KEY = 'monitors'
+const monEntryKey = (id: string) => `monitor:entry:${id}`
+const monStripeKey = (subId: string) => `monitor:by:stripe:${subId}`
+const monEmailKey = (email: string) => `monitor:by:email:${email}`
+
+export async function saveMonitor(m: MonitorSubscription): Promise<void> {
+  const redis = getRedis()
+  await Promise.all([
+    redis.zadd(MON_KEY, { score: Date.now(), member: m.id }),
+    redis.set(monEntryKey(m.id), JSON.stringify(m)),
+    redis.set(monStripeKey(m.stripeSubscriptionId), m.id),
+    redis.zadd(monEmailKey(m.email), { score: Date.now(), member: m.id }),
+  ])
+}
+
+export async function getMonitor(id: string): Promise<MonitorSubscription | null> {
+  const r = await getRedis().get<string>(monEntryKey(id))
+  if (!r) return null
+  try { return typeof r === 'string' ? JSON.parse(r) : r } catch { return null }
+}
+
+export async function getMonitorByStripe(stripeSubId: string): Promise<MonitorSubscription | null> {
+  const id = await getRedis().get<string>(monStripeKey(stripeSubId))
+  if (!id) return null
+  return getMonitor(typeof id === 'string' ? id : String(id))
+}
+
+export async function getMonitorsByEmail(email: string): Promise<MonitorSubscription[]> {
+  const redis = getRedis()
+  const ids = await redis.zrange(monEmailKey(email), 0, -1, { rev: true }) as string[]
+  if (!ids.length) return []
+  const raws = await Promise.all(ids.map(id => redis.get<string>(monEntryKey(id))))
+  return raws.map(r => {
+    if (!r) return null
+    try { return typeof r === 'string' ? JSON.parse(r) : r } catch { return null }
+  }).filter(Boolean) as MonitorSubscription[]
+}
+
+export async function getAllActiveMonitors(): Promise<MonitorSubscription[]> {
+  const redis = getRedis()
+  const ids = await redis.zrange(MON_KEY, 0, -1, { rev: true }) as string[]
+  if (!ids.length) return []
+  const raws = await Promise.all(ids.map(id => redis.get<string>(monEntryKey(id))))
+  const all = raws.map(r => {
+    if (!r) return null
+    try { return typeof r === 'string' ? JSON.parse(r) : r } catch { return null }
+  }).filter(Boolean) as MonitorSubscription[]
+  return all.filter(m => m.status === 'active')
+}
+
+export async function updateMonitor(id: string, updates: Partial<MonitorSubscription>): Promise<void> {
+  const existing = await getMonitor(id)
+  if (!existing) return
+  const updated = { ...existing, ...updates }
+  await getRedis().set(monEntryKey(id), JSON.stringify(updated))
+  if (updates.stripeSubscriptionId && updates.stripeSubscriptionId !== existing.stripeSubscriptionId) {
+    await getRedis().set(monStripeKey(updates.stripeSubscriptionId), id)
+  }
+}
+
+// ── Admin Sessions ────────────────────────────────────────────────────────────
+
+export async function createAdminSession(): Promise<string> {
+  const token = randomUUID()
+  await getRedis().set(`admin:session:${token}`, '1', { ex: 60 * 60 * 4 })
+  return token
+}
+
+export async function validateAdminSession(token: string): Promise<boolean> {
+  const val = await getRedis().get(`admin:session:${token}`)
+  return val === '1'
+}
+
+export async function deleteAdminSession(token: string): Promise<void> {
+  await getRedis().del(`admin:session:${token}`)
+}
+
+// ── IP Lockout ────────────────────────────────────────────────────────────────
+
+export async function getIpFailures(ip: string): Promise<number> {
+  const val = await getRedis().get<string>(`admin:lockout:${ip}`)
+  return val ? parseInt(val, 10) : 0
+}
+
+export async function incrementIpFailures(ip: string): Promise<number> {
+  const redis = getRedis()
+  const key = `admin:lockout:${ip}`
+  const count = await redis.incr(key)
+  if (count === 1) await redis.expire(key, 3600)
+  return count
+}
+
+export async function isIpLocked(ip: string): Promise<boolean> {
+  return (await getIpFailures(ip)) >= 5
+}
+
+export async function clearIpFailures(ip: string): Promise<void> {
+  await getRedis().del(`admin:lockout:${ip}`)
 }
