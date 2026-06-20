@@ -4,22 +4,21 @@ import { implementFixes } from '@/lib/tools/ai-visibility-scanner/implementer'
 import { scanWebsite } from '@/lib/tools/ai-visibility-scanner/scanner'
 import { sendImplementationEmail } from '@/lib/email/resend'
 import type { ImplementationCredentials } from '@/lib/framework/types'
+import { adminAuthCheck } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  const headerSecret = request.headers.get('x-admin-secret')
-  const { scanId, credentials, secret: bodySecret, sendEmail } = await request.json() as {
-    scanId: string
-    credentials: ImplementationCredentials
-    secret?: string
-    sendEmail?: boolean
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+  if (!await adminAuthCheck(request)) {
+    logSecurityEvent({ ip, path: '/api/admin/implement', method: 'POST', success: false }).catch(() => {})
+    return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const secret = headerSecret || bodySecret
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
-    logSecurityEvent({ ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', path: '/api/admin/implement', method: 'POST', success: false }).catch(() => {})
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  const { scanId, credentials, sendEmail } = await request.json() as {
+    scanId: string
+    credentials: ImplementationCredentials
+    sendEmail?: boolean
   }
 
   if (!scanId || !credentials) {

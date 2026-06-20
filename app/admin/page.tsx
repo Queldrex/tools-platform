@@ -56,6 +56,8 @@ const BASE_URL = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').re
 
 export default function AdminPage() {
   const [secret, setSecret] = useState('')
+  const [totpCode, setTotpCode] = useState('')
+  const [sessionToken, setSessionToken] = useState('')
   const [authed, setAuthed] = useState(false)
   const [tab, setTab] = useState<'overview' | 'scans' | 'downloads' | 'applications' | 'feedback' | 'legal' | 'test' | 'security' | 'toolrequests' | 'buildrequests'>('overview')
 
@@ -101,10 +103,12 @@ export default function AdminPage() {
     setTimeout(() => setNotifications(prev => prev.filter(n => n.id !== id)), 7000)
   }, [])
 
-  const loadApplications = useCallback(async (s: string) => {
+  const authHeader = useCallback((tok: string) => ({ 'x-session-token': tok }), [])
+
+  const loadApplications = useCallback(async (tok: string) => {
     setAppsLoading(true)
     try {
-      const res = await fetch('/api/admin/applications', { headers: { 'x-admin-secret': s } })
+      const res = await fetch('/api/admin/applications', { headers: { 'x-session-token': tok } })
       if (res.ok) {
         const data = await res.json()
         setApplications(data.applications || [])
@@ -295,11 +299,11 @@ export default function AdminPage() {
     } catch { /* ignore */ }
   }, [])
 
-  const loadScans = useCallback(async (s: string) => {
+  const loadScans = useCallback(async (tok: string) => {
     setLoading(true)
     setError('')
     try {
-      const res = await fetch('/api/admin/log', { headers: { 'x-admin-secret': s } })
+      const res = await fetch('/api/admin/log', { headers: { 'x-session-token': tok } })
       if (res.status === 401) {
         setError('Invalid access key')
         setLoginAttempts(prev => {

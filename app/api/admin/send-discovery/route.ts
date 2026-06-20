@@ -1,12 +1,13 @@
 import { NextRequest } from 'next/server'
 import { getDfyApplication, updateDfyApplication, logSecurityEvent } from '@/lib/store/redis'
+import { adminAuthCheck } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  const secret = request.headers.get('x-admin-secret')
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
-    logSecurityEvent({ ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', path: '/api/admin/send-discovery', method: 'POST', success: false }).catch(() => {})
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+  if (!await adminAuthCheck(request)) {
+    logSecurityEvent({ ip, path: '/api/admin/send-discovery', method: 'POST', success: false }).catch(() => {})
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { getRedis } from '@/lib/store/redis'
 import { randomUUID } from 'crypto'
+import { adminAuthCheck } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -81,10 +82,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  const secret = request.headers.get('x-admin-secret')
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  if (!await adminAuthCheck(request)) return Response.json({ error: 'Unauthorized' }, { status: 401 })
   const redis = getRedis()
   const ids = await redis.zrange('buildrequests', 0, 199, { rev: true }) as string[]
   if (!ids.length) return Response.json({ requests: [], total: 0 })
@@ -94,10 +92,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  const secret = request.headers.get('x-admin-secret')
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  if (!await adminAuthCheck(request)) return Response.json({ error: 'Unauthorized' }, { status: 401 })
   const { id, status } = await request.json().catch(() => ({}))
   if (!id || !status) return Response.json({ error: 'id and status required' }, { status: 400 })
   const redis = getRedis()

@@ -1,20 +1,17 @@
 import { NextRequest } from 'next/server'
 import { saveDfyApplication, getDfyApplications, getRedis, saveDfySession, logSecurityEvent } from '@/lib/store/redis'
 import { randomUUID } from 'crypto'
+import { adminAuthCheck } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
 
 const TEST_PREFIX = 'TEST_'
 
-function authCheck(request: NextRequest) {
-  const secret = request.headers.get('x-admin-secret')
-  return secret && secret === process.env.ADMIN_SECRET
-}
-
 // GET /api/admin/test — health check all systems
 export async function GET(request: NextRequest) {
-  if (!authCheck(request)) {
-    logSecurityEvent({ ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', path: '/api/admin/test', method: 'GET', success: false }).catch(() => {})
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+  if (!await adminAuthCheck(request)) {
+    logSecurityEvent({ ip, path: '/api/admin/test', method: 'GET', success: false }).catch(() => {})
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -61,8 +58,9 @@ export async function GET(request: NextRequest) {
 
 // POST /api/admin/test — seed a test DFY application at various stages
 export async function POST(request: NextRequest) {
-  if (!authCheck(request)) {
-    logSecurityEvent({ ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', path: '/api/admin/test', method: 'POST', success: false }).catch(() => {})
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+  if (!await adminAuthCheck(request)) {
+    logSecurityEvent({ ip, path: '/api/admin/test', method: 'POST', success: false }).catch(() => {})
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -123,7 +121,7 @@ export async function POST(request: NextRequest) {
 
 // DELETE /api/admin/test — clean up all test applications
 export async function DELETE(request: NextRequest) {
-  if (!authCheck(request)) {
+  if (!await adminAuthCheck(request)) {
     logSecurityEvent({ ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', path: '/api/admin/test', method: 'DELETE', success: false }).catch(() => {})
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }

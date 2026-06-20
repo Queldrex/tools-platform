@@ -1,12 +1,13 @@
 import { NextRequest } from 'next/server'
 import { getDfyApplications, updateDfyApplication, logSecurityEvent } from '@/lib/store/redis'
+import { adminAuthCheck } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
-  const secret = request.headers.get('x-admin-secret')
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
-    logSecurityEvent({ ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', path: new URL(request.url).pathname, method: request.method, success: false }).catch(() => {})
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+  if (!await adminAuthCheck(request)) {
+    logSecurityEvent({ ip, path: new URL(request.url).pathname, method: request.method, success: false }).catch(() => {})
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -19,9 +20,9 @@ const ALLOWED_STATUSES = ['new', 'contacted', 'payment_sent', 'paid', 'rejected'
 const ALLOWED_PRIORITIES = ['critical', 'high', 'medium', 'low'] as const
 
 export async function PATCH(request: NextRequest) {
-  const secret = request.headers.get('x-admin-secret')
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
-    logSecurityEvent({ ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', path: new URL(request.url).pathname, method: request.method, success: false }).catch(() => {})
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+  if (!await adminAuthCheck(request)) {
+    logSecurityEvent({ ip, path: new URL(request.url).pathname, method: request.method, success: false }).catch(() => {})
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

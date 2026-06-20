@@ -3,27 +3,23 @@ import { v4 as uuidv4 } from 'uuid'
 import { getScan, saveScan, saveDownloadToken, updateScanLog, logSecurityEvent } from '@/lib/store/redis'
 import { sendDeliveryEmail } from '@/lib/email/resend'
 import { env } from '@/lib/env'
+import { adminAuthCheck } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  // Accept secret in header (preferred) or body (backwards compat)
-  const headerSecret = request.headers.get('x-admin-secret')
-  let scanId: string | undefined
-  let bodySecret: string | undefined
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+  if (!await adminAuthCheck(request)) {
+    logSecurityEvent({ ip, path: '/api/admin/deliver', method: 'POST', success: false }).catch(() => {})
+    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
+  let scanId: string | undefined
   try {
     const body = await request.json()
     scanId = body.scanId
-    bodySecret = body.secret
   } catch {
     return Response.json({ error: 'Invalid JSON body' }, { status: 400 })
-  }
-
-  const secret = headerSecret || bodySecret
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
-    logSecurityEvent({ ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', path: '/api/admin/deliver', method: 'POST', success: false }).catch(() => {})
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   if (!scanId) {
