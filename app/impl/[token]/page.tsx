@@ -20,32 +20,103 @@ const PLATFORMS: { id: Platform; label: string; desc: string }[] = [
   { id: 'other',       label: 'Other / Not Sure',                desc: "Custom CMS, Framer, or anything else. Tell us what it is and we'll handle it." },
 ]
 
-const FIELD_LABELS: Partial<Record<Platform, { label: string; key: string; type?: string; placeholder: string; hint?: string }[]>> = {
+const FIELD_LABELS: Partial<Record<Platform, { label: string; key: string; type?: string; placeholder: string; hint?: string; steps?: string[] }[]>> = {
   ftp: [
-    { label: 'FTP Host',                 key: 'host',      placeholder: 'ftp.yourdomain.com',  hint: 'Found in your hosting control panel under FTP accounts' },
-    { label: 'FTP Port',                 key: 'port',      placeholder: '21 (default)',         hint: 'Leave blank for standard port 21' },
-    { label: 'FTP Username',             key: 'username',  placeholder: 'your-ftp-username' },
-    { label: 'FTP Password',             key: 'password',  type: 'password', placeholder: 'your-ftp-password' },
-    { label: 'Web Root Path (optional)', key: 'webRoot',   placeholder: '/public_html',         hint: 'We auto-detect this if left blank. Common: /public_html, /www, /htdocs' },
+    {
+      label: 'FTP Host', key: 'host', placeholder: 'ftp.yourdomain.com',
+      hint: 'Your FTP server address — usually ftp.yourdomain.com or your server IP.',
+      steps: ['Log in to cPanel at yourdomain.com/cpanel', 'Click FTP Accounts under the Files section', 'Your hostname is listed there — or check your hosting welcome email'],
+    },
+    {
+      label: 'FTP Port', key: 'port', placeholder: '21 (default)',
+      hint: 'Leave blank — we use port 21 by default. Only change if your host told you a different port.',
+    },
+    {
+      label: 'FTP Username', key: 'username', placeholder: 'your-ftp-username',
+      hint: 'Found in cPanel → FTP Accounts. Usually your cPanel username or a sub-account you created.',
+    },
+    {
+      label: 'FTP Password', key: 'password', type: 'password', placeholder: 'your-ftp-password',
+      hint: 'The password for the FTP account above. Reset it in cPanel → FTP Accounts → Change Password if needed.',
+    },
+    {
+      label: 'Web Root Path (optional)', key: 'webRoot', placeholder: '/public_html',
+      hint: "The server folder that holds your website files. Leave blank — we'll detect it.",
+      steps: ['Open File Manager in cPanel', 'Find the folder containing your index.html or home page', 'Common paths: /public_html · /www · /htdocs'],
+    },
   ],
   wordpress: [
-    { label: 'WordPress Site URL',     key: 'siteUrl',     placeholder: 'https://yoursite.com',              hint: 'The URL where WordPress is installed' },
-    { label: 'Admin Username',         key: 'username',    placeholder: 'admin' },
-    { label: 'Application Password',   key: 'appPassword', type: 'password', placeholder: 'xxxx xxxx xxxx xxxx xxxx xxxx', hint: 'WordPress Admin → Users → Your Profile → Application Passwords → Add New' },
+    {
+      label: 'WordPress Site URL', key: 'siteUrl', placeholder: 'https://yoursite.com',
+      hint: 'The full URL of your WordPress site — exactly as you type it in a browser.',
+    },
+    {
+      label: 'Admin Username', key: 'username', placeholder: 'admin',
+      hint: 'The username you use to log in to yoursite.com/wp-admin.',
+    },
+    {
+      label: 'Application Password', key: 'appPassword', type: 'password', placeholder: 'xxxx xxxx xxxx xxxx xxxx xxxx',
+      hint: "A one-time key so we can make changes without your main password. You can delete it from WordPress after we're done.",
+      steps: [
+        'Go to yoursite.com/wp-admin and log in',
+        'Click Users in the left menu → click your username',
+        'Scroll down to the Application Passwords section',
+        'Type "Queldrex" in the name box → click Add New Application Password',
+        'Copy the password shown — WordPress only displays it once',
+      ],
+    },
   ],
   github: [
-    { label: 'GitHub Repository',              key: 'repo',      placeholder: 'username/repository-name', hint: 'Example: acme-corp/website' },
-    { label: 'Branch',                         key: 'branch',    placeholder: 'main',                      hint: 'The branch Vercel/Netlify deploys from (usually main or master)' },
-    { label: 'GitHub Personal Access Token',   key: 'token',     type: 'password', placeholder: 'ghp_xxxxxxxxxxxxxxxxxxxx', hint: 'GitHub → Settings → Developer settings → Personal access tokens → Generate (need: repo full control)' },
-    { label: 'Public folder (optional)',       key: 'publicDir', placeholder: 'public',                    hint: 'Where static files live. Usually: public (Next.js/Nuxt), static (Hugo), docs (GitHub Pages). Leave blank to auto-detect.' },
+    {
+      label: 'GitHub Repository', key: 'repo', placeholder: 'username/repository-name',
+      hint: 'The owner and name of your repo — visible in the GitHub URL after github.com/',
+      steps: ['Go to github.com and open your repository', 'Look at your browser URL: github.com/username/repo-name', 'Enter just the username/repo-name part (e.g. johnsmith/my-website)'],
+    },
+    {
+      label: 'Branch', key: 'branch', placeholder: 'main',
+      hint: 'The branch Vercel or Netlify deploys from — usually main or master.',
+      steps: ['Open your GitHub repo', "Look at the branch dropdown above the file list — it shows your active branch name", "Enter that here (usually 'main' or 'master')"],
+    },
+    {
+      label: 'GitHub Personal Access Token', key: 'token', type: 'password', placeholder: 'ghp_xxxxxxxxxxxxxxxxxxxx',
+      hint: "A secure key that lets us commit files to your repo. You can delete it from GitHub after we're done.",
+      steps: [
+        'Go to github.com → click your profile photo (top right) → Settings',
+        'Scroll to the bottom of the left sidebar → click Developer settings',
+        'Click Personal access tokens → Tokens (classic)',
+        'Click Generate new token (classic) → name it "Queldrex"',
+        'Check the repo checkbox (gives permission to commit files)',
+        'Scroll down → click Generate token',
+        'Copy it immediately — GitHub only shows it once',
+      ],
+    },
+    {
+      label: 'Public folder (optional)', key: 'publicDir', placeholder: 'public',
+      hint: "The folder in your repo where public/static files live. Leave blank — we'll auto-detect it.",
+      steps: ['Next.js or Nuxt → public', 'Hugo → static', 'GitHub Pages → docs (or leave blank)', 'Vite / React → dist', "Not sure? Leave it blank — we'll figure it out"],
+    },
   ],
   shopify: [
-    { label: 'Shopify Store URL',        key: 'storeUrl', placeholder: 'yourstore.myshopify.com', hint: 'Do NOT include https://' },
-    { label: 'Admin API Access Token',   key: 'apiToken', type: 'password', placeholder: 'shpat_xxxxxxxxxxxxxxxxxxxx', hint: 'Shopify Admin → Settings → Apps → Develop apps → Create app → Admin API access token (need: write_themes)' },
+    {
+      label: 'Shopify Store URL', key: 'storeUrl', placeholder: 'yourstore.myshopify.com',
+      hint: 'Your permanent Shopify URL — do NOT include https://',
+      steps: ['In Shopify Admin, click Settings (bottom left) → Domains', 'Your store URL ends in .myshopify.com', 'Enter it without https:// (e.g. my-store.myshopify.com)'],
+    },
+    {
+      label: 'Admin API Access Token', key: 'apiToken', type: 'password', placeholder: 'shpat_xxxxxxxxxxxxxxxxxxxx',
+      hint: "A scoped API key for your theme. You can delete it from Shopify Apps after we're done.",
+      steps: [
+        'In Shopify Admin → Settings → Apps and sales channels',
+        'Click Develop apps (top right) → Create an app → name it "Queldrex"',
+        'Click Configure Admin API scopes → check write_themes and read_themes → Save',
+        'Click Install app → copy the Admin API access token',
+        'Important: copy it now — Shopify only shows it once',
+      ],
+    },
   ],
   other: [
-    { label: 'Platform / CMS',       key: 'platform', placeholder: 'e.g. Framer, custom PHP, Drupal…', hint: 'Tell us what your site runs on so we can prepare the right approach' },
-    { label: 'Any notes (optional)', key: 'notes',    placeholder: 'Hosting provider, CMS version, anything relevant' },
+    { label: 'Platform / CMS', key: 'platform', placeholder: 'e.g. Framer, custom PHP, Drupal…', hint: 'Tell us what your site runs on so we can prepare the right approach' },
+    { label: 'Any notes (optional)', key: 'notes', placeholder: 'Hosting provider, CMS version, anything relevant' },
   ],
 }
 
@@ -252,6 +323,16 @@ export default function ImplCredentialsPage() {
                     spellCheck={false}
                   />
                   {f.hint && <p className="text-xs text-white/35 mt-1.5 leading-relaxed">{f.hint}</p>}
+                  {f.steps && f.steps.length > 0 && (
+                    <ol className="mt-2 space-y-1 pl-0.5">
+                      {f.steps.map((step, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs text-white/28">
+                          <span className="font-bold text-white/20 flex-shrink-0 w-4 text-right">{i + 1}.</span>
+                          <span>{step}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
                 </div>
               ))}
             </div>
@@ -273,6 +354,16 @@ export default function ImplCredentialsPage() {
                     autoComplete="off"
                   />
                   {f.hint && <p className="text-xs text-white/35 mt-1.5 leading-relaxed">{f.hint}</p>}
+                  {f.steps && f.steps.length > 0 && (
+                    <ol className="mt-2 space-y-1 pl-0.5">
+                      {f.steps.map((step, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs text-white/28">
+                          <span className="font-bold text-white/20 flex-shrink-0 w-4 text-right">{i + 1}.</span>
+                          <span>{step}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
                 </div>
               ))}
             </div>
