@@ -102,6 +102,7 @@ export default function Header() {
             <Link href="/services" className="hover:text-white transition-colors" onClick={() => setToolsOpen(false)}>Build for Me</Link>
             <Link href="/pricing" className="hover:text-white transition-colors" onClick={() => setToolsOpen(false)}>Pricing</Link>
             <Link href="/about" className="hover:text-white transition-colors" onClick={() => setToolsOpen(false)}>About</Link>
+            <Link href="/blog" className="hover:text-white transition-colors" onClick={() => setToolsOpen(false)}>Blog</Link>
             <Link href="/feedback" className="hover:text-white transition-colors" onClick={() => setToolsOpen(false)}>Feedback</Link>
           </nav>
 
@@ -136,6 +137,7 @@ export default function Header() {
             <Link href="/services" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Build for Me</Link>
             <Link href="/pricing" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Pricing</Link>
             <Link href="/about" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>About</Link>
+            <Link href="/blog" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Blog</Link>
             <Link href="/roadmap" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Roadmap</Link>
             <Link href="/feedback" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Feedback</Link>
           </nav>
