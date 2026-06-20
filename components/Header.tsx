@@ -133,6 +133,7 @@ export default function Header() {
               <span>AI Visibility Scanner</span>
               <span className="text-[10px] font-black uppercase tracking-wider text-black px-2 py-0.5 rounded-full" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Live</span>
             </Link>
+            <Link href="/services" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Build for Me</Link>
             <Link href="/feedback" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Feedback</Link>
             <Link href="/contact" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Contact</Link>
           </nav>

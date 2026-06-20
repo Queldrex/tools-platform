@@ -1,14 +1,11 @@
 import { NextRequest } from 'next/server'
 import { getSecurityLog } from '@/lib/store/redis'
+import { adminAuthCheck } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
 
-function authCheck(req: NextRequest) {
-  return req.headers.get('x-admin-secret') === process.env.ADMIN_SECRET
-}
-
 export async function GET(request: NextRequest) {
-  if (!authCheck(request)) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!await adminAuthCheck(request)) return Response.json({ error: 'Unauthorized' }, { status: 401 })
   const log = await getSecurityLog(200)
   const suspicious = log.reduce((acc, e) => {
     if (!e.success) acc[e.ip] = (acc[e.ip] || 0) + 1

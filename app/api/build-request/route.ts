@@ -92,3 +92,18 @@ export async function GET(request: NextRequest) {
   const requests = raws.map(r => { try { return r ? (typeof r === 'string' ? JSON.parse(r) : r) : null } catch { return null } }).filter(Boolean)
   return Response.json({ requests, total: requests.length })
 }
+
+export async function PATCH(request: NextRequest) {
+  const secret = request.headers.get('x-admin-secret')
+  if (!secret || secret !== process.env.ADMIN_SECRET) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  const { id, status } = await request.json().catch(() => ({}))
+  if (!id || !status) return Response.json({ error: 'id and status required' }, { status: 400 })
+  const redis = getRedis()
+  const raw = await redis.get<string>(`buildrequest:${id}`)
+  if (!raw) return Response.json({ error: 'Not found' }, { status: 404 })
+  const entry = typeof raw === 'string' ? JSON.parse(raw) : raw
+  await redis.set(`buildrequest:${id}`, JSON.stringify({ ...entry, status }))
+  return Response.json({ ok: true })
+}

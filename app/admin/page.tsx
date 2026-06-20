@@ -57,7 +57,7 @@ const BASE_URL = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').re
 export default function AdminPage() {
   const [secret, setSecret] = useState('')
   const [authed, setAuthed] = useState(false)
-  const [tab, setTab] = useState<'overview' | 'scans' | 'downloads' | 'applications' | 'feedback' | 'legal' | 'test' | 'security'>('overview')
+  const [tab, setTab] = useState<'overview' | 'scans' | 'downloads' | 'applications' | 'feedback' | 'legal' | 'test' | 'security' | 'toolrequests' | 'buildrequests'>('overview')
 
   // Scans
   const [entries, setEntries] = useState<ScanLogEntry[]>([])
@@ -83,6 +83,14 @@ export default function AdminPage() {
   const [secLog, setSecLog] = useState<SecurityLogEntry[]>([])
   const [secFlagged, setSecFlagged] = useState<Array<{ ip: string; count: number }>>([])
   const [secLoading, setSecLoading] = useState(false)
+
+  // Tool Requests
+  const [toolRequests, setToolRequests] = useState<Array<{ id: string; name: string; email: string; toolName: string; description: string; useCase?: string; category?: string; status: string; createdAt: string }>>([])
+  const [trLoading, setTrLoading] = useState(false)
+
+  // Build Requests
+  const [buildRequests, setBuildRequests] = useState<Array<{ id: string; name: string; email: string; company?: string; serviceType: string; description: string; budget?: string; timeline?: string; status: string; createdAt: string }>>([])
+  const [brLoading, setBrLoading] = useState(false)
 
   // Notification system — replaces alert() with in-page toasts with error codes
   const [notifications, setNotifications] = useState<Array<{ id: string; type: 'success' | 'error' | 'warning'; title: string; detail?: string; code?: string }>>([])
@@ -337,6 +345,24 @@ export default function AdminPage() {
     setSecLoading(false)
   }, [])
 
+  const loadToolRequests = useCallback(async (s: string) => {
+    setTrLoading(true)
+    try {
+      const res = await fetch('/api/tool-requests', { headers: { 'x-admin-secret': s } })
+      if (res.ok) { const d = await res.json(); setToolRequests(d.requests || []) }
+    } catch { /* ignore */ }
+    setTrLoading(false)
+  }, [])
+
+  const loadBuildRequests = useCallback(async (s: string) => {
+    setBrLoading(true)
+    try {
+      const res = await fetch('/api/build-request', { headers: { 'x-admin-secret': s } })
+      if (res.ok) { const d = await res.json(); setBuildRequests(d.requests || []) }
+    } catch { /* ignore */ }
+    setBrLoading(false)
+  }, [])
+
   const login = (e: React.FormEvent) => {
     e.preventDefault()
     if (loginLocked) return
@@ -350,7 +376,9 @@ export default function AdminPage() {
     if (authed && tab === 'feedback' && feedback.length === 0) loadFeedback(secret)
     if (authed && tab === 'applications' && applications.length === 0) loadApplications(secret)
     if (authed && tab === 'security' && secLog.length === 0) loadSecurity(secret)
-  }, [authed, tab, feedback.length, applications.length, secLog.length, secret, loadFeedback, loadApplications, loadSecurity])
+    if (authed && tab === 'toolrequests' && toolRequests.length === 0) loadToolRequests(secret)
+    if (authed && tab === 'buildrequests' && buildRequests.length === 0) loadBuildRequests(secret)
+  }, [authed, tab, feedback.length, applications.length, secLog.length, toolRequests.length, buildRequests.length, secret, loadFeedback, loadApplications, loadSecurity, loadToolRequests, loadBuildRequests])
 
   useEffect(() => {
     if (authed && tab === 'applications') {
@@ -500,6 +528,8 @@ export default function AdminPage() {
           { id: 'applications', label: 'Pipeline', badge: applications.filter(a => a.status === 'new' && (!lastSeenPipelineAt || a.createdAt > lastSeenPipelineAt)).length || null as number | null },
           { id: 'feedback', label: 'Feedback', badge: feedback.filter(f => !readIds.has(f.id)).length || null as number | null },
           { id: 'security', label: 'Security', badge: secFlagged.length > 0 ? secFlagged.length : null as number | null },
+          { id: 'toolrequests', label: 'Tool Requests', badge: toolRequests.filter(r => r.status === 'new').length || null as number | null },
+          { id: 'buildrequests', label: 'Build Requests', badge: buildRequests.filter(r => r.status === 'new').length || null as number | null },
           { id: 'legal', label: 'Compliance', badge: null as number | null },
           { id: 'test', label: 'System Test', badge: null as number | null },
         ] as { id: typeof tab; label: string; badge: number | null }[]).map(item => (
@@ -1013,10 +1043,159 @@ export default function AdminPage() {
           <SecurityTab log={secLog} flagged={secFlagged} loading={secLoading} onRefresh={() => loadSecurity(secret)} />
         )}
 
+        {tab === 'toolrequests' && (
+          <RequestsTab
+            title="Tool Requests"
+            subtitle="Submitted via /request-tool — what users want built next"
+            requests={toolRequests}
+            loading={trLoading}
+            onRefresh={() => loadToolRequests(secret)}
+            statusColors={{ new: '#22d3ee', reviewing: '#a78bfa', planned: '#fbbf24', building: '#f97316', live: '#4ade80', declined: '#ef4444' }}
+            onStatusChange={async (id, status) => {
+              await fetch('/api/tool-requests', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret }, body: JSON.stringify({ id, status }) })
+              setToolRequests(prev => prev.map(r => r.id === id ? { ...r, status } : r))
+            }}
+            statuses={['new', 'reviewing', 'planned', 'building', 'live', 'declined']}
+            nameField="toolName"
+          />
+        )}
+
+        {tab === 'buildrequests' && (
+          <RequestsTab
+            title="Build Requests"
+            subtitle="Submitted via /services — custom project quote requests"
+            requests={buildRequests}
+            loading={brLoading}
+            onRefresh={() => loadBuildRequests(secret)}
+            statusColors={{ new: '#22d3ee', reviewing: '#a78bfa', quoted: '#fbbf24', building: '#f97316', complete: '#4ade80', declined: '#ef4444' }}
+            onStatusChange={async (id, status) => {
+              await fetch('/api/build-request', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret }, body: JSON.stringify({ id, status }) })
+              setBuildRequests(prev => prev.map(r => r.id === id ? { ...r, status } : r))
+            }}
+            statuses={['new', 'reviewing', 'quoted', 'building', 'complete', 'declined']}
+            nameField="serviceType"
+          />
+        )}
+
         {tab === 'legal' && <LegalTab />}
 
         {tab === 'test' && <TestTab secret={secret} baseUrl={BASE_URL} notify={notify} />}
       </div>
+    </div>
+  )
+}
+
+// ─── Requests Tab (shared for Tool Requests + Build Requests) ─────────────────
+
+function RequestsTab({ title, subtitle, requests, loading, onRefresh, statusColors, onStatusChange, statuses, nameField }: {
+  title: string; subtitle: string
+  requests: Array<Record<string, string>>
+  loading: boolean; onRefresh: () => void
+  statusColors: Record<string, string>
+  onStatusChange: (id: string, status: string) => Promise<void>
+  statuses: string[]
+  nameField: string
+}) {
+  const [open, setOpen] = useState<string | null>(null)
+  const selected = requests.find(r => r.id === open)
+
+  return (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+        <div>
+          <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800 }}>{title}</h2>
+          <p style={{ margin: '4px 0 0', fontSize: 13, color: '#64748b' }}>{subtitle}</p>
+        </div>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <span style={{ fontSize: 12, color: '#475569' }}>{requests.length} total</span>
+          <button onClick={onRefresh} style={{ padding: '6px 14px', borderRadius: 6, background: '#161b22', color: '#64748b', border: '1px solid #21262d', cursor: 'pointer', fontSize: 12 }}>↻ Refresh</button>
+        </div>
+      </div>
+
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: 48, color: '#475569' }}>Loading…</div>
+      ) : requests.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: 48, color: '#334155', background: '#0d1117', borderRadius: 12, border: '1px solid #21262d' }}>
+          No requests yet.
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {requests.map(r => (
+            <div
+              key={r.id}
+              onClick={() => setOpen(r.id)}
+              style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 10, padding: '14px 18px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}
+            >
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                  <span style={{
+                    padding: '2px 8px', borderRadius: 99, fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
+                    color: statusColors[r.status] || '#888',
+                    background: `${statusColors[r.status] || '#888'}18`,
+                    border: `1px solid ${statusColors[r.status] || '#888'}44`,
+                  }}>{r.status}</span>
+                  <span style={{ fontSize: 14, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r[nameField] || '—'}</span>
+                </div>
+                <div style={{ fontSize: 12, color: '#475569' }}>{r.name} · {r.email}{r.company ? ` · ${r.company}` : ''}</div>
+              </div>
+              <div style={{ fontSize: 12, color: '#334155', whiteSpace: 'nowrap' }}>
+                {new Date(r.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Detail modal */}
+      {selected && (
+        <div onClick={() => setOpen(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: 24 }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 14, padding: 32, maxWidth: 600, width: '100%', maxHeight: '80vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
+              <div>
+                <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 4 }}>{selected[nameField] || '—'}</div>
+                <div style={{ fontSize: 13, color: '#64748b' }}>{selected.name} · <a href={`mailto:${selected.email}`} style={{ color: '#22d3ee', textDecoration: 'none' }}>{selected.email}</a>{selected.company ? ` · ${selected.company}` : ''}</div>
+              </div>
+              <button onClick={() => setOpen(null)} style={{ background: 'none', border: 'none', color: '#475569', cursor: 'pointer', fontSize: 20 }}>✕</button>
+            </div>
+
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 20 }}>
+              {selected.budget && <span style={{ padding: '3px 10px', borderRadius: 99, fontSize: 11, background: '#1e293b', color: '#94a3b8', border: '1px solid #334155' }}>Budget: {selected.budget}</span>}
+              {selected.timeline && <span style={{ padding: '3px 10px', borderRadius: 99, fontSize: 11, background: '#1e293b', color: '#94a3b8', border: '1px solid #334155' }}>Timeline: {selected.timeline}</span>}
+              {selected.category && <span style={{ padding: '3px 10px', borderRadius: 99, fontSize: 11, background: '#1e293b', color: '#94a3b8', border: '1px solid #334155' }}>Category: {selected.category}</span>}
+              {selected.useCase && <span style={{ padding: '3px 10px', borderRadius: 99, fontSize: 11, background: '#1e293b', color: '#94a3b8', border: '1px solid #334155' }}>Use case: {selected.useCase}</span>}
+            </div>
+
+            <div style={{ background: '#070b14', borderRadius: 8, padding: '14px 16px', marginBottom: 20 }}>
+              <p style={{ margin: 0, fontSize: 13, color: '#cbd5e1', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{selected.description}</p>
+            </div>
+
+            <div style={{ marginBottom: 4, fontSize: 11, color: '#475569', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Update Status</div>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+              {statuses.map(s => (
+                <button
+                  key={s}
+                  onClick={() => onStatusChange(selected.id, s)}
+                  style={{
+                    padding: '5px 12px', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: '1px solid',
+                    background: selected.status === s ? `${statusColors[s] || '#888'}22` : 'transparent',
+                    borderColor: selected.status === s ? (statusColors[s] || '#888') : '#21262d',
+                    color: selected.status === s ? (statusColors[s] || '#888') : '#475569',
+                  }}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+
+            <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid #21262d', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: 12, color: '#334155' }}>{new Date(selected.createdAt).toLocaleString()}</span>
+              <a href={`mailto:${selected.email}?subject=Re: Your Queldrex request`} style={{ padding: '7px 16px', borderRadius: 6, background: '#0891b2', color: '#000', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>
+                Reply →
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

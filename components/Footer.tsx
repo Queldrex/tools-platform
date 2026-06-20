@@ -11,13 +11,15 @@ export default function Footer() {
         </Link>
 
         <p className="text-white/55 text-sm leading-relaxed max-w-sm">
-          Precision software tools for developers and businesses. One-time payment. No subscriptions.
+          Precision software tools, custom builds, and AI visibility services for businesses. Queldrex LLC, Colorado.
         </p>
 
         <nav className="flex flex-wrap justify-center items-center gap-x-8 gap-y-3 text-sm text-white/55">
           <Link href="/tools" className="hover:text-white transition-colors">All Tools</Link>
           <span className="text-white/15">·</span>
-          <Link href="/scanner" className="hover:text-white transition-colors">AI Visibility Scanner</Link>
+          <Link href="/scanner" className="hover:text-white transition-colors">AI Scanner</Link>
+          <span className="text-white/15">·</span>
+          <Link href="/services" className="hover:text-white transition-colors">Build for Me</Link>
           <span className="text-white/15">·</span>
           <Link href="/request-tool" className="hover:text-white transition-colors">Request a Tool</Link>
           <span className="text-white/15">·</span>
