@@ -583,7 +583,7 @@ export async function sendDiscoveryEmail({ to, name, url, score, bookingUrl, agr
     </div>
     <div style="background:white;padding:32px;border-radius:0 0 12px 12px;box-shadow:0 4px 6px rgba(0,0,0,0.05);">
       <p style="color:#374151;font-size:15px;line-height:1.6;margin:0 0 16px;">
-        I reviewed your application for <strong>${url}</strong> and I'd like to schedule a quick 15-minute call before we get started — so I can walk you through exactly what we'll do and answer any questions.
+        I reviewed your application for <strong>${url}</strong> and I'd like to connect before we get started — we can do a quick call or just chat over text/email, whatever works best for you. I'll walk you through exactly what we'll do and answer any questions.
       </p>
       ${score !== undefined ? `
       <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:14px 20px;margin-bottom:24px;text-align:center;">
@@ -592,9 +592,9 @@ export async function sendDiscoveryEmail({ to, name, url, score, bookingUrl, agr
         <div style="font-size:12px;color:#6b7280;margin-top:4px;">We'll bring this to 80+ or better.</div>
       </div>` : ''}
       <p style="color:#374151;font-size:14px;line-height:1.6;margin:0 0 24px;">
-        The call takes 15 minutes. I'll show you the exact fixes we'll make and how they improve your score. Pick a time that works for you:
+        If a call works for you, grab a 15-minute slot below. Or just reply to this email and we can handle everything over text — your choice.
       </p>
-      <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
         <tr>
           <td align="center">
             <table cellpadding="0" cellspacing="0">
@@ -608,7 +608,10 @@ export async function sendDiscoveryEmail({ to, name, url, score, bookingUrl, agr
         </tr>
       </table>
       <p style="color:#6b7280;font-size:13px;line-height:1.6;margin:0 0 20px;text-align:center;">
-        After our call I'll send you the payment link to complete your $499 order and we'll get to work within 48 hours.
+        Prefer to skip the call? Just reply here and we can go over everything by email.
+      </p>
+      <p style="color:#6b7280;font-size:13px;line-height:1.6;margin:0 0 20px;text-align:center;">
+        Either way, once we&apos;re aligned I&apos;ll send the payment link and we&apos;ll be done within 48 hours.
       </p>
       <div style="border-top:1px solid #f0f0f0;padding-top:16px;">
         <p style="font-size:12px;color:#9ca3af;margin:0 0 6px;">
