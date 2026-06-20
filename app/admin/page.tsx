@@ -38,7 +38,7 @@ interface DfyApplication {
   implemented?: boolean
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com'
+const BASE_URL = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
 
 export default function AdminPage() {
   const [secret, setSecret] = useState('')
@@ -420,7 +420,7 @@ export default function AdminPage() {
           <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.18em', color: '#64748b', textTransform: 'uppercase' }}>Triage System</span>
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <span style={{ fontSize: 11, color: '#21262d' }}>Secure session</span>
+          <span style={{ fontSize: 11, color: '#334155' }}>Secure session active</span>
           <button
             onClick={() => { loadScans(secret); loadApplications(secret); loadFeedback(secret) }}
             style={{ padding: '5px 14px', borderRadius: 6, background: '#161b22', color: '#64748b', border: '1px solid #21262d', cursor: 'pointer', fontSize: 12 }}
@@ -505,14 +505,14 @@ export default function AdminPage() {
             {/* Stats */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }}>
               {[
-                { label: 'Total Scans', value: total },
-                { label: 'Paid', value: paidCount },
-                { label: 'Unpaid', value: entries.length - paidCount },
-                { label: 'Conversion', value: `${conversionRate}%` },
+                { label: 'Total Scans', value: total, color: '#22d3ee' },
+                { label: 'Paid', value: paidCount, color: '#4ade80' },
+                { label: 'Unpaid', value: entries.length - paidCount, color: '#f1f5f9' },
+                { label: 'Conversion', value: `${conversionRate}%`, color: '#a78bfa' },
               ].map(stat => (
-                <div key={stat.label} style={{ background: '#111', border: '1px solid #222', borderRadius: 10, padding: '16px 20px' }}>
-                  <div style={{ fontSize: 26, fontWeight: 700 }}>{stat.value}</div>
-                  <div style={{ fontSize: 12, color: '#666', marginTop: 4 }}>{stat.label}</div>
+                <div key={stat.label} style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, padding: '16px 20px' }}>
+                  <div style={{ fontSize: 26, fontWeight: 800, color: stat.color, letterSpacing: '-1px' }}>{stat.value}</div>
+                  <div style={{ fontSize: 12, color: '#475569', marginTop: 4 }}>{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -521,8 +521,9 @@ export default function AdminPage() {
             <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
               {(['all', 'paid', 'unpaid'] as const).map(f => (
                 <button key={f} onClick={() => setFilter(f)} style={{
-                  padding: '6px 16px', borderRadius: 6, fontSize: 13, cursor: 'pointer', fontWeight: filter === f ? 600 : 400,
-                  background: filter === f ? '#6366f1' : '#111', color: filter === f ? '#fff' : '#888', border: '1px solid #333',
+                  padding: '6px 16px', borderRadius: 6, fontSize: 12, cursor: 'pointer', fontWeight: filter === f ? 600 : 400,
+                  background: filter === f ? '#083344' : '#0d1117', color: filter === f ? '#22d3ee' : '#475569',
+                  border: `1px solid ${filter === f ? '#0e7490' : '#21262d'}`,
                 }}>
                   {f.charAt(0).toUpperCase() + f.slice(1)}
                 </button>
@@ -530,12 +531,12 @@ export default function AdminPage() {
             </div>
 
             {/* Table */}
-            <div style={{ background: '#111', border: '1px solid #222', borderRadius: 10, overflow: 'hidden' }}>
+            <div style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, overflow: 'hidden' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid #222' }}>
+                  <tr style={{ borderBottom: '1px solid #21262d', background: '#0a0f1a' }}>
                     {['Domain', 'Email', 'Score', 'Status', 'Date', 'Action'].map(h => (
-                      <th key={h} style={{ padding: '12px 16px', textAlign: 'left', color: '#666', fontWeight: 500 }}>{h}</th>
+                      <th key={h} style={{ padding: '12px 16px', textAlign: 'left', color: '#475569', fontWeight: 600, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -544,9 +545,9 @@ export default function AdminPage() {
                     <tr><td colSpan={6} style={{ padding: 32, textAlign: 'center', color: '#444' }}>No entries</td></tr>
                   )}
                   {filtered.map(entry => (
-                    <tr key={entry.scanId} style={{ borderBottom: '1px solid #1a1a1a' }}>
-                      <td style={{ padding: '12px 16px', fontWeight: 500 }}>{entry.domain}</td>
-                      <td style={{ padding: '12px 16px', color: '#aaa' }}>{entry.email}</td>
+                    <tr key={entry.scanId} style={{ borderBottom: '1px solid #161b22' }}>
+                      <td style={{ padding: '12px 16px', fontWeight: 600, color: '#e2e8f0' }}>{entry.domain}</td>
+                      <td style={{ padding: '12px 16px', color: '#64748b' }}>{entry.email}</td>
                       <td style={{ padding: '12px 16px' }}>
                         <span style={{ color: entry.score >= 80 ? '#4ade80' : entry.score >= 50 ? '#facc15' : '#f87171', fontWeight: 600 }}>
                           {entry.score}/100
@@ -562,7 +563,7 @@ export default function AdminPage() {
                           {entry.status}
                         </span>
                       </td>
-                      <td style={{ padding: '12px 16px', color: '#555' }}>
+                      <td style={{ padding: '12px 16px', color: '#475569', fontSize: 12 }}>
                         {new Date(entry.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                       </td>
                       <td style={{ padding: '12px 16px' }}>
@@ -602,42 +603,45 @@ export default function AdminPage() {
                 </tbody>
               </table>
             </div>
-            <p style={{ marginTop: 16, fontSize: 12, color: '#333' }}>Showing {filtered.length} of {total} total scans</p>
+            <p style={{ marginTop: 12, fontSize: 11, color: '#334155' }}>Showing {filtered.length} of {total} total scans · Auto-refreshes every 30s</p>
           </>
         )}
 
         {tab === 'downloads' && (
           <>
-            <div style={{ marginBottom: 20 }}>
-              <p style={{ fontSize: 13, color: '#555' }}>
-                Customers who purchased and received a download link. Tokens expire 7 days after issuance.
+            <div style={{ marginBottom: 24 }}>
+              <h2 style={{ fontSize: 18, fontWeight: 700, color: '#e2e8f0', margin: '0 0 4px' }}>Reports Issued</h2>
+              <p style={{ fontSize: 12, color: '#475569', margin: 0 }}>
+                Customers who paid and received their AI Visibility Report. Download tokens expire 7 days after issuance.
               </p>
             </div>
-            {loading && <p style={{ color: '#666' }}>Loading...</p>}
+            {loading && <p style={{ color: '#475569', fontSize: 13 }}>Loading...</p>}
             {!loading && downloads.length === 0 && (
-              <p style={{ color: '#444', padding: 32, textAlign: 'center' }}>No downloads yet — entries appear here after delivery via Stripe webhook or the Deliver button.</p>
+              <div style={{ padding: '48px 32px', textAlign: 'center', background: '#0d1117', border: '1px solid #21262d', borderRadius: 12 }}>
+                <p style={{ color: '#334155', margin: 0, fontSize: 13 }}>No reports issued yet. Reports appear here after Stripe payment confirmation or manual delivery.</p>
+              </div>
             )}
             {downloads.length > 0 && (
-              <div style={{ background: '#111', border: '1px solid #222', borderRadius: 10, overflow: 'hidden' }}>
+              <div style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, overflow: 'hidden' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                   <thead>
-                    <tr style={{ borderBottom: '1px solid #222' }}>
+                    <tr style={{ borderBottom: '1px solid #21262d', background: '#0a0f1a' }}>
                       {['Domain', 'Email', 'Score', 'Delivered', 'Download Link'].map(h => (
-                        <th key={h} style={{ padding: '12px 16px', textAlign: 'left', color: '#666', fontWeight: 500 }}>{h}</th>
+                        <th key={h} style={{ padding: '12px 16px', textAlign: 'left', color: '#475569', fontWeight: 600, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {downloads.map(entry => (
-                      <tr key={entry.scanId} style={{ borderBottom: '1px solid #1a1a1a' }}>
-                        <td style={{ padding: '12px 16px', fontWeight: 500 }}>{entry.domain}</td>
-                        <td style={{ padding: '12px 16px', color: '#aaa' }}>{entry.email}</td>
+                      <tr key={entry.scanId} style={{ borderBottom: '1px solid #161b22' }}>
+                        <td style={{ padding: '12px 16px', fontWeight: 600, color: '#e2e8f0' }}>{entry.domain}</td>
+                        <td style={{ padding: '12px 16px', color: '#64748b', fontSize: 12 }}>{entry.email}</td>
                         <td style={{ padding: '12px 16px' }}>
-                          <span style={{ color: entry.score >= 80 ? '#4ade80' : entry.score >= 50 ? '#facc15' : '#f87171', fontWeight: 600 }}>
+                          <span style={{ color: entry.score >= 80 ? '#4ade80' : entry.score >= 50 ? '#facc15' : '#f87171', fontWeight: 700 }}>
                             {entry.score}/100
                           </span>
                         </td>
-                        <td style={{ padding: '12px 16px', color: '#555' }}>
+                        <td style={{ padding: '12px 16px', color: '#475569', fontSize: 12 }}>
                           {entry.paidAt
                             ? new Date(entry.paidAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })
                             : '—'}
@@ -648,13 +652,16 @@ export default function AdminPage() {
                               href={`${BASE_URL}/download/${entry.downloadToken}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              style={{ padding: '4px 12px', borderRadius: 6, fontSize: 12, fontWeight: 500, background: '#052e16', color: '#4ade80', border: '1px solid #166534', textDecoration: 'none' }}
+                              style={{ padding: '4px 12px', borderRadius: 6, fontSize: 12, fontWeight: 600, background: '#052e16', color: '#4ade80', border: '1px solid #166534', textDecoration: 'none' }}
                             >
-                              Open Page
+                              Open ↗
                             </a>
                             <button
-                              onClick={() => { navigator.clipboard.writeText(`${BASE_URL}/download/${entry.downloadToken}`) }}
-                              style={{ padding: '4px 12px', borderRadius: 6, fontSize: 12, fontWeight: 500, background: '#1c1c1c', color: '#888', border: '1px solid #333', cursor: 'pointer' }}
+                              onClick={() => {
+                                navigator.clipboard.writeText(`${BASE_URL}/download/${entry.downloadToken}`)
+                                notify('success', 'Download link copied to clipboard', entry.domain)
+                              }}
+                              style={{ padding: '4px 12px', borderRadius: 6, fontSize: 12, fontWeight: 500, background: '#161b22', color: '#64748b', border: '1px solid #21262d', cursor: 'pointer' }}
                             >
                               Copy Link
                             </button>
@@ -666,59 +673,65 @@ export default function AdminPage() {
                 </table>
               </div>
             )}
-            {downloads.length > 0 && <p style={{ marginTop: 12, fontSize: 12, color: '#333' }}>{downloads.length} download{downloads.length !== 1 ? 's' : ''} issued</p>}
+            {downloads.length > 0 && <p style={{ marginTop: 12, fontSize: 11, color: '#334155' }}>{downloads.length} report{downloads.length !== 1 ? 's' : ''} delivered</p>}
           </>
         )}
 
         {tab === 'applications' && (
           <div>
-            {appsLoading && <p style={{ color: '#666' }}>Loading...</p>}
+            <div style={{ marginBottom: 24 }}>
+              <h2 style={{ fontSize: 18, fontWeight: 700, color: '#e2e8f0', margin: '0 0 4px' }}>DFY Pipeline</h2>
+              <p style={{ fontSize: 12, color: '#475569', margin: 0 }}>Manage Done-For-You service applications from first contact to completion.</p>
+            </div>
+            {appsLoading && <p style={{ color: '#475569', fontSize: 13 }}>Loading...</p>}
             {!appsLoading && applications.length === 0 && (
-              <p style={{ color: '#444', padding: 32, textAlign: 'center' }}>No applications yet</p>
+              <div style={{ padding: '48px 32px', textAlign: 'center', background: '#0d1117', border: '1px solid #21262d', borderRadius: 12 }}>
+                <p style={{ color: '#334155', margin: 0, fontSize: 13 }}>No applications yet. Applications appear when clients submit the DFY form.</p>
+              </div>
             )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {applications.map(app => {
                 const statusColors: Record<string, { bg: string; color: string; border: string }> = {
                   new:           { bg: '#1e1b4b', color: '#818cf8', border: '#312e81' },
-                  contacted:     { bg: '#1c3a2a', color: '#4ade80', border: '#166534' },
-                  payment_sent:  { bg: '#1c2a3a', color: '#60a5fa', border: '#1e40af' },
-                  paid:          { bg: '#14532d', color: '#4ade80', border: '#166534' },
-                  rejected:      { bg: '#1c1c1c', color: '#555', border: '#333' },
-                  complete:      { bg: '#052e16', color: '#22d3ee', border: '#0e7490' },
+                  contacted:     { bg: '#0d2218', color: '#4ade80', border: '#166534' },
+                  payment_sent:  { bg: '#0c1929', color: '#60a5fa', border: '#1e40af' },
+                  paid:          { bg: '#052e16', color: '#4ade80', border: '#166534' },
+                  rejected:      { bg: '#0d1117', color: '#475569', border: '#21262d' },
+                  complete:      { bg: '#031d2a', color: '#22d3ee', border: '#0e7490' },
                 }
                 const sc = statusColors[app.status] || statusColors.new
                 return (
-                  <div key={app.id} style={{ background: '#111', border: `1px solid ${app.status === 'new' ? '#312e81' : '#222'}`, borderRadius: 10, padding: '20px 24px' }}>
+                  <div key={app.id} style={{ background: '#0d1117', border: `1px solid ${app.status === 'new' ? '#312e81' : '#21262d'}`, borderRadius: 12, padding: '20px 24px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
                       <div>
                         <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 4 }}>
-                          {app.status === 'new' && <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#f87171', flexShrink: 0, display: 'inline-block' }} />}
-                          <span style={{ fontSize: 15, fontWeight: 700 }}>{app.name}</span>
-                          <span style={{ fontSize: 12, color: '#555' }}>{app.email}</span>
+                          {app.status === 'new' && <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#f87171', boxShadow: '0 0 6px #f87171', flexShrink: 0, display: 'inline-block' }} />}
+                          <span style={{ fontSize: 15, fontWeight: 700, color: '#e2e8f0' }}>{app.name}</span>
+                          <span style={{ fontSize: 12, color: '#475569' }}>{app.email}</span>
                         </div>
                         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                          <span style={{ fontSize: 13, color: '#6366f1' }}>{app.url}</span>
-                          <span style={{ fontSize: 11, color: '#555' }}>·</span>
-                          <span style={{ fontSize: 12, color: '#666' }}>{app.platform}</span>
+                          <span style={{ fontSize: 12, color: '#22d3ee' }}>{app.url}</span>
+                          <span style={{ fontSize: 11, color: '#21262d' }}>·</span>
+                          <span style={{ fontSize: 12, color: '#475569', textTransform: 'capitalize' }}>{app.platform}</span>
                           {app.score !== undefined && (
                             <>
-                              <span style={{ fontSize: 11, color: '#555' }}>·</span>
-                              <span style={{ fontSize: 12, fontWeight: 600, color: app.score >= 80 ? '#4ade80' : app.score >= 50 ? '#facc15' : '#f87171' }}>Score: {app.score}/100</span>
+                              <span style={{ fontSize: 11, color: '#21262d' }}>·</span>
+                              <span style={{ fontSize: 12, fontWeight: 700, color: app.score >= 80 ? '#4ade80' : app.score >= 50 ? '#facc15' : '#f87171' }}>{app.score}/100</span>
                             </>
                           )}
                         </div>
                       </div>
                       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                        <span style={{ padding: '2px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, background: sc.bg, color: sc.color, border: `1px solid ${sc.border}` }}>
+                        <span style={{ padding: '3px 10px', borderRadius: 99, fontSize: 10, fontWeight: 700, background: sc.bg, color: sc.color, border: `1px solid ${sc.border}`, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                           {app.status.replace('_', ' ')}
                         </span>
-                        <span style={{ fontSize: 12, color: '#444' }}>
+                        <span style={{ fontSize: 11, color: '#334155' }}>
                           {new Date(app.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
                     </div>
 
-                    <p style={{ fontSize: 13, color: '#aaa', lineHeight: 1.6, margin: '0 0 16px', padding: '12px 16px', background: 'rgba(255,255,255,0.02)', borderRadius: 8, border: '1px solid #1a1a1a' }}>
+                    <p style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.6, margin: '0 0 16px', padding: '12px 16px', background: '#080d14', borderRadius: 8, border: '1px solid #161b22' }}>
                       {app.message}
                     </p>
 
@@ -866,9 +879,15 @@ export default function AdminPage() {
 
         {tab === 'feedback' && (
           <div>
-            {fbLoading && <p style={{ color: '#666' }}>Loading...</p>}
+            <div style={{ marginBottom: 24 }}>
+              <h2 style={{ fontSize: 18, fontWeight: 700, color: '#e2e8f0', margin: '0 0 4px' }}>Feedback</h2>
+              <p style={{ fontSize: 12, color: '#475569', margin: 0 }}>Messages submitted through the feedback form. Click any card to read the full message.</p>
+            </div>
+            {fbLoading && <p style={{ color: '#475569', fontSize: 13 }}>Loading...</p>}
             {!fbLoading && feedback.length === 0 && (
-              <p style={{ color: '#444', padding: 32, textAlign: 'center' }}>No feedback yet</p>
+              <div style={{ padding: '48px 32px', textAlign: 'center', background: '#0d1117', border: '1px solid #21262d', borderRadius: 12 }}>
+                <p style={{ color: '#334155', margin: 0, fontSize: 13 }}>No feedback yet. Customer messages appear here when submitted.</p>
+              </div>
             )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {feedback.map(entry => (
@@ -1097,7 +1116,7 @@ function TestTab({ secret, baseUrl, notify }: { secret: string; baseUrl: string;
       </div>
 
       {/* Health Check */}
-      <div style={{ background: '#111', border: '1px solid #222', borderRadius: 12, padding: 20, marginBottom: 20 }}>
+      <div style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, padding: 20, marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#e2e8f0' }}>System Health</h3>
           <button onClick={runHealthCheck} disabled={healthLoading} style={{ padding: '6px 14px', borderRadius: 6, fontSize: 12, cursor: 'pointer', fontWeight: 600, background: '#1e293b', color: '#94a3b8', border: '1px solid #334155' }}>
@@ -1120,7 +1139,7 @@ function TestTab({ secret, baseUrl, notify }: { secret: string; baseUrl: string;
       </div>
 
       {/* Flow Test */}
-      <div style={{ background: '#111', border: '1px solid #222', borderRadius: 12, padding: 20, marginBottom: 20 }}>
+      <div style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, padding: 20, marginBottom: 20 }}>
         <h3 style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 700, color: '#e2e8f0' }}>DFY Flow Test — Step by Step</h3>
         <div style={{ fontSize: 12, color: '#64748b', lineHeight: 2, marginBottom: 16 }}>
           <div style={{ marginBottom: 8, padding: '10px 14px', background: '#0d1117', borderRadius: 8, border: '1px solid #1e293b' }}>
@@ -1182,7 +1201,7 @@ function TestTab({ secret, baseUrl, notify }: { secret: string; baseUrl: string;
       </div>
 
       {/* Platform coverage */}
-      <div style={{ background: '#111', border: '1px solid #222', borderRadius: 12, padding: 20 }}>
+      <div style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, padding: 20 }}>
         <h3 style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 700, color: '#e2e8f0' }}>Platform Coverage</h3>
         <p style={{ fontSize: 12, color: '#64748b', margin: '0 0 12px' }}>These are all the platform types the DFY implementation supports. Each has its own credential fields and install process.</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 8 }}>
@@ -1214,9 +1233,9 @@ function LegalTab() {
   return (
     <div>
       <div style={{ marginBottom: 28 }}>
-        <h2 style={{ fontSize: 18, fontWeight: 700, margin: '0 0 6px' }}>Legal Compliance</h2>
-        <p style={{ fontSize: 13, color: '#666', margin: 0 }}>
-          Review your legal pages every 6 months. A monthly auto-email runs on the 1st — you&apos;ll get a reminder when any page is due.
+        <h2 style={{ fontSize: 18, fontWeight: 700, color: '#e2e8f0', margin: '0 0 4px' }}>Compliance</h2>
+        <p style={{ fontSize: 12, color: '#475569', margin: 0 }}>
+          Review legal pages every 6 months. Auto-reminder emails fire when any page is within 20 days of its review date.
         </p>
       </div>
 
@@ -1232,7 +1251,7 @@ function LegalTab() {
           const dotColor = isOverdue ? '#f87171' : isWarning ? '#fbbf24' : '#4ade80'
 
           return (
-            <div key={doc.name} style={{ background: '#111', border: `1px solid ${isOverdue ? '#7f1d1d' : isWarning ? '#78350f' : '#222'}`, borderRadius: 10, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+            <div key={doc.name} style={{ background: '#0d1117', border: `1px solid ${isOverdue ? '#7f1d1d' : isWarning ? '#78350f' : '#21262d'}`, borderRadius: 12, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <span style={{ width: 10, height: 10, borderRadius: '50%', background: dotColor, flexShrink: 0, boxShadow: `0 0 6px ${dotColor}` }} />
                 <div>
@@ -1264,7 +1283,7 @@ function LegalTab() {
 
       {/* Review checklist */}
       <div style={{ display: 'grid', gap: 16, gridTemplateColumns: '1fr 1fr' }}>
-        <div style={{ background: '#111', border: '1px solid #222', borderRadius: 10, padding: '20px 24px' }}>
+        <div style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, padding: '20px 24px' }}>
           <p style={{ margin: '0 0 14px', fontWeight: 600, fontSize: 13, color: '#aaa', textTransform: 'uppercase', letterSpacing: '0.08em' }}>6-Month Review Checklist</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {REVIEW_CHECKLIST.map((item, i) => (
@@ -1276,7 +1295,7 @@ function LegalTab() {
           </div>
         </div>
 
-        <div style={{ background: '#111', border: '1px solid #7f1d1d', borderRadius: 10, padding: '20px 24px' }}>
+        <div style={{ background: '#0d1117', border: '1px solid #7f1d1d', borderRadius: 12, padding: '20px 24px' }}>
           <p style={{ margin: '0 0 14px', fontWeight: 600, fontSize: 13, color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Update Immediately If...</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {IMMEDIATE_TRIGGERS.map((item, i) => (
