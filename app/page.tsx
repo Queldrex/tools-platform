@@ -377,6 +377,55 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* B2B SECTION */}
+      <section className="border-t border-white/5 py-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-10">
+            <p className="text-cyan-500 text-xs font-bold tracking-[0.32em] uppercase mb-4">Built for Professionals</p>
+            <h2 className="text-3xl font-black text-white mb-3">Agencies. Consultants. Businesses.</h2>
+            <p className="text-white/45 text-sm max-w-xl mx-auto">Queldrex tools are built to work in a real business context — white-label ready, fixed pricing, no subscriptions.</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="rounded-2xl border p-6" style={{ background: 'rgba(6,182,212,0.05)', borderColor: 'rgba(6,182,212,0.15)' }}>
+              <p className="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-3">For Agencies</p>
+              <p className="text-white font-black text-base mb-2">Sell AI visibility as a service.</p>
+              <p className="text-white/50 text-sm leading-relaxed mb-5">
+                Resell AI Visibility Scans to your clients at your own rate. White-label reports coming. Agency plan ($99/month) monitors 5 domains with client-ready PDFs.
+              </p>
+              <a href="mailto:hello@queldrex.com?subject=Agency Partnership" className="text-sm font-bold text-cyan-400 hover:text-cyan-300 transition-colors">
+                Start a partnership →
+              </a>
+            </div>
+            <div className="rounded-2xl border p-6" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.15)' }}>
+              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'rgb(99,102,241)' }}>For Consultants</p>
+              <p className="text-white font-black text-base mb-2">Add a credibility signal instantly.</p>
+              <p className="text-white/50 text-sm leading-relaxed mb-5">
+                Lead any client engagement with a real AI visibility audit. Professional PDF report included. One-time cost, no retainer needed.
+              </p>
+              <Link href="/scanner" className="text-sm font-bold hover:opacity-80 transition-opacity" style={{ color: 'rgb(99,102,241)' }}>
+                Try the scanner →
+              </Link>
+            </div>
+            <div className="rounded-2xl border p-6" style={{ background: 'rgba(16,185,129,0.05)', borderColor: 'rgba(16,185,129,0.15)' }}>
+              <p className="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-3">For Businesses</p>
+              <p className="text-white font-black text-base mb-2">Know if AI can find you.</p>
+              <p className="text-white/50 text-sm leading-relaxed mb-5">
+                Free scan in 30 seconds. See exactly where your business stands with ChatGPT, Perplexity, and Claude. Fix it for $149 one-time.
+              </p>
+              <Link href="/scanner" className="text-sm font-bold text-emerald-400 hover:text-emerald-300 transition-colors">
+                Scan your site →
+              </Link>
+            </div>
+          </div>
+          <div className="mt-6 flex flex-wrap justify-center gap-8 py-6 border-t border-white/5">
+            <Link href="/about" className="text-xs text-white/35 hover:text-white/70 transition-colors">About Queldrex →</Link>
+            <Link href="/sample-audit" className="text-xs text-white/35 hover:text-white/70 transition-colors">See a sample report →</Link>
+            <Link href="/roadmap" className="text-xs text-white/35 hover:text-white/70 transition-colors">Product roadmap →</Link>
+            <Link href="/services" className="text-xs text-white/35 hover:text-white/70 transition-colors">Custom builds →</Link>
+          </div>
+        </div>
+      </section>
+
       {/* ABOUT + FAQ */}
       <section className="border-t border-white/5 py-24">
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-start">
