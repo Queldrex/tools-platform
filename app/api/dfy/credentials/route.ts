@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { getDfySession, saveDfySession } from '@/lib/store/redis'
 import { encryptCredentials, decryptCredentials } from '@/lib/crypto'
 import { sendAdminNotification } from '@/lib/email/resend'
+import { adminAuthCheck } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -88,10 +89,7 @@ export async function POST(request: NextRequest) {
 
 // Admin-only: retrieve and decrypt credentials
 export async function GET(request: NextRequest) {
-  const secret = request.headers.get('x-admin-secret')
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  if (!await adminAuthCheck(request)) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
   const token = new URL(request.url).searchParams.get('token')
   if (!token) return Response.json({ error: 'token required' }, { status: 400 })

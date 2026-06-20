@@ -103,8 +103,6 @@ export default function AdminPage() {
     setTimeout(() => setNotifications(prev => prev.filter(n => n.id !== id)), 7000)
   }, [])
 
-  const authHeader = useCallback((tok: string) => ({ 'x-session-token': tok }), [])
-
   const loadApplications = useCallback(async (tok: string) => {
     setAppsLoading(true)
     try {
@@ -121,7 +119,7 @@ export default function AdminPage() {
     const entry = { status: newStatus, at: new Date().toISOString() }
     const history = [...(app.statusHistory || []), entry]
     setApplications(prev => prev.map(a => a.id === app.id ? { ...a, statusHistory: history } : a))
-    await fetch('/api/admin/applications', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret }, body: JSON.stringify({ id: app.id, statusHistory: history }) }).catch(() => {})
+    await fetch('/api/admin/applications', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-session-token': sessionToken }, body: JSON.stringify({ id: app.id, statusHistory: history }) }).catch(() => {})
   }
 
   const sendPaymentLink = async (app: DfyApplication) => {
@@ -129,7 +127,7 @@ export default function AdminPage() {
     try {
       const res = await fetch('/api/admin/send-payment', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        headers: { 'Content-Type': 'application/json', 'x-session-token': sessionToken },
         body: JSON.stringify({ applicationId: app.id }),
       })
       const data = await res.json()
@@ -151,7 +149,7 @@ export default function AdminPage() {
     try {
       const res = await fetch('/api/admin/send-discovery', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        headers: { 'Content-Type': 'application/json', 'x-session-token': sessionToken },
         body: JSON.stringify({ applicationId: app.id }),
       })
       const data = await res.json()
@@ -174,7 +172,7 @@ export default function AdminPage() {
     try {
       const res = await fetch('/api/admin/complete-dfy', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        headers: { 'Content-Type': 'application/json', 'x-session-token': sessionToken },
         body: JSON.stringify({ applicationId: app.id }),
       })
       const data = await res.json()
@@ -195,7 +193,7 @@ export default function AdminPage() {
     const app = applications.find(a => a.id === id)
     await fetch('/api/admin/applications', {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+      headers: { 'Content-Type': 'application/json', 'x-session-token': sessionToken },
       body: JSON.stringify({ id, status: 'rejected' }),
     })
     setApplications(prev => prev.map(a => a.id === id ? { ...a, status: 'rejected' } : a))
@@ -217,7 +215,7 @@ export default function AdminPage() {
     try {
       // Step 1: Fetch stored credentials
       const credsRes = await fetch(`/api/dfy/credentials?token=${app.dfyToken}`, {
-        headers: { 'x-admin-secret': secret },
+        headers: { 'x-session-token': sessionToken },
       })
       if (!credsRes.ok) {
         const err = await credsRes.json()
@@ -248,7 +246,7 @@ export default function AdminPage() {
       // Step 3: Run implementation
       const implRes = await fetch('/api/admin/implement', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        headers: { 'Content-Type': 'application/json', 'x-session-token': sessionToken },
         body: JSON.stringify({ scanId: app.scanId, credentials, sendEmail: true }),
       })
       const result = await implRes.json()
@@ -266,7 +264,7 @@ export default function AdminPage() {
   const updateDfyApplication = async (id: string) => {
     await fetch('/api/admin/applications', {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+      headers: { 'Content-Type': 'application/json', 'x-session-token': sessionToken },
       body: JSON.stringify({ id, implemented: true }),
     }).catch(() => {})
   }
@@ -324,10 +322,10 @@ export default function AdminPage() {
     setLoading(false)
   }, [])
 
-  const loadFeedback = useCallback(async (s: string) => {
+  const loadFeedback = useCallback(async (tok: string) => {
     setFbLoading(true)
     try {
-      const res = await fetch('/api/admin/feedback', { headers: { 'x-admin-secret': s } })
+      const res = await fetch('/api/admin/feedback', { headers: { 'x-session-token': tok } })
       if (res.ok) {
         const data = await res.json()
         setFeedback(data.entries || [])
@@ -336,10 +334,10 @@ export default function AdminPage() {
     setFbLoading(false)
   }, [])
 
-  const loadSecurity = useCallback(async (s: string) => {
+  const loadSecurity = useCallback(async (tok: string) => {
     setSecLoading(true)
     try {
-      const res = await fetch('/api/admin/security', { headers: { 'x-admin-secret': s } })
+      const res = await fetch('/api/admin/security', { headers: { 'x-session-token': tok } })
       if (res.ok) {
         const data = await res.json()
         setSecLog(data.log || [])
@@ -349,40 +347,71 @@ export default function AdminPage() {
     setSecLoading(false)
   }, [])
 
-  const loadToolRequests = useCallback(async (s: string) => {
+  const loadToolRequests = useCallback(async (tok: string) => {
     setTrLoading(true)
     try {
-      const res = await fetch('/api/tool-requests', { headers: { 'x-admin-secret': s } })
+      const res = await fetch('/api/tool-requests', { headers: { 'x-session-token': tok } })
       if (res.ok) { const d = await res.json(); setToolRequests(d.requests || []) }
     } catch { /* ignore */ }
     setTrLoading(false)
   }, [])
 
-  const loadBuildRequests = useCallback(async (s: string) => {
+  const loadBuildRequests = useCallback(async (tok: string) => {
     setBrLoading(true)
     try {
-      const res = await fetch('/api/build-request', { headers: { 'x-admin-secret': s } })
+      const res = await fetch('/api/build-request', { headers: { 'x-session-token': tok } })
       if (res.ok) { const d = await res.json(); setBuildRequests(d.requests || []) }
     } catch { /* ignore */ }
     setBrLoading(false)
   }, [])
 
-  const login = (e: React.FormEvent) => {
+  const login = async (e: React.FormEvent) => {
     e.preventDefault()
     if (loginLocked) return
-    loadScans(secret)
-    loadApplications(secret)
-    loadFeedback(secret)
-    loadSecurity(secret)
+    setLoading(true)
+    setError('')
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ secret, totp: totpCode }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        if (res.status === 429) {
+          setLoginLocked(true)
+          setError('Too many failed attempts. Try again in 1 hour.')
+        } else {
+          setLoginAttempts(prev => {
+            const next = prev + 1
+            if (next >= 5) setLoginLocked(true)
+            return next
+          })
+          const remaining = data.remaining ?? 0
+          setError(`${data.error || 'Login failed'}${remaining > 0 ? ` — ${remaining} attempt${remaining === 1 ? '' : 's'} remaining` : ''}`)
+        }
+        setLoading(false)
+        return
+      }
+      const tok = data.sessionToken as string
+      setSessionToken(tok)
+      loadScans(tok)
+      loadApplications(tok)
+      loadFeedback(tok)
+      loadSecurity(tok)
+    } catch {
+      setError('Network error — try again')
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
-    if (authed && tab === 'feedback' && feedback.length === 0) loadFeedback(secret)
-    if (authed && tab === 'applications' && applications.length === 0) loadApplications(secret)
-    if (authed && tab === 'security' && secLog.length === 0) loadSecurity(secret)
-    if (authed && tab === 'toolrequests' && toolRequests.length === 0) loadToolRequests(secret)
-    if (authed && tab === 'buildrequests' && buildRequests.length === 0) loadBuildRequests(secret)
-  }, [authed, tab, feedback.length, applications.length, secLog.length, toolRequests.length, buildRequests.length, secret, loadFeedback, loadApplications, loadSecurity, loadToolRequests, loadBuildRequests])
+    if (authed && tab === 'feedback' && feedback.length === 0) loadFeedback(sessionToken)
+    if (authed && tab === 'applications' && applications.length === 0) loadApplications(sessionToken)
+    if (authed && tab === 'security' && secLog.length === 0) loadSecurity(sessionToken)
+    if (authed && tab === 'toolrequests' && toolRequests.length === 0) loadToolRequests(sessionToken)
+    if (authed && tab === 'buildrequests' && buildRequests.length === 0) loadBuildRequests(sessionToken)
+  }, [authed, tab, feedback.length, applications.length, secLog.length, toolRequests.length, buildRequests.length, sessionToken, loadFeedback, loadApplications, loadSecurity, loadToolRequests, loadBuildRequests])
 
   useEffect(() => {
     if (authed && tab === 'applications') {
@@ -395,9 +424,9 @@ export default function AdminPage() {
   // Auto-refresh scans every 30 seconds while on scans tab
   useEffect(() => {
     if (!authed || tab !== 'scans') return
-    const id = setInterval(() => loadScans(secret), 30_000)
+    const id = setInterval(() => loadScans(sessionToken), 30_000)
     return () => clearInterval(id)
-  }, [authed, tab, secret, loadScans])
+  }, [authed, tab, sessionToken, loadScans])
 
   const [resending, setResending] = useState<string | null>(null)
 
@@ -406,13 +435,13 @@ export default function AdminPage() {
     try {
       const res = await fetch('/api/admin/deliver', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        headers: { 'Content-Type': 'application/json', 'x-session-token': sessionToken },
         body: JSON.stringify({ scanId: entry.scanId }),
       })
       const data = await res.json()
       if (res.ok) {
         notify('success', `Report delivered to ${data.to}`)
-        loadScans(secret)
+        loadScans(sessionToken)
       } else {
         notify('error', 'Delivery failed', data.error, `HTTP ${res.status}`)
       }
@@ -427,7 +456,7 @@ export default function AdminPage() {
     try {
       const res = await fetch('/api/admin/resend', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        headers: { 'Content-Type': 'application/json', 'x-session-token': sessionToken },
         body: JSON.stringify({ scanId: entry.scanId }),
       })
       const data = await res.json()
@@ -470,7 +499,7 @@ export default function AdminPage() {
               <div style={{ fontSize: 11, color: '#475569', marginTop: 4 }}>Authorized personnel only</div>
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <input
               type="password"
               placeholder="Access key"
@@ -480,10 +509,21 @@ export default function AdminPage() {
               disabled={loginLocked}
               style={{ padding: '12px 14px', borderRadius: 8, border: `1px solid ${error ? '#ef4444' : '#21262d'}`, background: '#0a0f1a', color: '#f1f5f9', fontSize: 14, outline: 'none', width: '100%', boxSizing: 'border-box' as const }}
             />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <input
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                placeholder="6-digit authenticator code"
+                value={totpCode}
+                onChange={e => setTotpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                disabled={loginLocked}
+                style={{ padding: '12px 14px', borderRadius: 8, border: `1px solid ${error && error.includes('authenticator') ? '#ef4444' : '#21262d'}`, background: '#0a0f1a', color: '#f1f5f9', fontSize: 14, outline: 'none', width: '100%', boxSizing: 'border-box' as const, letterSpacing: '0.2em' }}
+              />
+              <p style={{ fontSize: 10, color: '#334155', margin: 0 }}>Leave blank if 2FA not yet configured</p>
+            </div>
             {error && (
-              <p style={{ color: '#f87171', fontSize: 12, margin: 0 }}>
-                {error}{loginAttempts >= 2 && loginAttempts < 3 ? ' — 1 attempt remaining' : ''}
-              </p>
+              <p style={{ color: '#f87171', fontSize: 12, margin: 0 }}>{error}</p>
             )}
           </div>
           <button
@@ -515,7 +555,7 @@ export default function AdminPage() {
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <span style={{ fontSize: 11, color: '#334155' }}>Secure session active</span>
           <button
-            onClick={() => { loadScans(secret); loadApplications(secret); loadFeedback(secret); loadSecurity(secret) }}
+            onClick={() => { loadScans(sessionToken); loadApplications(sessionToken); loadFeedback(sessionToken); loadSecurity(sessionToken) }}
             style={{ padding: '5px 14px', borderRadius: 6, background: '#161b22', color: '#64748b', border: '1px solid #21262d', cursor: 'pointer', fontSize: 12 }}
           >
             ↻ Refresh all
@@ -829,7 +869,7 @@ export default function AdminPage() {
                             const p = e.target.value
                             setUpdatingPriority(prev => ({ ...prev, [app.id]: true }))
                             setApplications(prev => prev.map(a => a.id === app.id ? { ...a, priority: p as DfyApplication['priority'] } : a))
-                            await fetch('/api/admin/applications', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret }, body: JSON.stringify({ id: app.id, priority: p }) }).catch(() => {})
+                            await fetch('/api/admin/applications', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-session-token': sessionToken }, body: JSON.stringify({ id: app.id, priority: p }) }).catch(() => {})
                             setUpdatingPriority(prev => ({ ...prev, [app.id]: false }))
                           }}
                           style={{ padding: '2px 8px', borderRadius: 6, background: '#0d1117', color: priorityColors[appPriority], border: `1px solid ${priorityColors[appPriority]}`, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}
@@ -860,7 +900,7 @@ export default function AdminPage() {
                         onBlur={async e => {
                           const notes = e.target.value
                           setApplications(prev => prev.map(a => a.id === app.id ? { ...a, notes } : a))
-                          await fetch('/api/admin/applications', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret }, body: JSON.stringify({ id: app.id, notes }) }).catch(() => {})
+                          await fetch('/api/admin/applications', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-session-token': sessionToken }, body: JSON.stringify({ id: app.id, notes }) }).catch(() => {})
                           setNotesFlash(prev => ({ ...prev, [app.id]: true }))
                           setTimeout(() => setNotesFlash(prev => ({ ...prev, [app.id]: false })), 2000)
                         }}
@@ -1044,7 +1084,7 @@ export default function AdminPage() {
         )}
 
         {tab === 'security' && (
-          <SecurityTab log={secLog} flagged={secFlagged} loading={secLoading} onRefresh={() => loadSecurity(secret)} />
+          <SecurityTab log={secLog} flagged={secFlagged} loading={secLoading} onRefresh={() => loadSecurity(sessionToken)} />
         )}
 
         {tab === 'toolrequests' && (
@@ -1053,10 +1093,10 @@ export default function AdminPage() {
             subtitle="Submitted via /request-tool — what users want built next"
             requests={toolRequests}
             loading={trLoading}
-            onRefresh={() => loadToolRequests(secret)}
+            onRefresh={() => loadToolRequests(sessionToken)}
             statusColors={{ new: '#22d3ee', reviewing: '#a78bfa', planned: '#fbbf24', building: '#f97316', live: '#4ade80', declined: '#ef4444' }}
             onStatusChange={async (id, status) => {
-              await fetch('/api/tool-requests', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret }, body: JSON.stringify({ id, status }) })
+              await fetch('/api/tool-requests', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-session-token': sessionToken }, body: JSON.stringify({ id, status }) })
               setToolRequests(prev => prev.map(r => r.id === id ? { ...r, status } : r))
             }}
             statuses={['new', 'reviewing', 'planned', 'building', 'live', 'declined']}
@@ -1070,10 +1110,10 @@ export default function AdminPage() {
             subtitle="Submitted via /services — custom project quote requests"
             requests={buildRequests}
             loading={brLoading}
-            onRefresh={() => loadBuildRequests(secret)}
+            onRefresh={() => loadBuildRequests(sessionToken)}
             statusColors={{ new: '#22d3ee', reviewing: '#a78bfa', quoted: '#fbbf24', building: '#f97316', complete: '#4ade80', declined: '#ef4444' }}
             onStatusChange={async (id, status) => {
-              await fetch('/api/build-request', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret }, body: JSON.stringify({ id, status }) })
+              await fetch('/api/build-request', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-session-token': sessionToken }, body: JSON.stringify({ id, status }) })
               setBuildRequests(prev => prev.map(r => r.id === id ? { ...r, status } : r))
             }}
             statuses={['new', 'reviewing', 'quoted', 'building', 'complete', 'declined']}
@@ -1083,7 +1123,7 @@ export default function AdminPage() {
 
         {tab === 'legal' && <LegalTab />}
 
-        {tab === 'test' && <TestTab secret={secret} baseUrl={BASE_URL} notify={notify} />}
+        {tab === 'test' && <TestTab sessionToken={sessionToken} baseUrl={BASE_URL} notify={notify} />}
       </div>
     </div>
   )
@@ -1444,7 +1484,7 @@ function daysUntilReview(dateStr: string, intervalDays: number): number {
   return Math.ceil((reviewMs - Date.now()) / 86_400_000)
 }
 
-function TestTab({ secret, baseUrl, notify }: { secret: string; baseUrl: string; notify: (type: 'success' | 'error' | 'warning', title: string, detail?: string, code?: string) => void }) {
+function TestTab({ sessionToken, baseUrl, notify }: { sessionToken: string; baseUrl: string; notify: (type: 'success' | 'error' | 'warning', title: string, detail?: string, code?: string) => void }) {
   const [health, setHealth] = useState<Record<string, { ok: boolean; detail: string }> | null>(null)
   const [healthLoading, setHealthLoading] = useState(false)
   const [seededApp, setSeededApp] = useState<{ applicationId: string; dfyToken: string | null; links: { admin: string; implPage: string | null } } | null>(null)
@@ -1454,7 +1494,7 @@ function TestTab({ secret, baseUrl, notify }: { secret: string; baseUrl: string;
   const runHealthCheck = async () => {
     setHealthLoading(true)
     try {
-      const res = await fetch('/api/admin/test', { headers: { 'x-admin-secret': secret } })
+      const res = await fetch('/api/admin/test', { headers: { 'x-session-token': sessionToken } })
       const data = await res.json()
       setHealth(data.checks)
       const failed = Object.entries(data.checks as Record<string, { ok: boolean; detail: string }>).filter(([, v]) => !v.ok)
@@ -1469,7 +1509,7 @@ function TestTab({ secret, baseUrl, notify }: { secret: string; baseUrl: string;
     try {
       const res = await fetch('/api/admin/test', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        headers: { 'Content-Type': 'application/json', 'x-session-token': sessionToken },
         body: JSON.stringify({ stage }),
       })
       const data = await res.json()
@@ -1482,7 +1522,7 @@ function TestTab({ secret, baseUrl, notify }: { secret: string; baseUrl: string;
   const cleanup = async () => {
     setCleaning(true)
     try {
-      const res = await fetch('/api/admin/test', { method: 'DELETE', headers: { 'x-admin-secret': secret } })
+      const res = await fetch('/api/admin/test', { method: 'DELETE', headers: { 'x-session-token': sessionToken } })
       const data = await res.json()
       notify('success', `Cleaned up ${data.deleted} test application(s)`)
       setSeededApp(null)
