@@ -111,6 +111,50 @@ export default async function DownloadPage({
           </div>
         </div>
 
+        {/* How it works */}
+        <div className="rounded-2xl border border-white/8 p-6 mb-8" style={{ background: 'rgba(255,255,255,0.02)' }}>
+          <p className="text-xs font-bold text-white/30 uppercase tracking-widest mb-5">How to install your fixes</p>
+          <div className="space-y-5">
+            {[
+              {
+                n: '1',
+                title: 'Download the ZIP',
+                body: 'Hit the button below to get all your files at once. It includes a README.txt with step-by-step guides for WordPress, Shopify, cPanel/FTP, GitHub Pages, Wix, Squarespace, and more.',
+              },
+              {
+                n: '2',
+                title: 'Open README.txt first',
+                body: 'Find your platform in the README and follow those specific steps. Each file tells you exactly where it goes and how to verify it\'s working.',
+              },
+              {
+                n: '3',
+                title: 'Upload the files to your site',
+                body: 'Most fixes take 10–15 minutes. The files go in specific places — your README shows exactly where. If you use WordPress, Shopify, or cPanel, it\'s just a file upload.',
+              },
+              {
+                n: '4',
+                title: 'Rescan in 24–48 hours',
+                body: 'AI crawlers need time to re-index your site. Come back and rescan at queldrex.com/scanner to see your updated score.',
+              },
+            ].map(step => (
+              <div key={step.n} className="flex gap-4">
+                <span className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>{step.n}</span>
+                <div>
+                  <p className="text-sm font-bold text-white mb-0.5">{step.title}</p>
+                  <p className="text-xs text-white/45 leading-relaxed">{step.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-5 pt-5 border-t border-white/5">
+            <p className="text-xs text-white/30 text-center">
+              Not sure where to start? Email us at{' '}
+              <a href="mailto:hello@queldrex.com" className="text-cyan-400/70 hover:text-cyan-400 transition-colors">hello@queldrex.com</a>
+              {' '}— we reply within one business day.
+            </p>
+          </div>
+        </div>
+
         {/* Download All */}
         <a
           href={baseUrl}
