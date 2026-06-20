@@ -43,7 +43,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com'
 export default function AdminPage() {
   const [secret, setSecret] = useState('')
   const [authed, setAuthed] = useState(false)
-  const [tab, setTab] = useState<'scans' | 'downloads' | 'applications' | 'feedback' | 'legal' | 'test'>('scans')
+  const [tab, setTab] = useState<'overview' | 'scans' | 'downloads' | 'applications' | 'feedback' | 'legal' | 'test'>('overview')
 
   // Scans
   const [entries, setEntries] = useState<ScanLogEntry[]>([])
@@ -59,6 +59,8 @@ export default function AdminPage() {
   const [sendingPayment, setSendingPayment] = useState<string | null>(null)
   const [sendingDiscovery, setSendingDiscovery] = useState<string | null>(null)
   const [completing, setCompleting] = useState<string | null>(null)
+  const [loginAttempts, setLoginAttempts] = useState(0)
+  const [loginLocked, setLoginLocked] = useState(false)
 
   const loadApplications = useCallback(async (s: string) => {
     setAppsLoading(true)
@@ -243,7 +245,16 @@ export default function AdminPage() {
     setError('')
     try {
       const res = await fetch('/api/admin/log', { headers: { 'x-admin-secret': s } })
-      if (res.status === 401) { window.location.href = '/admin-login'; return }
+      if (res.status === 401) {
+        setError('Invalid access key')
+        setLoginAttempts(prev => {
+          const next = prev + 1
+          if (next >= 3) setLoginLocked(true)
+          return next
+        })
+        setLoading(false)
+        return
+      }
       const data = await res.json()
       setEntries(data.entries || [])
       setTotal(data.total || 0)
@@ -268,7 +279,10 @@ export default function AdminPage() {
 
   const login = (e: React.FormEvent) => {
     e.preventDefault()
+    if (loginLocked) return
     loadScans(secret)
+    loadApplications(secret)
+    loadFeedback(secret)
   }
 
   useEffect(() => {
@@ -340,72 +354,120 @@ export default function AdminPage() {
 
   if (!authed) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0a0a0a' }}>
-        <form onSubmit={login} style={{ display: 'flex', flexDirection: 'column', gap: 12, width: 320 }}>
-          <h1 style={{ color: '#fff', fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Queldrex Admin</h1>
-          <input
-            type="password"
-            placeholder="Admin secret"
-            value={secret}
-            onChange={e => setSecret(e.target.value)}
-            autoFocus
-            style={{ padding: '10px 14px', borderRadius: 8, border: '1px solid #333', background: '#111', color: '#fff', fontSize: 15 }}
-          />
-          {error && <p style={{ color: '#f87171', fontSize: 13 }}>{error}</p>}
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#060810', fontFamily: 'system-ui, sans-serif' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 40%, rgba(6,182,212,0.04) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <form onSubmit={login} style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: 20, width: 360, background: '#0d1117', border: '1px solid #21262d', borderRadius: 16, padding: 40 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, marginBottom: 4 }}>
+            <div style={{ padding: 10, background: 'rgba(6,182,212,0.08)', border: '1px solid rgba(6,182,212,0.15)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.35em', color: '#22d3ee', textTransform: 'uppercase', marginBottom: 4 }}>Queldrex</div>
+              <div style={{ fontSize: 22, fontWeight: 800, color: '#f1f5f9', letterSpacing: '-0.5px' }}>Triage System</div>
+              <div style={{ fontSize: 11, color: '#475569', marginTop: 4 }}>Authorized personnel only</div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <input
+              type="password"
+              placeholder="Access key"
+              value={secret}
+              onChange={e => setSecret(e.target.value)}
+              autoFocus
+              disabled={loginLocked}
+              style={{ padding: '12px 14px', borderRadius: 8, border: `1px solid ${error ? '#ef4444' : '#21262d'}`, background: '#0a0f1a', color: '#f1f5f9', fontSize: 14, outline: 'none', width: '100%', boxSizing: 'border-box' as const }}
+            />
+            {error && (
+              <p style={{ color: '#f87171', fontSize: 12, margin: 0 }}>
+                {error}{loginAttempts >= 2 && loginAttempts < 3 ? ' — 1 attempt remaining' : ''}
+              </p>
+            )}
+          </div>
           <button
             type="submit"
-            disabled={loading}
-            style={{ padding: '10px 14px', borderRadius: 8, background: '#6366f1', color: '#fff', fontWeight: 600, fontSize: 15, border: 'none', cursor: 'pointer' }}
+            disabled={loading || loginLocked}
+            style={{ padding: '12px 14px', borderRadius: 8, background: loginLocked ? '#1e293b' : '#0891b2', color: loginLocked ? '#475569' : '#fff', fontWeight: 700, fontSize: 14, border: 'none', cursor: loginLocked ? 'not-allowed' : 'pointer', width: '100%' }}
           >
-            {loading ? 'Loading...' : 'Sign in'}
+            {loginLocked ? 'Too many attempts — refresh and try again' : loading ? 'Verifying…' : 'Access Triage System'}
           </button>
+          <p style={{ fontSize: 10, color: '#1e293b', textAlign: 'center', margin: 0 }}>
+            This system is monitored. Unauthorized access is prohibited.
+          </p>
         </form>
       </div>
     )
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', padding: '32px 24px', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
-          <h1 style={{ fontSize: 22, fontWeight: 700 }}>Queldrex Admin</h1>
-          <button onClick={() => { loadScans(secret); if (tab === 'feedback') loadFeedback(secret) }} style={{ padding: '6px 16px', borderRadius: 6, background: '#222', color: '#aaa', border: '1px solid #333', cursor: 'pointer', fontSize: 13 }}>
-            Refresh
-          </button>
-        </div>
+    <div style={{ minHeight: '100vh', background: '#060810', color: '#f1f5f9', fontFamily: 'system-ui, sans-serif' }}>
 
-        {/* Tabs */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
-          {(['scans', 'downloads', 'applications', 'feedback'] as const).map(t => (
-            <button key={t} onClick={() => setTab(t)} style={{
-              padding: '8px 20px', borderRadius: 8, fontSize: 13, cursor: 'pointer', fontWeight: tab === t ? 600 : 400,
-              background: tab === t ? '#6366f1' : '#111', color: tab === t ? '#fff' : '#888', border: '1px solid #333',
-            }}>
-              {t === 'downloads' ? 'Downloads' : t.charAt(0).toUpperCase() + t.slice(1)}
-              {t === 'downloads' && downloads.length > 0 && (
-                <span style={{ marginLeft: 6, background: '#0891b2', color: '#fff', borderRadius: 99, padding: '1px 7px', fontSize: 11 }}>{downloads.length}</span>
-              )}
-              {t === 'applications' && applications.filter(a => a.status === 'new').length > 0 && (
-                <span style={{ marginLeft: 6, background: '#f87171', color: '#fff', borderRadius: 99, padding: '1px 7px', fontSize: 11 }}>{applications.filter(a => a.status === 'new').length}</span>
-              )}
-              {t === 'feedback' && feedback.filter(f => !readIds.has(f.id)).length > 0 && (
-                <span style={{ marginLeft: 6, background: '#f87171', color: '#fff', borderRadius: 99, padding: '1px 7px', fontSize: 11 }}>{feedback.filter(f => !readIds.has(f.id)).length}</span>
-              )}
-            </button>
-          ))}
-          <button onClick={() => setTab('legal')} style={{
-            padding: '8px 20px', borderRadius: 8, fontSize: 13, cursor: 'pointer', fontWeight: tab === 'legal' ? 600 : 400,
-            background: tab === 'legal' ? '#6366f1' : '#111', color: tab === 'legal' ? '#fff' : '#888', border: '1px solid #333',
-          }}>
-            Legal
-          </button>
-          <button onClick={() => setTab('test')} style={{
-            padding: '8px 20px', borderRadius: 8, fontSize: 13, cursor: 'pointer', fontWeight: tab === 'test' ? 600 : 400,
-            background: tab === 'test' ? '#854d0e' : '#111', color: tab === 'test' ? '#fbbf24' : '#888', border: '1px solid #333',
-          }}>
-            🧪 Test
+      {/* Top bar */}
+      <div style={{ background: '#0d1117', borderBottom: '1px solid #21262d', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 56, position: 'sticky', top: 0, zIndex: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#22d3ee', boxShadow: '0 0 8px rgba(34,211,238,0.6)' }} />
+          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.3em', color: '#22d3ee', textTransform: 'uppercase' }}>Queldrex</span>
+          <span style={{ color: '#21262d' }}>|</span>
+          <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.18em', color: '#64748b', textTransform: 'uppercase' }}>Triage System</span>
+        </div>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <span style={{ fontSize: 11, color: '#21262d' }}>Secure session</span>
+          <button
+            onClick={() => { loadScans(secret); loadApplications(secret); loadFeedback(secret) }}
+            style={{ padding: '5px 14px', borderRadius: 6, background: '#161b22', color: '#64748b', border: '1px solid #21262d', cursor: 'pointer', fontSize: 12 }}
+          >
+            ↻ Refresh all
           </button>
         </div>
+      </div>
+
+      {/* Nav tabs */}
+      <div style={{ background: '#0d1117', borderBottom: '1px solid #21262d', padding: '0 24px', display: 'flex', overflowX: 'auto', position: 'sticky', top: 56, zIndex: 9 }}>
+        {([
+          { id: 'overview', label: 'Overview', badge: null as number | null },
+          { id: 'scans', label: 'Scans', badge: null as number | null },
+          { id: 'downloads', label: 'Reports', badge: downloads.length > 0 ? downloads.length : null as number | null },
+          { id: 'applications', label: 'Pipeline', badge: applications.filter(a => a.status === 'new').length || null as number | null },
+          { id: 'feedback', label: 'Feedback', badge: feedback.filter(f => !readIds.has(f.id)).length || null as number | null },
+          { id: 'legal', label: 'Compliance', badge: null as number | null },
+          { id: 'test', label: 'System Test', badge: null as number | null },
+        ] as { id: typeof tab; label: string; badge: number | null }[]).map(item => (
+          <button
+            key={item.id}
+            onClick={() => setTab(item.id)}
+            style={{
+              padding: '14px 18px', background: 'transparent', border: 'none',
+              borderBottom: tab === item.id ? '2px solid #22d3ee' : '2px solid transparent',
+              color: tab === item.id ? '#e2e8f0' : '#64748b',
+              fontSize: 12, fontWeight: tab === item.id ? 600 : 400,
+              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap',
+            }}
+          >
+            {item.label}
+            {item.badge != null && item.badge > 0 && (
+              <span style={{ background: '#ef4444', color: '#fff', borderRadius: 99, padding: '1px 6px', fontSize: 10, fontWeight: 700 }}>{item.badge}</span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Content */}
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '28px 24px' }}>
+
+        {tab === 'overview' && (
+          <OverviewTab
+            totalScans={total}
+            paidCount={paidCount}
+            conversionRate={conversionRate}
+            newApplications={applications.filter(a => a.status === 'new').length}
+            activeDfy={applications.filter(a => a.status === 'paid').length}
+            recentScans={entries.slice(0, 5)}
+            recentApps={applications.slice(0, 5)}
+            baseUrl={BASE_URL}
+            onNavigate={(t) => setTab(t as typeof tab)}
+          />
+        )}
 
         {tab === 'scans' && (
           <>
@@ -517,7 +579,7 @@ export default function AdminPage() {
           <>
             <div style={{ marginBottom: 20 }}>
               <p style={{ fontSize: 13, color: '#555' }}>
-                Customers who purchased the $149 bundle and received a download link. Tokens expire 7 days after issuance.
+                Customers who purchased and received a download link. Tokens expire 7 days after issuance.
               </p>
             </div>
             {loading && <p style={{ color: '#666' }}>Loading...</p>}
@@ -788,6 +850,119 @@ export default function AdminPage() {
         {tab === 'legal' && <LegalTab />}
 
         {tab === 'test' && <TestTab secret={secret} baseUrl={BASE_URL} />}
+      </div>
+    </div>
+  )
+}
+
+// ─── Overview Dashboard ──────────────────────────────────────────────────────
+
+function OverviewTab({ totalScans, paidCount, conversionRate, newApplications, activeDfy, recentScans, recentApps, baseUrl, onNavigate }: {
+  totalScans: number; paidCount: number; conversionRate: string
+  newApplications: number; activeDfy: number
+  recentScans: Array<{ scanId: string; domain: string; email: string; score: number; paid: boolean }>
+  recentApps: Array<{ id: string; name: string; email: string; url: string; status: string }>
+  baseUrl: string; onNavigate: (tab: string) => void
+}) {
+  const metrics = [
+    { label: 'Total Scans', value: totalScans, color: '#22d3ee', sub: 'all time' },
+    { label: 'Paid Customers', value: paidCount, color: '#4ade80', sub: 'reports delivered' },
+    { label: 'New Applications', value: newApplications, color: newApplications > 0 ? '#f87171' : '#334155', sub: newApplications > 0 ? 'needs attention' : 'none pending' },
+    { label: 'Conversion Rate', value: `${conversionRate}%`, color: '#a78bfa', sub: 'scan → purchase' },
+  ]
+
+  const statusColor: Record<string, string> = {
+    new: '#818cf8', contacted: '#4ade80', payment_sent: '#60a5fa',
+    paid: '#4ade80', complete: '#22d3ee', rejected: '#475569',
+  }
+
+  return (
+    <div>
+      <div style={{ marginBottom: 28 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, color: '#e2e8f0', margin: '0 0 4px' }}>Triage Overview</h2>
+        <p style={{ fontSize: 12, color: '#475569', margin: 0 }}>Live snapshot of your Queldrex operation.</p>
+      </div>
+
+      {/* Metric cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16, marginBottom: 28 }}>
+        {metrics.map(m => (
+          <div key={m.label} style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, padding: '20px 22px' }}>
+            <div style={{ fontSize: 30, fontWeight: 800, color: m.color, marginBottom: 4, letterSpacing: '-1px' }}>{m.value}</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: '#94a3b8', marginBottom: 2 }}>{m.label}</div>
+            <div style={{ fontSize: 11, color: '#334155' }}>{m.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+        {/* Recent scans */}
+        <div style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, padding: 20 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.12em' }}>Recent Scans</span>
+            <button onClick={() => onNavigate('scans')} style={{ fontSize: 11, color: '#22d3ee', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>View all →</button>
+          </div>
+          {recentScans.length === 0
+            ? <p style={{ color: '#21262d', fontSize: 12, margin: 0 }}>No scans yet</p>
+            : recentScans.map(s => (
+              <div key={s.scanId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '9px 0', borderBottom: '1px solid #161b22' }}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: '#e2e8f0' }}>{s.domain}</div>
+                  <div style={{ fontSize: 11, color: '#334155' }}>{s.email}</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: s.score >= 80 ? '#4ade80' : s.score >= 50 ? '#facc15' : '#f87171' }}>{s.score}/100</div>
+                  <div style={{ fontSize: 10, color: s.paid ? '#4ade80' : '#334155', fontWeight: 600 }}>{s.paid ? 'PAID' : 'FREE'}</div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+
+        {/* DFY Pipeline */}
+        <div style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, padding: 20 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.12em' }}>DFY Pipeline</span>
+            <button onClick={() => onNavigate('applications')} style={{ fontSize: 11, color: '#22d3ee', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>View all →</button>
+          </div>
+          {recentApps.length === 0
+            ? <p style={{ color: '#21262d', fontSize: 12, margin: 0 }}>No applications yet</p>
+            : recentApps.map(a => (
+              <div key={a.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '9px 0', borderBottom: '1px solid #161b22' }}>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: '#e2e8f0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{a.name}</div>
+                  <div style={{ fontSize: 11, color: '#334155', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{a.url}</div>
+                </div>
+                <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 99, color: statusColor[a.status] || '#64748b', border: '1px solid currentColor', whiteSpace: 'nowrap', marginLeft: 8, flexShrink: 0 }}>
+                  {a.status.replace('_', ' ').toUpperCase()}
+                </span>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      {/* Quick actions */}
+      <div style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, padding: 20 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 14 }}>Quick Actions</div>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <a href={`${baseUrl}/scanner`} target="_blank" rel="noopener noreferrer" style={{ padding: '8px 16px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: '#161b22', color: '#94a3b8', border: '1px solid #21262d', textDecoration: 'none' }}>
+            Open Scanner ↗
+          </a>
+          <button onClick={() => onNavigate('applications')} style={{ padding: '8px 16px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: newApplications > 0 ? '#1e1b4b' : '#161b22', color: newApplications > 0 ? '#818cf8' : '#94a3b8', border: `1px solid ${newApplications > 0 ? '#312e81' : '#21262d'}`, cursor: 'pointer' }}>
+            {newApplications > 0 ? `${newApplications} New Application${newApplications > 1 ? 's' : ''}` : 'Pipeline'}
+          </button>
+          {activeDfy > 0 && (
+            <button onClick={() => onNavigate('applications')} style={{ padding: '8px 16px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: '#14532d', color: '#4ade80', border: '1px solid #166534', cursor: 'pointer' }}>
+              {activeDfy} Active DFY
+            </button>
+          )}
+          <button onClick={() => onNavigate('legal')} style={{ padding: '8px 16px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: '#161b22', color: '#94a3b8', border: '1px solid #21262d', cursor: 'pointer' }}>
+            Compliance
+          </button>
+          <button onClick={() => onNavigate('test')} style={{ padding: '8px 16px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: '#161b22', color: '#94a3b8', border: '1px solid #21262d', cursor: 'pointer' }}>
+            System Test
+          </button>
+        </div>
       </div>
     </div>
   )
