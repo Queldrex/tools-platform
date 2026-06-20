@@ -32,7 +32,7 @@ interface DfyApplication {
   platform: string
   score?: number
   message: string
-  status: 'new' | 'contacted' | 'payment_sent' | 'paid' | 'rejected'
+  status: 'new' | 'contacted' | 'payment_sent' | 'paid' | 'rejected' | 'complete'
   createdAt: string
   dfyToken?: string
   implemented?: boolean
@@ -737,7 +737,7 @@ export default function AdminPage() {
                         )}
 
                         {/* Mark Complete — deletes credentials + emails client proof of deletion */}
-                        {app.implemented && app.status !== 'complete' && (
+                        {app.implemented && (
                           <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid #1a2233' }}>
                             <button
                               onClick={() => completeDfy(app)}
@@ -749,11 +749,13 @@ export default function AdminPage() {
                             <p style={{ fontSize: 10, color: '#475569', marginTop: 4 }}>Permanently wipes their passwords from our system and emails them a deletion receipt.</p>
                           </div>
                         )}
-                        {app.status === 'complete' && (
-                          <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid #1a2233' }}>
-                            <span style={{ fontSize: 11, color: '#22d3ee', fontWeight: 600 }}>🔒 Credentials deleted — deletion receipt sent to {app.email}</span>
-                          </div>
-                        )}
+                      </div>
+                    )}
+
+                    {/* Credentials deleted confirmation */}
+                    {app.status === 'complete' && (
+                      <div style={{ marginTop: 8, padding: '8px 12px', borderRadius: 8, background: '#031d2a', border: '1px solid #0e7490' }}>
+                        <span style={{ fontSize: 11, color: '#22d3ee', fontWeight: 600 }}>🔒 Complete — credentials permanently deleted, receipt sent to {app.email}</span>
                       </div>
                     )}
                   </div>
