@@ -558,6 +558,71 @@ export async function sendImplementationEmail({ to, result, afterScore }: Implem
   })
 }
 
+export async function sendDiscoveryEmail({ to, name, url, score, bookingUrl, agreementUrl }: {
+  to: string
+  name: string
+  url: string
+  score?: number
+  bookingUrl: string
+  agreementUrl: string
+}) {
+  const firstName = name.split(' ')[0]
+  await getResend().emails.send({
+    from: 'Sean at Queldrex <hello@queldrex.com>',
+    to,
+    replyTo: 'hello@queldrex.com',
+    subject: `Quick call about your AI visibility — ${url}`,
+    html: `<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <div style="max-width:560px;margin:40px auto;padding:0 20px;">
+    <div style="background:#070b14;padding:28px 32px;border-radius:12px 12px 0 0;text-align:center;">
+      <div style="color:#06b6d4;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px;">Queldrex · Done-For-You</div>
+      <div style="color:white;font-size:22px;font-weight:800;">Let's talk, ${firstName}.</div>
+    </div>
+    <div style="background:white;padding:32px;border-radius:0 0 12px 12px;box-shadow:0 4px 6px rgba(0,0,0,0.05);">
+      <p style="color:#374151;font-size:15px;line-height:1.6;margin:0 0 16px;">
+        I reviewed your application for <strong>${url}</strong> and I'd like to schedule a quick 15-minute call before we get started — so I can walk you through exactly what we'll do and answer any questions.
+      </p>
+      ${score !== undefined ? `
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:14px 20px;margin-bottom:24px;text-align:center;">
+        <div style="font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Current AI Visibility Score</div>
+        <div style="font-size:36px;font-weight:800;color:#dc2626;">${score}<span style="font-size:18px;color:#9ca3af;">/100</span></div>
+        <div style="font-size:12px;color:#6b7280;margin-top:4px;">We'll bring this to 80+ or better.</div>
+      </div>` : ''}
+      <p style="color:#374151;font-size:14px;line-height:1.6;margin:0 0 24px;">
+        The call takes 15 minutes. I'll show you the exact fixes we'll make and how they improve your score. Pick a time that works for you:
+      </p>
+      <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
+        <tr>
+          <td align="center">
+            <table cellpadding="0" cellspacing="0">
+              <tr>
+                <td bgcolor="#0891b2" style="border-radius:10px;padding:16px 32px;">
+                  <a href="${bookingUrl}" style="color:white;text-decoration:none;font-size:16px;font-weight:800;white-space:nowrap;">📅 Book a 15-Minute Call →</a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <p style="color:#6b7280;font-size:13px;line-height:1.6;margin:0 0 20px;text-align:center;">
+        After our call I'll send you the payment link to complete your $499 order and we'll get to work within 48 hours.
+      </p>
+      <div style="border-top:1px solid #f0f0f0;padding-top:16px;">
+        <p style="font-size:12px;color:#9ca3af;margin:0 0 6px;">
+          Before the call, you can review the <a href="${agreementUrl}" style="color:#0891b2;">DFY Service Agreement</a> — it covers exactly what we do, your data security, and our satisfaction guarantee.
+        </p>
+        <p style="font-size:12px;color:#9ca3af;margin:0;">Reply to this email with any questions. — Sean, Queldrex</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`,
+  })
+}
+
 export async function sendPaymentLinkEmail({ to, name, url, paymentUrl, score }: {
   to: string
   name: string
@@ -565,6 +630,7 @@ export async function sendPaymentLinkEmail({ to, name, url, paymentUrl, score }:
   paymentUrl: string
   score?: number
 }) {
+  const agreementUrl = `${(process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()}/dfy-agreement`
   await getResend().emails.send({
     from: 'Queldrex (No Reply) <reports@queldrex.com>',
     to,
@@ -581,7 +647,7 @@ export async function sendPaymentLinkEmail({ to, name, url, paymentUrl, score }:
     </div>
     <div style="background:white;padding:32px;border-radius:0 0 12px 12px;box-shadow:0 4px 6px rgba(0,0,0,0.05);">
       <p style="color:#374151;font-size:15px;line-height:1.6;margin:0 0 20px;">
-        Following our conversation, everything is confirmed. Click below to complete your payment and we'll get started on your AI visibility implementation for <strong>${url}</strong>.
+        Following our call, everything is confirmed. Complete your payment below and we'll start your AI visibility implementation for <strong>${url}</strong> within 48 hours.
       </p>
       ${score !== undefined ? `
       <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:16px 20px;margin-bottom:24px;text-align:center;">
@@ -590,12 +656,27 @@ export async function sendPaymentLinkEmail({ to, name, url, paymentUrl, score }:
         <div style="font-size:12px;color:#6b7280;margin-top:4px;">We'll bring this to 80+ or better.</div>
       </div>` : ''}
       <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:20px;margin-bottom:28px;">
-        <div style="font-size:13px;font-weight:700;color:#111827;margin-bottom:12px;">What's included:</div>
-        ${['llms.txt — tells every AI exactly what your business does','LocalBusiness JSON-LD schema — machine-readable identity card','robots.txt — ensures all AI crawlers can access your site','Before/after visibility report confirming every signal fixed'].map(item =>
-          `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:13px;color:#374151;"><span style="color:#16a34a;font-size:16px;flex-shrink:0;">✓</span>${item}</div>`
+        <div style="font-size:13px;font-weight:700;color:#111827;margin-bottom:12px;">What's included — $499 one-time:</div>
+        ${['llms.txt — tells every AI exactly what your business does','LocalBusiness JSON-LD schema — machine-readable identity card','robots.txt — ensures all AI crawlers can access your site','sitemap.xml — AI crawlers discover every page','Before/after visibility report confirming every signal fixed','Score improvement to 80+ guaranteed'].map(item =>
+          `<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;font-size:13px;color:#374151;"><span style="color:#16a34a;font-size:16px;flex-shrink:0;line-height:1.2;">✓</span>${item}</div>`
         ).join('')}
       </div>
-      <a href="${paymentUrl}" style="display:block;background:linear-gradient(135deg,#06b6d4,#0891b2);color:white;text-decoration:none;text-align:center;padding:16px 24px;border-radius:10px;font-size:15px;font-weight:800;margin-bottom:20px;">Complete Payment — $499 →</a>
+      <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
+        <tr>
+          <td align="center">
+            <table cellpadding="0" cellspacing="0">
+              <tr>
+                <td bgcolor="#0891b2" style="border-radius:10px;padding:18px 40px;">
+                  <a href="${paymentUrl}" style="color:white;text-decoration:none;font-size:17px;font-weight:900;white-space:nowrap;">Complete Payment — $499 →</a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <p style="font-size:12px;color:#9ca3af;text-align:center;margin:0 0 16px;">
+        Secure checkout powered by Stripe. By completing payment you agree to the <a href="${agreementUrl}" style="color:#0891b2;">DFY Service Agreement</a>.
+      </p>
       <p style="font-size:12px;color:#9ca3af;text-align:center;margin:0;">Do not reply to this email — for questions contact <a href="mailto:hello@queldrex.com" style="color:#06b6d4;">hello@queldrex.com</a></p>
     </div>
   </div>

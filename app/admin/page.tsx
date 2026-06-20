@@ -57,6 +57,7 @@ export default function AdminPage() {
   const [applications, setApplications] = useState<DfyApplication[]>([])
   const [appsLoading, setAppsLoading] = useState(false)
   const [sendingPayment, setSendingPayment] = useState<string | null>(null)
+  const [sendingDiscovery, setSendingDiscovery] = useState<string | null>(null)
 
   const loadApplications = useCallback(async (s: string) => {
     setAppsLoading(true)
@@ -89,6 +90,27 @@ export default function AdminPage() {
       alert('Network error')
     }
     setSendingPayment(null)
+  }
+
+  const sendDiscovery = async (app: DfyApplication) => {
+    setSendingDiscovery(app.id)
+    try {
+      const res = await fetch('/api/admin/send-discovery', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        body: JSON.stringify({ applicationId: app.id }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setApplications(prev => prev.map(a => a.id === app.id ? { ...a, status: 'contacted' } : a))
+        alert(`Discovery email sent to ${app.email}`)
+      } else {
+        alert(data.error || 'Failed to send discovery email')
+      }
+    } catch {
+      alert('Network error')
+    }
+    setSendingDiscovery(null)
   }
 
   const rejectApplication = async (id: string) => {
@@ -578,16 +600,28 @@ export default function AdminPage() {
                     </p>
 
                     {app.status !== 'rejected' && app.status !== 'paid' && (
-                      <div style={{ display: 'flex', gap: 8 }}>
-                        {app.status !== 'payment_sent' && (
+                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                        {/* Step 1: new → send discovery/scheduling email */}
+                        {app.status === 'new' && (
+                          <button
+                            onClick={() => sendDiscovery(app)}
+                            disabled={sendingDiscovery === app.id}
+                            style={{ padding: '6px 16px', borderRadius: 6, fontSize: 12, cursor: 'pointer', fontWeight: 600, background: '#1c3a1c', color: '#4ade80', border: '1px solid #166534' }}
+                          >
+                            {sendingDiscovery === app.id ? 'Sending…' : '📅 Send Discovery Email'}
+                          </button>
+                        )}
+                        {/* Step 2: contacted → send payment link */}
+                        {app.status === 'contacted' && (
                           <button
                             onClick={() => sendPaymentLink(app)}
                             disabled={sendingPayment === app.id}
                             style={{ padding: '6px 16px', borderRadius: 6, fontSize: 12, cursor: 'pointer', fontWeight: 600, background: '#1e1b4b', color: '#818cf8', border: '1px solid #312e81' }}
                           >
-                            {sendingPayment === app.id ? 'Sending…' : '💳 Send Payment Link'}
+                            {sendingPayment === app.id ? 'Sending…' : '💳 Send Payment Link ($499)'}
                           </button>
                         )}
+                        {/* Resend if payment already sent */}
                         {app.status === 'payment_sent' && (
                           <button
                             onClick={() => sendPaymentLink(app)}
