@@ -163,49 +163,101 @@ export default function ThreatFeedPage() {
           )}
 
           {!loading && !error && visible.length > 0 && (
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs">
-                <thead>
-                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                    {['Severity', 'Indicator', 'Type', 'Category', 'Family', 'Source', 'Status', 'First Seen'].map(h => (
-                      <th key={h} className="px-4 py-3 text-left font-bold uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.25)', fontSize: 10 }}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {visible.map(e => (
-                    <tr key={e.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }} className="hover:bg-white/[0.02] transition-colors">
-                      <td className="px-4 py-2.5">
-                        <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase" style={{ color: SEV_COLOR[e.severity], background: SEV_BG[e.severity] }}>
-                          {e.severity}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2.5 max-w-[220px]">
-                        <span className="font-mono text-[11px] truncate block" style={{ color: 'rgba(255,255,255,0.6)' }} title={e.indicator}>
-                          {e.indicator.length > 40 ? e.indicator.slice(0, 40) + '…' : e.indicator}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2.5">
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold" style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.45)' }}>
-                          {e.indicatorType}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2.5 text-white/40 font-medium">{e.category}</td>
-                      <td className="px-4 py-2.5 text-white/30">{e.malwareFamily || '—'}</td>
-                      <td className="px-4 py-2.5 text-white/35">{e.source}</td>
-                      <td className="px-4 py-2.5">
-                        <span className="flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full" style={{ background: e.status === 'active' ? '#f87171' : '#475569' }} />
-                          <span style={{ color: e.status === 'active' ? '#f87171' : 'rgba(255,255,255,0.25)' }}>
-                            {e.status === 'active' ? 'Active' : 'Inactive'}
-                          </span>
-                        </span>
-                      </td>
-                      <td className="px-4 py-2.5 text-white/25 font-mono">{fmt(e.firstSeen)}</td>
+            <div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                      {['Severity', 'Indicator', 'Type', 'Category', 'Family', 'Source', 'Status', 'First Seen'].map(h => (
+                        <th key={h} className="px-4 py-3 text-left font-bold uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.25)', fontSize: 10 }}>{h}</th>
+                      ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {visible.slice(0, 10).map(e => (
+                      <tr key={e.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }} className="hover:bg-white/[0.02] transition-colors">
+                        <td className="px-4 py-2.5">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase" style={{ color: SEV_COLOR[e.severity], background: SEV_BG[e.severity] }}>
+                            {e.severity}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2.5 max-w-[220px]">
+                          <span className="font-mono text-[11px] truncate block" style={{ color: 'rgba(255,255,255,0.6)' }} title={e.indicator}>
+                            {e.indicator.length > 40 ? e.indicator.slice(0, 40) + '…' : e.indicator}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2.5">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold" style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.45)' }}>
+                            {e.indicatorType}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2.5 text-white/40 font-medium">{e.category}</td>
+                        <td className="px-4 py-2.5 text-white/30">{e.malwareFamily || '—'}</td>
+                        <td className="px-4 py-2.5 text-white/35">{e.source}</td>
+                        <td className="px-4 py-2.5">
+                          <span className="flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full" style={{ background: e.status === 'active' ? '#f87171' : '#475569' }} />
+                            <span style={{ color: e.status === 'active' ? '#f87171' : 'rgba(255,255,255,0.25)' }}>
+                              {e.status === 'active' ? 'Active' : 'Inactive'}
+                            </span>
+                          </span>
+                        </td>
+                        <td className="px-4 py-2.5 text-white/25 font-mono">{fmt(e.firstSeen)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Paywall */}
+              {visible.length > 10 && (
+                <div>
+                  {/* Blurred preview rows */}
+                  <div className="overflow-x-auto pointer-events-none opacity-20 blur-sm select-none" aria-hidden>
+                    <table className="w-full text-xs">
+                      <tbody>
+                        {[0, 1, 2].map(i => (
+                          <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                            <td className="px-4 py-2.5"><div className="h-4 w-14 rounded" style={{ background: 'rgba(248,113,113,0.3)' }} /></td>
+                            <td className="px-4 py-2.5"><div className="h-4 w-40 rounded" style={{ background: 'rgba(255,255,255,0.1)' }} /></td>
+                            <td className="px-4 py-2.5"><div className="h-4 w-10 rounded" style={{ background: 'rgba(255,255,255,0.08)' }} /></td>
+                            <td className="px-4 py-2.5"><div className="h-4 w-16 rounded" style={{ background: 'rgba(255,255,255,0.08)' }} /></td>
+                            <td className="px-4 py-2.5"><div className="h-4 w-20 rounded" style={{ background: 'rgba(255,255,255,0.06)' }} /></td>
+                            <td className="px-4 py-2.5"><div className="h-4 w-16 rounded" style={{ background: 'rgba(255,255,255,0.06)' }} /></td>
+                            <td className="px-4 py-2.5"><div className="h-4 w-12 rounded" style={{ background: 'rgba(255,255,255,0.06)' }} /></td>
+                            <td className="px-4 py-2.5"><div className="h-4 w-24 rounded" style={{ background: 'rgba(255,255,255,0.06)' }} /></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Paywall card */}
+                  <div className="mx-4 mb-4 rounded-xl border p-6 text-center" style={{ background: 'rgba(6,182,212,0.05)', borderColor: 'rgba(6,182,212,0.25)' }}>
+                    <div className="flex justify-center mb-3">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(6,182,212,0.12)', border: '1px solid rgba(6,182,212,0.25)' }}>
+                        <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <h3 className="text-base font-black text-white mb-1">See the full threat feed</h3>
+                    <p className="text-sm text-white/45 mb-4 max-w-sm mx-auto">
+                      Pro subscribers get unlimited access to real-time threat intelligence — {visible.length} active indicators, updated every 15 minutes.
+                    </p>
+                    <div className="flex items-center justify-center gap-3 flex-wrap">
+                      <a href="/monitor"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-black text-black"
+                        style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 20px rgba(6,182,212,0.25)' }}>
+                        Start Pro — $29/month
+                      </a>
+                      <a href="/pricing" className="text-sm text-white/40 hover:text-white transition-colors">
+                        Learn more →
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

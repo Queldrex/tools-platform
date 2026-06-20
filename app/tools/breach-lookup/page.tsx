@@ -55,6 +55,8 @@ export default function BreachLookupPage() {
   const [domainLoading, setDomainLoading] = useState(false)
   const [domainResult, setDomainResult] = useState<DomainResult | null>(null)
   const [domainError, setDomainError] = useState('')
+  const [hasUsedFreeScan, setHasUsedFreeScan] = useState(false)
+  const [showDomainPaywall, setShowDomainPaywall] = useState(false)
 
   async function handlePasswordCheck(e: React.FormEvent) {
     e.preventDefault()
@@ -75,6 +77,10 @@ export default function BreachLookupPage() {
   async function handleDomainScan(e: React.FormEvent) {
     e.preventDefault()
     if (!domain) return
+    if (hasUsedFreeScan) {
+      setShowDomainPaywall(true)
+      return
+    }
     setDomainLoading(true)
     setDomainResult(null)
     setDomainError('')
@@ -88,6 +94,7 @@ export default function BreachLookupPage() {
       const data = await res.json()
       if (!res.ok || !data.ok) throw new Error(data.error || 'Scan failed')
       setDomainResult(data)
+      setHasUsedFreeScan(true)
     } catch (err) {
       setDomainError(err instanceof Error ? err.message : 'Scan failed')
     } finally {
@@ -218,7 +225,7 @@ export default function BreachLookupPage() {
               <input
                 type="text"
                 value={domain}
-                onChange={e => { setDomain(e.target.value); setDomainResult(null); setDomainError('') }}
+                onChange={e => { setDomain(e.target.value); setDomainResult(null); setDomainError(''); setShowDomainPaywall(false) }}
                 placeholder="yourdomain.com"
                 style={inputStyle}
                 autoComplete="off"
@@ -230,6 +237,33 @@ export default function BreachLookupPage() {
                 {domainLoading ? 'Scanning…' : 'Scan Domain'}
               </button>
             </form>
+
+            {/* Paywall after first scan */}
+            {showDomainPaywall && (
+              <div className="mt-6 rounded-xl border p-6 text-center" style={{ background: 'rgba(6,182,212,0.05)', borderColor: 'rgba(6,182,212,0.25)' }}>
+                <div className="flex justify-center mb-3">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(6,182,212,0.12)', border: '1px solid rgba(6,182,212,0.25)' }}>
+                    <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                </div>
+                <h3 className="text-base font-black text-white mb-1">Unlimited domain security scans</h3>
+                <p className="text-sm text-white/45 mb-4">
+                  Pro subscribers can scan any domain, any time. Check all your clients, all your assets.
+                </p>
+                <div className="flex items-center justify-center gap-3 flex-wrap">
+                  <a href="/monitor"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-black text-black"
+                    style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 20px rgba(6,182,212,0.25)' }}>
+                    Start Pro — $29/month
+                  </a>
+                  <a href="/pricing" className="text-sm text-white/40 hover:text-white transition-colors">
+                    See all features →
+                  </a>
+                </div>
+              </div>
+            )}
 
             {domainError && (
               <div className="mt-5 rounded-xl border p-4 text-sm text-red-400" style={{ background: 'rgba(248,113,113,0.07)', borderColor: 'rgba(248,113,113,0.2)' }}>

@@ -227,21 +227,22 @@ export default function HomePage() {
                 className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.03]"
                 style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 32px rgba(6,182,212,0.35)' }}
               >
-                Try Tool 1 Free
+                Scan My Site Free
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </Link>
-              <a
-                href="#tools"
-                className="flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold text-white/60 border border-white/15 hover:border-white/25 hover:text-white transition-all"
+              <Link
+                href="/monitor"
+                className="flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold border transition-all hover:border-white/25 hover:text-white"
+                style={{ color: 'rgba(255,255,255,0.6)', borderColor: 'rgba(255,255,255,0.15)' }}
               >
-                See all 5 tools ↓
-              </a>
+                Monitor Monthly — $29/mo
+              </Link>
             </div>
 
             <p className="text-xs text-white/30 mt-5">
-              5 tools in development · One-time purchase each · No subscriptions, ever
+              No credit card for the free scan · Cancel monitoring anytime
             </p>
           </div>
 
@@ -472,6 +473,82 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* PRICING SECTION */}
+      <section className="border-t border-white/5 py-20" style={{ background: 'rgba(255,255,255,0.01)' }}>
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="text-center mb-10">
+            <p className="text-cyan-500 text-xs font-bold tracking-[0.32em] uppercase mb-3">Pricing</p>
+            <h2 className="text-3xl font-black text-white mb-3">Simple, honest pricing.</h2>
+            <p className="text-white/45 text-sm">Free to start. Upgrade when you want monitoring and unlimited tools.</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-4">
+            {/* Free */}
+            <div className="rounded-2xl border p-6 flex flex-col gap-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
+              <div>
+                <div className="text-xs font-bold uppercase tracking-widest text-white/30 mb-1">Free</div>
+                <div className="text-3xl font-black text-white">$0</div>
+              </div>
+              <ul className="space-y-2 flex-1">
+                {['Free AI Visibility Scan', 'Threat Feed preview', 'Breach Lookup (1 domain)'].map(f => (
+                  <li key={f} className="flex items-center gap-2 text-xs text-white/45">
+                    <svg className="w-3.5 h-3.5 flex-shrink-0 text-white/20" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/scanner" className="block text-center py-2.5 rounded-xl text-sm font-bold transition-colors" style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.55)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                Start Free
+              </Link>
+            </div>
+            {/* Pro */}
+            <div className="rounded-2xl border p-6 flex flex-col gap-4 relative" style={{ background: 'linear-gradient(160deg,rgba(6,182,212,0.08),rgba(8,145,178,0.03))', borderColor: 'rgba(6,182,212,0.4)', boxShadow: '0 0 40px rgba(6,182,212,0.09)' }}>
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>
+                Most Popular
+              </div>
+              <div>
+                <div className="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-1">Pro</div>
+                <div className="flex items-end gap-1"><span className="text-3xl font-black text-white">$29</span><span className="text-white/35 text-xs mb-1.5">/month</span></div>
+              </div>
+              <ul className="space-y-2 flex-1">
+                {['AI Monitor — monthly rescans + alerts', 'Full Threat Intelligence Feed', 'Unlimited domain security scans', 'All future tools included'].map(f => (
+                  <li key={f} className="flex items-center gap-2 text-xs text-white/65">
+                    <svg className="w-3.5 h-3.5 flex-shrink-0 text-cyan-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/monitor" className="block text-center py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 20px rgba(6,182,212,0.25)' }}>
+                Start Monitoring
+              </Link>
+            </div>
+            {/* Agency */}
+            <div className="rounded-2xl border p-6 flex flex-col gap-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-bold uppercase tracking-widest text-white/30">Agency</span>
+                  <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.3)', border: '1px solid rgba(255,255,255,0.09)' }}>Soon</span>
+                </div>
+                <div className="flex items-end gap-1"><span className="text-3xl font-black text-white">$99</span><span className="text-white/35 text-xs mb-1.5">/month</span></div>
+              </div>
+              <ul className="space-y-2 flex-1">
+                {['5 domains monitored', 'White-label reports', 'Priority support', 'Client PDF exports'].map(f => (
+                  <li key={f} className="flex items-center gap-2 text-xs text-white/45">
+                    <svg className="w-3.5 h-3.5 flex-shrink-0 text-white/20" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <a href="mailto:hello@queldrex.com?subject=Agency Plan Waitlist" className="block text-center py-2.5 rounded-xl text-sm font-bold transition-colors" style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.55)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                Join Waitlist
+              </a>
+            </div>
+          </div>
+          <p className="text-center mt-6">
+            <Link href="/pricing" className="text-sm text-white/30 hover:text-white/60 transition-colors">Full pricing details →</Link>
+          </p>
         </div>
       </section>
 
