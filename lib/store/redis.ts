@@ -387,3 +387,159 @@ export async function isIpLocked(ip: string): Promise<boolean> {
 export async function clearIpFailures(ip: string): Promise<void> {
   await getRedis().del(`admin:lockout:${ip}`)
 }
+
+// ── Tool Requests ─────────────────────────────────────────────────────────────
+
+export interface ToolRequest {
+  id: string
+  name: string
+  email: string
+  description: string
+  status: 'new' | 'reviewed' | 'building' | 'shipped' | 'declined'
+  createdAt: string
+}
+
+const TR_KEY = 'toolrequests'
+const trEntryKey = (id: string) => `toolrequest:${id}`
+
+export async function saveToolRequest(req: ToolRequest): Promise<void> {
+  const redis = getRedis()
+  await Promise.all([
+    redis.zadd(TR_KEY, { score: Date.now(), member: req.id }),
+    redis.set(trEntryKey(req.id), JSON.stringify(req)),
+  ])
+}
+
+export async function getToolRequests(limit = 100): Promise<ToolRequest[]> {
+  const redis = getRedis()
+  const ids = await redis.zrange(TR_KEY, 0, limit - 1, { rev: true }) as string[]
+  if (!ids.length) return []
+  const raws = await Promise.all(ids.map(id => redis.get<string>(trEntryKey(id))))
+  return raws.map(r => {
+    if (!r) return null
+    try { return typeof r === 'string' ? JSON.parse(r) : r } catch { return null }
+  }).filter(Boolean) as ToolRequest[]
+}
+
+export async function updateToolRequest(id: string, updates: Partial<ToolRequest>): Promise<void> {
+  const redis = getRedis()
+  const raw = await redis.get<string>(trEntryKey(id))
+  if (!raw) return
+  const existing: ToolRequest = typeof raw === 'string' ? JSON.parse(raw) : raw
+  await redis.set(trEntryKey(id), JSON.stringify({ ...existing, ...updates }))
+}
+
+// ── Build Requests ────────────────────────────────────────────────────────────
+
+export interface BuildRequest {
+  id: string
+  name: string
+  email: string
+  service: string
+  description: string
+  budget?: string
+  status: 'new' | 'contacted' | 'proposal_sent' | 'active' | 'complete' | 'declined'
+  createdAt: string
+}
+
+const BR_KEY = 'buildrequests'
+const brEntryKey = (id: string) => `buildrequest:${id}`
+
+export async function saveBuildRequest(req: BuildRequest): Promise<void> {
+  const redis = getRedis()
+  await Promise.all([
+    redis.zadd(BR_KEY, { score: Date.now(), member: req.id }),
+    redis.set(brEntryKey(req.id), JSON.stringify(req)),
+  ])
+}
+
+export async function getBuildRequests(limit = 100): Promise<BuildRequest[]> {
+  const redis = getRedis()
+  const ids = await redis.zrange(BR_KEY, 0, limit - 1, { rev: true }) as string[]
+  if (!ids.length) return []
+  const raws = await Promise.all(ids.map(id => redis.get<string>(brEntryKey(id))))
+  return raws.map(r => {
+    if (!r) return null
+    try { return typeof r === 'string' ? JSON.parse(r) : r } catch { return null }
+  }).filter(Boolean) as BuildRequest[]
+}
+
+export async function updateBuildRequest(id: string, updates: Partial<BuildRequest>): Promise<void> {
+  const redis = getRedis()
+  const raw = await redis.get<string>(brEntryKey(id))
+  if (!raw) return
+  const existing: BuildRequest = typeof raw === 'string' ? JSON.parse(raw) : raw
+  await redis.set(brEntryKey(id), JSON.stringify({ ...existing, ...updates }))
+}
+
+// ── Agency Subscriptions ──────────────────────────────────────────────────────
+
+export interface AgencyClient {
+  id: string
+  domain: string
+  contactEmail?: string
+  label?: string
+  addedAt: string
+  lastScanAt?: string
+  lastScore?: number
+  scoreHistory?: Array<{ date: string; score: number }>
+}
+
+export interface AgencySubscription {
+  id: string
+  email: string
+  agencyName: string
+  stripeCustomerId: string
+  stripeSubscriptionId: string
+  status: 'active' | 'canceled' | 'past_due'
+  scansUsedThisMonth: number
+  scansLimit: number
+  clients: AgencyClient[]
+  createdAt: string
+}
+
+const AGY_KEY = 'agencies'
+const agyEntryKey = (id: string) => `agency:${id}`
+const agyStripeKey = (subId: string) => `agency:by:stripe:${subId}`
+const agyEmailKey = (email: string) => `agency:by:email:${email}`
+
+export async function saveAgency(agency: AgencySubscription): Promise<void> {
+  const redis = getRedis()
+  await Promise.all([
+    redis.zadd(AGY_KEY, { score: Date.now(), member: agency.id }),
+    redis.set(agyEntryKey(agency.id), JSON.stringify(agency)),
+    redis.set(agyStripeKey(agency.stripeSubscriptionId), agency.id),
+    redis.set(agyEmailKey(agency.email.toLowerCase()), agency.id),
+  ])
+}
+
+export async function getAgency(id: string): Promise<AgencySubscription | null> {
+  const r = await getRedis().get<string>(agyEntryKey(id))
+  if (!r) return null
+  try { return typeof r === 'string' ? JSON.parse(r) : r } catch { return null }
+}
+
+export async function getAgencyByEmail(email: string): Promise<AgencySubscription | null> {
+  const id = await getRedis().get<string>(agyEmailKey(email.toLowerCase()))
+  if (!id) return null
+  return getAgency(typeof id === 'string' ? id : String(id))
+}
+
+export async function getAgencyByStripe(subscriptionId: string): Promise<AgencySubscription | null> {
+  const id = await getRedis().get<string>(agyStripeKey(subscriptionId))
+  if (!id) return null
+  return getAgency(typeof id === 'string' ? id : String(id))
+}
+
+export async function updateAgency(id: string, updates: Partial<AgencySubscription>): Promise<void> {
+  const existing = await getAgency(id)
+  if (!existing) return
+  const updated = { ...existing, ...updates }
+  await getRedis().set(agyEntryKey(id), JSON.stringify(updated))
+  if (updates.stripeSubscriptionId && updates.stripeSubscriptionId !== existing.stripeSubscriptionId) {
+    await getRedis().set(agyStripeKey(updates.stripeSubscriptionId), id)
+  }
+  if (updates.email && updates.email.toLowerCase() !== existing.email.toLowerCase()) {
+    await getRedis().set(agyEmailKey(updates.email.toLowerCase()), id)
+  }
+}

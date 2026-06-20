@@ -21,6 +21,8 @@ export default function Footer() {
           <span className="text-white/15">·</span>
           <Link href="/monitor" className="hover:text-white transition-colors">Monitor</Link>
           <span className="text-white/15">·</span>
+          <Link href="/agency" className="hover:text-white transition-colors">Agency Plan</Link>
+          <span className="text-white/15">·</span>
           <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
           <span className="text-white/15">·</span>
           <Link href="/services" className="hover:text-white transition-colors">Build for Me</Link>
