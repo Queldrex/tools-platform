@@ -154,6 +154,14 @@ export interface DfyApplication {
   createdAt: string
   dfyToken?: string        // set when Stripe DFY payment is confirmed
   implemented?: boolean    // set true after admin triggers implementation
+  ticketNumber?: number
+  priority?: 'critical' | 'high' | 'medium' | 'low'
+  notes?: string
+  statusHistory?: Array<{ status: string; at: string }>
+}
+
+export async function getNextTicketNumber(): Promise<number> {
+  return getRedis().incr('dfy:ticket_counter')
 }
 
 const APP_KEY = 'dfyapps'
@@ -223,4 +231,43 @@ export async function getFeedbackLog(limit = 100): Promise<FeedbackEntry[]> {
     try { return typeof r === 'string' ? JSON.parse(r) : r }
     catch { return null }
   }).filter(Boolean) as FeedbackEntry[]
+}
+
+// ── Security Log ──────────────────────────────────────────────────────────────
+
+export interface SecurityLogEntry {
+  id: string
+  ip: string
+  path: string
+  method: string
+  success: boolean
+  action?: string
+  userAgent?: string
+  createdAt: string
+}
+
+const SEC_KEY = 'securitylog'
+const secEntryKey = (id: string) => `securitylog:entry:${id}`
+const SEC_TTL = 60 * 60 * 24 * 30
+
+export async function logSecurityEvent(entry: Omit<SecurityLogEntry, 'id' | 'createdAt'>): Promise<void> {
+  const redis = getRedis()
+  const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
+  const full: SecurityLogEntry = { ...entry, id, createdAt: new Date().toISOString() }
+  await Promise.all([
+    redis.zadd(SEC_KEY, { score: Date.now(), member: id }),
+    redis.set(secEntryKey(id), JSON.stringify(full), { ex: SEC_TTL }),
+  ])
+  await redis.zremrangebyrank(SEC_KEY, 0, -501)
+}
+
+export async function getSecurityLog(limit = 100): Promise<SecurityLogEntry[]> {
+  const redis = getRedis()
+  const ids = await redis.zrange(SEC_KEY, 0, limit - 1, { rev: true }) as string[]
+  if (ids.length === 0) return []
+  const raws = await Promise.all(ids.map(id => redis.get<string>(secEntryKey(id))))
+  return raws.map(r => {
+    if (!r) return null
+    try { return typeof r === 'string' ? JSON.parse(r) : r } catch { return null }
+  }).filter(Boolean) as SecurityLogEntry[]
 }

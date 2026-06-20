@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { saveDfyApplication, getDfyApplications, getRedis, saveDfySession } from '@/lib/store/redis'
+import { saveDfyApplication, getDfyApplications, getRedis, saveDfySession, logSecurityEvent } from '@/lib/store/redis'
 import { randomUUID } from 'crypto'
 
 export const dynamic = 'force-dynamic'
@@ -13,7 +13,10 @@ function authCheck(request: NextRequest) {
 
 // GET /api/admin/test — health check all systems
 export async function GET(request: NextRequest) {
-  if (!authCheck(request)) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!authCheck(request)) {
+    logSecurityEvent({ ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', path: '/api/admin/test', method: 'GET', success: false }).catch(() => {})
+    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
   const results: Record<string, { ok: boolean; detail: string }> = {}
 
@@ -58,7 +61,10 @@ export async function GET(request: NextRequest) {
 
 // POST /api/admin/test — seed a test DFY application at various stages
 export async function POST(request: NextRequest) {
-  if (!authCheck(request)) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!authCheck(request)) {
+    logSecurityEvent({ ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', path: '/api/admin/test', method: 'POST', success: false }).catch(() => {})
+    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
   const { stage } = await request.json().catch(() => ({ stage: 'paid' }))
   const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
@@ -117,7 +123,10 @@ export async function POST(request: NextRequest) {
 
 // DELETE /api/admin/test — clean up all test applications
 export async function DELETE(request: NextRequest) {
-  if (!authCheck(request)) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!authCheck(request)) {
+    logSecurityEvent({ ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', path: '/api/admin/test', method: 'DELETE', success: false }).catch(() => {})
+    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
   const apps = await getDfyApplications(200)
   const testApps = apps.filter(a => a.id.startsWith(TEST_PREFIX))

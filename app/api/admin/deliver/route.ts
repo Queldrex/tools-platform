@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { v4 as uuidv4 } from 'uuid'
-import { getScan, saveScan, saveDownloadToken, updateScanLog } from '@/lib/store/redis'
+import { getScan, saveScan, saveDownloadToken, updateScanLog, logSecurityEvent } from '@/lib/store/redis'
 import { sendDeliveryEmail } from '@/lib/email/resend'
 import { env } from '@/lib/env'
 
@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
 
   const secret = headerSecret || bodySecret
   if (!secret || secret !== process.env.ADMIN_SECRET) {
+    logSecurityEvent({ ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', path: '/api/admin/deliver', method: 'POST', success: false }).catch(() => {})
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

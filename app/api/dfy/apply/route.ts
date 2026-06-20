@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { v4 as uuidv4 } from 'uuid'
-import { saveDfyApplication, getScan } from '@/lib/store/redis'
+import { saveDfyApplication, getScan, getNextTicketNumber } from '@/lib/store/redis'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,6 +24,8 @@ export async function POST(request: NextRequest) {
     if (scan) score = scan.score
   }
 
+  const ticketNumber = await getNextTicketNumber()
+
   await saveDfyApplication({
     id: uuidv4(),
     scanId: scanId || undefined,
@@ -35,6 +37,9 @@ export async function POST(request: NextRequest) {
     message: message.trim().slice(0, 2000),
     status: 'new',
     createdAt: new Date().toISOString(),
+    ticketNumber,
+    priority: 'medium',
+    statusHistory: [{ status: 'new', at: new Date().toISOString() }],
   })
 
   return Response.json({ ok: true })

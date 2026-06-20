@@ -1,12 +1,14 @@
 import { NextRequest } from 'next/server'
-import { getDfyApplication, updateDfyApplication, deleteDfyCredentials, getDfySession } from '@/lib/store/redis'
+import { getDfyApplication, updateDfyApplication, deleteDfyCredentials, getDfySession, logSecurityEvent } from '@/lib/store/redis'
 
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
   const secret = request.headers.get('x-admin-secret')
-  if (!secret || secret !== process.env.ADMIN_SECRET)
+  if (!secret || secret !== process.env.ADMIN_SECRET) {
+    logSecurityEvent({ ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', path: '/api/admin/complete-dfy', method: 'POST', success: false }).catch(() => {})
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
   const { applicationId } = await request.json()
   if (!applicationId) return Response.json({ error: 'applicationId required' }, { status: 400 })

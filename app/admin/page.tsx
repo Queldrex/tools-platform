@@ -36,6 +36,20 @@ interface DfyApplication {
   createdAt: string
   dfyToken?: string
   implemented?: boolean
+  ticketNumber?: number
+  priority?: 'critical' | 'high' | 'medium' | 'low'
+  notes?: string
+  statusHistory?: Array<{ status: string; at: string }>
+}
+
+interface SecurityLogEntry {
+  id: string
+  ip: string
+  path: string
+  method: string
+  success: boolean
+  action?: string
+  createdAt: string
 }
 
 const BASE_URL = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
@@ -43,7 +57,7 @@ const BASE_URL = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').re
 export default function AdminPage() {
   const [secret, setSecret] = useState('')
   const [authed, setAuthed] = useState(false)
-  const [tab, setTab] = useState<'overview' | 'scans' | 'downloads' | 'applications' | 'feedback' | 'legal' | 'test'>('overview')
+  const [tab, setTab] = useState<'overview' | 'scans' | 'downloads' | 'applications' | 'feedback' | 'legal' | 'test' | 'security'>('overview')
 
   // Scans
   const [entries, setEntries] = useState<ScanLogEntry[]>([])
@@ -61,6 +75,14 @@ export default function AdminPage() {
   const [completing, setCompleting] = useState<string | null>(null)
   const [loginAttempts, setLoginAttempts] = useState(0)
   const [loginLocked, setLoginLocked] = useState(false)
+  const [updatingPriority, setUpdatingPriority] = useState<Record<string, boolean>>({})
+  const [notesFlash, setNotesFlash] = useState<Record<string, boolean>>({})
+  const [lastSeenPipelineAt, setLastSeenPipelineAt] = useState<string | null>(null)
+
+  // Security
+  const [secLog, setSecLog] = useState<SecurityLogEntry[]>([])
+  const [secFlagged, setSecFlagged] = useState<Array<{ ip: string; count: number }>>([])
+  const [secLoading, setSecLoading] = useState(false)
 
   // Notification system — replaces alert() with in-page toasts with error codes
   const [notifications, setNotifications] = useState<Array<{ id: string; type: 'success' | 'error' | 'warning'; title: string; detail?: string; code?: string }>>([])
@@ -83,6 +105,13 @@ export default function AdminPage() {
     setAppsLoading(false)
   }, [])
 
+  const appendStatusHistory = async (app: DfyApplication, newStatus: string) => {
+    const entry = { status: newStatus, at: new Date().toISOString() }
+    const history = [...(app.statusHistory || []), entry]
+    setApplications(prev => prev.map(a => a.id === app.id ? { ...a, statusHistory: history } : a))
+    await fetch('/api/admin/applications', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret }, body: JSON.stringify({ id: app.id, statusHistory: history }) }).catch(() => {})
+  }
+
   const sendPaymentLink = async (app: DfyApplication) => {
     setSendingPayment(app.id)
     try {
@@ -94,6 +123,7 @@ export default function AdminPage() {
       const data = await res.json()
       if (res.ok) {
         setApplications(prev => prev.map(a => a.id === app.id ? { ...a, status: 'payment_sent' } : a))
+        appendStatusHistory(app, 'payment_sent')
         notify('success', `Payment link sent to ${app.email}`)
       } else {
         notify('error', 'Failed to send payment link', data.error, `HTTP ${res.status}`)
@@ -115,6 +145,7 @@ export default function AdminPage() {
       const data = await res.json()
       if (res.ok) {
         setApplications(prev => prev.map(a => a.id === app.id ? { ...a, status: 'contacted' } : a))
+        appendStatusHistory(app, 'contacted')
         notify('success', `Discovery email sent to ${app.email}`)
       } else {
         notify('error', 'Failed to send discovery email', data.error, `HTTP ${res.status}`)
@@ -137,6 +168,7 @@ export default function AdminPage() {
       const data = await res.json()
       if (res.ok) {
         setApplications(prev => prev.map(a => a.id === app.id ? { ...a, status: 'complete', implemented: true } : a))
+        appendStatusHistory(app, 'complete')
         notify('success', `Credentials deleted — receipt sent to ${app.email}`, `Deleted at ${new Date(data.deletedAt).toLocaleString()}`)
       } else {
         notify('error', 'Failed to complete', data.error, `HTTP ${res.status}`)
@@ -148,12 +180,14 @@ export default function AdminPage() {
   }
 
   const rejectApplication = async (id: string) => {
+    const app = applications.find(a => a.id === id)
     await fetch('/api/admin/applications', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
       body: JSON.stringify({ id, status: 'rejected' }),
     })
     setApplications(prev => prev.map(a => a.id === id ? { ...a, status: 'rejected' } : a))
+    if (app) appendStatusHistory(app, 'rejected')
   }
 
   const [implementing, setImplementing] = useState<string | null>(null)
@@ -247,6 +281,10 @@ export default function AdminPage() {
       const stored = JSON.parse(localStorage.getItem('fb_read') || '[]') as string[]
       setReadIds(new Set(stored))
     } catch { /* ignore */ }
+    try {
+      const ts = localStorage.getItem('pipeline_seen_at')
+      if (ts) setLastSeenPipelineAt(ts)
+    } catch { /* ignore */ }
   }, [])
 
   const loadScans = useCallback(async (s: string) => {
@@ -286,18 +324,41 @@ export default function AdminPage() {
     setFbLoading(false)
   }, [])
 
+  const loadSecurity = useCallback(async (s: string) => {
+    setSecLoading(true)
+    try {
+      const res = await fetch('/api/admin/security', { headers: { 'x-admin-secret': s } })
+      if (res.ok) {
+        const data = await res.json()
+        setSecLog(data.log || [])
+        setSecFlagged(data.flaggedIps || [])
+      }
+    } catch { /* ignore */ }
+    setSecLoading(false)
+  }, [])
+
   const login = (e: React.FormEvent) => {
     e.preventDefault()
     if (loginLocked) return
     loadScans(secret)
     loadApplications(secret)
     loadFeedback(secret)
+    loadSecurity(secret)
   }
 
   useEffect(() => {
     if (authed && tab === 'feedback' && feedback.length === 0) loadFeedback(secret)
     if (authed && tab === 'applications' && applications.length === 0) loadApplications(secret)
-  }, [authed, tab, feedback.length, applications.length, secret, loadFeedback, loadApplications])
+    if (authed && tab === 'security' && secLog.length === 0) loadSecurity(secret)
+  }, [authed, tab, feedback.length, applications.length, secLog.length, secret, loadFeedback, loadApplications, loadSecurity])
+
+  useEffect(() => {
+    if (authed && tab === 'applications') {
+      const now = new Date().toISOString()
+      setLastSeenPipelineAt(now)
+      try { localStorage.setItem('pipeline_seen_at', now) } catch { /* ignore */ }
+    }
+  }, [authed, tab])
 
   // Auto-refresh scans every 30 seconds while on scans tab
   useEffect(() => {
@@ -422,7 +483,7 @@ export default function AdminPage() {
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <span style={{ fontSize: 11, color: '#334155' }}>Secure session active</span>
           <button
-            onClick={() => { loadScans(secret); loadApplications(secret); loadFeedback(secret) }}
+            onClick={() => { loadScans(secret); loadApplications(secret); loadFeedback(secret); loadSecurity(secret) }}
             style={{ padding: '5px 14px', borderRadius: 6, background: '#161b22', color: '#64748b', border: '1px solid #21262d', cursor: 'pointer', fontSize: 12 }}
           >
             ↻ Refresh all
@@ -436,8 +497,9 @@ export default function AdminPage() {
           { id: 'overview', label: 'Overview', badge: null as number | null },
           { id: 'scans', label: 'Scans', badge: null as number | null },
           { id: 'downloads', label: 'Reports', badge: downloads.length > 0 ? downloads.length : null as number | null },
-          { id: 'applications', label: 'Pipeline', badge: applications.filter(a => a.status === 'new').length || null as number | null },
+          { id: 'applications', label: 'Pipeline', badge: applications.filter(a => a.status === 'new' && (!lastSeenPipelineAt || a.createdAt > lastSeenPipelineAt)).length || null as number | null },
           { id: 'feedback', label: 'Feedback', badge: feedback.filter(f => !readIds.has(f.id)).length || null as number | null },
+          { id: 'security', label: 'Security', badge: secFlagged.length > 0 ? secFlagged.length : null as number | null },
           { id: 'legal', label: 'Compliance', badge: null as number | null },
           { id: 'test', label: 'System Test', badge: null as number | null },
         ] as { id: typeof tab; label: string; badge: number | null }[]).map(item => (
@@ -700,11 +762,15 @@ export default function AdminPage() {
                   complete:      { bg: '#031d2a', color: '#22d3ee', border: '#0e7490' },
                 }
                 const sc = statusColors[app.status] || statusColors.new
+                const priorityColors: Record<string, string> = { critical: '#f87171', high: '#fb923c', medium: '#facc15', low: '#64748b' }
+                const ticketId = `QT-${String(app.ticketNumber || 0).padStart(4, '0')}`
+                const appPriority = app.priority || 'medium'
                 return (
                   <div key={app.id} style={{ background: '#0d1117', border: `1px solid ${app.status === 'new' ? '#312e81' : '#21262d'}`, borderRadius: 12, padding: '20px 24px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
                       <div>
                         <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 4 }}>
+                          {app.ticketNumber && <span style={{ fontFamily: 'monospace', fontSize: 10, fontWeight: 700, color: '#22d3ee', background: '#083344', border: '1px solid #0e7490', padding: '1px 6px', borderRadius: 4 }}>{ticketId}</span>}
                           {app.status === 'new' && <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#f87171', boxShadow: '0 0 6px #f87171', flexShrink: 0, display: 'inline-block' }} />}
                           <span style={{ fontSize: 15, fontWeight: 700, color: '#e2e8f0' }}>{app.name}</span>
                           <span style={{ fontSize: 12, color: '#475569' }}>{app.email}</span>
@@ -722,6 +788,23 @@ export default function AdminPage() {
                         </div>
                       </div>
                       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                        <select
+                          value={appPriority}
+                          disabled={!!updatingPriority[app.id]}
+                          onChange={async e => {
+                            const p = e.target.value
+                            setUpdatingPriority(prev => ({ ...prev, [app.id]: true }))
+                            setApplications(prev => prev.map(a => a.id === app.id ? { ...a, priority: p as DfyApplication['priority'] } : a))
+                            await fetch('/api/admin/applications', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret }, body: JSON.stringify({ id: app.id, priority: p }) }).catch(() => {})
+                            setUpdatingPriority(prev => ({ ...prev, [app.id]: false }))
+                          }}
+                          style={{ padding: '2px 8px', borderRadius: 6, background: '#0d1117', color: priorityColors[appPriority], border: `1px solid ${priorityColors[appPriority]}`, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}
+                        >
+                          <option value="critical">CRITICAL</option>
+                          <option value="high">HIGH</option>
+                          <option value="medium">MEDIUM</option>
+                          <option value="low">LOW</option>
+                        </select>
                         <span style={{ padding: '3px 10px', borderRadius: 99, fontSize: 10, fontWeight: 700, background: sc.bg, color: sc.color, border: `1px solid ${sc.border}`, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                           {app.status.replace('_', ' ')}
                         </span>
@@ -731,9 +814,38 @@ export default function AdminPage() {
                       </div>
                     </div>
 
-                    <p style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.6, margin: '0 0 16px', padding: '12px 16px', background: '#080d14', borderRadius: 8, border: '1px solid #161b22' }}>
+                    <p style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.6, margin: '0 0 12px', padding: '12px 16px', background: '#080d14', borderRadius: 8, border: '1px solid #161b22' }}>
                       {app.message}
                     </p>
+
+                    <div style={{ marginBottom: 16 }}>
+                      <textarea
+                        defaultValue={app.notes || ''}
+                        placeholder="Internal notes (only you see this)..."
+                        rows={2}
+                        onBlur={async e => {
+                          const notes = e.target.value
+                          setApplications(prev => prev.map(a => a.id === app.id ? { ...a, notes } : a))
+                          await fetch('/api/admin/applications', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret }, body: JSON.stringify({ id: app.id, notes }) }).catch(() => {})
+                          setNotesFlash(prev => ({ ...prev, [app.id]: true }))
+                          setTimeout(() => setNotesFlash(prev => ({ ...prev, [app.id]: false })), 2000)
+                        }}
+                        style={{ background: '#080d14', border: '1px solid #161b22', color: '#94a3b8', fontSize: 12, borderRadius: 6, padding: 8, width: '100%', resize: 'vertical', boxSizing: 'border-box', outline: 'none', fontFamily: 'system-ui, sans-serif' }}
+                      />
+                      {notesFlash[app.id] && <span style={{ fontSize: 10, color: '#4ade80', marginLeft: 4 }}>Saved</span>}
+                    </div>
+
+                    {app.statusHistory && app.statusHistory.length > 0 && (
+                      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 12 }}>
+                        {app.statusHistory.map((h, i) => (
+                          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#334155', flexShrink: 0 }} />
+                            <span style={{ fontSize: 10, color: '#475569', textTransform: 'uppercase', fontWeight: 600 }}>{h.status.replace('_', ' ')}</span>
+                            <span style={{ fontSize: 10, color: '#1e293b' }}>{new Date(h.at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
 
                     {app.status !== 'rejected' && app.status !== 'paid' && (
                       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -897,6 +1009,10 @@ export default function AdminPage() {
           </div>
         )}
 
+        {tab === 'security' && (
+          <SecurityTab log={secLog} flagged={secFlagged} loading={secLoading} onRefresh={() => loadSecurity(secret)} />
+        )}
+
         {tab === 'legal' && <LegalTab />}
 
         {tab === 'test' && <TestTab secret={secret} baseUrl={BASE_URL} notify={notify} />}
@@ -1013,6 +1129,92 @@ function OverviewTab({ totalScans, paidCount, conversionRate, newApplications, a
             System Test
           </button>
         </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Security Monitor Tab ───────────────────────────────────────────────────
+
+function SecurityTab({ log, flagged, loading, onRefresh }: {
+  log: SecurityLogEntry[]
+  flagged: Array<{ ip: string; count: number }>
+  loading: boolean
+  onRefresh: () => void
+}) {
+  return (
+    <div>
+      <div style={{ marginBottom: 24 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, color: '#e2e8f0', margin: '0 0 4px' }}>Security Monitor</h2>
+        <p style={{ fontSize: 12, color: '#475569', margin: 0 }}>All admin access attempts are logged. Flagged IPs have 3+ failed attempts.</p>
+      </div>
+
+      {flagged.length > 0 && (
+        <div style={{ background: '#1c0a0a', border: '1px solid #7f1d1d', borderRadius: 12, padding: 20, marginBottom: 20 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 12 }}>
+            ⚠ Suspicious IPs — {flagged.length} flagged
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {flagged.map(f => (
+              <div key={f.ip} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: '#0d0606', borderRadius: 8, border: '1px solid #450a0a' }}>
+                <span style={{ fontFamily: 'monospace', fontSize: 13, color: '#fca5a5' }}>{f.ip}</span>
+                <span style={{ fontSize: 11, fontWeight: 700, color: '#f87171', background: '#450a0a', padding: '2px 8px', borderRadius: 99 }}>{f.count} failed attempts</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 20 }}>
+        {[
+          { label: 'Total Events', value: log.length, color: '#22d3ee' },
+          { label: 'Failed Attempts', value: log.filter(e => !e.success).length, color: '#f87171' },
+          { label: 'Successful Logins', value: log.filter(e => e.success && e.action === 'login').length, color: '#4ade80' },
+        ].map(s => (
+          <div key={s.label} style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, padding: '16px 18px' }}>
+            <div style={{ fontSize: 24, fontWeight: 800, color: s.color, letterSpacing: '-1px', marginBottom: 2 }}>{s.value}</div>
+            <div style={{ fontSize: 11, color: '#475569' }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, overflow: 'hidden' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 18px', borderBottom: '1px solid #21262d', background: '#0a0f1a' }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Access Log (last 200)</span>
+          <button onClick={onRefresh} disabled={loading} style={{ padding: '4px 12px', borderRadius: 6, background: '#161b22', color: '#64748b', border: '1px solid #21262d', cursor: 'pointer', fontSize: 11 }}>
+            {loading ? 'Loading…' : '↻ Refresh'}
+          </button>
+        </div>
+        {loading && <p style={{ color: '#475569', fontSize: 12, padding: '20px 18px', margin: 0 }}>Loading security log…</p>}
+        {!loading && log.length === 0 && <p style={{ color: '#334155', fontSize: 12, padding: '32px 18px', margin: 0, textAlign: 'center' }}>No events yet. Events are logged when admin APIs are accessed.</p>}
+        {!loading && log.length > 0 && (
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+            <thead>
+              <tr style={{ borderBottom: '1px solid #161b22' }}>
+                {['Time', 'IP', 'Path', 'Result', 'Action'].map(h => (
+                  <th key={h} style={{ padding: '8px 16px', textAlign: 'left', color: '#334155', fontWeight: 600, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {log.map(e => (
+                <tr key={e.id} style={{ borderBottom: '1px solid #0d1117', background: e.success ? 'transparent' : 'rgba(127,29,29,0.15)' }}>
+                  <td style={{ padding: '7px 16px', color: '#334155', fontFamily: 'monospace', fontSize: 11, whiteSpace: 'nowrap' }}>
+                    {new Date(e.createdAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                  </td>
+                  <td style={{ padding: '7px 16px', fontFamily: 'monospace', color: e.success ? '#64748b' : '#fca5a5', fontSize: 11 }}>{e.ip}</td>
+                  <td style={{ padding: '7px 16px', color: '#475569', fontFamily: 'monospace', fontSize: 11 }}>{e.path}</td>
+                  <td style={{ padding: '7px 16px' }}>
+                    <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: e.success ? '#052e16' : '#450a0a', color: e.success ? '#4ade80' : '#f87171' }}>
+                      {e.success ? 'OK' : 'DENIED'}
+                    </span>
+                  </td>
+                  <td style={{ padding: '7px 16px', color: '#334155', fontSize: 11 }}>{e.action || e.method}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   )

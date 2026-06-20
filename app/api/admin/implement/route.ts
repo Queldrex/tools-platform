@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { getScan, saveScan } from '@/lib/store/redis'
+import { getScan, saveScan, logSecurityEvent } from '@/lib/store/redis'
 import { implementFixes } from '@/lib/tools/ai-visibility-scanner/implementer'
 import { scanWebsite } from '@/lib/tools/ai-visibility-scanner/scanner'
 import { sendImplementationEmail } from '@/lib/email/resend'
@@ -18,6 +18,7 @@ export async function POST(request: NextRequest) {
 
   const secret = headerSecret || bodySecret
   if (!secret || secret !== process.env.ADMIN_SECRET) {
+    logSecurityEvent({ ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', path: '/api/admin/implement', method: 'POST', success: false }).catch(() => {})
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
