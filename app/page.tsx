@@ -5,7 +5,7 @@ import Footer from '@/components/Footer'
 const TOOLS = [
   {
     name: 'AI Visibility Scanner',
-    tagline: 'Get found by ChatGPT, Perplexity, Claude, Gemini, and every AI assistant searching your industry.',
+    tagline: 'Get found by ChatGPT, Perplexity, Claude, Gemini — 14 signals, free scan, $149 full report.',
     price: '$149',
     href: '/scanner',
     live: true,
@@ -13,38 +13,38 @@ const TOOLS = [
     border: 'rgba(6,182,212,0.25)',
   },
   {
-    name: 'API Schema Drift Scanner',
-    tagline: 'Catch breaking API changes before users do. Auto-generate fixes before they ship.',
-    price: '$249',
-    href: '/tools/api-schema-drift',
-    live: false,
-    color: 'rgba(99,102,241,0.06)',
-    border: 'rgba(99,102,241,0.15)',
-  },
-  {
-    name: 'Database Migration Middleware',
-    tagline: 'Zero-downtime schema migrations to modern cloud databases. No more $9K/min outages.',
-    price: '$199',
-    href: '/tools/database-migration',
-    live: false,
-    color: 'rgba(16,185,129,0.05)',
-    border: 'rgba(16,185,129,0.14)',
-  },
-  {
     name: 'Vibe Coding Security Shield',
-    tagline: 'Audit AI-generated code against OWASP top 10 before it reaches production.',
-    price: '$149',
+    tagline: 'Audit AI-generated code against OWASP Top 10 before it reaches production.',
+    price: 'Pro',
     href: '/tools/vibe-security',
-    live: false,
+    live: true,
     color: 'rgba(245,158,11,0.05)',
     border: 'rgba(245,158,11,0.14)',
   },
   {
-    name: 'High-Speed Directory Extractor',
-    tagline: 'Extract thousands of structured directory listings in minutes, not days.',
-    price: '$99',
+    name: 'API Schema Drift Scanner',
+    tagline: 'Catch breaking API changes before users do. Compare specs and ship with confidence.',
+    price: 'Pro',
+    href: '/tools/api-schema-drift',
+    live: true,
+    color: 'rgba(99,102,241,0.06)',
+    border: 'rgba(99,102,241,0.15)',
+  },
+  {
+    name: 'Database Migration Safety Checker',
+    tagline: 'Spot dangerous SQL patterns before they cause downtime or data loss.',
+    price: 'Pro',
+    href: '/tools/database-migration',
+    live: true,
+    color: 'rgba(16,185,129,0.05)',
+    border: 'rgba(16,185,129,0.14)',
+  },
+  {
+    name: 'Directory Extractor',
+    tagline: 'Map any site structure from its sitemap and export as JSON or CSV. Free.',
+    price: 'Free',
     href: '/tools/directory-extractor',
-    live: false,
+    live: true,
     color: 'rgba(236,72,153,0.05)',
     border: 'rgba(236,72,153,0.14)',
   },
@@ -52,36 +52,36 @@ const TOOLS = [
 
 const UPCOMING = [
   {
-    name: 'API Schema Drift Scanner',
-    hook: 'Your API breaks silently. Users hit errors before you do. Catch drift before it ships.',
+    name: 'AI Citation Tracker',
+    hook: 'Does ChatGPT mention your business by name? Find out which AI engines cite you and which ignore you.',
+    color: 'rgba(6,182,212,0.05)',
+    border: 'rgba(6,182,212,0.18)',
+    label: 'Building Now',
+    href: '/roadmap',
+  },
+  {
+    name: 'Agency Bulk Scanner',
+    hook: 'Scan all 25 agency clients in one run. Scheduled monthly with auto-delivered client reports.',
     color: 'rgba(99,102,241,0.06)',
     border: 'rgba(99,102,241,0.18)',
-    price: '$249',
-    href: '/tools/api-schema-drift',
+    label: 'Coming Soon',
+    href: '/agency',
   },
   {
-    name: 'Database Migration Middleware',
-    hook: 'One botched migration means downtime and corrupted data. Deploy with confidence.',
+    name: 'Competitor AI Visibility Gap',
+    hook: 'See exactly how your business compares to competitors across every AI search signal.',
     color: 'rgba(16,185,129,0.05)',
     border: 'rgba(16,185,129,0.16)',
-    price: '$199',
-    href: '/tools/database-migration',
+    label: 'Coming Soon',
+    href: '/roadmap',
   },
   {
-    name: 'Vibe Coding Security Shield',
-    hook: 'AI writes code fast. It also writes SQL injection holes. Catch them before they ship.',
+    name: 'Local Business AI Pack',
+    hook: 'One-click generate schema, llms.txt, and citation strategy for any local business category.',
     color: 'rgba(245,158,11,0.05)',
     border: 'rgba(245,158,11,0.16)',
-    price: '$149',
-    href: '/tools/vibe-security',
-  },
-  {
-    name: 'High-Speed Directory Extractor',
-    hook: 'Extract thousands of clean, structured listings in minutes, not days.',
-    color: 'rgba(236,72,153,0.05)',
-    border: 'rgba(236,72,153,0.16)',
-    price: '$99',
-    href: '/tools/directory-extractor',
+    label: 'Planned',
+    href: '/roadmap',
   },
 ]
 
@@ -92,7 +92,7 @@ const FAQ = [
   },
   {
     q: 'Do I need a subscription?',
-    a: 'No. Every Queldrex tool is a one-time purchase. Pay once, receive the output immediately. No recurring charges, ever.',
+    a: 'The AI Visibility Scanner is a one-time $149 purchase — no recurring charges. The AI Monitor ($29/month) and Agency Plan ($99/month) are optional subscriptions for ongoing monitoring. Cancel either anytime, no questions asked.',
   },
   {
     q: 'What exactly do I get for $149?',
@@ -103,8 +103,8 @@ const FAQ = [
     a: 'Contact us at hello@queldrex.com within 7 days of purchase. We will resolve the issue or issue a full refund — no questions asked.',
   },
   {
-    q: 'When will the other tools launch?',
-    a: 'We build when ready and tested. Email hello@queldrex.com to get notified when a specific tool launches.',
+    q: 'What tools are live right now?',
+    a: 'Seven tools are live: AI Visibility Scanner, Vibe Coding Security Shield, API Schema Drift Scanner, Database Migration Safety Checker, Directory Extractor, Threat Intelligence Feed, and Breach Lookup. The AI Citation Tracker is building now.',
   },
 ]
 
@@ -209,16 +209,16 @@ export default function HomePage() {
             </div>
 
             <h1 className="text-5xl lg:text-[3.5rem] font-black leading-[1.05] tracking-tight text-white mb-6">
-              One problem.<br />
-              One tool.<br />
-              <span style={{ color: '#06d6ff' }}>One payment. Done.</span>
+              AI is recommending<br />
+              your competitors.<br />
+              <span style={{ color: '#06d6ff' }}>Find out why. Fix it.</span>
             </h1>
 
             <p className="text-lg text-white/65 leading-relaxed mb-4 max-w-lg">
-              Queldrex builds precision tools for the specific, expensive problems developers and businesses face in the age of AI. Buy once, own the output forever. No subscriptions, no accounts, no lock-in.
+              Queldrex builds precision tools for businesses and agencies navigating the age of AI search. Seven tools live now — scan for free, pay only for what you need.
             </p>
             <p className="text-base text-white/50 leading-relaxed mb-10 max-w-lg">
-              Tool 1 is live now: the AI Visibility Scanner. ChatGPT, Perplexity, Claude, and Gemini are recommending businesses every day. We scan your site and generate the files that get you found.
+              ChatGPT, Perplexity, Claude, and Gemini are recommending businesses every day. Most are invisible to every one of them. We scan your site across 14 signals and tell you exactly what to fix.
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
@@ -247,7 +247,7 @@ export default function HomePage() {
           </div>
 
           <div className="hidden lg:flex flex-col gap-2.5">
-            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/25 mb-1">Our Tool Suite · 5 tools</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/25 mb-1">Our Tool Suite · 7 live tools</p>
 
             <Link href="/scanner" className="rounded-xl border p-4 flex items-center gap-3 hover:border-cyan-500/50 transition-colors group" style={{ background: 'rgba(6,182,212,0.08)', borderColor: 'rgba(6,182,212,0.28)' }}>
               <div className="flex-1 min-w-0">
@@ -281,9 +281,9 @@ export default function HomePage() {
       <section id="tools" className="max-w-7xl mx-auto px-6 py-20">
         <div className="text-center mb-12">
           <p className="text-cyan-500 text-xs font-bold tracking-[0.32em] uppercase mb-4">Our Tool Suite</p>
-          <h2 className="text-4xl font-black text-white mb-4">Five tools. One problem each.</h2>
+          <h2 className="text-4xl font-black text-white mb-4">Seven tools. All live. All real.</h2>
           <p className="text-white/55 text-base max-w-lg mx-auto">
-            Every tool does one thing precisely. Bought once, owned forever. No subscriptions, no lock-in.
+            Every tool solves one specific problem. Free scans to start — pay only when you need the full report or monitoring.
           </p>
         </div>
         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -318,13 +318,10 @@ export default function HomePage() {
               style={{ background: tool.color, borderColor: tool.border }}
             >
               <div className="flex items-start justify-between gap-3">
-                <span
-                  className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border"
-                  style={{ color: 'rgba(255,255,255,0.35)', borderColor: 'rgba(255,255,255,0.12)' }}
-                >
-                  In Development
+                <span className="text-[10px] font-black uppercase tracking-wider text-black px-2 py-0.5 rounded-full" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>
+                  Live
                 </span>
-                <span className="text-sm font-bold text-white/30">{tool.price}</span>
+                <span className="text-sm font-bold text-white/70">{tool.price}</span>
               </div>
               <div>
                 <h3 className="text-sm font-bold text-white mb-1.5">{tool.name}</h3>
@@ -344,18 +341,18 @@ export default function HomePage() {
           <div>
             <div className="flex items-center gap-3 mb-6">
               <span className="text-[10px] font-black uppercase tracking-wider text-black px-2.5 py-1 rounded-full" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>
-                Tool 1 · Live Now
+                Live Now
               </span>
-              <span className="text-xs text-white/35 font-semibold">AI Visibility Scanner</span>
+              <span className="text-xs text-white/35 font-semibold">AI Visibility Scanner · 14 Signals</span>
             </div>
             <h2 className="text-3xl font-black text-white leading-tight mb-4">
               AI search is recommending<br />your competitors. Find out why.
             </h2>
             <p className="text-white/60 text-base leading-relaxed mb-4">
-              ChatGPT, Perplexity, Claude, and Gemini answer millions of business questions every day. The sites they recommend have 6 specific technical signals. Most sites are missing all of them.
+              ChatGPT, Perplexity, Claude, and Gemini answer millions of business questions every day. The sites they recommend pass 14 specific technical signals. Most businesses are missing the majority of them.
             </p>
             <p className="text-white/45 text-sm leading-relaxed mb-8">
-              We scan your site in under 30 seconds and show you exactly what&apos;s missing. If you want the fix — a generated llms.txt file, LocalBusiness JSON-LD schema, full HTML report, and deployment instructions — that&apos;s $149 one-time, delivered to your inbox in minutes.
+              We scan your site in under 30 seconds across 14 signals and show you exactly what&apos;s missing. The full fix package — generated llms.txt, LocalBusiness JSON-LD schema, HTML report, and deployment instructions — is $149 one-time, delivered to your inbox in minutes.
             </p>
             <div className="flex flex-wrap items-center gap-4">
               <Link
@@ -390,11 +387,11 @@ export default function HomePage() {
               <p className="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-3">For Agencies</p>
               <p className="text-white font-black text-base mb-2">Sell AI visibility as a service.</p>
               <p className="text-white/50 text-sm leading-relaxed mb-5">
-                Resell AI Visibility Scans to your clients at your own rate. White-label reports coming. Agency plan ($99/month) monitors 5 domains with client-ready PDFs.
+                Run AI Visibility Scans for all your clients from one dashboard. 25 scans/month, white-label PDF reports your clients never know came from Queldrex. Agency plan is live at $99/month.
               </p>
-              <a href="mailto:hello@queldrex.com?subject=Agency Partnership" className="text-sm font-bold text-cyan-400 hover:text-cyan-300 transition-colors">
-                Start a partnership →
-              </a>
+              <Link href="/agency" className="text-sm font-bold text-cyan-400 hover:text-cyan-300 transition-colors">
+                See the Agency Plan →
+              </Link>
             </div>
             <div className="rounded-2xl border p-6" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.15)' }}>
               <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'rgb(99,102,241)' }}>For Consultants</p>
@@ -432,17 +429,17 @@ export default function HomePage() {
           <div>
             <p className="text-cyan-500 text-xs font-bold tracking-[0.32em] uppercase mb-5">About Queldrex</p>
             <h2 className="text-3xl font-black text-white leading-tight mb-6">
-              Built by developers.<br />No fluff. No subscriptions.
+              Built by developers.<br />No fluff. No lock-in.
             </h2>
             <p className="text-white/60 text-base leading-relaxed mb-5">
               Queldrex is a Colorado-based software tools company. We build focused, production-ready tools for developers and businesses — each one solving a single specific problem, precisely and without unnecessary complexity.
             </p>
             <p className="text-white/50 text-base leading-relaxed mb-8">
-              Our business model is simple: you buy a tool, you get the output. No account creation, no subscriptions, no vendor lock-in. The files we generate are yours to deploy immediately.
+              The AI Visibility Scanner is a one-time purchase — pay once, own the output forever. The Monitor and Agency plans are optional subscriptions for ongoing visibility tracking. Cancel anytime, no contracts.
             </p>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { label: 'One-Time Purchase', sub: 'No recurring fees, ever' },
+                { label: 'Pay for What You Need', sub: 'Scanner is one-time · Monitor optional' },
                 { label: 'Instant Delivery', sub: 'Files sent within minutes' },
                 { label: 'Production-Ready', sub: 'Deploy immediately' },
                 { label: 'Colorado-Based', sub: 'Queldrex LLC' },
@@ -482,18 +479,18 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-end justify-between gap-4 mb-10">
             <div>
-              <p className="text-cyan-500 text-xs font-bold tracking-[0.28em] uppercase mb-2">Coming from Queldrex</p>
-              <h3 className="text-2xl font-black text-white">Four more tools in development.</h3>
+              <p className="text-cyan-500 text-xs font-bold tracking-[0.28em] uppercase mb-2">What&apos;s Next from Queldrex</p>
+              <h3 className="text-2xl font-black text-white">Four more products on the roadmap.</h3>
             </div>
-            <a
-              href="mailto:hello@queldrex.com?subject=Queldrex%20tools%20updates"
+            <Link
+              href="/roadmap"
               className="hidden md:flex items-center gap-1.5 text-sm text-white/40 hover:text-cyan-400 transition-colors"
             >
-              Get notified when each one launches
+              See full roadmap
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
-            </a>
+            </Link>
           </div>
           <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
             {UPCOMING.map((tool) => (
@@ -509,9 +506,8 @@ export default function HomePage() {
                       className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border"
                       style={{ color: 'rgba(255,255,255,0.35)', borderColor: 'rgba(255,255,255,0.12)' }}
                     >
-                      In Development
+                      {tool.label}
                     </span>
-                    <span className="text-xs font-bold text-white/30">{tool.price}</span>
                   </div>
                   <h4 className="text-sm font-bold text-white leading-snug">{tool.name}</h4>
                 </div>
@@ -576,23 +572,20 @@ export default function HomePage() {
             {/* Agency */}
             <div className="rounded-2xl border p-6 flex flex-col gap-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
               <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-bold uppercase tracking-widest text-white/30">Agency</span>
-                  <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.3)', border: '1px solid rgba(255,255,255,0.09)' }}>Soon</span>
-                </div>
+                <div className="text-xs font-bold uppercase tracking-widest text-white/30 mb-1">Agency</div>
                 <div className="flex items-end gap-1"><span className="text-3xl font-black text-white">$99</span><span className="text-white/35 text-xs mb-1.5">/month</span></div>
               </div>
               <ul className="space-y-2 flex-1">
-                {['5 domains monitored', 'White-label reports', 'Priority support', 'Client PDF exports'].map(f => (
-                  <li key={f} className="flex items-center gap-2 text-xs text-white/45">
-                    <svg className="w-3.5 h-3.5 flex-shrink-0 text-white/20" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {['25 client scans/month', 'White-label PDF reports', 'Bulk client dashboard', 'Monthly auto-reports to clients'].map(f => (
+                  <li key={f} className="flex items-center gap-2 text-xs text-white/65">
+                    <svg className="w-3.5 h-3.5 flex-shrink-0 text-white/40" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
                     {f}
                   </li>
                 ))}
               </ul>
-              <a href="mailto:hello@queldrex.com?subject=Agency Plan Waitlist" className="block text-center py-2.5 rounded-xl text-sm font-bold transition-colors" style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.55)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                Join Waitlist
-              </a>
+              <Link href="/agency" className="block text-center py-2.5 rounded-xl text-sm font-bold transition-colors" style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.75)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                Start Agency Plan
+              </Link>
             </div>
           </div>
           <p className="text-center mt-6">
@@ -611,9 +604,9 @@ export default function HomePage() {
           }}
         >
           <div>
-            <h3 className="text-2xl font-black text-white mb-2">Start with Tool 1. More tools in development.</h3>
+            <h3 className="text-2xl font-black text-white mb-2">Seven tools live. Free to start.</h3>
             <p className="text-white/55 text-sm">
-              AI Visibility Scanner · Free scan · No account · $149 one-time for the full fix package.
+              AI Visibility Scanner · Free scan · No account required · $149 for the full fix package.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
@@ -622,13 +615,13 @@ export default function HomePage() {
               className="flex items-center gap-2.5 px-8 py-4 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.03]"
               style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 28px rgba(6,182,212,0.3)' }}
             >
-              Try Tool 1 Free
+              Scan My Site Free
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </Link>
             <Link
-              href="/#tools"
+              href="/tools"
               className="flex items-center gap-2 px-7 py-4 rounded-xl text-sm font-semibold text-white/60 border border-white/15 hover:border-white/25 hover:text-white transition-all"
             >
               See all tools →
