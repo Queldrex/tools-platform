@@ -52,8 +52,9 @@ export default function Header() {
               {toolsOpen && (
                 <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-80" style={{ zIndex: 100 }}>
                   <div className="rounded-2xl border border-white/10 overflow-hidden shadow-2xl" style={{ background: '#0f1729', boxShadow: '0 20px 60px rgba(0,0,0,0.6)' }}>
-                    <div className="px-4 py-3 border-b border-white/6">
+                    <div className="px-4 py-3 border-b border-white/6 flex items-center justify-between">
                       <p className="text-xs font-bold tracking-[0.2em] uppercase text-white/25">Our Tool Suite</p>
+                      <Link href="/tools" onClick={() => setToolsOpen(false)} className="text-[10px] font-bold text-white/30 hover:text-cyan-400 transition-colors">View all →</Link>
                     </div>
                     <div className="p-2">
                       {TOOLS.map((tool) =>
@@ -83,6 +84,13 @@ export default function Header() {
                           </Link>
                         )
                       )}
+                    </div>
+                    <div className="px-2 py-2 border-t border-white/6">
+                      <Link href="/request-tool" onClick={() => setToolsOpen(false)}
+                        className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors">
+                        <span className="text-xs font-semibold text-white/40">Request a tool</span>
+                        <svg className="w-3 h-3 text-white/25" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                      </Link>
                     </div>
                   </div>
                 </div>

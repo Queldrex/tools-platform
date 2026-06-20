@@ -15,9 +15,11 @@ export default function Footer() {
         </p>
 
         <nav className="flex flex-wrap justify-center items-center gap-x-8 gap-y-3 text-sm text-white/55">
+          <Link href="/tools" className="hover:text-white transition-colors">All Tools</Link>
+          <span className="text-white/15">·</span>
           <Link href="/scanner" className="hover:text-white transition-colors">AI Visibility Scanner</Link>
           <span className="text-white/15">·</span>
-          <Link href="/scanner" className="hover:text-white transition-colors">Scanner Pricing</Link>
+          <Link href="/request-tool" className="hover:text-white transition-colors">Request a Tool</Link>
           <span className="text-white/15">·</span>
           <Link href="/feedback" className="hover:text-white transition-colors">Feedback</Link>
           <span className="text-white/15">·</span>
