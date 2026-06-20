@@ -19,7 +19,7 @@ const CHECKS: MigrationCheck[] = [
   { id: 'update-no-where', severity: 'high', name: 'UPDATE without WHERE', pattern: /UPDATE\s+\w+\s+SET[^;]+;/gi, message: 'UPDATE with no WHERE clause will modify ALL rows.' },
   { id: 'add-not-null', severity: 'high', name: 'ADD NOT NULL column without DEFAULT', pattern: /ADD\s+COLUMN\s+\w+\s+\w+\s+NOT\s+NULL(?!\s+DEFAULT)/gi, message: 'Adding NOT NULL column without DEFAULT will fail on non-empty tables.' },
   { id: 'rename-table', severity: 'medium', name: 'RENAME TABLE', pattern: /RENAME\s+(TABLE|TO)/gi, message: 'Table rename will break any code still using the old name.' },
-  { id: 'no-rollback', severity: 'medium', name: 'No Transaction / Rollback', pattern: /^(?![\s\S]*(BEGIN|START\s+TRANSACTION|ROLLBACK))[\s\S]+$/i, message: 'No transaction detected — wrap in BEGIN/COMMIT with a rollback migration.' },
+  // no-rollback handled separately below (avoids catastrophic backtracking)
   { id: 'index-no-concurrent', severity: 'low', name: 'Index without CONCURRENTLY', pattern: /CREATE\s+INDEX(?!\s+CONCURRENTLY)/gi, message: 'Creating index without CONCURRENTLY will lock the table (PostgreSQL tip).' },
 ]
 
@@ -41,6 +41,11 @@ export async function POST(request: NextRequest) {
       const alreadyFound = findings.some(f => f.id === check.id && f.line === lineNum)
       if (!alreadyFound) findings.push({ id: check.id, severity: check.severity, name: check.name, message: check.message, line: lineNum })
     }
+  }
+
+  // Check for missing transaction — safe string search, no regex
+  if (!/BEGIN|START\s+TRANSACTION/i.test(sql)) {
+    findings.push({ id: 'no-rollback', severity: 'medium', name: 'No Transaction / Rollback', message: 'No transaction detected — wrap in BEGIN/COMMIT with a rollback migration.', line: 1 })
   }
 
   const positives: string[] = []

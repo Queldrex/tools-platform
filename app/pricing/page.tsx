@@ -26,11 +26,11 @@ const PRO_FEATURES = [
 
 const AGENCY_FEATURES = [
   'Everything in Pro',
-  '5 domains monitored simultaneously',
-  'White-label scan reports with your branding',
-  'Client-ready PDF exports',
+  '25 client scans/month',
+  'White-label PDF reports — your branding',
+  'Bulk client dashboard — all scores in one view',
+  'Monthly auto-reports emailed to each client',
   'Priority email support',
-  'Volume pricing for teams',
 ]
 
 const FAQ = [
@@ -47,8 +47,8 @@ const FAQ = [
     a: 'No. Every tool on queldrex.com is included in Pro — Threat Feed, Breach Lookup, and every tool we launch in the future. One subscription, everything unlocked.',
   },
   {
-    q: 'What counts as a domain on Agency?',
-    a: 'Each unique root domain is one slot. Subdomains (blog.yoursite.com, app.yoursite.com) count under the root domain. 5 slots covers most agencies monitoring their core clients.',
+    q: 'What counts as a client scan on Agency?',
+    a: 'Running the full 14-signal AI visibility scan for one domain. Each month your counter resets to 25. Need more than 25? Email hello@queldrex.com for a custom plan.',
   },
 ]
 
@@ -142,33 +142,28 @@ export default function PricingPage() {
           {/* AGENCY */}
           <div className="rounded-2xl border p-7 flex flex-col gap-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-bold uppercase tracking-widest text-white/30">Agency</span>
-                <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.35)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                  Coming Soon
-                </span>
-              </div>
+              <div className="text-xs font-bold uppercase tracking-widest text-white/30 mb-2">Agency</div>
               <div className="flex items-end gap-1">
                 <span className="text-4xl font-black text-white">$99</span>
                 <span className="text-white/40 text-sm mb-1.5">/month</span>
               </div>
-              <div className="text-xs text-white/30 mt-1">Per team / agency</div>
+              <div className="text-xs text-white/30 mt-1">Cancel anytime</div>
             </div>
             <ul className="space-y-3 flex-1">
               {AGENCY_FEATURES.map(f => (
-                <li key={f} className="flex items-start gap-2.5 text-sm text-white/55">
-                  <svg className="w-4 h-4 flex-shrink-0 mt-0.5 text-white/25" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <li key={f} className="flex items-start gap-2.5 text-sm text-white/65">
+                  <svg className="w-4 h-4 flex-shrink-0 mt-0.5 text-white/35" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                   {f}
                 </li>
               ))}
             </ul>
-            <a href="mailto:hello@queldrex.com?subject=Agency Plan Waitlist"
+            <Link href="/agency"
               className="block text-center py-3 rounded-xl text-sm font-bold transition-colors"
-              style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.1)' }}>
-              Join Waitlist
-            </a>
+              style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.75)', border: '1px solid rgba(255,255,255,0.14)' }}>
+              Start Agency Plan
+            </Link>
           </div>
         </div>
       </section>

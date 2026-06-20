@@ -9,27 +9,35 @@ export const metadata = {
 const SHIPPED = [
   { name: 'AI Visibility Scanner', desc: '14-signal analysis, PDF report, email delivery — $149 one-time' },
   { name: 'AI Visibility Monitor', desc: '$29/month, monthly automated rescans, score drop alerts' },
+  { name: 'Agency Plan', desc: '$99/month — 25 client scans, white-label PDF reports, bulk dashboard, magic-link auth' },
+  { name: 'AI Citation Tracker', desc: 'Directly asks ChatGPT if it knows your business — shows competitors, improvement steps' },
+  { name: 'Shareable Scan Results', desc: 'One-click Twitter/LinkedIn score cards with dynamic OG images for every scan' },
   { name: 'Threat Intelligence Feed', desc: 'Real-time URLhaus + Feodo Tracker data, Redis-cached, category filtered' },
   { name: 'Breach Lookup', desc: 'HIBP password check (k-anonymity) + 7-point domain security scan' },
-  { name: 'Vibe Coding Security Shield', desc: 'AI-generated code vulnerability scanner — 14 security pattern checks' },
+  { name: 'Vibe Coding Security Shield', desc: 'AI-generated code vulnerability scanner — 14 OWASP security pattern checks' },
   { name: 'API Schema Drift Scanner', desc: 'OpenAPI spec comparison — breaking vs additive change detection' },
   { name: 'Database Migration Safety Checker', desc: 'SQL migration risk analysis — catches DROP, DELETE, and lock issues' },
-  { name: 'Directory Extractor', desc: 'Sitemap-based site structure mapping with tree view and CSV export' },
+  { name: 'Directory Extractor', desc: 'Sitemap-based site structure mapping with tree view and JSON/CSV export' },
   { name: 'Admin Triage System', desc: 'Ticket management, DFY client pipeline, security monitoring, TOTP 2FA' },
   { name: 'Custom Build Services', desc: 'Project intake, quote system, Redis-backed pipeline management' },
+  { name: 'AppSumo Landing Page', desc: 'Lifetime deal page at /appsumo — ready for listing submission' },
+  { name: 'ProductHunt Launch Page', desc: 'Conversion-optimized launch page at /producthunt — ready for launch day' },
+  { name: 'Blog (5 SEO Articles)', desc: 'AI visibility content hub — what-is, how-to, strategy, ChatGPT deep dive' },
+  { name: 'Portfolio & Case Studies', desc: '6 real case studies of shipped software at /portfolio' },
+  { name: 'Referral Program', desc: 'Referral codes, /r/[code] landing pages, Redis-tracked conversion attribution' },
+  { name: 'Contact Page', desc: 'Validated contact form with admin notification and auto-reply' },
+  { name: 'llms.txt + AI Crawler Permissions', desc: 'Site now practices what it sells — llms.txt live, all AI crawlers explicitly allowed' },
 ]
 
 const IN_PROGRESS = [
-  { name: 'AI Citation Tracker', desc: 'Monitors whether ChatGPT, Perplexity, and Claude actually mention your business when asked relevant queries' },
-  { name: 'Shareable Scan Results', desc: 'One-click LinkedIn and Twitter score cards — turn every scan into free marketing' },
-  { name: 'Agency Reseller Dashboard', desc: 'Manage multiple client domains, bulk scanning, white-label report generation' },
-  { name: 'AppSumo Launch Preparation', desc: 'Lifetime deal page and listing for the AI Visibility Scanner' },
+  { name: 'Competitor AI Visibility Gap', desc: 'Side-by-side comparison of your AI visibility vs named competitors on all 14 signals' },
+  { name: 'Bulk Agency Scanner', desc: 'Scan all 25 agency clients in one run with scheduled monthly execution and auto-delivery' },
+  { name: 'AppSumo Listing', desc: 'Application submitted — waiting on AppSumo approval for AI Visibility Scanner lifetime deal' },
 ]
 
 const PLANNED = [
-  { name: 'Agency Plan — $99/month', desc: '5-domain monitoring, white-label PDF exports, priority support' },
+  { name: 'Local Business AI Pack', desc: 'One-click generate schema, llms.txt, and citation strategy for any local business category' },
   { name: 'SEO ↔ AI Signal Correlation Report', desc: 'Show which SEO changes affect AI visibility scores — close the loop between classic SEO and AI search' },
-  { name: 'Competitor AI Visibility Comparison', desc: 'See how you stack up vs your top competitors on every signal' },
   { name: 'WordPress Plugin', desc: 'Embed the AI Visibility Scanner directly in client WordPress dashboards' },
   { name: 'API Access', desc: 'Programmatic access to the scanner and tools for agencies and developers' },
   { name: 'Colorado Government / Enterprise Edition', desc: 'Compliance-focused AI visibility auditing for government agencies and large organizations' },
