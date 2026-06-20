@@ -66,105 +66,104 @@ const TOOLS = [
     cta: 'Search Breaches →',
   },
   {
-    name: 'Security Assistant',
-    tagline: 'Ask any cybersecurity question and get a direct, technical answer.',
-    description: 'A free security Q&A covering phishing, server hardening, SQL injection, zero-days, ransomware, 2FA, SSL/TLS, API security, OWASP Top 10, and breach response. No login, no account required.',
-    price: 'Free',
-    priceSub: 'always',
-    href: '/tools/security-assistant',
+    name: 'AI Citation Tracker',
+    tagline: 'Does ChatGPT mention your business when customers ask for recommendations?',
+    description: 'We ask ChatGPT the same questions your customers do and report back exactly what it says — whether it knows about your business, who it recommends instead, and the 3 most important things you can do to get cited.',
+    price: 'Pro',
+    priceSub: '$29/month',
+    href: '/tools/citation-tracker',
     status: 'live' as const,
-    color: 'rgba(167,139,250,0.06)',
-    border: 'rgba(167,139,250,0.2)',
-    accent: '#a78bfa',
+    color: 'rgba(6,214,255,0.06)',
+    border: 'rgba(6,214,255,0.2)',
+    accent: '#06d6ff',
     features: [
-      'Covers phishing, zero-days, server hardening, SQL injection',
-      'OWASP Top 10, API security, SSL/TLS, 2FA, breach response',
-      'Chat interface with starter prompts',
-      'No login, no account, always free',
+      'Direct ChatGPT citation check for your business',
+      'See who ChatGPT recommends instead of you',
+      'Actionable 3-step improvement plan from ChatGPT itself',
+      '1 free check · Unlimited with Pro',
     ],
-    cta: 'Ask a Question →',
+    cta: 'Check My Citations →',
   },
   {
     name: 'Vibe Coding Security Shield',
     tagline: 'AI writes code fast. It also writes SQL injection holes. Catch them before they ship.',
-    description: 'AI-generated code is in production everywhere — and nobody is auditing it properly. The Vibe Coding Security Shield will scan AI-written code against the OWASP Top 10, flag every vulnerability with a severity rating, and generate the exact patches needed.',
-    price: '$149',
-    priceSub: 'one-time',
+    description: 'Paste any AI-generated code and instantly scan for OWASP Top 10 vulnerabilities, hardcoded secrets, injection risks, and insecure patterns. Line numbers, severity ratings, and fix guidance included.',
+    price: 'Pro',
+    priceSub: '$29/month',
     href: '/tools/vibe-security',
-    status: 'planned' as const,
+    status: 'live' as const,
     color: 'rgba(245,158,11,0.05)',
     border: 'rgba(245,158,11,0.18)',
     accent: 'rgb(245,158,11)',
     features: [
-      'OWASP Top 10 vulnerability audit',
-      'Severity rating per issue (Critical / High / Medium)',
-      'Exact patch generated for every finding',
-      'Works on any AI-generated codebase',
+      '14 OWASP checks: hardcoded secrets, SQL injection, XSS, and more',
+      'Severity rating per issue (Critical / High / Medium / Low)',
+      'Line numbers and code snippets for every finding',
+      '1 free scan · Unlimited with Pro',
     ],
-    cta: 'Join waitlist →',
+    cta: 'Scan Code →',
   },
   {
     name: 'API Schema Drift Scanner',
     tagline: 'Your API breaks silently. Users hit errors before your monitoring fires.',
-    description: 'A field gets renamed, a required param gets added, a response format changes — and users start hitting 500 errors. The API Schema Drift Scanner will compare your live API responses against your documented schema, identify every breaking change, and generate the fix.',
-    price: '$249',
-    priceSub: 'one-time',
+    description: 'Paste two OpenAPI specifications and instantly see every breaking change and additive change between them. Renamed fields, removed endpoints, type changes, new required params — all flagged before they ship.',
+    price: 'Pro',
+    priceSub: '$29/month',
     href: '/tools/api-schema-drift',
-    status: 'planned' as const,
+    status: 'live' as const,
     color: 'rgba(99,102,241,0.06)',
     border: 'rgba(99,102,241,0.2)',
     accent: 'rgb(99,102,241)',
     features: [
-      'Compare live API against documented schema',
-      'Catch renamed fields, removed params, type changes',
-      'Auto-generated fix for every breaking change',
-      'One scan, one report, one payment',
+      'Paste two OpenAPI specs — instant comparison',
+      'Breaking changes vs additive changes clearly separated',
+      'Renamed fields, removed params, type changes all caught',
+      '1 free scan · Unlimited with Pro',
     ],
-    cta: 'Join waitlist →',
+    cta: 'Compare Specs →',
   },
   {
-    name: 'Database Migration Middleware',
+    name: 'Database Migration Safety Checker',
     tagline: 'One botched migration means downtime. The average outage costs $9K/min.',
-    description: 'Developers rush schema migrations and pray. Database Migration Middleware will generate zero-downtime migration scripts, validate schema changes against live data, and produce a complete rollback plan — before a single query runs.',
-    price: '$199',
-    priceSub: 'one-time',
+    description: 'Paste your SQL migration script and get an instant risk analysis. Dangerous patterns — table drops, column removals, missing transactions, index-free FKs — flagged before you run a single query.',
+    price: 'Pro',
+    priceSub: '$29/month',
     href: '/tools/database-migration',
-    status: 'planned' as const,
+    status: 'live' as const,
     color: 'rgba(16,185,129,0.05)',
     border: 'rgba(16,185,129,0.18)',
     accent: 'rgb(16,185,129)',
     features: [
-      'Zero-downtime migration script generation',
-      'Schema validation against live data before execution',
-      'Full rollback plan included',
-      'Supports PostgreSQL, MySQL, and more',
+      'Catches DROP TABLE, irreversible changes, missing rollbacks',
+      'Flags missing transactions and unsafe patterns',
+      'Risk level: Safe / Caution / High Risk',
+      '1 free scan · Unlimited with Pro',
     ],
-    cta: 'Join waitlist →',
+    cta: 'Check Migration →',
   },
   {
-    name: 'High-Speed Directory Extractor',
-    tagline: 'Extract thousands of structured listings in minutes, not days.',
-    description: 'Directory sites hold thousands of structured listings — business names, addresses, categories, contact info. Manual extraction takes days. This tool will pull clean, structured data from any directory at scale and export as CSV or JSON.',
-    price: '$99',
-    priceSub: 'one-time',
+    name: 'Directory Extractor',
+    tagline: 'Map any website\'s full URL structure from its sitemap in seconds.',
+    description: 'Enter any domain and we fetch its sitemap.xml, parse every URL, and display a full tree structure. Export as JSON or CSV. Free, no login, no limits.',
+    price: 'Free',
+    priceSub: 'always',
     href: '/tools/directory-extractor',
-    status: 'planned' as const,
+    status: 'live' as const,
     color: 'rgba(236,72,153,0.05)',
     border: 'rgba(236,72,153,0.18)',
     accent: 'rgb(236,72,153)',
     features: [
-      'Extract at scale — thousands of listings in minutes',
-      'Export as CSV or JSON, ready for your pipeline',
-      'Structured output: name, address, category, contact',
-      'No daily rate limits, no API costs',
+      'Fetches and parses sitemap.xml automatically',
+      'Full tree view with expand/collapse',
+      'Export as JSON or CSV',
+      'Free — no login, no limits',
     ],
-    cta: 'Join waitlist →',
+    cta: 'Extract URLs →',
   },
 ]
 
 export default function ToolsPage() {
-  const live = TOOLS.filter(t => t.status === 'live')
-  const planned = TOOLS.filter(t => t.status === 'planned')
+  const live = TOOLS
 
   return (
     <div className="min-h-screen" style={{ background: '#070b14' }}>
@@ -180,20 +179,16 @@ export default function ToolsPage() {
           Queldrex Tool Suite
         </div>
         <h1 className="text-4xl lg:text-5xl font-black text-white leading-tight mb-4">
-          One problem. One tool.<br />
-          <span style={{ color: '#06d6ff' }}>One payment. Done.</span>
+          Eight tools. All live.<br />
+          <span style={{ color: '#06d6ff' }}>Free to start.</span>
         </h1>
         <p className="text-white/55 text-lg max-w-2xl leading-relaxed mb-6">
-          Every Queldrex tool solves a single specific problem — precisely, without bloat or subscriptions. Buy once, own the output forever.
+          Every Queldrex tool solves a specific problem precisely. Free scans to start — pay only for the full report or ongoing monitoring.
         </p>
         <div className="flex flex-wrap items-center gap-6 text-sm text-white/35">
-          <span><span className="text-white font-bold">{TOOLS.length}</span> tools total</span>
+          <span><span className="text-cyan-400 font-bold">{live.length}</span> tools live now</span>
           <span>·</span>
-          <span><span className="text-cyan-400 font-bold">{live.length}</span> live now</span>
-          <span>·</span>
-          <span><span className="text-white/50 font-bold">{planned.length}</span> in the pipeline</span>
-          <span>·</span>
-          <span>No subscriptions, ever</span>
+          <span>Scanner is one-time $149 · Pro tools from $29/month</span>
         </div>
       </section>
 
@@ -225,7 +220,7 @@ export default function ToolsPage() {
                   className="inline-flex items-center gap-2 px-7 py-3 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.02]"
                   style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 24px rgba(6,182,212,0.3)' }}
                 >
-                  Scan Your Site Free
+                  {tool.cta}
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
@@ -249,51 +244,17 @@ export default function ToolsPage() {
         ))}
       </section>
 
-      {/* PLANNED TOOLS */}
+      {/* COMING NEXT */}
       <section className="max-w-7xl mx-auto px-6 pb-10">
-        <div className="flex items-end justify-between gap-4 mb-5">
-          <p className="text-xs font-bold tracking-[0.25em] uppercase text-white/35">In the Pipeline</p>
-          <a
-            href="mailto:hello@queldrex.com?subject=Queldrex%20tool%20waitlist"
-            className="text-xs text-white/30 hover:text-cyan-400 transition-colors"
-          >
-            Get notified on launch →
-          </a>
-        </div>
-        <div className="grid md:grid-cols-2 gap-4">
-          {planned.map((tool) => (
-            <Link
-              key={tool.name}
-              href={tool.href}
-              className="rounded-2xl border p-7 flex flex-col gap-4 hover:border-white/20 transition-all group"
-              style={{ background: tool.color, borderColor: tool.border }}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <span
-                  className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border"
-                  style={{ color: 'rgba(255,255,255,0.35)', borderColor: 'rgba(255,255,255,0.12)' }}
-                >
-                  Planned
-                </span>
-                <span className="text-sm font-bold text-white/30">{tool.price}</span>
-              </div>
-              <div>
-                <h3 className="text-lg font-black text-white mb-2 group-hover:text-white transition-colors">{tool.name}</h3>
-                <p className="text-sm text-white/50 leading-relaxed">{tool.tagline}</p>
-              </div>
-              <ul className="space-y-1.5">
-                {tool.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-xs text-white/35">
-                    <span className="mt-0.5 flex-shrink-0" style={{ color: tool.accent }}>→</span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <span className="text-xs font-semibold text-white/25 group-hover:text-white/50 transition-colors mt-auto">
-                {tool.cta}
-              </span>
-            </Link>
-          ))}
+        <div className="rounded-2xl border p-8 flex flex-col md:flex-row items-center justify-between gap-6" style={{ background: 'rgba(6,182,212,0.03)', borderColor: 'rgba(6,182,212,0.12)' }}>
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest text-cyan-500 mb-2">On the Roadmap</p>
+            <h3 className="text-xl font-black text-white mb-2">More tools building now</h3>
+            <p className="text-sm text-white/50 max-w-md">Competitor AI Visibility Gap, Bulk Agency Scanner, and Local Business AI Pack are in active development. See the full roadmap for timelines.</p>
+          </div>
+          <Link href="/roadmap" className="flex-shrink-0 text-sm font-bold text-cyan-400 hover:text-cyan-300 transition-colors whitespace-nowrap">
+            See full roadmap →
+          </Link>
         </div>
       </section>
 
@@ -328,7 +289,7 @@ export default function ToolsPage() {
               href="/scanner"
               className="flex items-center gap-2 px-7 py-4 rounded-xl text-sm font-semibold text-white/60 border border-white/12 hover:border-white/22 hover:text-white transition-all"
             >
-              Try Tool 1 Free →
+              Scan Your Site Free →
             </Link>
           </div>
         </div>
