@@ -9,11 +9,10 @@ const TOOLS = [
   { name: 'AI Visibility Scanner', desc: 'Find out if AI can discover your business', price: '$149', href: '/scanner', live: true },
   { name: 'Threat Intelligence Feed', desc: 'Live stream of global cyber threat indicators', price: 'Free', href: '/tools/threat-feed', live: true },
   { name: 'Breach Lookup', desc: 'Check if your email or domain has been breached', price: 'Free', href: '/tools/breach-lookup', live: true },
-  { name: 'Security Assistant', desc: 'Free cybersecurity Q&A — ask anything', price: 'Free', href: '/tools/security-assistant', live: true },
-  { name: 'API Schema Drift Scanner', desc: 'Detect breaking changes in live APIs', price: '$249', href: '/tools/api-schema-drift', live: false },
-  { name: 'Database Migration Middleware', desc: 'Zero-downtime schema migrations', price: '$199', href: '/tools/database-migration', live: false },
-  { name: 'Vibe Coding Security Shield', desc: 'Scan AI-generated code for vulnerabilities', price: '$149', href: '/tools/vibe-security', live: false },
-  { name: 'High-Speed Directory Extractor', desc: 'Extract and export directory listings at scale', price: '$99', href: '/tools/directory-extractor', live: false },
+  { name: 'Vibe Coding Security Shield', desc: 'Scan AI-generated code for vulnerabilities', price: '$149', href: '/tools/vibe-security', live: true },
+  { name: 'API Schema Drift Scanner', desc: 'Detect breaking changes in live APIs', price: 'Pro', href: '/tools/api-schema-drift', live: true },
+  { name: 'Database Migration Safety Checker', desc: 'Catch dangerous SQL migration patterns', price: 'Pro', href: '/tools/database-migration', live: true },
+  { name: 'Directory Extractor', desc: 'Map site structure and export as CSV', price: 'Free', href: '/tools/directory-extractor', live: true },
 ]
 
 export default function Header() {
