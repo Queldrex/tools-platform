@@ -19,7 +19,7 @@ const DFY_TTL = 60 * 60 * 72  // 72 hours
 const DFY_COMPLETE_TTL = 60 * 60 * 24 * 90  // 90 days — keep deletion record viewable
 
 let _redis: Redis | null = null
-function getRedis(): Redis {
+export function getRedis(): Redis {
   if (!_redis) {
     _redis = new Redis({
       url: (process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL)!,

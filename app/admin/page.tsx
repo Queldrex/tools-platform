@@ -43,7 +43,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com'
 export default function AdminPage() {
   const [secret, setSecret] = useState('')
   const [authed, setAuthed] = useState(false)
-  const [tab, setTab] = useState<'scans' | 'downloads' | 'applications' | 'feedback' | 'legal'>('scans')
+  const [tab, setTab] = useState<'scans' | 'downloads' | 'applications' | 'feedback' | 'legal' | 'test'>('scans')
 
   // Scans
   const [entries, setEntries] = useState<ScanLogEntry[]>([])
@@ -398,6 +398,12 @@ export default function AdminPage() {
             background: tab === 'legal' ? '#6366f1' : '#111', color: tab === 'legal' ? '#fff' : '#888', border: '1px solid #333',
           }}>
             Legal
+          </button>
+          <button onClick={() => setTab('test')} style={{
+            padding: '8px 20px', borderRadius: 8, fontSize: 13, cursor: 'pointer', fontWeight: tab === 'test' ? 600 : 400,
+            background: tab === 'test' ? '#854d0e' : '#111', color: tab === 'test' ? '#fbbf24' : '#888', border: '1px solid #333',
+          }}>
+            🧪 Test
           </button>
         </div>
 
@@ -780,6 +786,8 @@ export default function AdminPage() {
         )}
 
         {tab === 'legal' && <LegalTab />}
+
+        {tab === 'test' && <TestTab secret={secret} baseUrl={BASE_URL} />}
       </div>
     </div>
   )
@@ -824,6 +832,173 @@ function nextReviewDate(dateStr: string, intervalDays: number): string {
 function daysUntilReview(dateStr: string, intervalDays: number): number {
   const reviewMs = new Date(dateStr).getTime() + intervalDays * 86_400_000
   return Math.ceil((reviewMs - Date.now()) / 86_400_000)
+}
+
+function TestTab({ secret, baseUrl }: { secret: string; baseUrl: string }) {
+  const [health, setHealth] = useState<Record<string, { ok: boolean; detail: string }> | null>(null)
+  const [healthLoading, setHealthLoading] = useState(false)
+  const [seededApp, setSeededApp] = useState<{ applicationId: string; dfyToken: string | null; links: { admin: string; implPage: string | null } } | null>(null)
+  const [seeding, setSeeding] = useState(false)
+  const [cleaning, setCleaning] = useState(false)
+
+  const runHealthCheck = async () => {
+    setHealthLoading(true)
+    try {
+      const res = await fetch('/api/admin/test', { headers: { 'x-admin-secret': secret } })
+      const data = await res.json()
+      setHealth(data.checks)
+    } catch { setHealth(null) }
+    setHealthLoading(false)
+  }
+
+  const seedTest = async (stage: string) => {
+    setSeeding(true)
+    try {
+      const res = await fetch('/api/admin/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        body: JSON.stringify({ stage }),
+      })
+      const data = await res.json()
+      if (data.ok) setSeededApp(data)
+      else alert(data.error || 'Seed failed')
+    } catch { alert('Network error') }
+    setSeeding(false)
+  }
+
+  const cleanup = async () => {
+    setCleaning(true)
+    try {
+      const res = await fetch('/api/admin/test', { method: 'DELETE', headers: { 'x-admin-secret': secret } })
+      const data = await res.json()
+      alert(`Cleaned up ${data.deleted} test application(s).`)
+      setSeededApp(null)
+    } catch { alert('Network error') }
+    setCleaning(false)
+  }
+
+  const checkColor = (ok: boolean) => ok ? '#4ade80' : '#f87171'
+  const checkIcon = (ok: boolean) => ok ? '✓' : '✗'
+
+  return (
+    <div>
+      <div style={{ marginBottom: 24 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, margin: '0 0 4px' }}>🧪 System Test Panel</h2>
+        <p style={{ color: '#666', fontSize: 13, margin: 0 }}>Health check all services and run end-to-end flow tests.</p>
+      </div>
+
+      {/* Health Check */}
+      <div style={{ background: '#111', border: '1px solid #222', borderRadius: 12, padding: 20, marginBottom: 20 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+          <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#e2e8f0' }}>System Health</h3>
+          <button onClick={runHealthCheck} disabled={healthLoading} style={{ padding: '6px 14px', borderRadius: 6, fontSize: 12, cursor: 'pointer', fontWeight: 600, background: '#1e293b', color: '#94a3b8', border: '1px solid #334155' }}>
+            {healthLoading ? 'Checking…' : 'Run Health Check'}
+          </button>
+        </div>
+        {health ? (
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            {Object.entries(health).map(([key, val]) => (
+              <tr key={key}>
+                <td style={{ padding: '5px 0', fontSize: 12, color: '#64748b', textTransform: 'capitalize', width: '30%' }}>{key.replace(/([A-Z])/g, ' $1')}</td>
+                <td style={{ padding: '5px 0', fontSize: 12, fontWeight: 700, color: checkColor(val.ok) }}>{checkIcon(val.ok)}</td>
+                <td style={{ padding: '5px 0', fontSize: 12, color: '#94a3b8' }}>{val.detail}</td>
+              </tr>
+            ))}
+          </table>
+        ) : (
+          <p style={{ color: '#444', fontSize: 12, margin: 0 }}>Click Run Health Check to test all services.</p>
+        )}
+      </div>
+
+      {/* Flow Test */}
+      <div style={{ background: '#111', border: '1px solid #222', borderRadius: 12, padding: 20, marginBottom: 20 }}>
+        <h3 style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 700, color: '#e2e8f0' }}>DFY Flow Test — Step by Step</h3>
+        <div style={{ fontSize: 12, color: '#64748b', lineHeight: 2, marginBottom: 16 }}>
+          <div style={{ marginBottom: 8, padding: '10px 14px', background: '#0d1117', borderRadius: 8, border: '1px solid #1e293b' }}>
+            <strong style={{ color: '#fbbf24' }}>Seed a test application at any stage:</strong>
+          </div>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
+            {['new', 'contacted', 'payment_sent', 'paid'].map(stage => (
+              <button key={stage} onClick={() => seedTest(stage)} disabled={seeding} style={{ padding: '6px 14px', borderRadius: 6, fontSize: 11, cursor: 'pointer', fontWeight: 600, background: stage === 'paid' ? '#14532d' : '#1e293b', color: stage === 'paid' ? '#4ade80' : '#94a3b8', border: `1px solid ${stage === 'paid' ? '#166534' : '#334155'}` }}>
+                {seeding ? '…' : `Seed as "${stage}"`}
+              </button>
+            ))}
+          </div>
+
+          {seededApp && (
+            <div style={{ background: '#0d2218', border: '1px solid #166534', borderRadius: 10, padding: 16, marginBottom: 16 }}>
+              <div style={{ color: '#4ade80', fontWeight: 700, fontSize: 13, marginBottom: 12 }}>✓ Test application seeded — follow these steps:</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {[
+                  { n: 1, text: 'Go to Applications tab → find "TEST: Test Client (test-business.com)"', link: null, action: 'Switch to Applications tab and locate the seeded record' },
+                  { n: 2, text: 'Click "Send Discovery Email" → check janitor.clean.base@gmail.com for the email', link: null, action: null },
+                  { n: 3, text: 'Click "Send Payment Link ($499)" → open the link below', link: null, action: null },
+                  { n: 4, text: 'On Stripe checkout → click "Add promotion code" → enter TEST100 → pay $0', link: null, action: null },
+                  ...(seededApp.links.implPage ? [
+                    { n: 5, text: 'Submit credentials + signature:', link: seededApp.links.implPage, action: 'Open credential submission form' },
+                    { n: 6, text: 'Back in admin Applications → click "⚙️ Run Implementation" (or skip, then click "🔒 Mark Complete & Delete Credentials")', link: null, action: null },
+                    { n: 7, text: 'Check janitor.clean.base@gmail.com for: signed agreement email + deletion receipt email', link: null, action: null },
+                    { n: 8, text: 'Revisit impl page — should show green deletion confirmation:', link: seededApp.links.implPage, action: 'Verify deletion screen' },
+                  ] : []),
+                ].map(step => (
+                  <div key={step.n} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                    <span style={{ background: '#052e16', color: '#4ade80', borderRadius: '50%', width: 22, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, flexShrink: 0, marginTop: 1 }}>{step.n}</span>
+                    <div>
+                      <span style={{ color: '#94a3b8', fontSize: 12 }}>{step.text}</span>
+                      {step.link && (
+                        <a href={step.link} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginLeft: 8, padding: '2px 8px', borderRadius: 4, fontSize: 10, background: '#083344', color: '#22d3ee', border: '1px solid #0e7490', textDecoration: 'none' }}>
+                          Open →
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #166534', fontSize: 11, color: '#4ade80' }}>
+                Application ID: <span style={{ fontFamily: 'monospace', color: '#86efac' }}>{seededApp.applicationId}</span>
+                {seededApp.dfyToken && <> · dfyToken: <span style={{ fontFamily: 'monospace', color: '#86efac' }}>{seededApp.dfyToken.slice(0, 8)}…</span></>}
+              </div>
+            </div>
+          )}
+
+          <div style={{ padding: '10px 14px', background: '#0d1117', borderRadius: 8, border: '1px solid #1e293b' }}>
+            <strong style={{ color: '#e2e8f0', fontSize: 12 }}>Scan Flow Test</strong><br />
+            <span>Go to <a href={`${baseUrl}/scanner`} target="_blank" rel="noopener noreferrer" style={{ color: '#22d3ee' }}>{baseUrl}/scanner</a> → scan any website (try <code style={{ background: '#1e293b', padding: '1px 5px', borderRadius: 3 }}>example.com</code> for a low-score baseline) → enter your email → verify score email arrives → click download link → verify download page loads correctly.</span>
+          </div>
+        </div>
+
+        <button onClick={cleanup} disabled={cleaning} style={{ padding: '6px 14px', borderRadius: 6, fontSize: 11, cursor: 'pointer', fontWeight: 500, background: '#1c1c1c', color: '#666', border: '1px solid #333' }}>
+          {cleaning ? 'Cleaning…' : '🗑 Clean Up All Test Data'}
+        </button>
+      </div>
+
+      {/* Platform coverage */}
+      <div style={{ background: '#111', border: '1px solid #222', borderRadius: 12, padding: 20 }}>
+        <h3 style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 700, color: '#e2e8f0' }}>Platform Coverage</h3>
+        <p style={{ fontSize: 12, color: '#64748b', margin: '0 0 12px' }}>These are all the platform types the DFY implementation supports. Each has its own credential fields and install process.</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 8 }}>
+          {[
+            { name: 'FTP / cPanel', status: 'Full', color: '#4ade80' },
+            { name: 'WordPress', status: 'Full', color: '#4ade80' },
+            { name: 'Vercel / Netlify / GitHub', status: 'Full', color: '#4ade80' },
+            { name: 'Shopify', status: 'Full', color: '#4ade80' },
+            { name: 'Wix', status: 'Manual 48hr', color: '#fbbf24' },
+            { name: 'Squarespace', status: 'Manual 48hr', color: '#fbbf24' },
+            { name: 'Webflow', status: 'Manual 48hr', color: '#fbbf24' },
+            { name: 'Other / Custom', status: 'Manual', color: '#94a3b8' },
+          ].map(p => (
+            <div key={p.name} style={{ padding: '8px 12px', borderRadius: 8, background: '#0d1117', border: '1px solid #1e293b' }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: '#e2e8f0', marginBottom: 2 }}>{p.name}</div>
+              <div style={{ fontSize: 10, color: p.color, fontWeight: 600 }}>{p.status}</div>
+            </div>
+          ))}
+        </div>
+        <p style={{ fontSize: 11, color: '#475569', margin: '12px 0 0' }}>
+          Full = automated implementation via API. Manual = Sean manually applies fixes and delivers within 48 hours.
+        </p>
+      </div>
+    </div>
+  )
 }
 
 function LegalTab() {
