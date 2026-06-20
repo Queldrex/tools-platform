@@ -1,6 +1,6 @@
 ﻿'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import PricingSection from '@/components/PricingSection'
@@ -50,6 +50,74 @@ function getStatusInfo(score: number) {
   if (score >= 80) return { label: 'GOOD', color: 'rgba(34,197,94,0.06)', border: 'rgba(34,197,94,0.2)', iconColor: 'text-green-400', iconBg: 'rgba(34,197,94,0.12)', iconBorder: 'rgba(34,197,94,0.25)', textColor: 'text-green-400', note: 'Your website has strong AI visibility signals.' }
   if (score >= 50) return { label: 'NEEDS WORK', color: 'rgba(245,158,11,0.06)', border: 'rgba(245,158,11,0.2)', iconColor: 'text-amber-400', iconBg: 'rgba(245,158,11,0.12)', iconBorder: 'rgba(245,158,11,0.25)', textColor: 'text-amber-400', note: 'Your website is missing several AI visibility signals.' }
   return { label: 'CRITICAL', color: 'rgba(239,68,68,0.06)', border: 'rgba(239,68,68,0.2)', iconColor: 'text-red-400', iconBg: 'rgba(239,68,68,0.12)', iconBorder: 'rgba(239,68,68,0.25)', textColor: 'text-red-400', note: 'Your website is missing critical AI visibility signals and structured data.' }
+}
+
+function ShareSection({ score, domain, scanId }: { score: number; domain: string; scanId: string }) {
+  const [copied, setCopied] = useState(false)
+
+  const shareUrl = `https://queldrex.com/share/${scanId}`
+  const shareText = `My business AI Visibility Score is ${score}/100 on @queldrex — how visible are you to ChatGPT and Perplexity? Find out free →`
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`
+  const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
+
+  const handleCopy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // fallback: select text
+    }
+  }, [shareUrl])
+
+  return (
+    <div className="rounded-xl border border-white/8 px-5 py-4" style={{ background: 'rgba(6,182,212,0.03)' }}>
+      <p className="text-xs font-bold uppercase tracking-widest text-white/30 mb-3">Share Your Score</p>
+      <div className="flex items-center gap-2 flex-wrap">
+        <a
+          href={twitterUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold text-white transition-colors hover:bg-white/10"
+          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+        >
+          <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.261 5.631 5.903-5.631zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+          Post on X
+        </a>
+        <a
+          href={linkedinUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-colors hover:opacity-80"
+          style={{ background: 'rgba(10,102,194,0.15)', border: '1px solid rgba(10,102,194,0.3)', color: '#7ab5f7' }}
+        >
+          <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+          Share on LinkedIn
+        </a>
+        <button
+          onClick={handleCopy}
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-colors hover:bg-white/10"
+          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: copied ? '#22c55e' : 'rgba(255,255,255,0.5)' }}
+        >
+          {copied ? (
+            <>
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+              Copied!
+            </>
+          ) : (
+            <>
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+              Copy link
+            </>
+          )}
+        </button>
+      </div>
+    </div>
+  )
 }
 
 function SignalCard({ label, desc, pass }: { label: string; desc: string; pass: boolean }) {
@@ -417,6 +485,9 @@ export default function ScannerPage() {
                   )}
                 </div>
               )}
+
+              {/* Share your score */}
+              <ShareSection score={scanData.score} domain={scanData.domain} scanId={scanData.scanId} />
             </div>
 
             <div className="space-y-4">

@@ -17,12 +17,20 @@ export async function generateMetadata({ params }: { params: Promise<{ scanId: s
   const { scanId } = await params
   const scan = await getScan(scanId)
   if (!scan) return { title: 'Score Not Found — Queldrex' }
+  const ogImageUrl = `https://queldrex.com/api/og/score?score=${scan.score}&domain=${encodeURIComponent(scan.businessInfo.domain)}`
   return {
     title: `${scan.businessInfo.domain} scored ${scan.score}/100 for AI visibility — Queldrex`,
     description: `See how ${scan.businessInfo.domain} ranks for ChatGPT, Claude, and Perplexity visibility. Get your own free AI visibility scan at queldrex.com.`,
     openGraph: {
       title: `${scan.businessInfo.domain}: ${scan.score}/100 AI Visibility Score`,
       description: `${Object.values(scan.checks).filter(Boolean).length} of 8 AI signals passing. Get your free scan at queldrex.com/scanner`,
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: `${scan.businessInfo.domain} AI Visibility Score: ${scan.score}/100` }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${scan.businessInfo.domain}: ${scan.score}/100 AI Visibility`,
+      description: `${Object.values(scan.checks).filter(Boolean).length} of 8 AI signals passing. Get your free scan at queldrex.com/scanner`,
+      images: [ogImageUrl],
     },
   }
 }
