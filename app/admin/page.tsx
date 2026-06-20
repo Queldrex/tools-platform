@@ -43,7 +43,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com'
 export default function AdminPage() {
   const [secret, setSecret] = useState('')
   const [authed, setAuthed] = useState(false)
-  const [tab, setTab] = useState<'scans' | 'downloads' | 'applications' | 'feedback'>('scans')
+  const [tab, setTab] = useState<'scans' | 'downloads' | 'applications' | 'feedback' | 'legal'>('scans')
 
   // Scans
   const [entries, setEntries] = useState<ScanLogEntry[]>([])
@@ -348,6 +348,12 @@ export default function AdminPage() {
               )}
             </button>
           ))}
+          <button onClick={() => setTab('legal')} style={{
+            padding: '8px 20px', borderRadius: 8, fontSize: 13, cursor: 'pointer', fontWeight: tab === 'legal' ? 600 : 400,
+            background: tab === 'legal' ? '#6366f1' : '#111', color: tab === 'legal' ? '#fff' : '#888', border: '1px solid #333',
+          }}>
+            Legal
+          </button>
         </div>
 
         {tab === 'scans' && (
@@ -693,6 +699,140 @@ export default function AdminPage() {
             </div>
           </div>
         )}
+
+        {tab === 'legal' && <LegalTab />}
+      </div>
+    </div>
+  )
+}
+
+// ─── Legal Compliance Tab ───────────────────────────────────────────────────
+
+const LEGAL_DOCS = [
+  { name: 'Privacy Policy', href: '/privacy', lastUpdated: '2026-06-17', intervalDays: 180 },
+  { name: 'Terms of Service', href: '/terms', lastUpdated: '2026-06-17', intervalDays: 180 },
+  { name: 'Refund Policy', href: '/refunds', lastUpdated: '2026-06-19', intervalDays: 180 },
+]
+
+const REVIEW_CHECKLIST = [
+  'Are all data collection practices still accurately described in the Privacy Policy?',
+  'Did you add new third-party services? Add them to Privacy Policy Section 4.',
+  'Did data retention periods change?',
+  'New features, tools, or pricing changes? Update Terms of Service and Refund Policy.',
+  'Are you selling in any new U.S. states? May need state-specific privacy rights.',
+  'Did Colorado CPA or CCPA rules change? Check state AG websites.',
+  'Is the Queldrex LLC business email and address still correct on all pages?',
+]
+
+const IMMEDIATE_TRIGGERS = [
+  'Adding a new product that collects different data — update Privacy Policy same day',
+  'Changing how long you store personal data — update immediately',
+  'Adding a new payment processor — update Privacy Policy Section 4',
+  'A data breach — notify affected users within 72 hours (CCPA / general best practice)',
+  'New data sharing arrangement with a partner',
+]
+
+function daysSince(dateStr: string): number {
+  return Math.floor((Date.now() - new Date(dateStr).getTime()) / 86_400_000)
+}
+
+function nextReviewDate(dateStr: string, intervalDays: number): string {
+  const d = new Date(dateStr)
+  d.setDate(d.getDate() + intervalDays)
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+}
+
+function daysUntilReview(dateStr: string, intervalDays: number): number {
+  const reviewMs = new Date(dateStr).getTime() + intervalDays * 86_400_000
+  return Math.ceil((reviewMs - Date.now()) / 86_400_000)
+}
+
+function LegalTab() {
+  return (
+    <div>
+      <div style={{ marginBottom: 28 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, margin: '0 0 6px' }}>Legal Compliance</h2>
+        <p style={{ fontSize: 13, color: '#666', margin: 0 }}>
+          Review your legal pages every 6 months. A monthly auto-email runs on the 1st — you&apos;ll get a reminder when any page is due.
+        </p>
+      </div>
+
+      {/* Document status cards */}
+      <div style={{ display: 'grid', gap: 12, marginBottom: 32 }}>
+        {LEGAL_DOCS.map(doc => {
+          const age = daysSince(doc.lastUpdated)
+          const daysLeft = daysUntilReview(doc.lastUpdated, doc.intervalDays)
+          const isOverdue = daysLeft <= 0
+          const isWarning = daysLeft > 0 && daysLeft <= 20
+          const statusColor = isOverdue ? '#f87171' : isWarning ? '#fbbf24' : '#4ade80'
+          const statusLabel = isOverdue ? `OVERDUE by ${Math.abs(daysLeft)} days` : isWarning ? `Due in ${daysLeft} days` : `Due in ${daysLeft} days`
+          const dotColor = isOverdue ? '#f87171' : isWarning ? '#fbbf24' : '#4ade80'
+
+          return (
+            <div key={doc.name} style={{ background: '#111', border: `1px solid ${isOverdue ? '#7f1d1d' : isWarning ? '#78350f' : '#222'}`, borderRadius: 10, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span style={{ width: 10, height: 10, borderRadius: '50%', background: dotColor, flexShrink: 0, boxShadow: `0 0 6px ${dotColor}` }} />
+                <div>
+                  <p style={{ margin: 0, fontWeight: 600, fontSize: 14 }}>{doc.name}</p>
+                  <p style={{ margin: '2px 0 0', fontSize: 12, color: '#666' }}>
+                    Last updated: {new Date(doc.lastUpdated).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    &nbsp;·&nbsp; {age} days ago
+                  </p>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <div style={{ textAlign: 'right' }}>
+                  <p style={{ margin: 0, fontSize: 12, color: statusColor, fontWeight: 600 }}>{statusLabel}</p>
+                  <p style={{ margin: '2px 0 0', fontSize: 12, color: '#555' }}>Next review: {nextReviewDate(doc.lastUpdated, doc.intervalDays)}</p>
+                </div>
+                <a
+                  href={doc.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ padding: '6px 14px', borderRadius: 6, background: '#1a1a1a', color: '#888', border: '1px solid #333', fontSize: 12, textDecoration: 'none', flexShrink: 0 }}
+                >
+                  View page →
+                </a>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Review checklist */}
+      <div style={{ display: 'grid', gap: 16, gridTemplateColumns: '1fr 1fr' }}>
+        <div style={{ background: '#111', border: '1px solid #222', borderRadius: 10, padding: '20px 24px' }}>
+          <p style={{ margin: '0 0 14px', fontWeight: 600, fontSize: 13, color: '#aaa', textTransform: 'uppercase', letterSpacing: '0.08em' }}>6-Month Review Checklist</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {REVIEW_CHECKLIST.map((item, i) => (
+              <label key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', cursor: 'pointer' }}>
+                <input type="checkbox" style={{ marginTop: 2, flexShrink: 0, accentColor: '#6366f1' }} />
+                <span style={{ fontSize: 13, color: '#aaa', lineHeight: 1.5 }}>{item}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ background: '#111', border: '1px solid #7f1d1d', borderRadius: 10, padding: '20px 24px' }}>
+          <p style={{ margin: '0 0 14px', fontWeight: 600, fontSize: 13, color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Update Immediately If...</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {IMMEDIATE_TRIGGERS.map((item, i) => (
+              <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                <span style={{ color: '#f87171', flexShrink: 0, fontSize: 13 }}>!</span>
+                <span style={{ fontSize: 13, color: '#aaa', lineHeight: 1.5 }}>{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ marginTop: 20, padding: '14px 20px', background: '#0c1117', border: '1px solid #1e3a5f', borderRadius: 8 }}>
+        <p style={{ margin: 0, fontSize: 12, color: '#5b8fc2', lineHeight: 1.6 }}>
+          <strong style={{ color: '#7eb8f0' }}>After updating any legal page:</strong> update the <code style={{ background: '#111', padding: '1px 5px', borderRadius: 3 }}>lastUpdated</code> date in{' '}
+          <code style={{ background: '#111', padding: '1px 5px', borderRadius: 3 }}>app/api/cron/legal-review/route.ts</code> and the{' '}
+          <code style={{ background: '#111', padding: '1px 5px', borderRadius: 3 }}>LEGAL_DOCS</code> array above so the countdown resets.
+          Auto-reminder emails go to <strong style={{ color: '#7eb8f0' }}>janitor.clean.base@gmail.com</strong> starting when any page is within 20 days of its review date.
+        </p>
       </div>
     </div>
   )
