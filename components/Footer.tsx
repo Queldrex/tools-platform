@@ -29,6 +29,8 @@ export default function Footer() {
           <span className="text-white/15">·</span>
           <Link href="/about" className="hover:text-white transition-colors">About</Link>
           <span className="text-white/15">·</span>
+          <Link href="/portfolio" className="hover:text-white transition-colors">Portfolio</Link>
+          <span className="text-white/15">·</span>
           <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
           <span className="text-white/15">·</span>
           <Link href="/roadmap" className="hover:text-white transition-colors">Roadmap</Link>
@@ -38,6 +40,8 @@ export default function Footer() {
           <Link href="/request-tool" className="hover:text-white transition-colors">Request a Tool</Link>
           <span className="text-white/15">·</span>
           <Link href="/feedback" className="hover:text-white transition-colors">Feedback</Link>
+          <span className="text-white/15">·</span>
+          <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
           <span className="text-white/15">·</span>
           <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
           <span className="text-white/15">·</span>

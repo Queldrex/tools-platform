@@ -13,6 +13,7 @@ const TOOLS = [
   { name: 'API Schema Drift Scanner', desc: 'Detect breaking changes in live APIs', price: 'Pro', href: '/tools/api-schema-drift', live: true },
   { name: 'Database Migration Safety Checker', desc: 'Catch dangerous SQL migration patterns', price: 'Pro', href: '/tools/database-migration', live: true },
   { name: 'Directory Extractor', desc: 'Map site structure and export as CSV', price: 'Free', href: '/tools/directory-extractor', live: true },
+  { name: 'AI Citation Tracker', desc: 'Does ChatGPT mention your business?', price: 'Pro', href: '/tools/citation-tracker', live: true },
 ]
 
 export default function Header() {
@@ -103,8 +104,10 @@ export default function Header() {
             <Link href="/agency" className="hover:text-white transition-colors" onClick={() => setToolsOpen(false)}>Agency</Link>
             <Link href="/pricing" className="hover:text-white transition-colors" onClick={() => setToolsOpen(false)}>Pricing</Link>
             <Link href="/about" className="hover:text-white transition-colors" onClick={() => setToolsOpen(false)}>About</Link>
+            <Link href="/portfolio" className="hover:text-white transition-colors" onClick={() => setToolsOpen(false)}>Portfolio</Link>
             <Link href="/blog" className="hover:text-white transition-colors" onClick={() => setToolsOpen(false)}>Blog</Link>
             <Link href="/feedback" className="hover:text-white transition-colors" onClick={() => setToolsOpen(false)}>Feedback</Link>
+            <Link href="/contact" className="hover:text-white transition-colors" onClick={() => setToolsOpen(false)}>Contact</Link>
           </nav>
 
           <div className="flex items-center gap-3">
@@ -139,9 +142,11 @@ export default function Header() {
             <Link href="/agency" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Agency</Link>
             <Link href="/pricing" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Pricing</Link>
             <Link href="/about" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>About</Link>
+            <Link href="/portfolio" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Portfolio</Link>
             <Link href="/blog" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Blog</Link>
             <Link href="/roadmap" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Roadmap</Link>
             <Link href="/feedback" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Feedback</Link>
+            <Link href="/contact" className="flex items-center px-4 py-3.5 rounded-xl text-sm font-semibold text-white/65 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setMobileOpen(false)}>Contact</Link>
           </nav>
           <div className="p-6">
             <Link href="/scanner" className="flex items-center justify-center gap-2 w-full text-sm font-black text-black py-4 rounded-xl" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 24px rgba(6,182,212,0.35)' }} onClick={() => setMobileOpen(false)}>

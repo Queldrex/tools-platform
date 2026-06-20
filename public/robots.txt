@@ -3,13 +3,36 @@ Allow: /
 Disallow: /admin
 Disallow: /api/admin/
 
+# AI crawlers — explicitly allowed
 User-agent: GPTBot
 Allow: /
 
-User-agent: ClaudeBot
+User-agent: ChatGPT-User
 Allow: /
 
 User-agent: PerplexityBot
 Allow: /
 
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+# Sitemaps
 Sitemap: https://queldrex.com/sitemap.xml
+
+# llms.txt — AI context file
+# https://queldrex.com/llms.txt

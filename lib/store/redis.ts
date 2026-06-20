@@ -543,3 +543,58 @@ export async function updateAgency(id: string, updates: Partial<AgencySubscripti
     await getRedis().set(agyEmailKey(updates.email.toLowerCase()), id)
   }
 }
+
+// ── Referral Program ──────────────────────────────────────────────────────────
+
+export interface ReferralCode {
+  code: string
+  ownerEmail: string
+  createdAt: string
+  uses: number
+  creditsEarned: number
+}
+
+const refKey = (code: string) => `referral:${code}`
+const refEmailKey = (email: string) => `referral:by:email:${email.toLowerCase()}`
+
+export async function createReferralCode(email: string): Promise<string> {
+  const redis = getRedis()
+  // Return existing code if already created
+  const existingId = await redis.get<string>(refEmailKey(email))
+  if (existingId) return typeof existingId === 'string' ? existingId : String(existingId)
+
+  const prefix = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').slice(0, 8).toUpperCase()
+  const suffix = Math.floor(1000 + Math.random() * 9000).toString()
+  const code = `${prefix}${suffix}`
+
+  const record: ReferralCode = {
+    code,
+    ownerEmail: email.toLowerCase(),
+    createdAt: new Date().toISOString(),
+    uses: 0,
+    creditsEarned: 0,
+  }
+  await Promise.all([
+    redis.set(refKey(code), JSON.stringify(record)),
+    redis.set(refEmailKey(email), code),
+    redis.zadd('referrals', { score: Date.now(), member: code }),
+  ])
+  return code
+}
+
+export async function getReferralCode(code: string): Promise<ReferralCode | null> {
+  const r = await getRedis().get<string>(refKey(code.toUpperCase()))
+  if (!r) return null
+  try { return typeof r === 'string' ? JSON.parse(r) : r } catch { return null }
+}
+
+export async function recordReferralUse(code: string, newUserEmail: string, product: string): Promise<void> {
+  const redis = getRedis()
+  const ref = await getReferralCode(code)
+  if (!ref) return
+  const updated: ReferralCode = { ...ref, uses: ref.uses + 1, creditsEarned: ref.creditsEarned + 10 }
+  await Promise.all([
+    redis.set(refKey(code.toUpperCase()), JSON.stringify(updated)),
+    redis.set(`referraluse:${Date.now()}`, JSON.stringify({ code, referrerEmail: ref.ownerEmail, newUserEmail, product, creditAmount: 10, usedAt: new Date().toISOString() })),
+  ])
+}
