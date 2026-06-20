@@ -4,7 +4,7 @@ import Footer from '@/components/Footer'
 
 export const metadata = {
   title: 'Refund Policy — Queldrex',
-  description: 'Queldrex LLC refund policy for AI Visibility Reports and Done-For-You services.',
+  description: 'Queldrex LLC refund policy for the AI Visibility Scanner, Monitor subscription, Pro Tools, and custom development services.',
 }
 
 export default function RefundsPage() {
@@ -21,53 +21,61 @@ export default function RefundsPage() {
           </Link>
           <p className="text-cyan-500 text-xs font-bold tracking-[0.28em] uppercase mb-3">Legal</p>
           <h1 className="text-3xl font-black text-white mb-3">Refund Policy</h1>
-          <p className="text-white/40 text-sm">Last updated: June 19, 2026 &nbsp;·&nbsp; Queldrex LLC, a Colorado limited liability company</p>
+          <p className="text-white/40 text-sm">Last updated: June 20, 2026 &nbsp;·&nbsp; Queldrex LLC, a Colorado limited liability company</p>
         </div>
 
         <div
           className="rounded-2xl border p-8 space-y-8 text-white/70 text-sm leading-relaxed"
           style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.08)' }}
         >
+
           <section>
-            <h2 className="text-white font-bold text-base mb-3">1. Digital Products — AI Visibility Report Bundle ($149)</h2>
-            <p className="mb-3">
-              All sales of digital products, including the AI Visibility Report Bundle, are <strong className="text-white">final and non-refundable</strong> once the report package has been generated and delivered to your email address. Where applicable, sales tax is collected at checkout and remitted to the relevant tax authority; in the event an eligible refund is issued under Section 2, any collected tax is refunded as part of the full transaction reversal.
-            </p>
-            <p className="mb-3">
-              Because each report is custom-generated for a specific website at the time of purchase and immediately delivered as a downloadable file package, we are unable to &quot;take back&quot; or resell digital goods.
-            </p>
+            <h2 className="text-white font-bold text-base mb-3">1. AI Visibility Scanner — $149 one-time</h2>
+            <ul className="space-y-2.5 pl-4 list-disc">
+              <li><strong className="text-white/80">Report not delivered within 48 hours:</strong> full refund, no questions asked.</li>
+              <li><strong className="text-white/80">Report delivered but technically defective</strong> (corrupted files, missing sections): full refund or re-delivery at your choice.</li>
+              <li><strong className="text-white/80">Report delivered and working:</strong> no refund. Each report is custom-generated for your domain and delivered digitally.</li>
+            </ul>
+            <p className="mt-3">Contact us within 7 days of purchase at <a href="mailto:hello@queldrex.com" className="text-cyan-400 hover:text-cyan-300">hello@queldrex.com</a>.</p>
+          </section>
+
+          <section>
+            <h2 className="text-white font-bold text-base mb-3">2. AI Visibility Monitor — $29/month subscription</h2>
+            <ul className="space-y-2.5 pl-4 list-disc">
+              <li>No refunds for billing periods already charged.</li>
+              <li>Cancel anytime — access continues through the end of the period you paid for.</li>
+              <li>If we experience a service outage exceeding 72 continuous hours, a pro-rated credit will be applied to your next billing cycle.</li>
+            </ul>
+            <p className="mt-3">Cancel instantly via your Stripe billing portal or email <a href="mailto:hello@queldrex.com" className="text-cyan-400 hover:text-cyan-300">hello@queldrex.com</a>.</p>
+          </section>
+
+          <section>
+            <h2 className="text-white font-bold text-base mb-3">3. Pro Tools — included with Monitor subscription</h2>
             <p>
-              <strong className="text-white">Technical issues:</strong> If you did not receive your download email, the download link is broken, or the files in your package are corrupted or incomplete, contact us at{' '}
-              <a href="mailto:hello@queldrex.com" className="text-cyan-400 hover:text-cyan-300 transition-colors">hello@queldrex.com</a>{' '}
-              within 7 days of purchase. We will re-send your files or provide a working download link at no charge.
+              Pro Tools access is part of the Monitor subscription. Refunds follow the subscription policy in Section 2 above. There is no separate charge for Pro Tools.
             </p>
           </section>
 
           <section>
-            <h2 className="text-white font-bold text-base mb-3">2. Done-For-You Implementation Service (Starting at $499)</h2>
-            <p className="mb-3">
-              Done-For-You implementation services are eligible for a full refund if requested <strong className="text-white">before work has begun</strong> (i.e., before you have submitted hosting credentials and before an implementation slot has been assigned).
-            </p>
-            <p className="mb-3">
-              Once implementation work has begun, refunds are issued at our discretion based on the percentage of work completed. If we are unable to complete the implementation due to factors within our control (e.g., our error, technical failure on our end), you will receive a full refund.
-            </p>
-            <p>
-              If implementation is blocked due to factors outside our control — including inaccessible credentials, site restrictions, incompatible platforms, or failure to respond within the 48-hour credential window — no refund will be issued, but we will provide a full report package equivalent to the $149 bundle at no additional charge.
-            </p>
+            <h2 className="text-white font-bold text-base mb-3">4. Build for Me — Custom Development</h2>
+            <ul className="space-y-2.5 pl-4 list-disc">
+              <li><strong className="text-white/80">50% deposit:</strong> non-refundable once work has begun. If you cancel before work starts, the deposit is fully refunded.</li>
+              <li><strong className="text-white/80">If Queldrex fails to deliver the agreed scope:</strong> full deposit refunded.</li>
+              <li><strong className="text-white/80">Final 50% payment:</strong> withheld if deliverables do not match the agreed written specification. We will work to resolve any gap before the final payment is due.</li>
+              <li>Disputes must be raised within 14 days of delivery. We resolve all disputes by email before any other action.</li>
+            </ul>
           </section>
 
           <section>
-            <h2 className="text-white font-bold text-base mb-3">3. How to Request a Refund</h2>
+            <h2 className="text-white font-bold text-base mb-3">5. How to Request a Refund</h2>
             <p className="mb-3">
-              To request a refund (where eligible under Section 2 above), email{' '}
-              <a href="mailto:hello@queldrex.com" className="text-cyan-400 hover:text-cyan-300 transition-colors">hello@queldrex.com</a>{' '}
-              with the subject line <strong className="text-white">Refund Request</strong> and include:
+              Email <a href="mailto:hello@queldrex.com" className="text-cyan-400 hover:text-cyan-300">hello@queldrex.com</a> with the subject line <strong className="text-white">Refund Request</strong> and include:
             </p>
-            <ul className="list-none space-y-1.5 ml-0">
+            <ul className="list-none space-y-1.5">
               {[
                 'The email address used at checkout',
                 'Your Stripe receipt or order number',
-                'The reason for your refund request',
+                'The reason for your request',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2">
                   <svg className="w-3.5 h-3.5 text-cyan-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
@@ -75,22 +83,20 @@ export default function RefundsPage() {
                 </li>
               ))}
             </ul>
-            <p className="mt-3">
-              Eligible refunds are processed within 5–10 business days. Refunds are returned to the original payment method via Stripe.
+            <p className="mt-3">We respond within 2 business days. Approved refunds are processed within 5–10 business days to your original payment method via Stripe.</p>
+          </section>
+
+          <section>
+            <h2 className="text-white font-bold text-base mb-3">6. Chargebacks</h2>
+            <p>
+              If you initiate a chargeback before contacting us, we reserve the right to dispute it with evidence of delivery. We resolve legitimate issues quickly — please email us first.
             </p>
           </section>
 
           <section>
-            <h2 className="text-white font-bold text-base mb-3">4. Chargebacks</h2>
+            <h2 className="text-white font-bold text-base mb-3">7. Governing Law</h2>
             <p>
-              If you initiate a chargeback with your card issuer before contacting us, we reserve the right to dispute the chargeback and provide evidence of delivery. We encourage you to contact us first — we resolve legitimate issues quickly and fairly.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-white font-bold text-base mb-3">5. Governing Law</h2>
-            <p>
-              This Refund Policy is governed by the laws of the State of Colorado, without regard to its conflict of law provisions. By purchasing from Queldrex LLC, you agree to this policy.
+              This Refund Policy is governed by the laws of the State of Colorado, USA. By purchasing from Queldrex LLC, you agree to this policy.
             </p>
           </section>
 
