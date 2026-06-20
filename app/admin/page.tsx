@@ -58,6 +58,7 @@ export default function AdminPage() {
   const [appsLoading, setAppsLoading] = useState(false)
   const [sendingPayment, setSendingPayment] = useState<string | null>(null)
   const [sendingDiscovery, setSendingDiscovery] = useState<string | null>(null)
+  const [completing, setCompleting] = useState<string | null>(null)
 
   const loadApplications = useCallback(async (s: string) => {
     setAppsLoading(true)
@@ -111,6 +112,28 @@ export default function AdminPage() {
       alert('Network error')
     }
     setSendingDiscovery(null)
+  }
+
+  const completeDfy = async (app: DfyApplication) => {
+    if (!confirm(`Mark "${app.name}" complete? This will permanently delete their credentials and email them confirmation. Cannot be undone.`)) return
+    setCompleting(app.id)
+    try {
+      const res = await fetch('/api/admin/complete-dfy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        body: JSON.stringify({ applicationId: app.id }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setApplications(prev => prev.map(a => a.id === app.id ? { ...a, status: 'complete', implemented: true } : a))
+        alert(`Done. Credentials deleted at ${new Date(data.deletedAt).toLocaleString()}. Deletion email sent to ${app.email}.`)
+      } else {
+        alert(data.error || 'Failed to complete')
+      }
+    } catch {
+      alert('Network error')
+    }
+    setCompleting(null)
   }
 
   const rejectApplication = async (id: string) => {
@@ -562,6 +585,7 @@ export default function AdminPage() {
                   payment_sent:  { bg: '#1c2a3a', color: '#60a5fa', border: '#1e40af' },
                   paid:          { bg: '#14532d', color: '#4ade80', border: '#166534' },
                   rejected:      { bg: '#1c1c1c', color: '#555', border: '#333' },
+                  complete:      { bg: '#052e16', color: '#22d3ee', border: '#0e7490' },
                 }
                 const sc = statusColors[app.status] || statusColors.new
                 return (
@@ -709,6 +733,25 @@ export default function AdminPage() {
                         {implementError && implementing === null && (
                           <div style={{ marginTop: 10, padding: '10px 14px', borderRadius: 8, background: '#1c0a0a', border: '1px solid #7f1d1d', color: '#f87171', fontSize: 12 }}>
                             {implementError}
+                          </div>
+                        )}
+
+                        {/* Mark Complete — deletes credentials + emails client proof of deletion */}
+                        {app.implemented && app.status !== 'complete' && (
+                          <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid #1a2233' }}>
+                            <button
+                              onClick={() => completeDfy(app)}
+                              disabled={completing === app.id}
+                              style={{ padding: '6px 16px', borderRadius: 6, fontSize: 12, cursor: 'pointer', fontWeight: 700, background: '#083344', color: '#22d3ee', border: '1px solid #0e7490' }}
+                            >
+                              {completing === app.id ? '🔒 Deleting…' : '🔒 Mark Complete & Delete Credentials'}
+                            </button>
+                            <p style={{ fontSize: 10, color: '#475569', marginTop: 4 }}>Permanently wipes their passwords from our system and emails them a deletion receipt.</p>
+                          </div>
+                        )}
+                        {app.status === 'complete' && (
+                          <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid #1a2233' }}>
+                            <span style={{ fontSize: 11, color: '#22d3ee', fontWeight: 600 }}>🔒 Credentials deleted — deletion receipt sent to {app.email}</span>
                           </div>
                         )}
                       </div>

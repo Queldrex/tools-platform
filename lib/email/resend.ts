@@ -731,6 +731,63 @@ export async function sendAdminPurchaseAlert({ domain, email, score, product, am
   })
 }
 
+export async function sendCredentialsDeletionEmail({
+  to, name, domain, platform, deletedAt, referenceId,
+}: { to: string; name: string; domain: string; platform: string; deletedAt: string; referenceId: string }) {
+  const date = new Date(deletedAt)
+  const formatted = date.toLocaleString('en-US', {
+    month: 'long', day: 'numeric', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', timeZoneName: 'short', timeZone: 'UTC',
+  })
+  await getResend().emails.send({
+    from: 'Sean at Queldrex <hello@queldrex.com>',
+    to,
+    subject: `Your hosting credentials for ${domain} have been permanently deleted`,
+    html: `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+<div style="max-width:520px;margin:40px auto;padding:0 20px;">
+  <div style="background:#0f172a;border-radius:16px;overflow:hidden;">
+    <div style="padding:28px 32px 20px;border-bottom:1px solid rgba(255,255,255,0.06);">
+      <div style="font-size:11px;font-weight:700;color:#22d3ee;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:16px;">Queldrex · Credential Deletion Confirmation</div>
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;background:rgba(34,197,94,0.12);border-radius:12px;margin-bottom:16px;">
+        <span style="font-size:24px;">🔒</span>
+      </div>
+      <h1 style="margin:0 0 8px;font-size:20px;font-weight:800;color:white;line-height:1.3;">Your credentials have been permanently deleted.</h1>
+      <p style="margin:0;font-size:14px;color:#94a3b8;line-height:1.6;">Hi ${name} — your implementation for <strong style="color:#e2e8f0;">${domain}</strong> is complete and your hosting credentials have been wiped from our systems.</p>
+    </div>
+    <div style="padding:24px 32px;">
+      <div style="background:#020617;border-radius:10px;padding:20px;margin-bottom:20px;border:1px solid rgba(34,197,94,0.2);">
+        <div style="font-size:11px;font-weight:700;color:#4ade80;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;">Deletion Record</div>
+        <table style="width:100%;border-collapse:collapse;">
+          <tr>
+            <td style="font-size:12px;color:#64748b;padding:5px 0;">Deleted at</td>
+            <td style="font-size:12px;color:#e2e8f0;text-align:right;font-weight:600;">${formatted}</td>
+          </tr>
+          <tr>
+            <td style="font-size:12px;color:#64748b;padding:5px 0;">Website</td>
+            <td style="font-size:12px;color:#e2e8f0;text-align:right;">${domain}</td>
+          </tr>
+          <tr>
+            <td style="font-size:12px;color:#64748b;padding:5px 0;">Platform</td>
+            <td style="font-size:12px;color:#e2e8f0;text-align:right;text-transform:capitalize;">${platform}</td>
+          </tr>
+          <tr>
+            <td style="font-size:12px;color:#64748b;padding:5px 0;">Reference</td>
+            <td style="font-size:12px;color:#64748b;text-align:right;font-family:monospace;">${referenceId}</td>
+          </tr>
+        </table>
+      </div>
+      <p style="font-size:13px;color:#64748b;line-height:1.7;margin:0 0 16px;">This deletion is <strong style="color:#94a3b8;">permanent and irreversible</strong>. No credentials, passwords, tokens, or access keys related to <strong style="color:#94a3b8;">${domain}</strong> are retained in our systems.</p>
+      <p style="font-size:13px;color:#64748b;line-height:1.7;margin:0 0 20px;"><strong style="color:#94a3b8;">Keep this email as your permanent record.</strong> It serves as confirmation that Queldrex no longer holds any access to your hosting environment.</p>
+      <p style="font-size:12px;color:#475569;margin:0;">Questions? Reply to this email — I respond within one business day. — Sean</p>
+    </div>
+  </div>
+  <p style="text-align:center;font-size:11px;color:#94a3b8;margin-top:20px;">Queldrex LLC · Castle Rock, CO · <a href="https://queldrex.com" style="color:#22d3ee;">queldrex.com</a></p>
+</div>
+</body></html>`,
+  })
+}
+
 export async function sendAdminDownloadAlert({
   domain, email, scanId, downloadUrl, score, timestamp,
 }: { domain: string; email: string; scanId: string; downloadUrl: string; score: number; timestamp: string }) {

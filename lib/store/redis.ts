@@ -10,10 +10,13 @@ export interface DfySession {
   status: 'pending_payment' | 'paid' | 'booked' | 'credentials_submitted' | 'implementing' | 'complete'
   bookedAt?: string
   credentials?: string
+  credentialsDeletedAt?: string
+  credentialsPlatform?: string
   createdAt: string
 }
 
 const DFY_TTL = 60 * 60 * 72  // 72 hours
+const DFY_COMPLETE_TTL = 60 * 60 * 24 * 90  // 90 days — keep deletion record viewable
 
 let _redis: Redis | null = null
 function getRedis(): Redis {
@@ -63,6 +66,21 @@ export async function updateDfySession(token: string, updates: Partial<DfySessio
   const existing = await getDfySession(token)
   if (!existing) return
   await saveDfySession({ ...existing, ...updates })
+}
+
+export async function deleteDfyCredentials(token: string, platform: string): Promise<string> {
+  const redis = getRedis()
+  const session = await getDfySession(token)
+  const now = new Date().toISOString()
+  const updated: DfySession = {
+    ...(session ?? { token, scanId: '', emailAddress: '', domain: '', score: 0, createdAt: now }),
+    credentials: undefined,
+    credentialsDeletedAt: now,
+    credentialsPlatform: platform,
+    status: 'complete',
+  }
+  await redis.set(`dfy:${token}`, JSON.stringify(updated), { ex: DFY_COMPLETE_TTL })
+  return now
 }
 
 // ── Permanent scan log ────────────────────────────────────────────────────────
@@ -132,7 +150,7 @@ export interface DfyApplication {
   platform: string
   score?: number
   message: string
-  status: 'new' | 'contacted' | 'payment_sent' | 'paid' | 'rejected'
+  status: 'new' | 'contacted' | 'payment_sent' | 'paid' | 'rejected' | 'complete'
   createdAt: string
   dfyToken?: string        // set when Stripe DFY payment is confirmed
   implemented?: boolean    // set true after admin triggers implementation

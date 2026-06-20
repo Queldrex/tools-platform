@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -139,24 +139,47 @@ export default function ImplCredentialsPage() {
   const [platform, setPlatform] = useState<Platform | null>(null)
   const [fields, setFields] = useState<Record<string, string>>({})
   const [agreed, setAgreed] = useState(false)
+  const [sigFirstName, setSigFirstName] = useState('')
+  const [sigLastName, setSigLastName] = useState('')
+  const [sigDate, setSigDate] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
+  const [deletedAt, setDeletedAt] = useState<string | null>(null)
+  const [statusChecked, setStatusChecked] = useState(false)
+
+  useEffect(() => {
+    fetch(`/api/dfy/session-status?token=${token}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.credentialsDeletedAt) setDeletedAt(data.credentialsDeletedAt)
+        setStatusChecked(true)
+      })
+      .catch(() => setStatusChecked(true))
+  }, [token])
 
   const isManual = platform !== null && MANUAL_PLATFORMS.has(platform)
-  const canSubmit = platform !== null && agreed
+  const sigValid = sigFirstName.trim().length > 0 && sigLastName.trim().length > 0 && sigDate.trim().length > 0
+  const canSubmit = platform !== null && agreed && sigValid
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!platform || !agreed) return
+    if (!platform || !agreed || !sigValid) return
     setSubmitting(true)
     setError('')
+
+    const signature = {
+      firstName: sigFirstName.trim(),
+      lastName: sigLastName.trim(),
+      date: sigDate.trim(),
+      signedAt: new Date().toISOString(),
+    }
 
     try {
       const res = await fetch('/api/dfy/credentials', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, platform, fields }),
+        body: JSON.stringify({ token, platform, fields, signature }),
       })
       if (!res.ok) {
         const d = await res.json()
@@ -168,6 +191,44 @@ export default function ImplCredentialsPage() {
     } finally {
       setSubmitting(false)
     }
+  }
+
+  if (!statusChecked) {
+    return (
+      <div className="min-h-screen text-white flex items-center justify-center" style={{ background: '#070b14' }}>
+        <p className="text-white/30 text-sm">Loading…</p>
+      </div>
+    )
+  }
+
+  if (deletedAt) {
+    const formatted = new Date(deletedAt).toLocaleString('en-US', {
+      month: 'long', day: 'numeric', year: 'numeric',
+      hour: '2-digit', minute: '2-digit', timeZoneName: 'short', timeZone: 'UTC',
+    })
+    return (
+      <div className="min-h-screen text-white" style={{ background: '#070b14' }}>
+        <Header />
+        <main className="max-w-lg mx-auto px-6 py-32 text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6" style={{ background: 'rgba(22,163,74,0.08)', border: '1px solid rgba(22,163,74,0.25)' }}>
+            <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+          </div>
+          <h1 className="text-2xl font-black text-white mb-3">Your credentials were permanently deleted.</h1>
+          <p className="text-white/55 leading-relaxed mb-6">
+            Implementation is complete. All hosting credentials for your site have been permanently and irreversibly wiped from our systems.
+          </p>
+          <div className="rounded-xl border border-green-500/20 p-4 mb-6 text-left" style={{ background: 'rgba(34,197,94,0.04)' }}>
+            <p className="text-xs text-white/40 uppercase tracking-wider font-bold mb-2">Deletion Record</p>
+            <p className="text-sm text-green-400 font-mono">{formatted}</p>
+          </div>
+          <p className="text-white/35 text-sm">A confirmation email was sent to you with this record. Keep it permanently.</p>
+          <p className="text-white/25 text-xs mt-4">Questions? <a href="mailto:hello@queldrex.com" className="text-cyan-400">hello@queldrex.com</a></p>
+        </main>
+        <Footer />
+      </div>
+    )
   }
 
   if (submitted) {
@@ -389,17 +450,58 @@ export default function ImplCredentialsPage() {
                 <p><strong className="text-white/70">6. Governing Law.</strong> This Agreement is governed by the laws of the State of Colorado. By submitting this form, Client acknowledges reading and agreeing to this Agreement and to Queldrex&apos;s <a href="/terms" className="text-cyan-400">Terms of Service</a> and <a href="/refunds" className="text-cyan-400">Refund Policy</a>.</p>
               </div>
 
-              <label className="flex items-start gap-3 cursor-pointer group mt-2">
-                <input
-                  type="checkbox"
-                  checked={agreed}
-                  onChange={e => setAgreed(e.target.checked)}
-                  className="mt-0.5 flex-shrink-0 w-4 h-4 rounded accent-cyan-500"
-                />
-                <span className="text-sm text-white/70 group-hover:text-white/90 transition-colors leading-relaxed">
-                  I have read and agree to the Service Agreement above. I confirm I own or am authorized to modify this website, and I authorize Queldrex LLC to make the technical changes described above on my behalf.
-                </span>
-              </label>
+              {/* Electronic signature */}
+              <div className="rounded-xl border border-white/8 p-4 mt-2 space-y-4" style={{ background: 'rgba(0,0,0,0.2)' }}>
+                <p className="text-xs font-bold text-white/50 uppercase tracking-wider">Electronic Signature</p>
+                <p className="text-xs text-white/35 leading-relaxed">
+                  By signing below you confirm you have read the Agreement above, own or are authorized to modify this website, and authorize Queldrex LLC to make the technical changes described. This constitutes a legally binding electronic signature under the ESIGN Act.
+                </p>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-white/50 mb-1">First Name *</label>
+                    <input
+                      type="text"
+                      value={sigFirstName}
+                      onChange={e => setSigFirstName(e.target.value)}
+                      placeholder="John"
+                      className="w-full rounded-lg border border-white/12 bg-white/5 px-3 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition-colors"
+                      autoComplete="given-name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-white/50 mb-1">Last Name *</label>
+                    <input
+                      type="text"
+                      value={sigLastName}
+                      onChange={e => setSigLastName(e.target.value)}
+                      placeholder="Smith"
+                      className="w-full rounded-lg border border-white/12 bg-white/5 px-3 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition-colors"
+                      autoComplete="family-name"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-white/50 mb-1">Date *</label>
+                  <input
+                    type="date"
+                    value={sigDate}
+                    onChange={e => setSigDate(e.target.value)}
+                    className="w-full rounded-lg border border-white/12 bg-white/5 px-3 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-colors"
+                    style={{ colorScheme: 'dark' }}
+                  />
+                </div>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={agreed}
+                    onChange={e => setAgreed(e.target.checked)}
+                    className="mt-0.5 flex-shrink-0 w-4 h-4 rounded accent-cyan-500"
+                  />
+                  <span className="text-xs text-white/60 group-hover:text-white/80 transition-colors leading-relaxed">
+                    I have read and agree to the Service Agreement above and authorize Queldrex LLC to make the changes described on my behalf.
+                  </span>
+                </label>
+              </div>
             </div>
           )}
 
@@ -416,7 +518,7 @@ export default function ImplCredentialsPage() {
               className="w-full py-4 rounded-xl text-sm font-black text-black disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-[1.01]"
               style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: canSubmit ? '0 0 24px rgba(6,182,212,0.25)' : 'none' }}
             >
-              {submitting ? 'Submitting…' : !agreed ? 'Accept Service Agreement to Continue' : isManual ? 'Confirm — Apply My Fixes' : 'Submit Hosting Details'}
+              {submitting ? 'Submitting…' : !canSubmit ? 'Sign the agreement to continue' : isManual ? 'Confirm — Apply My Fixes' : 'Submit Hosting Details'}
             </button>
           )}
 
