@@ -38,7 +38,7 @@ export default function RefundsPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-bold text-base mb-3">1. AI Visibility Scanner — $149 one-time</h2>
+            <h2 className="text-white font-bold text-base mb-3">1. AI Visibility Scanner — $399 one-time</h2>
             <ul className="space-y-2.5 pl-4 list-disc">
               <li>
                 <strong className="text-white/80">Report not delivered within 24 hours of payment:</strong> full refund, no questions asked. Email us with your payment receipt and we will process the refund immediately.
@@ -59,7 +59,7 @@ export default function RefundsPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-bold text-base mb-3">2. AI Visibility Monitor — $29/month subscription</h2>
+            <h2 className="text-white font-bold text-base mb-3">2. AI Visibility Monitor — $79/month subscription</h2>
             <ul className="space-y-2.5 pl-4 list-disc">
               <li>
                 <strong className="text-white/80">New subscribers (first 7 days):</strong> if you subscribed within the last 7 days and are not satisfied, email us for a full refund of your first payment. No questions asked.
@@ -77,7 +77,7 @@ export default function RefundsPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-bold text-base mb-3">3. Agency Plan — $99/month subscription</h2>
+            <h2 className="text-white font-bold text-base mb-3">3. Agency Plan — $299/month subscription</h2>
             <ul className="space-y-2.5 pl-4 list-disc">
               <li>
                 <strong className="text-white/80">New subscribers (first 7 days):</strong> full refund of your first payment if requested within 7 days of your first charge.
@@ -97,7 +97,7 @@ export default function RefundsPage() {
           <section>
             <h2 className="text-white font-bold text-base mb-3">4. Pro Tools — included with Monitor and Agency</h2>
             <p>
-              Pro Tools (Vibe Coding Security Shield, API Schema Drift Scanner, Database Migration Safety Checker, full Threat Intelligence Feed, unlimited Breach Lookup) are included at no additional charge with Monitor ($29/mo) and Agency ($99/mo) subscriptions. Refunds follow the subscription policy above. There is no separate charge to refund.
+              Pro Tools (Vibe Coding Security Shield, API Schema Drift Scanner, Database Migration Safety Checker, full Threat Intelligence Feed, unlimited Breach Lookup) are included at no additional charge with Monitor ($79/mo) and Agency ($299/mo) subscriptions. Refunds follow the subscription policy above. There is no separate charge to refund.
             </p>
           </section>
 

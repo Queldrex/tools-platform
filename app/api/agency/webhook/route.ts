@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import Stripe from 'stripe'
 import { saveAgency, getAgencyByStripe, updateAgency } from '@/lib/store/redis'
 import type { AgencySubscription } from '@/lib/store/redis'
+import { sendSmsAlert } from '@/lib/sms/twilio'
 
 export const dynamic = 'force-dynamic'
 
@@ -53,6 +54,8 @@ export async function POST(request: NextRequest) {
         }
         await saveAgency(agency)
         await sendAgencyWelcomeEmail(email, agencyName)
+        sendSmsAlert(`[Queldrex] 💰 New Agency subscriber ($99/mo): ${agencyName} — ${email}`).catch(() => {})
+        sendAdminAgencyAlert(email, agencyName).catch(() => {})
         break
       }
       case 'customer.subscription.deleted': {
@@ -99,6 +102,30 @@ async function sendAgencyWelcomeEmail(email: string, agencyName: string) {
   </p>
   <a href="${baseUrl}/agency" style="display:inline-block;background:linear-gradient(135deg,#06d6ff,#0891b2);color:#000;font-weight:700;font-size:13px;padding:11px 22px;border-radius:8px;text-decoration:none;">Go to Agency Dashboard →</a>
   <p style="color:#64748b;font-size:12px;margin-top:20px;">Questions? Reply to this email or contact hello@queldrex.com</p>
+</div>
+</body></html>`,
+    })
+  } catch { /* email non-fatal */ }
+}
+
+async function sendAdminAgencyAlert(email: string, agencyName: string) {
+  try {
+    const { Resend } = await import('resend')
+    const resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^﻿/, '').trim())
+    const adminEmail = process.env.ADMIN_EMAIL || 'janitor.clean.base@gmail.com'
+    const adminUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim() + '/admin'
+    await resend.emails.send({
+      from: 'Queldrex System <reports@queldrex.com>',
+      to: adminEmail,
+      subject: `💰 New Agency subscriber — ${agencyName}`,
+      html: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;background:#f8fafc;padding:32px;">
+<div style="max-width:420px;margin:0 auto;background:#0f172a;padding:28px;border-radius:12px;">
+  <div style="font-size:11px;color:#22d3ee;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:12px;">Queldrex · New Agency Subscriber</div>
+  <div style="font-size:24px;font-weight:800;color:#4ade80;margin-bottom:4px;">$99/month</div>
+  <div style="font-size:15px;font-weight:600;color:white;margin-bottom:4px;">Agency Plan</div>
+  <div style="font-size:13px;color:#94a3b8;margin-bottom:4px;">${agencyName}</div>
+  <div style="font-size:13px;color:#64748b;margin-bottom:24px;">${email}</div>
+  <a href="${adminUrl}" style="display:block;background:#22d3ee;color:#0f172a;text-decoration:none;text-align:center;padding:12px;border-radius:8px;font-weight:700;font-size:14px;">Open Admin Panel →</a>
 </div>
 </body></html>`,
     })

@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+import { hasFreeOrProAccess } from '@/lib/tool-access'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
@@ -71,6 +72,8 @@ async function fetchWithTimeout(url: string, ms = 10000): Promise<Response> {
 }
 
 export async function POST(request: NextRequest) {
+  const access = await hasFreeOrProAccess(request, 'directory-extractor', 3)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
   let body: { url?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 

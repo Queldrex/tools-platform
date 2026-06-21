@@ -16,7 +16,7 @@ export interface DfySession {
   createdAt: string
 }
 
-const DFY_TTL = 60 * 60 * 72  // 72 hours
+const DFY_TTL = 60 * 60 * 24 * 30  // 30 days
 const DFY_COMPLETE_TTL = 60 * 60 * 24 * 90  // 90 days — keep deletion record viewable
 
 let _redis: Redis | null = null
@@ -31,7 +31,7 @@ export function getRedis(): Redis {
 }
 
 const SCAN_TTL = 60 * 60 * 48
-const TOKEN_TTL = 60 * 60 * 24 * 7  // 7 days
+const TOKEN_TTL = 60 * 60 * 24 * 30  // 30 days
 
 export async function saveScan(scan: ScanResult): Promise<void> {
   await getRedis().set(`scan:${scan.scanId}`, JSON.stringify(scan), { ex: SCAN_TTL })
@@ -105,13 +105,16 @@ export interface ScanLogEntry {
 const LOG_KEY = 'scanlog'
 const entryKey = (scanId: string) => `scanlog:entry:${scanId}`
 
+const SCANLOG_ENTRY_TTL = 60 * 60 * 24 * 90  // 90 days
+
 export async function appendScanLog(entry: ScanLogEntry): Promise<void> {
   const redis = getRedis()
   const score = Date.now()
   await Promise.all([
     redis.zadd(LOG_KEY, { score, member: entry.scanId }),
-    redis.set(entryKey(entry.scanId), JSON.stringify(entry)),
+    redis.set(entryKey(entry.scanId), JSON.stringify(entry), { ex: SCANLOG_ENTRY_TTL }),
   ])
+  await redis.zremrangebyrank(LOG_KEY, 0, -2001)  // keep latest 2000
 }
 
 export async function updateScanLog(scanId: string, updates: Partial<ScanLogEntry>): Promise<void> {
@@ -174,6 +177,7 @@ export async function saveDfyApplication(app: DfyApplication): Promise<void> {
     redis.zadd(APP_KEY, { score: Date.now(), member: app.id }),
     redis.set(appEntryKey(app.id), JSON.stringify(app)),
   ])
+  await redis.zremrangebyrank(APP_KEY, 0, -201)  // keep latest 200
 }
 
 export async function getDfyApplication(id: string): Promise<DfyApplication | null> {
@@ -214,12 +218,15 @@ export interface FeedbackEntry {
 const FB_KEY = 'feedbacklog'
 const fbEntryKey = (id: string) => `feedback:entry:${id}`
 
+const FB_ENTRY_TTL = 60 * 60 * 24 * 180  // 180 days
+
 export async function saveFeedback(entry: FeedbackEntry): Promise<void> {
   const redis = getRedis()
   await Promise.all([
     redis.zadd(FB_KEY, { score: Date.now(), member: entry.id }),
-    redis.set(fbEntryKey(entry.id), JSON.stringify(entry)),
+    redis.set(fbEntryKey(entry.id), JSON.stringify(entry), { ex: FB_ENTRY_TTL }),
   ])
+  await redis.zremrangebyrank(FB_KEY, 0, -501)  // keep latest 500
 }
 
 export async function getFeedbackLog(limit = 100): Promise<FeedbackEntry[]> {
@@ -352,13 +359,13 @@ export async function updateMonitor(id: string, updates: Partial<MonitorSubscrip
 
 export async function createAdminSession(): Promise<string> {
   const token = randomUUID()
-  await getRedis().set(`admin:session:${token}`, '1', { ex: 60 * 60 * 4 })
+  await getRedis().set(`admin:session:${token}`, 'active', { ex: 60 * 60 * 4 })
   return token
 }
 
 export async function validateAdminSession(token: string): Promise<boolean> {
   const val = await getRedis().get(`admin:session:${token}`)
-  return val === '1'
+  return !!val
 }
 
 export async function deleteAdminSession(token: string): Promise<void> {
@@ -408,6 +415,7 @@ export async function saveToolRequest(req: ToolRequest): Promise<void> {
     redis.zadd(TR_KEY, { score: Date.now(), member: req.id }),
     redis.set(trEntryKey(req.id), JSON.stringify(req)),
   ])
+  await redis.zremrangebyrank(TR_KEY, 0, -201)  // keep latest 200
 }
 
 export async function getToolRequests(limit = 100): Promise<ToolRequest[]> {
@@ -451,6 +459,7 @@ export async function saveBuildRequest(req: BuildRequest): Promise<void> {
     redis.zadd(BR_KEY, { score: Date.now(), member: req.id }),
     redis.set(brEntryKey(req.id), JSON.stringify(req)),
   ])
+  await redis.zremrangebyrank(BR_KEY, 0, -201)  // keep latest 200
 }
 
 export async function getBuildRequests(limit = 100): Promise<BuildRequest[]> {
@@ -574,11 +583,13 @@ export async function createReferralCode(email: string): Promise<string> {
     uses: 0,
     creditsEarned: 0,
   }
+  const REF_TTL = 60 * 60 * 24 * 365  // 1 year
   await Promise.all([
-    redis.set(refKey(code), JSON.stringify(record)),
-    redis.set(refEmailKey(email), code),
+    redis.set(refKey(code), JSON.stringify(record), { ex: REF_TTL }),
+    redis.set(refEmailKey(email), code, { ex: REF_TTL }),
     redis.zadd('referrals', { score: Date.now(), member: code }),
   ])
+  await redis.zremrangebyrank('referrals', 0, -1001)  // keep latest 1000
   return code
 }
 
@@ -594,8 +605,8 @@ export async function recordReferralUse(code: string, newUserEmail: string, prod
   if (!ref) return
   const updated: ReferralCode = { ...ref, uses: ref.uses + 1, creditsEarned: ref.creditsEarned + 10 }
   await Promise.all([
-    redis.set(refKey(code.toUpperCase()), JSON.stringify(updated)),
-    redis.set(`referraluse:${Date.now()}`, JSON.stringify({ code, referrerEmail: ref.ownerEmail, newUserEmail, product, creditAmount: 10, usedAt: new Date().toISOString() })),
+    redis.set(refKey(code.toUpperCase()), JSON.stringify(updated), { ex: 60 * 60 * 24 * 365 }),
+    redis.set(`referraluse:${Date.now()}`, JSON.stringify({ code, referrerEmail: ref.ownerEmail, newUserEmail, product, creditAmount: 10, usedAt: new Date().toISOString() }), { ex: 60 * 60 * 24 * 90 }),
   ])
 }
 
@@ -611,5 +622,24 @@ export async function saveProSession(sessionId: string): Promise<void> {
 export async function checkProSession(sessionId: string): Promise<boolean> {
   if (!sessionId || sessionId.length < 10) return false
   const val = await getRedis().get(`pro_session:${sessionId}`)
-  return val === '1'
+  return !!val
+}
+
+export async function checkDownloadAccess(token: string): Promise<boolean> {
+  if (!token || token.length < 10) return false
+  const val = await getRedis().get(`token:${token}`)
+  return !!val
+}
+
+// ── Individual Tool Purchases ─────────────────────────────────────────────────
+const TOOL_PURCHASE_TTL = 60 * 60 * 24 * 31  // 31 days
+
+export async function saveToolPurchase(token: string, toolId: string): Promise<void> {
+  await getRedis().set(`tool_purchase:${token}`, toolId, { ex: TOOL_PURCHASE_TTL })
+}
+
+export async function checkToolPurchase(token: string, toolId: string): Promise<boolean> {
+  if (!token || token.length < 10) return false
+  const stored = await getRedis().get<string>(`tool_purchase:${token}`)
+  return stored === toolId
 }

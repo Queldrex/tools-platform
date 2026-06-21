@@ -39,19 +39,23 @@ export async function POST(request: NextRequest) {
 
 async function sendAttackAlert(ip: string, count: number) {
   const { Resend } = await import('resend')
+  const { sendSmsAlert } = await import('@/lib/sms/twilio')
   const resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^﻿/, '').trim())
-  await resend.emails.send({
-    from: 'Queldrex Security <reports@queldrex.com>',
-    to: process.env.ADMIN_EMAIL || 'janitor.clean.base@gmail.com',
-    subject: `🚨 Admin Attack Alert — ${count} failed attempts from ${ip}`,
-    html: `<div style="font-family:system-ui;background:#0f172a;padding:24px;color:white;border-radius:12px;max-width:480px;">
-      <div style="color:#f87171;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">⚠ Security Alert</div>
-      <div style="font-size:18px;font-weight:800;margin-bottom:8px;">${count} Failed Admin Login Attempts</div>
-      <div style="color:#94a3b8;font-size:13px;margin-bottom:16px;">IP: <span style="font-family:monospace;color:#f87171;">${ip}</span></div>
-      <div style="color:#64748b;font-size:12px;">Time: ${new Date().toISOString()}</div>
-      <div style="margin-top:16px;padding:12px;background:#1e293b;border-radius:8px;font-size:12px;color:#94a3b8;">
-        If this wasn&apos;t you, your admin system is under attack. The IP will be automatically blocked after 5 attempts.
-      </div>
-    </div>`,
-  })
+  await Promise.all([
+    resend.emails.send({
+      from: 'Queldrex Security <reports@queldrex.com>',
+      to: process.env.ADMIN_EMAIL || 'janitor.clean.base@gmail.com',
+      subject: `🚨 Admin Attack Alert — ${count} failed attempts from ${ip}`,
+      html: `<div style="font-family:system-ui;background:#0f172a;padding:24px;color:white;border-radius:12px;max-width:480px;">
+        <div style="color:#f87171;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">⚠ Security Alert</div>
+        <div style="font-size:18px;font-weight:800;margin-bottom:8px;">${count} Failed Admin Login Attempts</div>
+        <div style="color:#94a3b8;font-size:13px;margin-bottom:16px;">IP: <span style="font-family:monospace;color:#f87171;">${ip}</span></div>
+        <div style="color:#64748b;font-size:12px;">Time: ${new Date().toISOString()}</div>
+        <div style="margin-top:16px;padding:12px;background:#1e293b;border-radius:8px;font-size:12px;color:#94a3b8;">
+          If this wasn&apos;t you, your admin system is under attack. The IP will be automatically blocked after 5 attempts.
+        </div>
+      </div>`,
+    }),
+    sendSmsAlert(`[Queldrex] SECURITY: ${count} failed admin logins from ${ip}. Auto-blocked at 5 attempts.`),
+  ])
 }

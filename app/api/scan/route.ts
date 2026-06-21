@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { v4 as uuidv4 } from 'uuid'
 import { scanWebsite } from '@/lib/tools/ai-visibility-scanner/scanner'
 import { generateLlmsTxt, generateJsonLd, generateRecommendations } from '@/lib/tools/ai-visibility-scanner/generator'
+import { sendSmsAlert } from '@/lib/sms/twilio'
 
 export const dynamic = 'force-dynamic'
 
@@ -42,6 +43,21 @@ async function trySaveToRedis(scan: unknown) {
   }
 }
 
+async function checkScanRateLimit(request: NextRequest): Promise<boolean> {
+  try {
+    const { getRedis } = await import('@/lib/store/redis')
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'unknown'
+    const today = new Date().toISOString().slice(0, 10)
+    const key = `scan_rate:${ip}:${today}`
+    const redis = getRedis()
+    const count = await redis.incr(key)
+    if (count === 1) await redis.expire(key, 86400)
+    return count <= 5 // 5 free scans per IP per day
+  } catch {
+    return true // allow on Redis failure
+  }
+}
+
 export async function POST(request: NextRequest) {
   let body: { url?: string; email?: string }
   try {
@@ -67,6 +83,12 @@ export async function POST(request: NextRequest) {
   const bodyRaw = body as Record<string, unknown>
   if (bodyRaw.website_url) {
     return Response.json({ scanId: uuidv4(), status: 'DONE' })
+  }
+
+  // Rate limit: 5 free scans per IP per day
+  const allowed = await checkScanRateLimit(request)
+  if (!allowed) {
+    return Response.json({ error: 'Daily scan limit reached (5 scans/day per IP). Try again tomorrow or contact hello@queldrex.com.' }, { status: 429 })
   }
 
   const scanId = uuidv4()
@@ -119,6 +141,7 @@ export async function POST(request: NextRequest) {
         email: cleanEmail,
         score: completed.score,
       }).catch(() => {})
+      sendSmsAlert(`[Queldrex] New scan: ${completed.businessInfo.domain} scored ${completed.score}/100 (${cleanEmail})`).catch(() => {})
     }).catch(() => {})
 
     return Response.json(completed)

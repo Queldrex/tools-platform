@@ -181,6 +181,37 @@ export default function DirectoryExtractorPage() {
             <div className="text-white/50 text-sm">No sitemap found for <span className="font-mono text-white/70">{result.domain}</span>. This site may not have a public sitemap.xml.</div>
           </div>
         )}
+
+        {/* How It Works */}
+        <div className="mt-14 border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+          <h2 className="text-xl font-black text-white mb-1">How It Works</h2>
+          <p className="text-white/35 text-sm mb-8">Maps a site&apos;s public structure via its sitemap.xml — useful for SEO audits, content mapping, and crawl planning.</p>
+          <div className="grid sm:grid-cols-3 gap-4 mb-8">
+            {[
+              { n: '01', title: 'Enter a URL', body: 'Enter any domain. The tool fetches /sitemap.xml and /sitemap_index.xml, then recursively resolves any nested sitemaps.' },
+              { n: '02', title: 'Parse & normalize', body: 'All <loc> entries are extracted, deduplicated, and normalized to absolute URLs. Handles compressed .xml.gz sitemaps.' },
+              { n: '03', title: 'Export as CSV', body: 'The full URL list is displayed and available as a one-click CSV download. Use for content audits, redirect mapping, or crawl jobs.' },
+            ].map(s => (
+              <div key={s.n} className="rounded-xl border p-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
+                <div className="text-xs font-black text-white/20 mb-2">{s.n}</div>
+                <div className="text-sm font-black text-white mb-1">{s.title}</div>
+                <div className="text-xs text-white/45 leading-relaxed">{s.body}</div>
+              </div>
+            ))}
+          </div>
+          <div className="rounded-2xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
+            <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-4">Example — queldrex.com</p>
+            <div className="space-y-1.5">
+              {['https://queldrex.com/', 'https://queldrex.com/tools', 'https://queldrex.com/scanner', 'https://queldrex.com/about', 'https://queldrex.com/pricing', 'https://queldrex.com/blog'].map(url => (
+                <div key={url} className="flex items-center gap-2">
+                  <svg className="w-3 h-3 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  <code className="text-xs font-mono text-white/60">{url}</code>
+                </div>
+              ))}
+              <p className="text-xs text-white/30 mt-2">→ Exported as CSV with one click</p>
+            </div>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>

@@ -4,7 +4,11 @@ import type { ImplementationResult } from '@/lib/framework/types'
 let _resend: Resend | null = null
 function getResend(): Resend {
   // Strip BOM and any leading/trailing invisible characters that break HTTP headers
-  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY!.replace(/^﻿/, '').trim())
+  if (!_resend) {
+    const key = process.env.RESEND_API_KEY
+    if (!key) throw new Error('RESEND_API_KEY is not configured')
+    _resend = new Resend(key.replace(/^﻿/, '').trim())
+  }
   return _resend
 }
 
@@ -73,7 +77,7 @@ export async function sendFreeScoreEmail({
 
       <!-- What's in the full report -->
       <div style="margin-bottom:24px;">
-        <div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:12px;">Unlock your full report for $149:</div>
+        <div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:12px;">Unlock your full report for $399:</div>
         <table style="width:100%;border-collapse:collapse;">
           ${[
             ['Complete llms.txt file', 'Upload-ready. Tells ChatGPT, Claude & Perplexity exactly what your business does.'],
@@ -93,7 +97,7 @@ export async function sendFreeScoreEmail({
 
       <!-- CTA -->
       <a href="${baseUrl}/scanner?scanId=${scanId}" style="display:block;background:linear-gradient(135deg,#06b6d4,#0891b2);color:white;text-decoration:none;text-align:center;padding:17px;border-radius:12px;font-weight:800;font-size:16px;margin-bottom:12px;">
-        Get Your Full Report — $149 →
+        Get Your Full Report — $399 →
       </a>
 
       <!-- Share -->
@@ -785,6 +789,16 @@ export async function sendCredentialsDeletionEmail({
   <p style="text-align:center;font-size:11px;color:#94a3b8;margin-top:20px;">Queldrex LLC · Castle Rock, CO · <a href="https://queldrex.com" style="color:#22d3ee;">queldrex.com</a></p>
 </div>
 </body></html>`,
+  })
+}
+
+export async function sendGenericEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
+  await getResend().emails.send({
+    from: 'Queldrex <reports@queldrex.com>',
+    replyTo: 'hello@queldrex.com',
+    to,
+    subject,
+    html,
   })
 }
 

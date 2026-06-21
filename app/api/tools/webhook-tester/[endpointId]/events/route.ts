@@ -4,8 +4,8 @@ import { getRedis } from '@/lib/store/redis'
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
-export async function GET(_request: NextRequest, { params }: { params: { endpointId: string } }) {
-  const { endpointId } = params
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ endpointId: string }> }) {
+  const { endpointId } = await params
 
   if (!endpointId || !/^[a-f0-9-]{20,40}$/.test(endpointId)) {
     return NextResponse.json({ error: 'Invalid endpoint' }, { status: 400 })
@@ -32,8 +32,8 @@ export async function GET(_request: NextRequest, { params }: { params: { endpoin
   }
 }
 
-export async function DELETE(_request: NextRequest, { params }: { params: { endpointId: string } }) {
-  const { endpointId } = params
+export async function DELETE(_request: NextRequest, { params }: { params: Promise<{ endpointId: string }> }) {
+  const { endpointId } = await params
 
   if (!endpointId || !/^[a-f0-9-]{20,40}$/.test(endpointId)) {
     return NextResponse.json({ error: 'Invalid endpoint' }, { status: 400 })

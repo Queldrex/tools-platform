@@ -249,7 +249,7 @@ export default function ThreatFeedPage() {
                       <a href="/monitor"
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-black text-black"
                         style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 20px rgba(6,182,212,0.25)' }}>
-                        Start Pro — $29/month
+                        Start Pro — $79/month
                       </a>
                       <a href="/pricing" className="text-sm text-white/40 hover:text-white transition-colors">
                         Learn more →
@@ -265,6 +265,46 @@ export default function ThreatFeedPage() {
         <p className="text-xs text-white/20 mt-4 text-center">
           Data sourced from URLhaus and Feodo Tracker (abuse.ch). Updated every 15 minutes. For defensive use only.
         </p>
+
+        {/* How It Works */}
+        <div className="mt-14 border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+          <h2 className="text-xl font-black text-white mb-1">How It Works</h2>
+          <p className="text-white/35 text-sm mb-8">Live threat data from two authoritative open-source intelligence feeds — no API key required.</p>
+          <div className="grid sm:grid-cols-3 gap-4 mb-8">
+            {[
+              { n: '01', title: 'Two OSINT sources', body: 'URLhaus (malicious URLs) and Feodo Tracker (botnet C2 IPs) from abuse.ch are fetched and normalized on each request.' },
+              { n: '02', title: 'Unified format', body: 'Each indicator is normalized to: indicator, indicatorType (IP/URL/domain), category, severity, source, malwareFamily, firstSeen.' },
+              { n: '03', title: 'Filter & search', body: 'Filter by severity (critical, high, medium, low), search by indicator value, or export all active indicators as CSV.' },
+            ].map(s => (
+              <div key={s.n} className="rounded-xl border p-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
+                <div className="text-xs font-black text-white/20 mb-2">{s.n}</div>
+                <div className="text-sm font-black text-white mb-1">{s.title}</div>
+                <div className="text-xs text-white/45 leading-relaxed">{s.body}</div>
+              </div>
+            ))}
+          </div>
+          <div className="rounded-2xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
+            <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-4">Sample indicators (live data)</p>
+            <div className="space-y-2">
+              {[
+                { indicator: '27.133.154.218', type: 'IP', category: 'BOTNET', severity: 'medium', family: 'QakBot', source: 'Feodo Tracker' },
+                { indicator: 'http://malicious-site.ru/payload.exe', type: 'URL', category: 'MALWARE', severity: 'high', family: 'AgentTesla', source: 'URLhaus' },
+                { indicator: '185.234.218.146', type: 'IP', category: 'BOTNET', severity: 'critical', family: 'Emotet', source: 'Feodo Tracker' },
+              ].map((r, i) => (
+                <div key={i} className="flex items-start gap-3 rounded-lg px-3 py-2" style={{ background: 'rgba(255,255,255,0.02)' }}>
+                  <span className="text-[10px] font-black px-1.5 py-0.5 rounded flex-shrink-0 mt-0.5"
+                    style={{ background: r.severity === 'critical' ? 'rgba(248,113,113,0.15)' : r.severity === 'high' ? 'rgba(251,146,60,0.15)' : 'rgba(250,204,21,0.12)', color: r.severity === 'critical' ? '#f87171' : r.severity === 'high' ? '#fb923c' : '#facc15' }}>
+                    {r.severity}
+                  </span>
+                  <div className="min-w-0">
+                    <code className="text-xs font-mono text-white/70 block truncate">{r.indicator}</code>
+                    <span className="text-[10px] text-white/30">{r.type} · {r.category} · {r.family} · {r.source}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>

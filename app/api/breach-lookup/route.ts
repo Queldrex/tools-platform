@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+import { hasToolAccess } from '@/lib/tool-access'
 
 export const dynamic = 'force-dynamic'
 
@@ -113,6 +114,7 @@ async function checkDomain(domain: string): Promise<CheckResult[]> {
 }
 
 export async function POST(request: NextRequest) {
+  if (!await hasToolAccess(request)) return Response.json({ paywall: true }, { status: 402 })
   let body: { type?: string; query?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 

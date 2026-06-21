@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ checkoutUrl: session.url })
   }
 
-  // ── Standard Bundle $149 ─────────────────────────────────────────────────
+  // ── Standard Bundle $399 ─────────────────────────────────────────────────
   let bundleSession: Awaited<ReturnType<typeof stripe.checkout.sessions.create>>
   try {
     bundleSession = await stripe.checkout.sessions.create({

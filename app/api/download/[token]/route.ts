@@ -38,6 +38,9 @@ export async function GET(
     return Response.json({ error: 'Download link not found or expired' }, { status: 404 })
   }
 
+  // Set paid access cookie so $399 buyers can use Pro tools
+  const cookieHeader = `queldrex_paid=${token}; Path=/; Max-Age=${60 * 60 * 24 * 365}; SameSite=Lax; Secure`
+
   const fileParam = request.nextUrl.searchParams.get('file')
 
   if (fileParam) {
@@ -50,6 +53,7 @@ export async function GET(
       headers: {
         'Content-Type': `${entry.mime}; charset=utf-8`,
         'Content-Disposition': `attachment; filename="${entry.ext}"`,
+        'Set-Cookie': cookieHeader,
       },
     })
   }
@@ -81,6 +85,7 @@ export async function GET(
       'Content-Type': 'application/zip',
       'Content-Disposition': `attachment; filename="queldrex-ai-report-${domain}.zip"`,
       'Content-Length': zipBuffer.byteLength.toString(),
+      'Set-Cookie': cookieHeader,
     },
   })
 }

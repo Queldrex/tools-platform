@@ -1,0 +1,248 @@
+API SECURITY PLAYBOOK
+Queldrex — queldrex.com
+How to secure any REST or GraphQL API
+================================================
+
+CHAPTER 1: AUTHENTICATION
+================================================
+
+1.1 Choosing an Auth Method
+
+API Keys
+- Best for: machine-to-machine, internal services, developer integrations
+- Generate with: crypto.randomBytes(32).toString('hex') (Node.js)
+- Store on the server: hash the key with SHA-256 before storing
+- Transmit: Authorization: Bearer {key} header (not in URL query params)
+- Rotate: every 90 days or on suspected compromise
+- Scope: issue separate keys per permission level (read-only vs read-write)
+
+JWT (JSON Web Tokens)
+- Best for: stateless user authentication, microservices
+- Sign with: RS256 (asymmetric) for cross-service trust, HS256 (symmetric) for single-service
+- Set expiry: 15 minutes for access tokens, 7-30 days for refresh tokens
+- Validate: algorithm (reject 'none'), expiry, issuer, audience on every request
+- Do not store: sensitive data in the payload — JWTs are base64 encoded, not encrypted
+- Rotate refresh tokens: on every use (refresh token rotation)
+
+OAuth 2.0
+- Best for: third-party access, user-delegated permissions, social login
+- Flows: Authorization Code + PKCE for user-facing apps; Client Credentials for M2M
+- Never use: Implicit flow (deprecated, insecure)
+- Always use: HTTPS for all redirect URIs; validate state parameter to prevent CSRF
+
+1.2 Common Auth Mistakes
+- Comparing tokens with == instead of crypto.timingSafeEqual (timing attack)
+- Not validating JWT algorithm (attacker sets alg: none)
+- Accepting expired tokens due to missing expiry check
+- Returning different errors for valid vs invalid email (username enumeration)
+- API keys in URL query parameters (logged in server logs, browser history, referrer headers)
+
+
+CHAPTER 2: RATE LIMITING
+================================================
+
+2.1 What to Limit
+- Per IP: prevent brute force and credential stuffing
+- Per API key/user: enforce fair use, prevent abuse of expensive endpoints
+- Per endpoint: tighter limits on auth endpoints, looser on read operations
+- Global: protect against DDoS
+
+2.2 Implementation
+
+Headers to return (follow RFC 6585):
+  X-RateLimit-Limit: 100
+  X-RateLimit-Remaining: 87
+  X-RateLimit-Reset: 1735689600
+  Retry-After: 60  (on 429 responses)
+
+Response code: 429 Too Many Requests (not 403)
+
+Storage: Redis is the standard for distributed rate limiting
+Algorithm: Token bucket or sliding window log (sliding window is more accurate)
+  - Token bucket: simple, allows bursts up to bucket size
+  - Sliding window: more precise, higher storage cost
+
+2.3 Limits by Endpoint Type
+- Authentication (login, password reset): 5-10 per IP per 15 minutes
+- Account creation: 3-5 per IP per hour
+- Search/read: 100-1000 per user per minute
+- Write operations: 10-100 per user per minute
+- Expensive operations (AI, email send, file upload): 5-20 per user per hour
+
+2.4 Bypass Prevention
+- Rate limit on IP AND on user ID — attackers use distributed IPs
+- Rate limit before authentication — unauthenticated requests still hit limits
+- Account lockout after repeated auth failures (separate from rate limiting)
+
+
+CHAPTER 3: INPUT VALIDATION
+================================================
+
+3.1 Validate at the API Boundary
+- Validate every field: type, length, format, range
+- Reject requests with unexpected fields (strict mode)
+- Validate before any business logic or database interaction
+- Return 400 with specific field errors (not generic "invalid request")
+
+3.2 Validation Rules by Type
+String fields:
+  - Maximum length enforced (prevent buffer overflow / storage abuse)
+  - Encoding: UTF-8 only, reject null bytes (\x00)
+  - Strip leading/trailing whitespace before validation
+  - No HTML in fields that will not render HTML (strip or reject)
+
+Numbers:
+  - Integer or float declared explicitly
+  - Min/max range checked
+  - Reject NaN, Infinity, scientific notation where not expected
+
+Dates:
+  - ISO 8601 format (YYYY-MM-DD or YYYY-MM-DDTHH:mm:ssZ)
+  - Validate ranges (not year 1 or year 9999 unless you mean it)
+  - Store as UTC, display in user's timezone
+
+Email addresses:
+  - RFC 5321 format validation
+  - Maximum 254 characters
+  - Do not validate by sending email and waiting (use format check only at input time)
+
+URLs:
+  - Validate scheme (https:// only for outbound requests your server makes)
+  - Prevent SSRF: block private IP ranges (10.x.x.x, 172.16.x.x, 192.168.x.x, 127.x.x.x)
+  - Resolve redirects before checking (attackers use redirects to bypass checks)
+
+File uploads:
+  - Validate file extension AND file content (magic bytes), not just MIME type
+  - Set maximum file size
+  - Store in object storage (S3/GCS), not on the web server
+  - Never execute uploaded files
+  - Scan for malware if serving to other users
+
+3.3 Common Injection Vectors
+SQL: Use parameterized queries or ORM. Never concatenate user input into SQL.
+  Bad:  "SELECT * FROM users WHERE email = '" + email + "'"
+  Good: db.query("SELECT * FROM users WHERE email = ?", [email])
+
+NoSQL: Validate object shapes — MongoDB operators like $where are dangerous in user input
+Shell: Never pass user input to exec(), system(), or child_process.exec()
+LDAP: Use LDAP-safe encoding for user-provided search values
+Template: Never render user input through a template engine (Handlebars, Jinja2, Pug)
+
+
+CHAPTER 4: SCHEMA DRIFT DETECTION
+================================================
+
+4.1 What is Schema Drift?
+Schema drift is when your API's actual behavior diverges from its documented contract.
+Causes: undocumented endpoint added, field removed or renamed, type changed silently.
+Risk: clients break without warning; internal teams rely on undocumented behavior.
+
+4.2 Detection Methods
+
+Contract testing (Recommended):
+- Define your API schema in OpenAPI 3.x
+- Run a contract test in CI that hits your API and validates responses match the schema
+- Tools: Dredd, Schemathesis, Spectral
+
+Response snapshotting:
+- Record real API responses in tests
+- Fail CI if the response shape changes unexpectedly
+- Library: jest-snapshot for Node.js APIs
+
+Production monitoring:
+- Log when response fields are missing or types change vs expected schema
+- Alert when > 1% of responses fail schema validation
+
+4.3 Managing Intentional Changes
+- Version your API: /v1/, /v2/ — never change a versioned endpoint's contract
+- Deprecate before removing: add Deprecation and Sunset headers to endpoints being retired
+- Communicate: changelog, email to API consumers, minimum 90-day deprecation window
+
+
+CHAPTER 5: LOGGING & MONITORING
+================================================
+
+5.1 What to Log
+Every API request should log:
+- Timestamp (UTC, ISO 8601)
+- Request ID (unique per request, return in X-Request-ID header)
+- HTTP method and path (no query params if they contain secrets)
+- Response status code
+- Response time (ms)
+- Client IP (consider privacy: hash IPs for analytics, keep raw for security)
+- User/API key identifier (not the key itself)
+- User-Agent
+
+Security events to log:
+- Authentication: all attempts (success and failure)
+- Authorization failures: who tried to access what
+- Rate limit hits: IP, endpoint, count
+- Input validation failures on sensitive endpoints
+- Unexpected errors (5xx)
+
+5.2 What NOT to Log
+- Passwords (including in request body)
+- API keys (log a hash or last 4 chars only)
+- PII beyond what is operationally necessary (credit card numbers, SSNs)
+- Full request/response bodies (may contain secrets or PII)
+
+5.3 Monitoring Alerts
+Set up alerts for:
+- 5xx error rate > 1% over 5 minutes
+- Auth failure rate > 10% of requests (credential stuffing indicator)
+- Unusual traffic spikes (> 3x normal volume)
+- New IPs making many auth requests
+- Any requests to paths that do not exist (scanning indicator)
+- Latency p99 > 2x baseline
+
+
+CHAPTER 6: COMMON ATTACK VECTORS
+================================================
+
+6.1 Broken Object-Level Authorization (BOLA / IDOR)
+Attack: User A accesses /api/invoices/1234 which belongs to User B
+Prevention:
+- Never use sequential integer IDs for resources (use UUIDs)
+- Always check: does the authenticated user own or have permission to access this resource?
+- Test with two user accounts in your test suite — confirm cross-account access fails
+
+6.2 Mass Assignment
+Attack: User sends {"isAdmin": true} in a profile update and gains admin rights
+Prevention:
+- Never pass request.body directly to your database layer
+- Use an explicit allowlist of fields that can be set by users
+- Separate DTOs for user input vs internal data models
+
+6.3 Excessive Data Exposure
+Attack: API returns full user object; client only shows name, but attacker reads the full response
+Prevention:
+- Return only the fields the client needs
+- Use serialization layer (not raw DB model) to control output
+- Audit what each endpoint returns in production
+
+6.4 SSRF (Server-Side Request Forgery)
+Attack: User provides a URL, your server fetches it, attacker points to internal services
+Prevention:
+- Block private IP ranges before making any outbound HTTP request
+- Validate URL scheme (https only for user-provided URLs)
+- Use a network-level egress filter if available
+
+6.5 Credential Stuffing
+Attack: Attacker runs leaked username:password lists against your login endpoint
+Prevention:
+- Rate limit login endpoint (5 attempts per IP per 15 min)
+- Detect and block IPs rotating through many accounts
+- Implement CAPTCHA after first failed attempt
+- Integrate HaveIBeenPwned API to warn users about leaked passwords
+
+6.6 JWT Algorithm Confusion
+Attack: Server accepts JWT with alg:none or switches from RS256 to HS256 using public key as secret
+Prevention:
+- Explicitly specify accepted algorithm: jwt.verify(token, secret, { algorithms: ['RS256'] })
+- Never accept alg:none
+- Store public/private keys separately from HMAC secrets
+
+================================================
+Generated by Queldrex API Security Playbook
+Buy the full suite at queldrex.com/downloads
+================================================

@@ -7,20 +7,20 @@ export const runtime = 'nodejs'
 const TTL = 3600 // 1 hour
 const MAX_EVENTS = 20
 
-export async function GET(request: NextRequest, { params }: { params: { endpointId: string } }) {
-  return handleWebhook(request, params.endpointId)
+export async function GET(request: NextRequest, { params }: { params: Promise<{ endpointId: string }> }) {
+  return handleWebhook(request, (await params).endpointId)
 }
-export async function POST(request: NextRequest, { params }: { params: { endpointId: string } }) {
-  return handleWebhook(request, params.endpointId)
+export async function POST(request: NextRequest, { params }: { params: Promise<{ endpointId: string }> }) {
+  return handleWebhook(request, (await params).endpointId)
 }
-export async function PUT(request: NextRequest, { params }: { params: { endpointId: string } }) {
-  return handleWebhook(request, params.endpointId)
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ endpointId: string }> }) {
+  return handleWebhook(request, (await params).endpointId)
 }
-export async function PATCH(request: NextRequest, { params }: { params: { endpointId: string } }) {
-  return handleWebhook(request, params.endpointId)
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ endpointId: string }> }) {
+  return handleWebhook(request, (await params).endpointId)
 }
-export async function DELETE(request: NextRequest, { params }: { params: { endpointId: string } }) {
-  return handleWebhook(request, params.endpointId)
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ endpointId: string }> }) {
+  return handleWebhook(request, (await params).endpointId)
 }
 
 async function handleWebhook(request: NextRequest, endpointId: string) {

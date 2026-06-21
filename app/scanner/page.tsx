@@ -279,7 +279,7 @@ export default function ScannerPage() {
                 },
                 {
                   tier: 'Full Report Bundle',
-                  price: '$149',
+                  price: '$399',
                   color: 'rgba(6,182,212,0.04)',
                   border: 'rgba(6,182,212,0.3)',
                   featured: true,

@@ -1,0 +1,92 @@
+GDPR COMPLIANCE CHECKLIST FOR SAAS FOUNDERS
+Queldrex — queldrex.com
+Practical steps, not legal boilerplate
+================================================
+
+Note: This checklist helps you understand your obligations under GDPR.
+It is not legal advice. Have a qualified attorney review your specific situation.
+
+LAWFUL BASIS FOR PROCESSING
+[ ] 1.  You have identified a lawful basis for every type of personal data you process
+        (Consent / Contract / Legal obligation / Vital interests / Public task / Legitimate interests)
+[ ] 2.  If relying on consent: it is freely given, specific, informed, and unambiguous
+[ ] 3.  If relying on legitimate interests: you have documented a Legitimate Interests Assessment (LIA)
+[ ] 4.  Users in the EU can withdraw consent as easily as they gave it
+[ ] 5.  You do not use pre-ticked boxes or bundled consent
+
+DATA MAPPING
+[ ] 6.  You have a Record of Processing Activities (ROPA) documenting:
+        - What personal data you collect
+        - Why you collect it (purpose)
+        - Who has access to it
+        - How long you keep it
+        - Where it is stored (country/region)
+[ ] 7.  You know which of your SaaS tools process EU personal data
+        (email providers, analytics, CRM, support tools, payment processors)
+[ ] 8.  Third-party processors are listed with their Data Processing Agreements (DPAs) signed
+
+PRIVACY POLICY
+[ ] 9.  Privacy policy is written in plain language (not legal jargon)
+[ ] 10. Privacy policy includes: identity and contact details of data controller
+[ ] 11. Privacy policy includes: types of data collected
+[ ] 12. Privacy policy includes: purposes and legal basis for each processing activity
+[ ] 13. Privacy policy includes: who you share data with and why
+[ ] 14. Privacy policy includes: how long you keep data
+[ ] 15. Privacy policy includes: all data subject rights and how to exercise them
+[ ] 16. Privacy policy includes: right to lodge a complaint with a supervisory authority
+[ ] 17. Privacy policy is linked from every page footer and every data collection form
+
+COOKIE CONSENT
+[ ] 18. Cookie banner appears before any non-essential cookies are set
+[ ] 19. Users can reject all non-essential cookies without losing core functionality
+[ ] 20. Cookie preferences can be changed at any time (not just on first visit)
+[ ] 21. Consent is recorded with timestamp and version of policy shown
+[ ] 22. Analytics and marketing pixels are only fired after explicit consent
+
+DATA SUBJECT RIGHTS
+[ ] 23. Process in place to respond to Subject Access Requests (SAR) within 30 days
+[ ] 24. Process in place for Right to Erasure ("right to be forgotten") requests
+[ ] 25. Process in place for Right to Rectification (correcting inaccurate data)
+[ ] 26. Process in place for Right to Portability (exporting data in machine-readable format)
+[ ] 27. Process in place for Right to Object (opt-out of direct marketing)
+[ ] 28. Contact email or form for data requests is published and monitored
+
+DATA RETENTION
+[ ] 29. Retention periods defined for each data type — you do not keep data "just in case"
+[ ] 30. Automated deletion or anonymization runs when retention period expires
+[ ] 31. Backups are included in the retention schedule (deleted data is also deleted from backups eventually)
+
+SECURITY
+[ ] 32. Personal data encrypted at rest
+[ ] 33. Personal data encrypted in transit (TLS 1.2+)
+[ ] 34. Access to personal data is role-based and logged
+[ ] 35. Employees with data access have received basic GDPR training
+
+BREACH NOTIFICATION
+[ ] 36. Incident response plan covers personal data breaches specifically
+[ ] 37. You know the 72-hour clock: breaches must be reported to supervisory authority within 72 hours of discovery
+[ ] 38. Criteria documented for when to notify affected data subjects
+[ ] 39. Contact details for relevant Data Protection Authority (DPA) are known
+
+THIRD-PARTY PROCESSORS
+[ ] 40. Data Processing Agreements (DPAs) signed with all processors handling EU personal data
+[ ] 41. Major processors checked: Stripe, Mailgun/SendGrid, AWS/GCP/Vercel, Intercom, Mixpanel, HubSpot
+[ ] 42. Sub-processors listed and communicated if required by your DPAs
+[ ] 43. Processors in countries outside EU/EEA covered by SCCs or adequacy decisions
+
+CHILDREN'S DATA
+[ ] 44. If your service could be used by under-16s: age verification or parental consent mechanism in place
+[ ] 45. No behavioral advertising targeting children
+
+DOCUMENTATION
+[ ] 46. ROPA is maintained and up to date (review annually or on major changes)
+[ ] 47. Consent records stored with timestamps
+[ ] 48. DPIAs (Data Protection Impact Assessments) completed for high-risk processing activities
+[ ] 49. Privacy policy version history maintained
+[ ] 50. You have identified whether you need to appoint a Data Protection Officer (DPO)
+        (Required if: public authority; large-scale systematic monitoring; large-scale processing of special categories)
+
+================================================
+Generated by Queldrex GDPR Compliance Checklist
+Buy the full suite at queldrex.com/downloads
+================================================

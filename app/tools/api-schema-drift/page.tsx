@@ -100,7 +100,7 @@ export default function ApiSchemaDriftPage() {
 
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: 'rgb(99,102,241)', borderColor: 'rgba(99,102,241,0.3)', background: 'rgba(99,102,241,0.08)' }}>Live</span>
-          <span className="text-sm font-bold text-white/30">Pro Tool · $249 or $29/month</span>
+          <span className="text-sm font-bold text-white/30">Pro Tool · Unlimited with $79/month</span>
         </div>
 
         <h1 className="text-4xl font-black text-white mb-3">API Schema <span style={{ color: 'rgb(99,102,241)' }}>Drift Scanner</span></h1>
@@ -142,11 +142,79 @@ export default function ApiSchemaDriftPage() {
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.2)' }}>
             <svg className="w-10 h-10 mx-auto mb-4" style={{ color: 'rgb(99,102,241)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
             <h3 className="text-xl font-black text-white mb-2">Unlimited comparisons with Pro</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro includes all tools plus monthly AI visibility monitoring — $29/month, cancel anytime.</p>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro includes all tools plus monthly AI visibility monitoring — $79/month, cancel anytime.</p>
             <div className="flex items-center justify-center gap-3 flex-wrap">
-              <Link href="/monitor" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro — $29/month</Link>
+              <Link href="/monitor" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro — $79/month</Link>
               <Link href="/pricing" className="text-sm text-white/45 hover:text-white transition-colors">See all features →</Link>
             </div>
+          </div>
+        )}
+
+        {/* Sample output — always visible */}
+        {!result && !loading && (
+          <div className="mt-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.06)' }} />
+              <span className="text-[10px] font-black uppercase tracking-widest text-white/25">Sample Report</span>
+              <div className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.06)' }} />
+            </div>
+            <p className="text-xs text-white/30 text-center mb-6">This is what a real drift comparison looks like. Load the example above and click Compare to generate yours.</p>
+
+            {/* Sample summary */}
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              {[
+                { label: 'Breaking Changes', count: 3, color: '#f87171', bg: 'rgba(248,113,113,0.08)', border: 'rgba(248,113,113,0.2)' },
+                { label: 'Additive Changes', count: 2, color: '#4ade80', bg: 'rgba(74,222,128,0.08)', border: 'rgba(74,222,128,0.2)' },
+                { label: 'Unchanged', count: 1, color: '#94a3b8', bg: 'rgba(148,163,184,0.05)', border: 'rgba(148,163,184,0.12)' },
+              ].map(s => (
+                <div key={s.label} className="rounded-xl border p-4 text-center" style={{ background: s.bg, borderColor: s.border }}>
+                  <div className="text-3xl font-black" style={{ color: s.color }}>{s.count}</div>
+                  <div className="text-xs font-bold mt-1" style={{ color: s.color }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Sample breaking changes */}
+            <div className="mb-3">
+              <div className="text-xs font-bold uppercase tracking-widest text-red-400 mb-2">Breaking Changes</div>
+              {[
+                { method: 'GET', path: '/users', detail: 'New required query parameter org_id added — existing clients will get 400 Bad Request' },
+                { method: 'GET', path: '/users/{id}', detail: 'Parameter id type changed string → integer — existing string IDs will fail validation' },
+                { method: 'DELETE', path: '/users/{id}', detail: 'Endpoint removed — clients calling this will get 404' },
+              ].map((b, i) => (
+                <div key={i} className="rounded-xl border p-4 mb-2" style={{ background: '#0d1117', borderColor: 'rgba(248,113,113,0.2)' }}>
+                  <div className="flex items-start gap-3">
+                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded flex-shrink-0 mt-0.5" style={{ background: 'rgba(248,113,113,0.15)', color: '#f87171', border: '1px solid rgba(248,113,113,0.3)' }}>BREAKING</span>
+                    <div>
+                      <span className="text-xs font-mono font-bold text-white/50 mr-2">{b.method}</span>
+                      <span className="text-xs font-mono text-white/70">{b.path}</span>
+                      <p className="text-xs text-white/50 mt-1">{b.detail}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Sample additive */}
+            <div>
+              <div className="text-xs font-bold uppercase tracking-widest text-green-400 mb-2">Additive Changes (safe)</div>
+              {[
+                { method: 'GET', path: '/users', detail: 'New response field createdAt added — backwards compatible' },
+                { method: 'GET', path: '/users/{id}/profile', detail: 'New endpoint added — clients unaffected' },
+              ].map((a, i) => (
+                <div key={i} className="rounded-xl border p-4 mb-2" style={{ background: '#0d1117', borderColor: 'rgba(74,222,128,0.15)' }}>
+                  <div className="flex items-start gap-3">
+                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded flex-shrink-0 mt-0.5" style={{ background: 'rgba(74,222,128,0.12)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.25)' }}>ADDITIVE</span>
+                    <div>
+                      <span className="text-xs font-mono font-bold text-white/50 mr-2">{a.method}</span>
+                      <span className="text-xs font-mono text-white/70">{a.path}</span>
+                      <p className="text-xs text-white/50 mt-1">{a.detail}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="text-[10px] text-white/20 text-center mt-3">← This is a sample. Your drift report will appear here.</p>
           </div>
         )}
 

@@ -1,0 +1,108 @@
+INVOICE FRAUD DETECTION CHECKLIST
+Queldrex — queldrex.com
+25 red flags to check before approving any invoice
+================================================
+
+BEFORE YOU APPROVE ANY INVOICE, CHECK:
+
+VENDOR IDENTITY VERIFICATION
+[ ] 1.  The vendor email domain matches the company website exactly
+        RED FLAG: billing@g00gle-services.com when the company is googleservices.com
+        RED FLAG: typosquatted domains (acme-invoices.com instead of acme.com)
+        RED FLAG: free email address used for billing (Gmail, Yahoo, Hotmail)
+
+[ ] 2.  The vendor exists in your approved vendor list
+        RED FLAG: First invoice from a vendor you have not onboarded
+        ACTION: Call the vendor on a known phone number to verify before paying
+
+[ ] 3.  The vendor phone number is consistent with prior invoices
+        RED FLAG: New phone number added to invoice with no prior notice
+
+[ ] 4.  The physical address matches what is on file
+        RED FLAG: PO Box only (no street address) for a company claiming to provide physical services
+        RED FLAG: Residential address for a supposedly large vendor
+
+AMOUNT VERIFICATION
+[ ] 5.  The amount is consistent with the contract or purchase order
+        RED FLAG: Invoice exceeds approved PO amount by any amount without a change order
+
+[ ] 6.  Check for round-number manipulation
+        RED FLAG: Amount is exactly $1,000 / $5,000 / $10,000 / $25,000 with no line-item breakdown
+        NOTE: Real invoices for services have specific amounts ($4,837.50 not $5,000.00)
+
+[ ] 7.  Line items add up to the total correctly
+        RED FLAG: Math errors in line items (common in fraudulent invoices)
+
+[ ] 8.  Tax amounts are realistic for the jurisdiction
+        RED FLAG: Tax rate does not match the vendor's state/country
+
+URGENCY & PRESSURE TACTICS
+[ ] 9.  Invoice does not demand immediate or same-day payment
+        RED FLAG: "Pay immediately or service will be suspended"
+        RED FLAG: "This offer expires in 24 hours"
+        RED FLAG: "Failure to pay will result in legal action"
+        NOTE: Legitimate vendors give Net 30 or agreed payment terms — not ultimatums
+
+[ ] 10. The invoice arrived through normal channels, not only by email
+        RED FLAG: Invoice arrived with a follow-up call pressuring fast payment
+
+[ ] 11. The person requesting urgent payment is someone you can verify independently
+        RED FLAG: "Our CEO has approved this — pay today" from someone you have never spoken to
+
+BANK ACCOUNT CHANGES
+[ ] 12. No bank account change notice appears on this invoice
+        RED FLAG: "Please note our bank details have changed" in any invoice or email
+        RED FLAG: New bank routing or account number you have not seen before
+        ACTION: Call the vendor's main phone number (from your records, not from the email)
+                to confirm any bank account change before processing
+
+[ ] 13. Bank routing number is valid for the claimed bank
+        Check: U.S. routing numbers are 9 digits; verify at ABA routing number lookup
+
+[ ] 14. International SWIFT/IBAN matches the vendor's known country
+        RED FLAG: A U.S. vendor suddenly providing a foreign bank account
+
+INVOICE DOCUMENT QUALITY
+[ ] 15. Invoice has a unique invoice number in the vendor's sequence
+        RED FLAG: INV-0001 or INV-001 (starts at 1) from a vendor you have worked with for years
+
+[ ] 16. Invoice number is not duplicated (check your payment records)
+        RED FLAG: Same invoice number you have already paid
+
+[ ] 17. Invoice date is not in the future or more than 90 days in the past
+        RED FLAG: Invoice dated 6 months ago appearing for the first time
+
+[ ] 18. Logos and formatting match previous invoices from this vendor
+        RED FLAG: Different font, logo quality, or layout than prior invoices
+
+APPROVAL WORKFLOW
+[ ] 19. Invoice has been approved by the appropriate budget authority
+        Standard: Under $1,000 = manager; $1,000-$10,000 = director; over $10,000 = VP/CFO
+
+[ ] 20. Invoice matches a purchase order in your system
+        RED FLAG: No PO number on invoices over your PO threshold
+
+[ ] 21. Work or delivery has been confirmed by the receiving department
+        RED FLAG: Paying for services before they are confirmed received
+
+[ ] 22. This vendor has not had a bank account change in the past 90 days
+        Check your vendor management records before processing any payment
+
+DIGITAL INVOICE SAFETY
+[ ] 23. PDF invoice was opened in a sandboxed viewer — not in a browser plugin
+        RED FLAG: PDF asks to enable macros or run a script
+
+[ ] 24. Links in the email point to the vendor's actual domain
+        RED FLAG: "View invoice" link goes to a different domain than the vendor
+
+[ ] 25. Email headers confirm the email actually originated from the vendor's domain
+        Check: Email client's "View original" or "Show headers" to see SPF/DKIM pass status
+        RED FLAG: "From" shows vendor name but "Reply-To" is a different address
+
+================================================
+If you find 3+ flags, DO NOT PAY. Contact the vendor via a verified phone number.
+If you suspect BEC fraud, contact your bank immediately — wire transfers cannot be recalled after 24 hours.
+
+Generated by Queldrex Invoice Fraud Detection Checklist
+Buy the full suite at queldrex.com/downloads
+================================================

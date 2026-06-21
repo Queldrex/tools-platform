@@ -49,12 +49,12 @@ export default function TermsPage() {
             <h2 className="text-base font-bold text-white mb-3">4. Products and Services</h2>
             <div className="space-y-5">
               <div>
-                <p className="font-semibold text-white/80 mb-1">AI Visibility Scanner — $149 one-time</p>
+                <p className="font-semibold text-white/80 mb-1">AI Visibility Scanner — $399 one-time</p>
                 <p>Scans your domain across 14 AI visibility signals and delivers a complete report package to your email. Each report is custom-generated for your domain. Digital delivery; sale is final after report delivery except as provided in our <Link href="/refunds" className="text-cyan-400 hover:text-cyan-300">Refund Policy</Link>.</p>
               </div>
               <div>
-                <p className="font-semibold text-white/80 mb-1">AI Visibility Monitor — $29/month subscription</p>
-                <p>Monthly automated rescans of your domain with email alerts when your AI visibility score drops. Includes full access to all Pro Tools while subscription is active. <strong className="text-white/70">Auto-renews monthly.</strong> You will be charged $29 on the same date each month until you cancel. Cancel anytime — see Section 5.</p>
+                <p className="font-semibold text-white/80 mb-1">AI Visibility Monitor — $79/month subscription</p>
+                <p>Monthly automated rescans of your domain with email alerts when your AI visibility score drops. Includes full access to all Pro Tools while subscription is active. <strong className="text-white/70">Auto-renews monthly.</strong> You will be charged $79 on the same date each month until you cancel. Cancel anytime — see Section 5.</p>
               </div>
               <div>
                 <p className="font-semibold text-white/80 mb-1">Agency Plan — $99/month subscription</p>

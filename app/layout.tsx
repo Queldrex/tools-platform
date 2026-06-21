@@ -3,22 +3,36 @@ import './globals.css'
 import CookieBanner from '@/components/CookieBanner'
 
 export const metadata: Metadata = {
-  title: 'Queldrex — AI Visibility, Security & Developer Tools',
-  description: 'Queldrex builds precision software tools for businesses and agencies. AI Visibility Scanner, monthly monitoring, security tools, custom development. Colorado LLC.',
-  keywords: 'AI visibility, ChatGPT SEO, Perplexity SEO, AI search optimization, security tools, code scanner, API schema drift, database migration, queldrex, Colorado software',
+  title: {
+    default: 'Queldrex — Free Developer & Business Tools',
+    template: '%s | Queldrex',
+  },
+  description: 'Free tools for developers and small teams. DNS health checker, SSL inspector, CVE scanner, NDA generator, break-even calculator, and 40+ more. No account required.',
+  keywords: ['developer tools', 'dns health checker', 'ssl checker', 'cve scanner', 'nda generator', 'free online tools', 'security tools', 'business tools'],
+  authors: [{ name: 'Queldrex LLC' }],
+  creator: 'Queldrex LLC',
+  metadataBase: new URL('https://queldrex.com'),
   openGraph: {
-    title: 'Queldrex — AI Visibility, Security & Developer Tools',
-    description: 'AI Visibility Scanner, monthly monitoring, security tools, and custom development for businesses and agencies. Queldrex LLC, Colorado.',
     type: 'website',
+    locale: 'en_US',
     url: 'https://queldrex.com',
+    siteName: 'Queldrex',
+    title: 'Queldrex — Free Developer & Business Tools',
+    description: '48 free tools for developers and small teams. No account required.',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Queldrex — Free Developer & Business Tools' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Queldrex — AI Visibility, Security & Developer Tools',
-    description: 'AI Visibility Scanner, monthly monitoring, security tools, and custom development. Queldrex LLC, Colorado.',
+    title: 'Queldrex — Free Developer & Business Tools',
+    description: '48 free tools for developers and small teams. No account required.',
     site: '@queldrex',
+    images: ['/og-image.png'],
   },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
+  },
 }
 
 const jsonLd = {

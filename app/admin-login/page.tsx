@@ -21,6 +21,8 @@ export default function AdminLoginPage() {
       })
       if (res.ok) {
         router.push('/admin')
+      } else if (res.status === 429) {
+        setError('Rate limited — wait a few minutes and try again')
       } else {
         setError('Wrong secret')
       }

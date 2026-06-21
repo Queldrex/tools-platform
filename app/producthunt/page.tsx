@@ -35,8 +35,8 @@ const STEPS = [
 
 const PRICING = [
   { label: 'Free', price: '$0', items: ['Full 14-signal scan', 'Score and grade', 'Signal breakdown'] },
-  { label: 'Full Report', price: '$149', items: ['PDF report', 'Generated llms.txt', 'LocalBusiness schema', 'Deployment guide'], highlight: true },
-  { label: 'Monitor', price: '$29/mo', items: ['Monthly rescans', 'Score drop alerts', 'Score history'] },
+  { label: 'Full Report', price: '$399', items: ['PDF report', 'Generated llms.txt', 'LocalBusiness schema', 'Deployment guide'], highlight: true },
+  { label: 'Monitor', price: '$79/mo', items: ['Monthly rescans', 'Score drop alerts', 'Score history'] },
   { label: 'Agency', price: '$99/mo', items: ['25 clients/month', 'White-label reports', 'Client dashboard'] },
 ]
 
@@ -47,7 +47,7 @@ const FAQS = [
   },
   {
     q: 'What makes the free scan actually free?',
-    a: 'We check all 14 signals and show you your full score and breakdown at no cost. The $149 is for the fix package: a generated llms.txt file, LocalBusiness JSON-LD schema, full HTML report, and deployment instructions.',
+    a: 'We check all 14 signals and show you your full score and breakdown at no cost. The $399 is for the fix package: a generated llms.txt file, LocalBusiness JSON-LD schema, full HTML report, and deployment instructions.',
   },
   {
     q: 'How accurate is it?',
@@ -55,11 +55,11 @@ const FAQS = [
   },
   {
     q: 'Can agencies use this?',
-    a: 'Yes. The Agency plan ($99/month) gives you a dashboard to manage up to 25 client domains, white-label PDF reports, and monthly auto-scans. Your clients never see the Queldrex name.',
+    a: 'Yes. The Agency plan ($299/month) gives you a dashboard to manage up to 25 client domains, white-label PDF reports, and monthly auto-scans. Your clients never see the Queldrex name.',
   },
   {
     q: 'Will you add more signals?',
-    a: 'Yes. The full roadmap is at queldrex.com/roadmap. We\'re building an AI Citation Tracker next — "Does ChatGPT actually mention your business by name?" All signal updates are included in existing plans.',
+    a: 'Yes. The full roadmap is at queldrex.com/roadmap. More security and business tools ship regularly — CVE scanning, email deliverability, document generation, and more. All updates are included in existing plans.',
   },
 ]
 
@@ -103,7 +103,7 @@ export default function ProductHuntPage() {
 
         {/* Stats */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: 24, flexWrap: 'wrap', marginBottom: 36 }}>
-          {[['14', 'signals checked'], ['60s', 'per scan'], ['7', 'tools live']].map(([n, l]) => (
+          {[['14', 'signals checked'], ['60s', 'per scan'], ['48', 'tools live']].map(([n, l]) => (
             <div key={l} style={{ textAlign: 'center' }}>
               <div style={{ fontSize: 28, fontWeight: 900, color: '#06d6ff' }}>{n}</div>
               <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.05em' }}>{l}</div>
@@ -227,7 +227,7 @@ export default function ProductHuntPage() {
       <section style={{ maxWidth: 680, margin: '0 auto', padding: '64px 24px', textAlign: 'center' }}>
         <p style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: 16 }}>The Maker</p>
         <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.6)', lineHeight: 1.75 }}>
-          Built by Queldrex LLC, Castle Rock, Colorado. One company, one mission: give every business a way to see and fix their AI visibility. Seven tools are live now. The AI Citation Tracker (&ldquo;Does ChatGPT actually mention your business by name?&rdquo;) is building next.
+          Built by Queldrex LLC, Castle Rock, Colorado. One company, one mission: give every business a way to see and fix their AI visibility. 48 tools are live now across AI visibility, security, developer, and business categories.
         </p>
       </section>
 

@@ -48,7 +48,7 @@ export default async function ReferralPage({ params }: Props) {
           {[
             '14 signals checked in under 60 seconds',
             'See exactly why AI ignores your business',
-            'Get a full fix plan for $149 — or just see the score free',
+            'Get a full fix plan for $399 — or just see the score free',
           ].map(item => (
             <li key={item} className="flex items-start gap-3 text-sm text-white/65">
               <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="#06d6ff" strokeWidth={2.5} viewBox="0 0 24 24">

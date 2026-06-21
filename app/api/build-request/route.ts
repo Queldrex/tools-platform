@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { getRedis } from '@/lib/store/redis'
 import { randomUUID } from 'crypto'
 import { adminAuthCheck } from '@/lib/admin-auth'
+import { sendSmsAlert } from '@/lib/sms/twilio'
 
 export const dynamic = 'force-dynamic'
 
@@ -77,6 +78,8 @@ export async function POST(request: NextRequest) {
 </body></html>`,
     }).catch(() => {})
   } catch { /* email non-fatal */ }
+
+  sendSmsAlert(`[Queldrex] New build request: ${serviceType} from ${name} (${email}). Check admin.`).catch(() => {})
 
   return Response.redirect(new URL('/services/thanks', request.url))
 }

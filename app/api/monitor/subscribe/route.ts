@@ -48,15 +48,15 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Could not create customer' }, { status: 502 })
   }
 
-  // Get or create the $29/month price
+  // Get or create the $79/month price — set STRIPE_MONITOR_PRICE_ID in Vercel env to pin a specific price
   let priceId = (process.env.STRIPE_MONITOR_PRICE_ID || '').replace(/^﻿/, '').trim()
   if (!priceId) {
     try {
       const price = await stripe.prices.create({
         currency: 'usd',
-        unit_amount: 2900,
+        unit_amount: 7900,
         recurring: { interval: 'month' },
-        product_data: { name: 'AI Visibility Monitor' },
+        product_data: { name: 'Queldrex Pro' },
       })
       priceId = price.id
     } catch (err) {

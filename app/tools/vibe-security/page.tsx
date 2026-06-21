@@ -94,7 +94,7 @@ export default function VibeSecurityPage() {
 
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: 'rgb(245,158,11)', borderColor: 'rgba(245,158,11,0.3)', background: 'rgba(245,158,11,0.08)' }}>Live</span>
-          <span className="text-sm font-bold text-white/30">Pro Tool · Unlimited with $29/month</span>
+          <span className="text-sm font-bold text-white/30">Pro Tool · Unlimited with $79/month</span>
         </div>
 
         <h1 className="text-4xl font-black text-white mb-3">Vibe Coding <span style={{ color: 'rgb(245,158,11)' }}>Security Shield</span></h1>
@@ -149,13 +149,66 @@ export default function VibeSecurityPage() {
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(245,158,11,0.05)', borderColor: 'rgba(245,158,11,0.2)' }}>
             <svg className="w-10 h-10 mx-auto mb-4 text-amber-500" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
             <h3 className="text-xl font-black text-white mb-2">Unlimited scans with Pro</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro subscribers get unlimited code scans, all tools, and monthly AI visibility monitoring — $29/month, cancel anytime.</p>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro subscribers get unlimited code scans, all tools, and monthly AI visibility monitoring — $79/month, cancel anytime.</p>
             <div className="flex items-center justify-center gap-3 flex-wrap">
               <Link href="/monitor" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>
-                Start Pro — $29/month
+                Start Pro — $79/month
               </Link>
               <Link href="/pricing" className="text-sm text-white/45 hover:text-white transition-colors">See all features →</Link>
             </div>
+          </div>
+        )}
+
+        {/* Sample Output — always visible so visitors know what they get */}
+        {!result && !loading && (
+          <div className="mt-10 mb-2">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.06)' }} />
+              <span className="text-[10px] font-black uppercase tracking-widest text-white/25">Sample Report</span>
+              <div className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.06)' }} />
+            </div>
+            <p className="text-xs text-white/30 text-center mb-6">This is what a real scan looks like. Load the example above and click Scan to generate yours.</p>
+
+            {/* Sample score */}
+            <div className="rounded-2xl border p-6 flex flex-wrap items-center gap-8 mb-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
+              <div className="text-center">
+                <div className="text-6xl font-black text-red-400">22</div>
+                <div className="text-xs text-white/40 mt-1 font-bold uppercase tracking-wider">Security Score</div>
+              </div>
+              <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {[{ sev: 'critical', n: 2 }, { sev: 'high', n: 3 }, { sev: 'medium', n: 2 }, { sev: 'low', n: 1 }].map(({ sev, n }) => (
+                  <div key={sev} className="text-center">
+                    <div className="text-2xl font-black" style={{ color: SEV_COLOR[sev] }}>{n}</div>
+                    <div className="text-xs font-bold uppercase tracking-wider" style={{ color: SEV_COLOR[sev] }}>{sev}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="text-xs text-white/30">15 lines scanned</div>
+            </div>
+
+            {/* Sample findings */}
+            {[
+              { sev: 'critical', name: 'SQL Injection', line: 5, msg: 'String concatenation used to build SQL query. An attacker can inject arbitrary SQL. Use parameterized queries instead.', snippet: 'const query = "SELECT * FROM users WHERE id = " + id;' },
+              { sev: 'critical', name: 'Hardcoded API Key', line: 2, msg: 'API key detected in source code. Anyone with access to this file can use your key. Move to environment variables immediately.', snippet: 'const apiKey = "sk-abc123xyz456def789";' },
+              { sev: 'high', name: 'Hardcoded Password', line: 1, msg: 'Password detected as a string literal. Rotate this credential and store in a secrets manager.', snippet: 'const password = "supersecret123";' },
+              { sev: 'high', name: 'XSS via innerHTML', line: 14, msg: 'Setting innerHTML from user-controlled data allows cross-site scripting. Use textContent or a sanitizer.', snippet: "document.getElementById('output').innerHTML = userInput;" },
+              { sev: 'high', name: 'Stack Trace Exposed', line: 9, msg: 'Sending err.stack to the client leaks internal paths and logic to attackers. Log server-side only.', snippet: 'res.json({ error: err.message, stack: err.stack });' },
+            ].map((f, i) => (
+              <div key={i} className="rounded-xl border p-4 mb-2" style={{ background: '#0d1117', borderColor: `${SEV_COLOR[f.sev]}22` }}>
+                <div className="flex items-start gap-3">
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded flex-shrink-0 mt-0.5" style={{ background: `${SEV_COLOR[f.sev]}18`, color: SEV_COLOR[f.sev], border: `1px solid ${SEV_COLOR[f.sev]}44` }}>{f.sev}</span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-sm font-bold text-white">{f.name}</span>
+                      <span className="text-xs text-white/30">Line {f.line}</span>
+                    </div>
+                    <p className="text-xs text-white/55 mb-2">{f.msg}</p>
+                    <code className="text-xs font-mono px-2 py-1 rounded text-white/60 block overflow-x-auto" style={{ background: '#070b14' }}>{f.snippet}</code>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <p className="text-[10px] text-white/20 text-center mt-3">← This is a sample. Your scan results will appear here.</p>
           </div>
         )}
 

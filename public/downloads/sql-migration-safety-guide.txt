@@ -1,0 +1,252 @@
+SQL MIGRATION SAFETY GUIDE
+Queldrex — queldrex.com
+Run database migrations without downtime or data loss
+================================================
+
+INTRODUCTION
+
+Database migrations are the most dangerous routine operation in software deployment.
+A bad migration on a 1M-row table can lock writes for 30 minutes, cause cascading timeouts,
+and result in data loss. This guide covers how to do them safely.
+
+The core principle: treat migrations the same as code — review, test, stage, then deploy.
+
+
+CHAPTER 1: THE EXPAND/CONTRACT PATTERN
+================================================
+
+This is the single most important concept for zero-downtime migrations.
+Never make a breaking schema change in one step. Always split into three deploys.
+
+EXPANDING (safe) vs CONTRACTING (dangerous)
+
+Safe operations (can run any time):
+- Adding a nullable column
+- Adding a new table
+- Adding an index (with CONCURRENTLY in PostgreSQL)
+- Adding a new enum value (in most databases)
+- Increasing a column size (VARCHAR(100) to VARCHAR(200))
+
+Dangerous operations (require expand/contract):
+- Removing a column
+- Renaming a column or table
+- Changing a column type
+- Making a nullable column NOT NULL
+- Removing an enum value
+- Decreasing a column size
+
+THE THREE-DEPLOY PATTERN for dangerous changes:
+
+Example: Rename column "user_name" to "display_name"
+
+Deploy 1 (Expand): Add the new column. Write code that writes to BOTH columns.
+  ALTER TABLE users ADD COLUMN display_name VARCHAR(255);
+  -- Backfill: UPDATE users SET display_name = user_name;
+  -- Application now writes both user_name and display_name
+
+Deploy 2 (Migrate reads): Switch reads to use only the new column.
+  -- Application reads display_name, writes both columns
+  -- Monitor for errors in production for 24-48 hours
+
+Deploy 3 (Contract): Drop the old column.
+  ALTER TABLE users DROP COLUMN user_name;
+  -- Application writes display_name only
+
+This takes 3 separate deployments, but each deploy is safe and rollback is simple.
+
+
+CHAPTER 2: ZERO-DOWNTIME COLUMN CHANGES
+================================================
+
+2.1 Adding a NOT NULL Column (Most Common Mistake)
+
+Wrong approach:
+  ALTER TABLE orders ADD COLUMN status VARCHAR(50) NOT NULL;
+  -- This locks the entire table while it validates every existing row has a value
+  -- On a large table, this blocks all reads and writes for minutes
+
+Correct approach:
+  Step 1: Add nullable with a default
+    ALTER TABLE orders ADD COLUMN status VARCHAR(50) DEFAULT 'pending';
+  Step 2: Backfill existing rows in batches (see Chapter 4)
+  Step 3: Add the NOT NULL constraint only after all rows have values
+    ALTER TABLE orders ALTER COLUMN status SET NOT NULL;
+    -- In PostgreSQL, if you have a DEFAULT set, this is a metadata-only change
+    -- (no table scan required) — instant even on 100M rows
+
+2.2 Adding an Index Without Locking
+
+Wrong approach:
+  CREATE INDEX idx_orders_user_id ON orders(user_id);
+  -- Locks the table during index build
+
+Correct approach (PostgreSQL):
+  CREATE INDEX CONCURRENTLY idx_orders_user_id ON orders(user_id);
+  -- Builds without locking; takes longer but safe on live traffic
+  -- Note: CONCURRENTLY cannot run inside a transaction block
+
+MySQL equivalent: ALTER TABLE ... ADD INDEX uses online DDL by default in MySQL 8+
+  -- Verify with: SHOW CREATE TABLE orders (look for ALGORITHM=INPLACE)
+
+2.3 Changing a Column Type
+
+This is almost always dangerous. Lock times depend on table size.
+
+Safe path for VARCHAR length increase:
+  ALTER TABLE users ALTER COLUMN bio TYPE TEXT;
+  -- PostgreSQL: usually a catalog-only change if new type is compatible
+  -- MySQL: may rebuild table — test on staging with production data volume
+
+Unsafe path: changing types that require rewriting each row value
+  -- int to bigint, varchar to jsonb, any type that requires data conversion
+  -- Use expand/contract: add new column, backfill, switch reads, drop old column
+
+
+CHAPTER 3: ROLLBACK PLANNING
+================================================
+
+Every migration should have a documented rollback plan before you run it.
+
+Ask before every migration:
+1. If this fails halfway through, what state is the database in?
+2. Can the previous version of the application still run against this schema?
+3. What is the SQL to undo this change?
+
+Rollback script template:
+  -- Migration: add_status_to_orders (2026-01-15)
+  -- Rollback:
+  ALTER TABLE orders DROP COLUMN IF EXISTS status;
+  DROP INDEX IF EXISTS idx_orders_status;
+
+Keep rollback scripts in the same migration directory as forward migrations.
+
+3.1 When You Cannot Roll Back
+
+Some migrations are irreversible:
+- DROP TABLE (data is gone)
+- DELETE without backup
+- Encrypted or hashed a column (cannot un-hash)
+
+For these: take a database backup BEFORE running the migration.
+Verify the backup is restorable before proceeding.
+
+3.2 Blue/Green Migration Strategy
+
+For high-risk migrations on critical tables:
+1. Snapshot the database
+2. Restore snapshot to a parallel "blue" environment
+3. Run migration on blue
+4. Test blue with production traffic load
+5. Cut over only when confident
+6. Keep green available for 24 hours as rollback option
+
+
+CHAPTER 4: BACKFILLING LARGE TABLES
+================================================
+
+Never UPDATE all rows in a single statement on a large table.
+  UPDATE orders SET status = 'complete' WHERE status IS NULL;
+  -- On 10M rows: holds a lock, fills transaction logs, risks timeout
+
+Batch it:
+
+PostgreSQL batch update (run in your migration or a one-off script):
+  DO $$
+  DECLARE
+    batch_size INT := 5000;
+    rows_updated INT;
+  BEGIN
+    LOOP
+      UPDATE orders
+      SET status = 'complete'
+      WHERE id IN (
+        SELECT id FROM orders WHERE status IS NULL LIMIT batch_size
+      );
+      GET DIAGNOSTICS rows_updated = ROW_COUNT;
+      EXIT WHEN rows_updated = 0;
+      PERFORM pg_sleep(0.1);  -- 100ms pause between batches
+    END LOOP;
+  END $$;
+
+Key settings for large backfills:
+  SET statement_timeout = '30s';    -- Fail fast if a batch takes too long
+  SET lock_timeout = '2s';          -- Don't wait more than 2s for a lock
+
+Batch size guidance:
+  - Under 1M rows: 10,000 rows per batch
+  - 1M-10M rows: 5,000 rows per batch
+  - Over 10M rows: 1,000-2,000 rows per batch, test at low traffic hours
+
+4.1 Monitoring Backfill Progress
+
+Add progress logging to your backfill script:
+  -- Log every 50,000 rows:
+  SELECT COUNT(*) FROM orders WHERE status IS NULL;
+  -- Run this in a separate session to track progress without blocking
+
+Estimate time:
+  rows_remaining / (batch_size / seconds_per_batch) = estimated minutes remaining
+
+
+CHAPTER 5: LOCK TIMEOUT CONFIGURATION
+================================================
+
+Always set lock timeouts in production migrations.
+Without them, a migration waiting for a lock can block all subsequent queries.
+
+PostgreSQL:
+  SET lock_timeout = '3s';    -- Fail if we wait more than 3 seconds for a lock
+  SET statement_timeout = '60s';  -- Fail if the statement takes more than 60 seconds
+
+Run these at the start of every migration transaction.
+
+How to detect if a lock is waiting:
+  SELECT pid, wait_event_type, wait_event, query
+  FROM pg_stat_activity
+  WHERE wait_event_type = 'Lock';
+
+Kill a blocking query (carefully):
+  SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE pid = <blocking_pid>;
+
+
+CHAPTER 6: 10 ANTI-PATTERNS THAT CAUSE OUTAGES
+================================================
+
+1. ALTER TABLE on a large table without CONCURRENTLY
+   Fix: Use CONCURRENTLY for index creation; use expand/contract for column changes
+
+2. Running migrations inside an application deploy (not separately)
+   Fix: Migrations should run as a separate step before the app deploys
+   This allows the old app version to still work during the migration
+
+3. No lock timeout set
+   Fix: Always SET lock_timeout = '3s' at the start of your migration session
+
+4. Backfilling millions of rows in a single UPDATE
+   Fix: Batch in groups of 1,000-10,000 with a pause between batches
+
+5. Adding a NOT NULL constraint without a DEFAULT on existing rows
+   Fix: Add column nullable with DEFAULT, backfill, then add NOT NULL constraint
+
+6. Dropping a column while the application still reads it
+   Fix: Deploy the contract phase (remove app code) before dropping the column
+
+7. No backup before a destructive migration
+   Fix: Snapshot/backup before any DROP, TRUNCATE, or large DELETE
+
+8. Testing migrations only on an empty database
+   Fix: Test with a copy of production data at production scale
+   A migration that takes 0.1 seconds on 1,000 rows takes 100 seconds on 1M rows
+
+9. Migrations that depend on application-level logic to backfill
+   Fix: Migrations should be self-contained SQL; don't rely on running application code
+   to fill in data — do it in the migration itself
+
+10. Running migrations in a long transaction that holds locks
+    Fix: Break migrations into multiple smaller transactions
+    Index creation with CONCURRENTLY cannot run in a transaction at all
+
+================================================
+Generated by Queldrex SQL Migration Safety Guide
+Buy the full suite at queldrex.com/downloads
+================================================

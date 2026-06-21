@@ -210,7 +210,7 @@ export default function SampleAuditPage() {
         >
           <p className="text-white font-black text-xl mb-2">Scan your business. Free.</p>
           <p className="text-white/50 text-sm mb-6">
-            See your real score in 30 seconds. Full fix package with generated files delivered to your email — $149 one-time.
+            See your real score in 30 seconds. Full fix package with generated files delivered to your email — $399 one-time.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link

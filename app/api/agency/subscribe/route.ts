@@ -35,12 +35,13 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Could not create customer' }, { status: 502 })
   }
 
+  // Set STRIPE_AGENCY_PRICE_ID in Vercel env to pin a specific price
   let priceId = (process.env.STRIPE_AGENCY_PRICE_ID || '').replace(/^﻿/, '').trim()
   if (!priceId) {
     try {
       const price = await stripe.prices.create({
         currency: 'usd',
-        unit_amount: 9900,
+        unit_amount: 29900,
         recurring: { interval: 'month' },
         product_data: { name: 'Queldrex Agency Plan' },
       })

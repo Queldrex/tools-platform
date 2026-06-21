@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { getRedis } from '@/lib/store/redis'
 import { randomUUID } from 'crypto'
 import { adminAuthCheck } from '@/lib/admin-auth'
+import { sendSmsAlert } from '@/lib/sms/twilio'
 
 export const dynamic = 'force-dynamic'
 
@@ -84,6 +85,8 @@ export async function POST(request: NextRequest) {
 </body></html>`,
     }).catch(() => {})
   } catch { /* email is non-fatal */ }
+
+  sendSmsAlert(`[Queldrex] New tool request: "${entry.toolName}" from ${entry.name}. Check admin.`).catch(() => {})
 
   return Response.json({ ok: true, id: entry.id })
 }

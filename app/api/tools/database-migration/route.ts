@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { getRedis, checkProSession } from '@/lib/store/redis'
+import { hasFreeOrProAccess } from '@/lib/tool-access'
 
 export const dynamic = 'force-dynamic'
 
@@ -25,16 +25,8 @@ const CHECKS: MigrationCheck[] = [
 ]
 
 export async function POST(request: NextRequest) {
-  const proSessionId = request.cookies.get('queldrex_pro')?.value ?? ''
-  const isPro = proSessionId ? await checkProSession(proSessionId) : false
-
-  if (!isPro) {
-    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
-    const redis = getRedis()
-    const uses = await redis.incr(`dbmig_uses:${ip}`)
-    if (uses === 1) await redis.expire(`dbmig_uses:${ip}`, 60 * 60 * 24)
-    if (uses > 1) return Response.json({ paywall: true }, { status: 402 })
-  }
+  const access = await hasFreeOrProAccess(request, 'db-migration', 2)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   let body: { sql?: string; dialect?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }

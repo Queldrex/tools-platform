@@ -47,7 +47,7 @@ const PROJECTS = [
     name: 'AI Visibility Monitor + Subscription System',
     type: 'Subscription SaaS',
     stack: ['Next.js 16', 'Stripe Webhooks', 'Redis', 'Resend', 'Cron Jobs'],
-    desc: 'A $29/month recurring subscription product with magic-link authentication, monthly automated rescans via Vercel cron, score history tracking, and email alerts when scores drop more than 5 points.',
+    desc: 'A $79/month recurring subscription product with magic-link authentication, monthly automated rescans via Vercel cron, score history tracking, and email alerts when scores drop more than 5 points.',
     highlights: [
       'Full Stripe webhook integration — checkout, cancellation, payment failure handling',
       'Passwordless auth: magic links with 15-minute expiry, one-time use tokens',
@@ -61,7 +61,7 @@ const PROJECTS = [
       <div style={{ background: '#0d1117', borderRadius: 10, padding: '14px 16px', border: '1px solid rgba(99,102,241,0.2)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
           <span style={{ fontSize: 10, fontWeight: 700, color: 'rgb(99,102,241)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Monitor Active</span>
-          <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>$29/mo</span>
+          <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>$79/mo</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           {[['Jan', 52], ['Feb', 61], ['Mar', 67], ['Apr', 74]].map(([month, score]) => (
@@ -300,36 +300,28 @@ export default function PortfolioPage() {
         </div>
       </section>
 
-      {/* TESTIMONIALS PLACEHOLDER */}
+      {/* HOW WE BUILD */}
       <section className="border-t border-white/5 py-16">
         <div className="max-w-7xl mx-auto px-6">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-white/25 mb-8 text-center">Client Testimonials</p>
-          <div className="grid md:grid-cols-3 gap-4">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="rounded-2xl border p-6 flex flex-col gap-4"
-                style={{ background: 'rgba(255,255,255,0.015)', borderColor: 'rgba(255,255,255,0.06)', borderStyle: 'dashed' }}
-              >
-                <div className="flex gap-1">
-                  {[1,2,3,4,5].map((s) => (
-                    <svg key={s} className="w-4 h-4 text-white/15" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-sm text-white/20 leading-relaxed italic">First client testimonials coming soon.</p>
-                <div className="flex items-center gap-3 mt-auto">
-                  <div className="w-8 h-8 rounded-full bg-white/5 border border-white/08" />
-                  <div>
-                    <div className="w-20 h-2 rounded-full bg-white/08 mb-1.5" />
-                    <div className="w-14 h-1.5 rounded-full bg-white/05" />
-                  </div>
-                </div>
+          <div className="text-center mb-10">
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-white/25 mb-3">Our Standards</p>
+            <h2 className="text-2xl font-black text-white mb-2">How we build everything.</h2>
+            <p className="text-white/40 text-sm max-w-xl mx-auto">The same standards we apply to every Queldrex product — applied to every client build.</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { label: 'TypeScript only', desc: 'Every project is fully typed. No JavaScript drift, no runtime surprises.' },
+              { label: 'Zero fake data', desc: 'All tools and systems use real APIs and real data. Nothing is mocked in production.' },
+              { label: 'You own the code', desc: 'Full source delivery. Deploy anywhere. No vendor lock-in, ever.' },
+              { label: 'Vercel-native', desc: 'Next.js App Router on Vercel with Redis, Stripe, and Resend as needed. Fast, scalable, no ops overhead.' },
+            ].map(item => (
+              <div key={item.label} className="rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
+                <div className="w-4 h-0.5 rounded-full mb-3 bg-cyan-400/50" />
+                <p className="text-sm font-black text-white mb-1.5">{item.label}</p>
+                <p className="text-xs text-white/40 leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
-          <p className="text-center text-xs text-white/20 mt-6">We&apos;re actively taking on new clients. Yours could be first.</p>
         </div>
       </section>
 

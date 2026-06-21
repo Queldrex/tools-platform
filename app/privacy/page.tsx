@@ -34,10 +34,10 @@ export default function PrivacyPage() {
             <p className="mb-4">We collect only what is necessary to deliver our services:</p>
             <ul className="space-y-3 pl-4">
               <li>
-                <strong className="text-white/80">AI Visibility Scanner ($149 one-time)</strong> — the domain URL you submit and your email address. Used to run the scan and deliver your report. Paid scan results retained 12 months; free scan data deleted after 48 hours.
+                <strong className="text-white/80">AI Visibility Scanner ($399 one-time)</strong> — the domain URL you submit and your email address. Used to run the scan and deliver your report. Paid scan results retained 12 months; free scan data deleted after 48 hours.
               </li>
               <li>
-                <strong className="text-white/80">AI Visibility Monitor ($29/month)</strong> — your email address and monitored domain(s). We store monthly scan scores and history to power alerts and your dashboard. Retained while subscription is active and 12 months after cancellation.
+                <strong className="text-white/80">AI Visibility Monitor ($79/month)</strong> — your email address and monitored domain(s). We store monthly scan scores and history to power alerts and your dashboard. Retained while subscription is active and 12 months after cancellation.
               </li>
               <li>
                 <strong className="text-white/80">Agency Plan ($99/month)</strong> — agency name, email address, client domain list, and scan history for up to 25 client domains per month. Retained while subscription is active and 12 months after cancellation.

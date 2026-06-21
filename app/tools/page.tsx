@@ -1,354 +1,307 @@
-import Link from 'next/link'
+﻿﻿import Link from 'next/link'
+import Image from 'next/image'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import GoProButton from '@/components/GoProButton'
 
 export const metadata = {
-  title: 'All Tools — Queldrex',
-  description: 'Precision software tools for AI visibility, security auditing, and developer workflows. All live and free to start.',
+  title: 'All Tools â€" Queldrex',
+  description: 'Precision tools for AI visibility, security auditing, developer workflows, and business operations. Real data, real value. Free to start.',
 }
 
-const AI_VISIBILITY_TOOLS = [
-  {
-    name: 'AI Visibility Scanner',
-    tagline: 'Find out if AI can discover your business, and get the exact files to fix it.',
-    description: 'ChatGPT, Perplexity, Claude, and Gemini answer millions of business questions every day. The businesses they recommend have specific technical signals. We scan your site for 14 of them — free — and generate the complete fix package for $149.',
-    price: '$149',
-    priceSub: 'one-time',
-    href: '/scanner',
-    accent: '#06d6ff',
-    color: 'rgba(6,182,212,0.08)',
-    border: 'rgba(6,182,212,0.28)',
-    features: [
-      '14 AI visibility signals scanned in seconds',
-      'Generated llms.txt and LocalBusiness JSON-LD schema',
-      'Full HTML report with prioritized fix checklist',
-      'Done-For-You implementation available for $499',
-    ],
-    cta: 'Try Free',
-  },
-  {
-    name: 'AI Citation Tracker',
-    tagline: 'Does ChatGPT mention your business when customers ask for recommendations?',
-    description: 'We ask ChatGPT the same questions your customers do and report back exactly what it says — whether it knows about your business, who it recommends instead, and the three most important things you can do to get cited.',
-    price: 'Pro',
-    priceSub: '$29/month',
-    href: '/tools/citation-tracker',
-    accent: '#06d6ff',
-    color: 'rgba(6,214,255,0.06)',
-    border: 'rgba(6,214,255,0.2)',
-    features: [
-      'Direct ChatGPT citation check for your business',
-      'See who ChatGPT recommends instead of you',
-      'Actionable improvement plan from ChatGPT itself',
-      '1 free check included, unlimited with Pro',
-    ],
-    cta: 'Check My Citations',
-  },
-]
+interface Tool {
+  name: string
+  tagline: string
+  price: string
+  href: string
+  badge?: string
+  screenshot: string
+}
 
-const SECURITY_TOOLS = [
+interface Category {
+  id: string
+  label: string
+  accent: string
+  accentBg: string
+  accentBorder: string
+  description: string
+  icon: string
+  tools: Tool[]
+}
+
+const CATEGORIES: Category[] = [
   {
-    name: 'Vibe Coding Security Shield',
-    tagline: 'AI writes code fast. It also writes SQL injection holes. Catch them before they ship.',
-    description: 'Paste any AI-generated code and instantly scan for OWASP Top 10 vulnerabilities, hardcoded secrets, injection risks, and insecure patterns. Line numbers, severity ratings, and fix guidance included.',
-    price: 'Pro',
-    priceSub: '$29/month',
-    href: '/tools/vibe-security',
-    accent: 'rgb(245,158,11)',
-    color: 'rgba(245,158,11,0.05)',
-    border: 'rgba(245,158,11,0.18)',
-    features: [
-      '14 OWASP checks: hardcoded secrets, SQL injection, XSS, and more',
-      'Severity rating per finding: Critical, High, Medium, Low',
-      'Line numbers and code snippets for every issue',
-      '1 free scan included, unlimited with Pro',
+    id: 'ai-visibility',
+    label: 'AI Visibility',
+    accent: '#06d6ff',
+    accentBg: 'rgba(6,214,255,0.07)',
+    accentBorder: 'rgba(6,214,255,0.18)',
+    description: 'Help AI systems find and cite your content. Track your score monthly.',
+    icon: '',
+    tools: [
+      { name: 'AI Visibility Scanner', tagline: 'Scan 14 signals â€" find out if AI can discover your business', price: '$399 one-time', href: '/scanner', badge: 'Flagship', screenshot: 'scanner' },
+      { name: 'Structured Data Validator', tagline: 'Crawl any URL and validate JSON-LD schema â€" see your AI visibility score instantly', price: 'Pro', href: '/tools/schema-validator', screenshot: 'schema-validator', badge: 'New' },
+      { name: 'Schema Markup Generator', tagline: 'Generate JSON-LD schema markup for any business type', price: 'Free', href: '/tools/schema-generator', screenshot: 'schema-generator' },
+      { name: 'robots.txt Generator', tagline: 'Control which AI crawlers can and can\'t access your site', price: 'Free', href: '/tools/robots-generator', screenshot: 'robots-generator' },
     ],
-    cta: 'Scan Code',
   },
   {
-    name: 'Breach Lookup',
-    tagline: 'Check if a password has been exposed in known breaches, and audit your domain\'s security configuration.',
-    description: 'Two tools in one. The password tab uses HaveIBeenPwned\'s k-anonymity API to check if a password has appeared in breaches — your password is hashed locally and never sent in full. The domain tab audits your security headers (HTTPS, HSTS, CSP) and email authentication (DMARC, SPF). Both are completely free.',
-    price: 'Free',
-    priceSub: 'always',
-    href: '/tools/breach-lookup',
+    id: 'security',
+    label: 'Security',
     accent: '#f87171',
-    color: 'rgba(248,113,113,0.06)',
-    border: 'rgba(248,113,113,0.2)',
-    features: [
-      'Password breach check via HaveIBeenPwned k-anonymity',
-      'Your password is hashed locally, never sent in full',
-      'Domain security audit: HTTPS, HSTS, CSP, X-Frame-Options',
-      'Email authentication check: DMARC and SPF records',
+    accentBg: 'rgba(248,113,113,0.07)',
+    accentBorder: 'rgba(248,113,113,0.18)',
+    description: 'Find vulnerabilities before attackers do.',
+    icon: '',
+    tools: [
+      { name: 'Vibe Coding Security Shield', tagline: 'Scan AI-generated code for OWASP vulnerabilities before they ship', price: 'Pro', href: '/tools/vibe-security', screenshot: 'vibe-security' },
+      { name: 'API Schema Drift Scanner', tagline: 'Detect breaking changes between two OpenAPI specifications', price: 'Pro', href: '/tools/api-schema-drift', screenshot: 'api-schema-drift' },
+      { name: 'Database Migration Safety Checker', tagline: 'Catch dangerous SQL migration patterns before running them', price: 'Pro', href: '/tools/database-migration', screenshot: 'database-migration' },
+      { name: 'Contract Risk Scanner', tagline: 'AI finds one-sided IP grabs, bad non-competes, and liability traps', price: 'Pro', href: '/tools/contract-scanner', screenshot: 'contract-scanner', badge: 'New' },
+      { name: 'Hallucinated Package Detector', tagline: 'Verify every npm or PyPI package AI suggested actually exists', price: 'Pro', href: '/tools/package-hallucination', screenshot: 'package-hallucination', badge: 'New' },
+      { name: 'SSL/TLS Inspector', tagline: 'Full TLS handshake analysis â€" cert expiry, cipher grade, protocol version, security headers', price: 'Free', href: '/tools/ssl-inspector', screenshot: 'ssl-inspector', badge: 'New' },
+      { name: 'Dependency CVE Scanner', tagline: 'Paste package.json or requirements.txt â€" get live CVEs from Google\'s OSV database instantly', price: 'Pro', href: '/tools/dep-scanner', screenshot: 'dep-scanner', badge: 'New' },
+      { name: 'AI Prompt Injection Detector', tagline: 'Scan any AI prompt for injection attacks, jailbreaks, and prompt extraction attempts', price: 'Free', href: '/tools/prompt-injection', screenshot: 'prompt-injection', badge: 'New' },
+      { name: 'Breach Lookup', tagline: 'Password breach check + domain security header audit', price: 'Free', href: '/tools/breach-lookup', screenshot: 'breach-lookup' },
+      { name: 'Threat Intelligence Feed', tagline: 'Live malware URLs and botnet IPs from URLhaus + Feodo Tracker', price: 'Free', href: '/tools/threat-feed', screenshot: 'threat-feed' },
+      { name: 'Password Generator', tagline: 'Cryptographically secure passwords via Web Crypto API', price: 'Free', href: '/tools/password-generator', screenshot: 'password-generator' },
+      { name: 'Hash Generator', tagline: 'SHA-256, SHA-512, SHA-384, SHA-1 from text or any file', price: 'Free', href: '/tools/hash-generator', screenshot: 'hash-generator' },
     ],
-    cta: 'Check Breaches',
   },
   {
-    name: 'Threat Intelligence Feed',
-    tagline: 'Live stream of malware and phishing indicators from active threat intelligence sources.',
-    description: 'Malware hashes, phishing domains, botnet C2 servers, and malicious URLs — pulled in real time from URLhaus and Feodo Tracker, two of the most active open-source threat intelligence feeds. Filter by category. Free, no login required.',
-    price: 'Free',
-    priceSub: 'always',
-    href: '/tools/threat-feed',
-    accent: '#22d3ee',
-    color: 'rgba(34,211,238,0.06)',
-    border: 'rgba(34,211,238,0.2)',
-    features: [
-      'Live malware URLs and botnet C2 indicators',
-      'Sourced from URLhaus and Feodo Tracker',
-      'Filter by threat category and severity',
-      'No login required',
-    ],
-    cta: 'View Live Feed',
-  },
-]
-
-const DEV_TOOLS = [
-  {
-    name: 'API Schema Drift Scanner',
-    tagline: 'Your API breaks silently. Users hit errors before your monitoring fires.',
-    description: 'Paste two OpenAPI specifications and instantly see every breaking change and additive change between them. Renamed fields, removed endpoints, type changes, new required parameters — all flagged before they ship.',
-    price: 'Pro',
-    priceSub: '$29/month',
-    href: '/tools/api-schema-drift',
+    id: 'developer',
+    label: 'Developer',
     accent: 'rgb(99,102,241)',
-    color: 'rgba(99,102,241,0.06)',
-    border: 'rgba(99,102,241,0.2)',
-    features: [
-      'Paste two OpenAPI specs for instant comparison',
-      'Breaking changes and additive changes clearly separated',
-      'Renamed fields, removed params, type mismatches all caught',
-      '1 free scan included, unlimited with Pro',
+    accentBg: 'rgba(99,102,241,0.07)',
+    accentBorder: 'rgba(99,102,241,0.18)',
+    description: 'DNS, JWT, JSON, cron  -  utilities you reach for every week.',
+    icon: '<//>',
+    tools: [
+      { name: 'JSON Formatter', tagline: 'Format and validate JSON with clear error messages', price: 'Free', href: '/tools/json-formatter', screenshot: 'json-formatter' },
+      { name: 'JWT Decoder', tagline: 'Decode tokens â€" see header, payload, expiry, and all claims', price: 'Free', href: '/tools/jwt-decoder', screenshot: 'jwt-decoder' },
+      { name: 'Base64 Encoder / Decoder', tagline: 'Encode or decode Base64 with full UTF-8 and emoji support', price: 'Free', href: '/tools/base64', screenshot: 'base64' },
+      { name: 'Cron Expression Builder', tagline: 'Build cron schedules visually â€" or decode any expression', price: 'Free', href: '/tools/cron-builder', screenshot: 'cron-builder' },
+      { name: 'Tech Stack Detector', tagline: 'Detect the framework, CMS, CDN, and analytics any site uses', price: 'Free', href: '/tools/tech-stack', screenshot: 'tech-stack' },
+      { name: 'API Rate Limit Calculator', tagline: 'Know exactly when your API usage will hit limits', price: 'Free', href: '/tools/api-rate-limit', screenshot: 'api-rate-limit' },
+      { name: 'Directory Extractor', tagline: 'Map any site\'s full URL structure from its sitemap', price: 'Free', href: '/tools/directory-extractor', screenshot: 'directory-extractor' },
+      { name: 'DNS Health Checker', tagline: 'Live DNS lookup across Cloudflare + Google resolvers â€" A, MX, TXT, NS, CAA, propagation status', price: 'Free', href: '/tools/dns-health', screenshot: 'dns-health', badge: 'New' },
+      { name: 'Email Deliverability Suite', tagline: 'SPF, DKIM, DMARC, MX validation + blacklist check â€" know if your email will reach inboxes', price: 'Free', href: '/tools/email-deliverability', screenshot: 'email-deliverability', badge: 'New' },
+      { name: 'Privacy Policy Analyzer', tagline: 'Paste any privacy policy URL â€" get instant GDPR/CCPA compliance score and red flags', price: 'Pro', href: '/tools/privacy-analyzer', screenshot: 'privacy-analyzer', badge: 'New' },
     ],
-    cta: 'Compare Specs',
   },
   {
-    name: 'Database Migration Safety Checker',
-    tagline: 'One botched migration means downtime. The average outage costs $9,000 per minute.',
-    description: 'Paste your SQL migration script and get an instant risk analysis. Dangerous patterns — table drops, column removals, missing transactions, and index-free foreign keys — are flagged before you run a single query.',
-    price: 'Pro',
-    priceSub: '$29/month',
-    href: '/tools/database-migration',
-    accent: 'rgb(16,185,129)',
-    color: 'rgba(16,185,129,0.05)',
-    border: 'rgba(16,185,129,0.18)',
-    features: [
-      'Catches DROP TABLE, irreversible changes, and missing rollbacks',
-      'Flags missing transactions and unsafe patterns',
-      'Risk rating: Safe, Caution, or High Risk',
-      '1 free scan included, unlimited with Pro',
+    id: 'business',
+    label: 'Business',
+    accent: 'rgb(251,191,36)',
+    accentBg: 'rgba(251,191,36,0.07)',
+    accentBorder: 'rgba(251,191,36,0.18)',
+    description: 'Finance, documents, and marketing tools for small teams.',
+    icon: '',
+    tools: [
+      { name: 'Invoice Generator', tagline: 'Create professional invoices and save as PDF â€" no account needed', price: 'Free', href: '/tools/invoice-generator', screenshot: 'invoice-generator' },
+      { name: 'URL Shortener', tagline: 'Shorten any URL to queldrex.com/s/ and track click counts', price: 'Free', href: '/tools/url-shortener', screenshot: 'url-shortener' },
+      { name: 'Meeting Cost Calculator', tagline: 'See the real dollar cost of any meeting in real-time', price: 'Free', href: '/tools/meeting-cost', screenshot: 'meeting-cost' },
+      { name: 'Uptime SLA Calculator', tagline: 'Translate uptime % to actual downtime hours and revenue impact', price: 'Free', href: '/tools/uptime-calculator', screenshot: 'uptime-calculator' },
+      { name: 'Email Signature Generator', tagline: 'Build HTML email signatures for Gmail, Outlook, and Apple Mail', price: 'Free', href: '/tools/email-signature', screenshot: 'email-signature' },
+      { name: 'Color Palette Generator', tagline: 'Generate complementary, analogous, and triadic color palettes', price: 'Free', href: '/tools/color-palette', screenshot: 'color-palette' },
+      { name: 'GDPR / Privacy Policy Generator', tagline: 'Generate privacy policies, cookie banners, and DPAs', price: 'Free', href: '/tools/gdpr-generator', screenshot: 'gdpr-generator' },
+      { name: 'Business Name Availability', tagline: 'Check domains (.com .io .co .ai) + Twitter, GitHub, LinkedIn handles â€" live results in seconds', price: 'Free', href: '/tools/business-name', screenshot: 'business-name', badge: 'New' },
+      { name: 'SaaS Metrics Calculator', tagline: 'MRR, ARR, LTV, Churn, Quick Ratio, CAC Payback â€" all graded with industry benchmarks', price: 'Free', href: '/tools/saas-metrics', screenshot: 'saas-metrics', badge: 'New' },
+      { name: 'Break-Even Calculator', tagline: 'Enter costs and price â€" know exactly how many units you need to sell to turn a profit', price: 'Free', href: '/tools/break-even', screenshot: 'break-even', badge: 'New' },
+      { name: 'ROI Calculator', tagline: 'Calculate return on investment, payback period, and net profit across any time horizon', price: 'Free', href: '/tools/roi-calculator', screenshot: 'roi-calculator', badge: 'New' },
+      { name: 'Cash Flow Forecaster', tagline: '12-month cash flow projection with burn rate, runway, and profitability month by month', price: 'Free', href: '/tools/cashflow', screenshot: 'cashflow', badge: 'New' },
+      { name: 'NDA Generator', tagline: 'Generate mutual or one-way NDAs instantly â€" choose jurisdiction, term, and scope', price: 'Pro', href: '/tools/nda-generator', screenshot: 'nda-generator', badge: 'New' },
+      { name: 'Terms of Service Generator', tagline: 'Generate a complete ToS for your SaaS or website â€" plain English, legally structured', price: 'Pro', href: '/tools/tos-generator', screenshot: 'tos-generator', badge: 'New' },
+      { name: 'Refund Policy Generator', tagline: 'Create a clear refund policy that protects your business and satisfies customers', price: 'Pro', href: '/tools/refund-policy', screenshot: 'refund-policy', badge: 'New' },
+      { name: 'Ad Copy Grader', tagline: 'Score your ad headline and copy â€" get clarity, hook strength, CTA, and A/B test variants', price: 'Free', href: '/tools/ad-grader', screenshot: 'ad-grader', badge: 'New' },
+      { name: 'Email Subject Line Tester', tagline: 'Score any email subject line for open-rate potential, spam risk, and readability', price: 'Free', href: '/tools/subject-line', screenshot: 'subject-line', badge: 'New' },
+      { name: 'Job Description Writer', tagline: 'Generate clear, bias-reduced job descriptions for any role â€" AI-assisted, instantly', price: 'Pro', href: '/tools/job-description', screenshot: 'job-description', badge: 'New' },
+      { name: 'Proposal & Quote Generator', tagline: 'Generate a professional proposal for any project â€" scope, deliverables, timeline, pricing', price: 'Pro', href: '/tools/proposal-generator', screenshot: 'proposal-generator', badge: 'New' },
+      { name: 'SaaS Spend Optimizer', tagline: 'Paste bank statement CSV to find all SaaS subscriptions and consolidation opportunities', price: 'Pro', href: '/tools/saas-spend', screenshot: 'saas-spend', badge: 'New' },
+      { name: 'Invoice Fraud Detector', tagline: 'Scan any invoice for BEC fraud, round-number manipulation, and fake vendor patterns', price: 'Pro', href: '/tools/invoice-fraud', screenshot: 'invoice-fraud', badge: 'New' },
+      { name: 'Agency Client Report Generator', tagline: 'Turn your metrics and wins into a polished monthly client report â€" AI-written in seconds', price: 'Pro', href: '/tools/agency-report', screenshot: 'agency-report', badge: 'New' },
     ],
-    cta: 'Check Migration',
-  },
-  {
-    name: 'Directory Extractor',
-    tagline: 'Map any website\'s full URL structure from its sitemap in seconds.',
-    description: 'Enter any domain and we fetch its sitemap.xml, parse every URL, and display a full tree structure. Export as JSON or CSV. Free, no login, no limits.',
-    price: 'Free',
-    priceSub: 'always',
-    href: '/tools/directory-extractor',
-    accent: 'rgb(236,72,153)',
-    color: 'rgba(236,72,153,0.05)',
-    border: 'rgba(236,72,153,0.18)',
-    features: [
-      'Fetches and parses sitemap.xml automatically',
-      'Full tree view with expand and collapse',
-      'Export as JSON or CSV',
-      'Free with no login or limits',
-    ],
-    cta: 'Extract URLs',
   },
 ]
 
-function ToolCard({ tool }: { tool: typeof AI_VISIBILITY_TOOLS[0] }) {
-  return (
-    <div
-      className="rounded-2xl border p-8 lg:p-10 mb-4"
-      style={{ background: tool.color, borderColor: tool.border }}
-    >
-      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-3 mb-4">
-            <span
-              className="text-[10px] font-black uppercase tracking-wider text-black px-3 py-1 rounded-full"
-              style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}
-            >
-              Live Now
-            </span>
-            <span className="text-sm font-bold text-white/40">
-              {tool.price}{' '}
-              <span className="text-white/25 font-normal">/ {tool.priceSub}</span>
-            </span>
-          </div>
-          <h3 className="text-2xl lg:text-3xl font-black text-white mb-3">{tool.name}</h3>
-          <p className="text-base text-white/65 leading-relaxed mb-3 max-w-xl">{tool.tagline}</p>
-          <p className="text-sm text-white/45 leading-relaxed mb-6 max-w-xl">{tool.description}</p>
-          <Link
-            href={tool.href}
-            className="inline-flex items-center gap-2 px-7 py-3 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.02]"
-            style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 24px rgba(6,182,212,0.3)' }}
-          >
-            {tool.cta}
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </Link>
-        </div>
-        <div className="lg:w-64 flex-shrink-0">
-          <p className="text-xs font-bold uppercase tracking-wider text-white/25 mb-3">What you get</p>
-          <ul className="space-y-2.5">
-            {tool.features.map((f) => (
-              <li key={f} className="flex items-start gap-2.5 text-sm text-white/60">
-                <svg className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: tool.accent }} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-                {f}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  )
+
+const PRICE_STYLES: Record<string, { color: string; bg: string; border: string }> = {
+  'Free': { color: '#34d399', bg: 'rgba(52,211,153,0.1)', border: 'rgba(52,211,153,0.2)' },
+  'Pro': { color: 'rgb(251,191,36)', bg: 'rgba(251,191,36,0.1)', border: 'rgba(251,191,36,0.2)' },
+  '$399 one-time': { color: '#06d6ff', bg: 'rgba(6,214,255,0.1)', border: 'rgba(6,214,255,0.2)' },
 }
 
 export default function ToolsPage() {
+  const totalTools = CATEGORIES.reduce((sum, c) => sum + c.tools.length, 0)
+
   return (
-    <div className="min-h-screen" style={{ background: '#070b14' }}>
+    <div className="min-h-screen" style={{ background: '#09090B' }}>
       <Header />
 
-      {/* HERO */}
-      <section className="max-w-7xl mx-auto px-6 pt-16 pb-10">
-        <div
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold tracking-widest uppercase mb-6"
-          style={{ borderColor: 'rgba(6,182,212,0.25)', background: 'rgba(6,182,212,0.08)', color: '#06d6ff' }}
-        >
+      {/* Hero */}
+      <section className="max-w-7xl mx-auto px-6 pt-14 pb-10">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold tracking-widest uppercase mb-5"
+          style={{ borderColor: 'rgba(6,182,212,0.25)', background: 'rgba(6,182,212,0.08)', color: '#06d6ff' }}>
           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
           Queldrex Tool Suite
         </div>
-        <h1 className="text-4xl lg:text-5xl font-black text-white leading-tight mb-4">
-          Eight precision tools,{' '}
-          <span style={{ color: '#06d6ff' }}>all live and free to start.</span>
+        <h1 className="text-4xl lg:text-5xl font-black leading-tight mb-3" style={{ color: '#FAFAFA' }}>
+          48 tools. Pick one.
         </h1>
-        <p className="text-white/55 text-lg max-w-2xl leading-relaxed mb-6">
-          Every Queldrex tool solves a specific problem. Try any of them free — pay only for the full report, Pro access, or ongoing monitoring.
+        <p className="text-base max-w-2xl mb-8" style={{ color: '#A1A1AA' }}>
+          Free tools need no account. Pro unlocks everything for $79/mo. SSL inspection, CVE scanning, NDA generators, cash flow forecasting  -  all real output, all live.
         </p>
-        <div className="flex flex-wrap items-center gap-6 text-sm text-white/35">
-          <span><span className="text-cyan-400 font-bold">8</span> tools live today</span>
-          <span>·</span>
-          <span>Scanner is one-time $149 · Pro unlocks everything at $29/month</span>
-        </div>
-      </section>
 
-      {/* AI VISIBILITY */}
-      <section id="ai-visibility" className="max-w-7xl mx-auto px-6 pb-10">
-        <div className="flex items-center gap-3 mb-5">
-          <div className="h-px flex-1" style={{ background: 'rgba(6,182,212,0.15)' }} />
-          <p className="text-xs font-black uppercase tracking-[0.28em]" style={{ color: '#06d6ff' }}>AI Visibility</p>
-          <div className="h-px flex-1" style={{ background: 'rgba(6,182,212,0.15)' }} />
-        </div>
-        <p className="text-sm text-white/45 max-w-2xl mb-6">
-          Get found by ChatGPT, Perplexity, Claude, and Gemini. Track your score monthly. Run AI visibility audits for your agency clients.
-        </p>
-        {AI_VISIBILITY_TOOLS.map((tool) => (
-          <ToolCard key={tool.name} tool={tool} />
-        ))}
-        <div className="mt-2 mb-8 rounded-xl border p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4" style={{ background: 'rgba(6,182,212,0.04)', borderColor: 'rgba(6,182,212,0.12)' }}>
-          <div>
-            <p className="text-sm font-bold text-white mb-0.5">AI Monitor</p>
-            <p className="text-xs text-white/45">Monthly rescans on your domain with email alerts when your score drops. Included in Pro.</p>
+        {/* Pricing summary bar */}
+        <div className="flex flex-wrap gap-3 mb-8">
+          <div className="flex items-center gap-2.5 px-4 py-2 rounded-xl border" style={{ background: 'rgba(52,211,153,0.06)', borderColor: 'rgba(52,211,153,0.2)' }}>
+            <span className="w-2 h-2 rounded-full bg-emerald-400" />
+            <span className="text-xs font-bold text-emerald-400">Free tier</span>
+            <span className="text-xs text-white/40">on every tool · no account needed</span>
           </div>
-          <Link href="/monitor" className="text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors whitespace-nowrap flex-shrink-0">
-            Learn about Monitor →
-          </Link>
-        </div>
-        <div className="rounded-xl border p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4" style={{ background: 'rgba(6,182,212,0.04)', borderColor: 'rgba(6,182,212,0.12)' }}>
-          <div>
-            <p className="text-sm font-bold text-white mb-0.5">Agency Plan — $99/month</p>
-            <p className="text-xs text-white/45">25 client scans per month, white-label PDF reports with your branding, and a bulk client dashboard. Built for web agencies.</p>
+          <div className="flex items-center gap-2.5 px-4 py-2 rounded-xl border" style={{ background: 'rgba(109,40,217,0.06)', borderColor: 'rgba(109,40,217,0.2)' }}>
+            <span className="w-2 h-2 rounded-full bg-purple-400" />
+            <span className="text-xs font-bold text-purple-400">Individual tools</span>
+            <span className="text-xs text-white/40">from $9/month · pay for one</span>
           </div>
-          <Link href="/agency" className="text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors whitespace-nowrap flex-shrink-0">
-            See Agency Plan →
-          </Link>
-        </div>
-      </section>
-
-      {/* SECURITY */}
-      <section id="security" className="max-w-7xl mx-auto px-6 pb-10">
-        <div className="flex items-center gap-3 mb-5">
-          <div className="h-px flex-1" style={{ background: 'rgba(245,158,11,0.15)' }} />
-          <p className="text-xs font-black uppercase tracking-[0.28em]" style={{ color: 'rgb(245,158,11)' }}>Security</p>
-          <div className="h-px flex-1" style={{ background: 'rgba(245,158,11,0.15)' }} />
-        </div>
-        <p className="text-sm text-white/45 max-w-2xl mb-6">
-          Audit AI-generated code for vulnerabilities, check breach exposure, and monitor live global threat indicators.
-        </p>
-        {SECURITY_TOOLS.map((tool) => (
-          <ToolCard key={tool.name} tool={tool} />
-        ))}
-      </section>
-
-      {/* DEVELOPER TOOLS */}
-      <section id="developer" className="max-w-7xl mx-auto px-6 pb-10">
-        <div className="flex items-center gap-3 mb-5">
-          <div className="h-px flex-1" style={{ background: 'rgba(99,102,241,0.15)' }} />
-          <p className="text-xs font-black uppercase tracking-[0.28em]" style={{ color: 'rgb(99,102,241)' }}>Developer Tools</p>
-          <div className="h-px flex-1" style={{ background: 'rgba(99,102,241,0.15)' }} />
-        </div>
-        <p className="text-sm text-white/45 max-w-2xl mb-6">
-          Catch breaking API changes, validate SQL migrations, and map site structures before they cause production problems.
-        </p>
-        {DEV_TOOLS.map((tool) => (
-          <ToolCard key={tool.name} tool={tool} />
-        ))}
-      </section>
-
-      {/* COMING NEXT */}
-      <section className="max-w-7xl mx-auto px-6 pb-10">
-        <div className="rounded-2xl border p-8 flex flex-col md:flex-row items-center justify-between gap-6" style={{ background: 'rgba(6,182,212,0.03)', borderColor: 'rgba(6,182,212,0.12)' }}>
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-cyan-500 mb-2">On the Roadmap</p>
-            <h3 className="text-xl font-black text-white mb-2">More tools in active development</h3>
-            <p className="text-sm text-white/50 max-w-md">Competitor AI Visibility Gap, Bulk Agency Scanner, and Local Business AI Pack are in active development. See the full roadmap for timelines.</p>
+          <div className="flex items-center gap-2.5 px-4 py-2 rounded-xl border" style={{ background: 'rgba(109,40,217,0.1)', borderColor: 'rgba(124,58,237,0.3)' }}>
+            <span className="w-2 h-2 rounded-full bg-purple-400" />
+            <span className="text-xs font-bold text-purple-400">Pro  -  $79/mo</span>
+            <span className="text-xs text-white/40">all {totalTools} tools unlimited</span>
           </div>
-          <Link href="/roadmap" className="flex-shrink-0 text-sm font-bold text-cyan-400 hover:text-cyan-300 transition-colors whitespace-nowrap">
-            See full roadmap →
-          </Link>
+        </div>
+
+        {/* Category nav pills */}
+        <div className="flex flex-wrap gap-2 mb-2">
+          {CATEGORIES.map(cat => (
+            <a key={cat.id} href={`#${cat.id}`}
+              className="text-xs font-bold px-4 py-1.5 rounded-full transition-all hover:scale-105"
+              style={{ color: cat.accent, background: cat.accentBg, border: `1px solid ${cat.accentBorder}` }}>
+              {cat.label} · {cat.tools.length}
+            </a>
+          ))}
+          <a href="/tools/audit"
+            className="text-xs font-bold px-4 py-1.5 rounded-full transition-all hover:scale-105 ml-2"
+            style={{ color: '#34d399', background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.2)' }}>
+            View Audit Report →
+          </a>
         </div>
       </section>
 
-      {/* REQUEST A TOOL */}
-      <section className="max-w-7xl mx-auto px-6 pb-28">
-        <div
-          className="rounded-3xl p-10 md:p-14 flex flex-col md:flex-row items-center justify-between gap-8"
-          style={{
-            background: 'linear-gradient(135deg,rgba(255,255,255,0.02) 0%,rgba(255,255,255,0.01) 100%)',
-            border: '1px solid rgba(255,255,255,0.08)',
-          }}
-        >
-          <div>
-            <p className="text-xs font-bold tracking-[0.2em] uppercase text-white/30 mb-3">Don&apos;t see what you need?</p>
-            <h3 className="text-2xl font-black text-white mb-2">Request a custom tool.</h3>
-            <p className="text-white/50 text-sm max-w-md leading-relaxed">
-              Have a specific problem that needs a purpose-built solution? Tell us what it is. We build tools on demand and prioritize based on what people actually need.
-            </p>
+      {/* Category sections */}
+      {CATEGORIES.map(cat => (
+        <section key={cat.id} id={cat.id} className="max-w-7xl mx-auto px-6 pb-14">
+          {/* Section header */}
+          <div className="flex items-center gap-4 mb-3">
+            <div className="h-px flex-1" style={{ background: `${cat.accent}22` }} />
+            <div className="flex items-center gap-2.5">
+              <span className="text-base">{cat.icon}</span>
+              <span className="text-xs font-black uppercase tracking-[0.25em]" style={{ color: cat.accent }}>
+                {cat.label}
+              </span>
+              <span className="text-[10px] font-bold text-white/20">{cat.tools.length} tools</span>
+            </div>
+            <div className="h-px flex-1" style={{ background: `${cat.accent}22` }} />
           </div>
-          <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
-            <Link
-              href="/request-tool"
-              className="flex items-center gap-2.5 px-8 py-4 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.03]"
-              style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 24px rgba(6,182,212,0.25)' }}
-            >
-              Submit a Request
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
+          <p className="text-xs text-white/35 mb-6 text-center">{cat.description}</p>
+
+          {/* Tool grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {cat.tools.map(tool => {
+              const priceStyle = PRICE_STYLES[tool.price] || PRICE_STYLES['Pro']
+              return (
+                <Link key={tool.name} href={tool.href}
+                  className="group rounded-2xl border overflow-hidden transition-all hover:scale-[1.02] hover:shadow-xl cursor-pointer"
+                  style={{ background: '#111318', borderColor: 'rgba(255,255,255,0.07)' }}>
+
+                  {/* Screenshot preview */}
+                  <div className="relative overflow-hidden" style={{ height: 160 }}>
+                    <Image
+                      src={`/tool-previews/${tool.screenshot}.png`}
+                      alt={`${tool.name} screenshot`}
+                      fill
+                      className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                    <div className="absolute inset-0 transition-opacity duration-300"
+                      style={{ background: 'linear-gradient(to bottom, rgba(13,17,23,0) 40%, rgba(13,17,23,0.95) 100%)' }} />
+                    <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
+                      {tool.badge && (
+                        <span className="text-[9px] font-black uppercase tracking-wider text-black px-2 py-0.5 rounded-full shadow-lg"
+                          style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>
+                          {tool.badge}
+                        </span>
+                      )}
+                      <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shadow-lg backdrop-blur-sm"
+                        style={{ color: priceStyle.color, background: `rgba(13,17,23,0.8)`, border: `1px solid ${priceStyle.border}` }}>
+                        {tool.price}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Card body */}
+                  <div className="p-4">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="text-sm font-black text-white group-hover:text-cyan-400 transition-colors leading-snug">
+                        {tool.name}
+                      </h3>
+                      <svg className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-white/20 group-hover:text-white/60 transition-colors"
+                        fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </div>
+                    <p className="text-xs text-white/40 leading-relaxed mt-1">
+                      {tool.tagline}
+                    </p>
+                  </div>
+                </Link>
+              )
+            })}
+          </div>
+
+          {/* Pro upsell for security/AI sections */}
+          {(cat.id === 'ai-visibility' || cat.id === 'security') && (
+            <div className="mt-4 rounded-xl border p-4 flex items-center justify-between gap-4"
+              style={{ background: `${cat.accentBg}`, borderColor: cat.accentBorder }}>
+              <p className="text-xs text-white/50">
+                Pro tools are unlimited at <span className="font-bold text-white/70">$79/month</span> â€" includes all tools + monthly AI visibility monitoring.
+              </p>
+              <GoProButton
+                returnTo="/tools"
+                className="text-xs font-bold flex-shrink-0 transition-colors hover:opacity-80 bg-transparent border-none p-0 cursor-pointer"
+                style={{ color: cat.accent }}>
+                Go Pro →
+              </GoProButton>
+            </div>
+          )}
+        </section>
+      ))}
+
+      {/* Bottom CTA */}
+      <section className="max-w-7xl mx-auto px-6 pb-20">
+        <div className="rounded-2xl border p-10 text-center"
+          style={{ background: 'linear-gradient(135deg,rgba(6,214,255,0.05),rgba(8,145,178,0.03))', borderColor: 'rgba(6,214,255,0.15)' }}>
+          <p className="text-[10px] font-black uppercase tracking-widest text-cyan-400 mb-3">Ready to get started?</p>
+          <h2 className="text-3xl font-black text-white mb-3">Try any tool free. Upgrade when you need more.</h2>
+          <p className="text-sm mb-8 max-w-lg mx-auto" style={{ color: '#A1A1AA' }}>
+            Every tool has a free daily tier. No account, no email, no credit card. When you hit the limit, buy just that tool or get everything with Pro.
+          </p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/tools#security"
+              className="px-7 py-3.5 rounded-xl text-sm font-black text-white transition-all hover:scale-105"
+              style={{ background: 'linear-gradient(135deg,#7c3aed,#6d28d9)', boxShadow: '0 0 24px rgba(109,40,217,0.35)' }}>
+              Browse Free Tools
             </Link>
-            <Link
-              href="/scanner"
-              className="flex items-center gap-2 px-7 py-4 rounded-xl text-sm font-semibold text-white/60 border border-white/12 hover:border-white/22 hover:text-white transition-all"
-            >
-              Scan Your Site Free →
+            <GoProButton
+              returnTo="/tools"
+              className="px-7 py-3.5 rounded-xl text-sm font-black text-white transition-all hover:scale-105"
+              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
+              Go Pro — $79/month
+            </GoProButton>
+            <Link href="/scanner"
+              className="px-7 py-3.5 rounded-xl text-sm font-semibold border hover:border-white/20 hover:text-white transition-colors"
+              style={{ color: 'rgba(255,255,255,0.6)', borderColor: 'rgba(255,255,255,0.1)' }}>
+              AI Visibility Scan  -  $399
             </Link>
           </div>
         </div>

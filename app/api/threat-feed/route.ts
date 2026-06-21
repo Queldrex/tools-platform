@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
 import { getRedis } from '@/lib/store/redis'
+import { hasToolAccess } from '@/lib/tool-access'
 
 export const dynamic = 'force-dynamic'
 
@@ -74,7 +75,8 @@ async function fetchFeodo(): Promise<ThreatEntry[]> {
   })
 }
 
-export async function GET(_request: NextRequest) {
+export async function GET(request: NextRequest) {
+  if (!await hasToolAccess(request)) return Response.json({ paywall: true }, { status: 402 })
   const redis = getRedis()
 
   // Cache hit

@@ -59,7 +59,7 @@ export default function AdminPage() {
   const [totpCode, setTotpCode] = useState('')
   const [sessionToken, setSessionToken] = useState('')
   const [authed, setAuthed] = useState(false)
-  const [tab, setTab] = useState<'overview' | 'scans' | 'downloads' | 'applications' | 'feedback' | 'legal' | 'test' | 'security' | 'toolrequests' | 'buildrequests'>('overview')
+  const [tab, setTab] = useState<'overview' | 'scans' | 'downloads' | 'applications' | 'feedback' | 'legal' | 'test' | 'security' | 'toolrequests' | 'buildrequests' | 'revenue'>('overview')
 
   // Scans
   const [entries, setEntries] = useState<ScanLogEntry[]>([])
@@ -77,6 +77,7 @@ export default function AdminPage() {
   const [completing, setCompleting] = useState<string | null>(null)
   const [loginAttempts, setLoginAttempts] = useState(0)
   const [loginLocked, setLoginLocked] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const [updatingPriority, setUpdatingPriority] = useState<Record<string, boolean>>({})
   const [notesFlash, setNotesFlash] = useState<Record<string, boolean>>({})
   const [lastSeenPipelineAt, setLastSeenPipelineAt] = useState<string | null>(null)
@@ -93,6 +94,10 @@ export default function AdminPage() {
   // Build Requests
   const [buildRequests, setBuildRequests] = useState<Array<{ id: string; name: string; email: string; company?: string; serviceType: string; description: string; budget?: string; timeline?: string; status: string; createdAt: string }>>([])
   const [brLoading, setBrLoading] = useState(false)
+
+  // Revenue
+  const [revenue, setRevenue] = useState<{ mrr: number; activeSubscriptions: number; recentSales: Array<{ id: string; amount: number; currency: string; customerEmail: string; created: number; mode: string; productName: string }>; totalRevenueLast20: number } | null>(null)
+  const [revenueLoading, setRevenueLoading] = useState(false)
 
   // Notification system — replaces alert() with in-page toasts with error codes
   const [notifications, setNotifications] = useState<Array<{ id: string; type: 'success' | 'error' | 'warning'; title: string; detail?: string; code?: string }>>([])
@@ -365,6 +370,37 @@ export default function AdminPage() {
     setBrLoading(false)
   }, [])
 
+  const loadRevenue = useCallback(async (tok: string) => {
+    setRevenueLoading(true)
+    try {
+      const res = await fetch('/api/admin/revenue', { headers: { 'x-session-token': tok } })
+      if (res.ok) { const d = await res.json(); setRevenue(d) }
+    } catch { /* ignore */ }
+    setRevenueLoading(false)
+  }, [])
+
+  // Restore admin session on page refresh
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('queldrex_admin_token')
+      if (saved) {
+        fetch('/api/admin/log?limit=1', { headers: { 'x-session-token': saved } })
+          .then(res => {
+            if (res.ok) {
+              setSessionToken(saved)
+              loadScans(saved)
+              loadApplications(saved)
+              loadFeedback(saved)
+              loadSecurity(saved)
+            } else {
+              localStorage.removeItem('queldrex_admin_token')
+            }
+          })
+          .catch(() => { /* network error — stay on login */ })
+      }
+    } catch { /* ignore */ }
+  }, [loadScans, loadApplications, loadFeedback, loadSecurity])
+
   const login = async (e: React.FormEvent) => {
     e.preventDefault()
     if (loginLocked) return
@@ -395,6 +431,7 @@ export default function AdminPage() {
       }
       const tok = data.sessionToken as string
       setSessionToken(tok)
+      try { localStorage.setItem('queldrex_admin_token', tok) } catch { /* ignore */ }
       loadScans(tok)
       loadApplications(tok)
       loadFeedback(tok)
@@ -411,7 +448,8 @@ export default function AdminPage() {
     if (authed && tab === 'security' && secLog.length === 0) loadSecurity(sessionToken)
     if (authed && tab === 'toolrequests' && toolRequests.length === 0) loadToolRequests(sessionToken)
     if (authed && tab === 'buildrequests' && buildRequests.length === 0) loadBuildRequests(sessionToken)
-  }, [authed, tab, feedback.length, applications.length, secLog.length, toolRequests.length, buildRequests.length, sessionToken, loadFeedback, loadApplications, loadSecurity, loadToolRequests, loadBuildRequests])
+    if (authed && tab === 'revenue' && !revenue) loadRevenue(sessionToken)
+  }, [authed, tab, feedback.length, applications.length, secLog.length, toolRequests.length, buildRequests.length, revenue, sessionToken, loadFeedback, loadApplications, loadSecurity, loadToolRequests, loadBuildRequests, loadRevenue])
 
   useEffect(() => {
     if (authed && tab === 'applications') {
@@ -500,15 +538,29 @@ export default function AdminPage() {
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <input
-              type="password"
-              placeholder="Access key"
-              value={secret}
-              onChange={e => setSecret(e.target.value)}
-              autoFocus
-              disabled={loginLocked}
-              style={{ padding: '12px 14px', borderRadius: 8, border: `1px solid ${error ? '#ef4444' : '#21262d'}`, background: '#0a0f1a', color: '#f1f5f9', fontSize: 14, outline: 'none', width: '100%', boxSizing: 'border-box' as const }}
-            />
+            <div style={{ position: 'relative', width: '100%' }}>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Access key"
+                value={secret}
+                onChange={e => setSecret(e.target.value)}
+                autoFocus
+                disabled={loginLocked}
+                style={{ padding: '12px 44px 12px 14px', borderRadius: 8, border: `1px solid ${error ? '#ef4444' : '#21262d'}`, background: '#0a0f1a', color: '#f1f5f9', fontSize: 14, outline: 'none', width: '100%', boxSizing: 'border-box' as const }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(v => !v)}
+                style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 4, color: '#475569' }}
+                tabIndex={-1}
+              >
+                {showPassword ? (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                ) : (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                )}
+              </button>
+            </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               <input
                 type="text"
@@ -576,6 +628,7 @@ export default function AdminPage() {
           { id: 'buildrequests', label: 'Build Requests', badge: buildRequests.filter(r => r.status === 'new').length || null as number | null },
           { id: 'legal', label: 'Compliance', badge: null as number | null },
           { id: 'test', label: 'System Test', badge: null as number | null },
+          { id: 'revenue', label: 'Revenue', badge: null as number | null },
         ] as { id: typeof tab; label: string; badge: number | null }[]).map(item => (
           <button
             key={item.id}
@@ -1124,6 +1177,62 @@ export default function AdminPage() {
         {tab === 'legal' && <LegalTab />}
 
         {tab === 'test' && <TestTab sessionToken={sessionToken} baseUrl={BASE_URL} notify={notify} />}
+
+        {tab === 'revenue' && (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+              <div>
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: '#e2e8f0', margin: '0 0 4px' }}>Revenue</h2>
+                <p style={{ fontSize: 12, color: '#475569', margin: 0 }}>Live data from Stripe — active subscriptions and recent completed checkouts.</p>
+              </div>
+              <button onClick={() => loadRevenue(sessionToken)} style={{ padding: '6px 14px', borderRadius: 6, background: '#161b22', color: '#64748b', border: '1px solid #21262d', cursor: 'pointer', fontSize: 12 }}>↻ Refresh</button>
+            </div>
+            {revenueLoading && <p style={{ color: '#475569', fontSize: 13 }}>Loading Stripe data…</p>}
+            {revenue && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+                  {[
+                    { label: 'MRR', value: `$${revenue.mrr.toFixed(2)}`, color: '#4ade80' },
+                    { label: 'Active Subscriptions', value: String(revenue.activeSubscriptions), color: '#22d3ee' },
+                    { label: 'Last 20 Sales', value: `$${revenue.totalRevenueLast20.toFixed(2)}`, color: '#a78bfa' },
+                  ].map(stat => (
+                    <div key={stat.label} style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, padding: '18px 22px' }}>
+                      <div style={{ fontSize: 28, fontWeight: 800, color: stat.color, letterSpacing: '-1px' }}>{stat.value}</div>
+                      <div style={{ fontSize: 12, color: '#475569', marginTop: 4 }}>{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#334155', marginBottom: 12 }}>Recent Sales</p>
+                  <div style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, overflow: 'hidden' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                      <thead>
+                        <tr style={{ borderBottom: '1px solid #21262d', background: '#0a0f1a' }}>
+                          {['Customer', 'Product', 'Amount', 'Date'].map(h => (
+                            <th key={h} style={{ padding: '11px 16px', textAlign: h === 'Amount' || h === 'Date' ? 'right' : 'left', color: '#475569', fontWeight: 600, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {revenue.recentSales.length === 0 && (
+                          <tr><td colSpan={4} style={{ padding: 32, textAlign: 'center', color: '#334155' }}>No completed sales in recent sessions</td></tr>
+                        )}
+                        {revenue.recentSales.map((s, i) => (
+                          <tr key={s.id} style={{ borderBottom: '1px solid #161b22', background: i % 2 === 0 ? '#0d1117' : '#0a0f1a' }}>
+                            <td style={{ padding: '11px 16px', color: '#94a3b8', fontSize: 12 }}>{s.customerEmail}</td>
+                            <td style={{ padding: '11px 16px', color: '#64748b', fontSize: 12 }}>{s.productName}</td>
+                            <td style={{ padding: '11px 16px', textAlign: 'right', fontWeight: 700, color: '#e2e8f0' }}>${s.amount.toFixed(2)}</td>
+                            <td style={{ padding: '11px 16px', textAlign: 'right', color: '#475569', fontSize: 12 }}>{new Date(s.created * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )
