@@ -106,7 +106,10 @@ export default function NDAGeneratorPage() {
           <span className="text-sm font-bold text-white/30">1 free NDA/day · Unlimited with $79/month</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">NDA <span style={{ color: '#a78bfa' }}>Generator</span></h1>
-        <p className="text-white/55 text-base mb-6 max-w-2xl">Generate a complete, professionally worded Non-Disclosure Agreement in seconds. Fill in the details — get a ready-to-sign document.</p>
+        <p className="text-white/55 text-base mb-4 max-w-2xl">Generate a complete, professionally worded Non-Disclosure Agreement in seconds. Fill in the details — get a ready-to-sign document.</p>
+        <div className="mb-6 px-4 py-3 rounded-xl border text-xs leading-relaxed" style={{ background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.2)', color: 'rgba(251,191,36,0.7)' }}>
+          This tool generates document drafts using AI. Output is not legal advice and does not create an attorney-client relationship. Have a licensed attorney review any document before signing or publishing.
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>

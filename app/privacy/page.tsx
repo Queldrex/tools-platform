@@ -40,7 +40,7 @@ export default function PrivacyPage() {
                 <strong className="text-white/80">AI Visibility Monitor ($79/month)</strong> — your email address and monitored domain(s). We store monthly scan scores and history to power alerts and your dashboard. Retained while subscription is active and 12 months after cancellation.
               </li>
               <li>
-                <strong className="text-white/80">Agency Plan ($99/month)</strong> — agency name, email address, client domain list, and scan history for up to 25 client domains per month. Retained while subscription is active and 12 months after cancellation.
+                <strong className="text-white/80">Agency Plan ($299/month)</strong> — agency name, email address, client domain list, and scan history for up to 50 client domains per month. Retained while subscription is active and 12 months after cancellation.
               </li>
               <li>
                 <strong className="text-white/80">Pro Tools (Vibe Security Shield, API Schema Drift Scanner, Database Migration Safety Checker)</strong> — no separate account required. Tool usage is linked to your Monitor or Agency subscription. Code and data you submit for security scanning is processed in memory and not stored after the session.
@@ -157,13 +157,27 @@ export default function PrivacyPage() {
             <p className="mt-4">We do not use Google Analytics, Facebook Pixel, LinkedIn Insight Tag, or any advertising network technology.</p>
           </section>
 
+          <section id="gdpr">
+            <h2 className="text-base font-bold text-white mb-3">8. Additional Rights — EU/EEA Residents (GDPR)</h2>
+            <p className="mb-3">
+              If you are located in the European Union or European Economic Area, you have additional rights under the General Data Protection Regulation (GDPR). We process your personal data on the following legal bases:
+            </p>
+            <ul className="space-y-2 pl-4 list-disc mb-3">
+              <li><strong className="text-white/80">Contract performance</strong> — when you purchase a scan, subscribe, or use a paid tool, processing is necessary to deliver the service.</li>
+              <li><strong className="text-white/80">Legitimate interests</strong> — server logs for security, fraud prevention, and abuse detection.</li>
+              <li><strong className="text-white/80">Legal obligations</strong> — tax records and business compliance.</li>
+            </ul>
+            <p className="mb-3">In addition to the rights in Section 7, EU/EEA residents have the right to: object to processing based on legitimate interests; restrict processing in limited circumstances; and lodge a complaint with your local data protection authority (supervisory authority) in your EU member state.</p>
+            <p>We transfer data to US-based processors (Stripe, Vercel, Upstash, Resend) under standard contractual clauses or their applicable transfer mechanisms. We are not required to designate an EU representative as we do not engage in large-scale processing of EU personal data. Contact: <a href="mailto:hello@queldrex.com" className="text-cyan-400 hover:text-cyan-300">hello@queldrex.com</a>.</p>
+          </section>
+
           <section id="email-communications">
-            <h2 className="text-base font-bold text-white mb-3">10. Email Communications (CAN-SPAM)</h2>
+            <h2 className="text-base font-bold text-white mb-3">9. Email Communications (CAN-SPAM)</h2>
             <p className="mb-3">
               Queldrex sends transactional emails only: scan reports, subscription receipts, score alerts, and magic login links. These are not marketing emails. We do not send unsolicited commercial email. All emails include:
             </p>
             <ul className="space-y-2 pl-4 list-disc">
-              <li>Our identity (Queldrex LLC) and business address (Castle Rock, CO)</li>
+              <li>Our identity (Queldrex LLC) and business address (Castle Rock, CO 80104)</li>
               <li>A way to opt out of non-essential email communications</li>
             </ul>
             <p className="mt-3">To stop transactional emails, cancel your subscription or email <a href="mailto:hello@queldrex.com" className="text-cyan-400 hover:text-cyan-300">hello@queldrex.com</a>.</p>
