@@ -85,11 +85,8 @@ export default function HomePage() {
             <span style={{ background: 'linear-gradient(135deg, #a78bfa, #06b6d4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>to get things done.</span>
           </h1>
 
-          <p className="text-lg md:text-xl max-w-2xl mx-auto mb-4 leading-relaxed" style={{ color: '#A1A1AA' }}>
-            Security scanning, DNS health, legal documents, business analytics — everything your team reaches for, in one place.
-          </p>
-          <p className="text-sm max-w-xl mx-auto mb-10" style={{ color: 'rgba(255,255,255,0.3)' }}>
-            47 tools. Free to use right now. No signup, no waiting, no credit card.
+          <p className="text-lg md:text-xl max-w-xl mx-auto mb-10 leading-relaxed" style={{ color: '#A1A1AA' }}>
+            Security, DNS, legal docs, business analytics — 47 tools, free right now.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
