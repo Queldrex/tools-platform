@@ -19,14 +19,14 @@ export const metadata: Metadata = {
     siteName: 'Queldrex',
     title: 'Queldrex — Free Developer & Business Tools',
     description: '48 free tools for developers and small teams. No account required.',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Queldrex — Free Developer & Business Tools' }],
+    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Queldrex — Professional Tools for Developers' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Queldrex — Free Developer & Business Tools',
     description: '48 free tools for developers and small teams. No account required.',
     site: '@queldrex',
-    images: ['/og-image.png'],
+    images: ['/opengraph-image'],
   },
   robots: {
     index: true,
