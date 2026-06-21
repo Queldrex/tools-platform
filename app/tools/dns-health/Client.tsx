@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
@@ -93,7 +93,7 @@ function DnsHealthContent() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#34d399', borderColor: 'rgba(52,211,153,0.3)', background: 'rgba(52,211,153,0.08)' }}>Live</span>
-          <span className="text-sm font-bold text-white/30">5 free checks/day · Unlimited with Pro</span>
+          <span className="text-sm font-bold text-white/30">5 free checks/day Â· Unlimited with Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">DNS <span style={{ color: '#34d399' }}>Health Check</span></h1>
         <p className="text-white/55 text-base mb-6 max-w-xl">Query A, AAAA, MX, NS, TXT, SOA, CAA, and DMARC records in real time via Cloudflare and Google DNS. Verify propagation status instantly.</p>
@@ -101,14 +101,14 @@ function DnsHealthContent() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">How it works</p>
-            <p className="text-sm text-white/60 leading-relaxed">Queries both Cloudflare (1.1.1.1) and Google (8.8.8.8) DNS resolvers simultaneously, then compares results to detect propagation mismatches. Returns A, AAAA, MX, TXT, NS, CNAME, and CAA records in real-time. All queries use DNS-over-HTTPS for privacy — no UDP leakage.</p>
+            <p className="text-sm text-white/60 leading-relaxed">Queries both Cloudflare (1.1.1.1) and Google (8.8.8.8) DNS resolvers simultaneously, then compares results to detect propagation mismatches. Returns A, AAAA, MX, TXT, NS, CNAME, and CAA records in real-time. All queries use DNS-over-HTTPS for privacy â€” no UDP leakage.</p>
           </div>
           <div className="rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">What you get</p>
             <ul className="space-y-2">
-              {['A, AAAA, MX, TXT, NS, CNAME, and CAA records', 'Side-by-side Cloudflare vs Google resolver results', 'Propagation status — do both resolvers agree?', 'TTL values for every record', 'SPF record parsed and highlighted from TXT records'].map((item, i) => (
+              {['A, AAAA, MX, TXT, NS, CNAME, and CAA records', 'Side-by-side Cloudflare vs Google resolver results', 'Propagation status â€” do both resolvers agree?', 'TTL values for every record', 'SPF record parsed and highlighted from TXT records'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-white/55">
-                  <span className="text-green-400 mt-0.5 flex-shrink-0">✓</span>{item}
+                  <span className="text-green-400 mt-0.5 flex-shrink-0">âœ“</span>{item}
                 </li>
               ))}
             </ul>
@@ -124,12 +124,12 @@ function DnsHealthContent() {
             <button onClick={() => check()} disabled={loading || !domain.trim()}
               className="px-5 py-3 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.02] disabled:opacity-50 whitespace-nowrap"
               style={{ background: 'linear-gradient(135deg,#34d399,#059669)', boxShadow: '0 0 16px rgba(52,211,153,0.25)' }}>
-              {loading ? 'Querying DNS…' : <>Check DNS <span className="opacity-30 text-xs">⌘↵</span></>}
+              {loading ? 'Querying DNSâ€¦' : <>Check DNS <span className="opacity-30 text-xs">âŒ˜â†µ</span></>}
             </button>
           </div>
           <div className="flex justify-end mt-3">
             <button onClick={loadExample} disabled={loading} className="px-4 py-2 rounded-xl text-sm font-bold border transition-colors hover:bg-white/5 disabled:opacity-40" style={{ color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.1)' }}>
-              Try Example → cloudflare.com
+              Try Example â†’ cloudflare.com
             </button>
           </div>
         </div>
@@ -138,8 +138,8 @@ function DnsHealthContent() {
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(52,211,153,0.05)', borderColor: 'rgba(52,211,153,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited DNS checks with Pro</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro includes unlimited DNS monitoring and full site health checks — $79/month.</p>
-            <Link href="/monitor" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#34d399,#059669)' }}>Start Pro — $79/month</Link>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro includes unlimited DNS monitoring and full site health checks â€” $79/month.</p>
+            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#34d399,#059669)' }}>Start Pro â€” $79/month</Link>
           </div>
         )}
 
@@ -163,7 +163,7 @@ function DnsHealthContent() {
               <button onClick={shareResult}
                 className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all hover:bg-white/5"
                 style={{ color: shared ? '#4ade80' : 'rgba(255,255,255,0.4)', borderColor: shared ? 'rgba(74,222,128,0.3)' : 'rgba(255,255,255,0.1)' }}>
-                {shared ? '✓ Copied!' : '🔗 Share result'}
+                {shared ? 'âœ“ Copied!' : 'ðŸ”— Share result'}
               </button>
             </div>
 
@@ -198,7 +198,7 @@ function DnsHealthContent() {
                       ))}
                       {key === 'SOA' && rec.data[0] && (() => {
                         const s = rec.data[0] as unknown as SoaData
-                        return <div className="font-mono text-xs text-white/60">{s.mname} · Serial {s.serial} · Refresh {formatTTL(s.refresh)}</div>
+                        return <div className="font-mono text-xs text-white/60">{s.mname} Â· Serial {s.serial} Â· Refresh {formatTTL(s.refresh)}</div>
                       })()}
                       {key === 'CAA' && (rec.data as CaaRecord[]).map((r, i) => (
                         <div key={i} className="font-mono text-xs text-white/60">{r.tag} &quot;{r.value}&quot;</div>
@@ -216,8 +216,8 @@ function DnsHealthContent() {
 
         <section className="mt-16 pt-8 border-t max-w-2xl" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-lg font-black text-white mb-4">How DNS health checking works</h2>
-          <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>This tool queries both Cloudflare (1.1.1.1) and Google (8.8.8.8) DNS resolvers simultaneously. If the two resolvers return different results for your domain, DNS propagation is still in progress — your zone change has reached one resolver but not the other. This is normal for 1 to 48 hours after a record change, depending on your TTL.</p>
-          <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>Each DNS record type has a specific role. A records map your domain to an IPv4 address. AAAA records do the same for IPv6. MX records control which mail servers receive your email — priority numbers determine delivery order (lower = higher priority). TXT records carry SPF (authorized senders), DKIM (cryptographic signature), and domain verification tokens. NS records identify your authoritative nameservers — these change when you migrate DNS providers. CAA records restrict which Certificate Authorities can issue SSL certs for your domain.</p>
+          <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>This tool queries both Cloudflare (1.1.1.1) and Google (8.8.8.8) DNS resolvers simultaneously. If the two resolvers return different results for your domain, DNS propagation is still in progress â€” your zone change has reached one resolver but not the other. This is normal for 1 to 48 hours after a record change, depending on your TTL.</p>
+          <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>Each DNS record type has a specific role. A records map your domain to an IPv4 address. AAAA records do the same for IPv6. MX records control which mail servers receive your email â€” priority numbers determine delivery order (lower = higher priority). TXT records carry SPF (authorized senders), DKIM (cryptographic signature), and domain verification tokens. NS records identify your authoritative nameservers â€” these change when you migrate DNS providers. CAA records restrict which Certificate Authorities can issue SSL certs for your domain.</p>
           <p className="text-sm leading-relaxed" style={{ color: '#A1A1AA' }}>TTL (Time to Live) is how long resolvers cache your DNS records before re-querying. Low TTLs (300 seconds) mean changes propagate quickly but increase DNS query load. High TTLs (86400 seconds = 1 day) reduce load but slow propagation. Best practice: lower your TTL to 300 before any planned migration, wait for the old TTL to expire, make the change, then raise the TTL back after the migration is complete.</p>
         </section>
       </main>

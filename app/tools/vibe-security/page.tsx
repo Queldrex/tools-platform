@@ -151,7 +151,7 @@ export default function VibeSecurityPage() {
             <h3 className="text-xl font-black text-white mb-2">Unlimited scans with Pro</h3>
             <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro subscribers get unlimited code scans, all tools, and monthly AI visibility monitoring — $79/month, cancel anytime.</p>
             <div className="flex items-center justify-center gap-3 flex-wrap">
-              <Link href="/monitor" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>
+              <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>
                 Start Pro — $79/month
               </Link>
               <Link href="/pricing" className="text-sm text-white/45 hover:text-white transition-colors">See all features →</Link>

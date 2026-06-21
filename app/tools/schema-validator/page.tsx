@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
@@ -66,7 +66,7 @@ export default function SchemaValidatorPage() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#06d6ff', borderColor: 'rgba(6,214,255,0.3)', background: 'rgba(6,214,255,0.08)' }}>Live</span>
-          <span className="text-sm font-bold text-white/30">2 free analyses/day · Unlimited with Pro</span>
+          <span className="text-sm font-bold text-white/30">2 free analyses/day Â· Unlimited with Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Schema.org <span style={{ color: '#06d6ff' }}>AI Visibility Validator</span></h1>
         <p className="text-white/55 text-base mb-8 max-w-xl">Extract and validate JSON-LD structured data from any URL. Get an AI visibility score showing how likely your content is to appear in ChatGPT, Perplexity, and Gemini answers.</p>
@@ -80,7 +80,7 @@ export default function SchemaValidatorPage() {
             <button onClick={analyze} disabled={loading || !url.trim()}
               className="px-5 py-3 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.02] disabled:opacity-50 whitespace-nowrap"
               style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 16px rgba(6,214,255,0.25)' }}>
-              {loading ? 'Fetching…' : 'Analyze'}
+              {loading ? 'Fetchingâ€¦' : 'Analyze'}
             </button>
           </div>
         </div>
@@ -89,8 +89,8 @@ export default function SchemaValidatorPage() {
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(6,214,255,0.05)', borderColor: 'rgba(6,214,255,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Full AI visibility monitoring with Pro</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro includes monthly AI visibility scans across your entire site, schema recommendations, and competitor benchmarking — $79/month.</p>
-            <Link href="/monitor" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro — $79/month</Link>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro includes monthly AI visibility scans across your entire site, schema recommendations, and competitor benchmarking â€” $79/month.</p>
+            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro â€” $79/month</Link>
           </div>
         )}
 
@@ -113,7 +113,7 @@ export default function SchemaValidatorPage() {
               <div className="rounded-xl border px-5 py-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
                 <div className="text-xs font-black uppercase tracking-widest text-white/35 mb-3">AI Visibility Recommendations</div>
                 <ul className="space-y-2">
-                  {result.recommendations.map((r, i) => <li key={i} className="text-sm text-white/65 flex items-start gap-2"><span style={{ color: '#06d6ff' }} className="flex-shrink-0 mt-0.5">→</span>{r}</li>)}
+                  {result.recommendations.map((r, i) => <li key={i} className="text-sm text-white/65 flex items-start gap-2"><span style={{ color: '#06d6ff' }} className="flex-shrink-0 mt-0.5">â†’</span>{r}</li>)}
                 </ul>
               </div>
             )}
@@ -138,7 +138,7 @@ export default function SchemaValidatorPage() {
                 </button>
                 {expanded.has(i) && (
                   <div className="border-t px-5 py-4 space-y-3" style={{ background: '#0a0f1a', borderColor: 'rgba(255,255,255,0.05)' }}>
-                    {s.errors.map((e, j) => <div key={j} className="text-xs text-red-400 flex gap-2"><span>✕</span>{e}</div>)}
+                    {s.errors.map((e, j) => <div key={j} className="text-xs text-red-400 flex gap-2"><span>âœ•</span>{e}</div>)}
                     {s.warnings.map((w, j) => <div key={j} className="text-xs text-yellow-400 flex gap-2"><span>!</span>{w}</div>)}
                     <div><div className="text-xs font-black text-white/30 mb-1.5 uppercase tracking-wider">Properties</div>
                       <div className="flex flex-wrap gap-1.5">{s.properties.map(p => <span key={p} className="text-xs font-mono px-2 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.4)' }}>{p}</span>)}</div>
@@ -149,7 +149,7 @@ export default function SchemaValidatorPage() {
             ))}
 
             <div className="rounded-xl border px-5 py-4" style={{ background: 'rgba(6,214,255,0.04)', borderColor: 'rgba(6,214,255,0.15)' }}>
-              <p className="text-xs text-white/50">Want a full AI visibility report across your entire site? <Link href="/monitor" className="font-bold text-cyan-400 hover:underline">Queldrex Pro</Link> monitors all your pages monthly and tracks how often you appear in AI-generated answers.</p>
+              <p className="text-xs text-white/50">Want a full AI visibility report across your entire site? <Link href="/pricing" className="font-bold text-cyan-400 hover:underline">Queldrex Pro</Link> monitors all your pages monthly and tracks how often you appear in AI-generated answers.</p>
             </div>
           </div>
         )}

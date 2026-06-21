@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
@@ -80,22 +80,22 @@ function SSLInspectorContent() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#a78bfa', borderColor: 'rgba(167,139,250,0.3)', background: 'rgba(167,139,250,0.08)' }}>Live</span>
-          <span className="text-sm font-bold text-white/30">3 free inspections/day · Unlimited with Pro</span>
+          <span className="text-sm font-bold text-white/30">3 free inspections/day Â· Unlimited with Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">SSL / TLS <span style={{ color: '#a78bfa' }}>Inspector</span></h1>
-        <p className="text-white/55 text-base mb-6 max-w-xl">Real TLS handshake — checks certificate expiry, cipher strength, protocol version, and security headers. No external scan APIs. Direct socket connection to your server.</p>
+        <p className="text-white/55 text-base mb-6 max-w-xl">Real TLS handshake â€” checks certificate expiry, cipher strength, protocol version, and security headers. No external scan APIs. Direct socket connection to your server.</p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">How it works</p>
-            <p className="text-sm text-white/60 leading-relaxed">Connects directly to your server and performs a real TLS handshake — the same way a browser would. Reads the actual certificate chain, checks expiry, detects deprecated protocols (TLS 1.0/1.1), and inspects your HTTP security headers. No third-party APIs — raw socket connection to port 443.</p>
+            <p className="text-sm text-white/60 leading-relaxed">Connects directly to your server and performs a real TLS handshake â€” the same way a browser would. Reads the actual certificate chain, checks expiry, detects deprecated protocols (TLS 1.0/1.1), and inspects your HTTP security headers. No third-party APIs â€” raw socket connection to port 443.</p>
           </div>
           <div className="rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">What you get</p>
             <ul className="space-y-2">
-              {['Certificate issuer, expiry date, and days remaining', 'TLS protocol version (1.2 vs 1.3) and cipher suite', 'Security header audit: HSTS, CSP, X-Frame-Options', 'Overall grade: A+ to F with specific issues', 'Subject Alternative Names (SANs) — all domains on the cert'].map((item, i) => (
+              {['Certificate issuer, expiry date, and days remaining', 'TLS protocol version (1.2 vs 1.3) and cipher suite', 'Security header audit: HSTS, CSP, X-Frame-Options', 'Overall grade: A+ to F with specific issues', 'Subject Alternative Names (SANs) â€” all domains on the cert'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-white/55">
-                  <span className="text-green-400 mt-0.5 flex-shrink-0">✓</span>{item}
+                  <span className="text-green-400 mt-0.5 flex-shrink-0">âœ“</span>{item}
                 </li>
               ))}
             </ul>
@@ -111,12 +111,12 @@ function SSLInspectorContent() {
             <button onClick={() => inspect()} disabled={loading || !domain.trim()}
               className="px-5 py-3 rounded-xl text-sm font-black text-white transition-all hover:scale-[1.02] disabled:opacity-50 whitespace-nowrap"
               style={{ background: 'linear-gradient(135deg,#7c3aed,#6d28d9)', boxShadow: '0 0 16px rgba(124,58,237,0.3)' }}>
-              {loading ? 'Connecting…' : <>Inspect <span className="opacity-30 text-xs">⌘↵</span></>}
+              {loading ? 'Connectingâ€¦' : <>Inspect <span className="opacity-30 text-xs">âŒ˜â†µ</span></>}
             </button>
           </div>
           <div className="flex justify-end mt-3">
             <button onClick={loadExample} disabled={loading} className="px-4 py-2 rounded-xl text-sm font-bold border transition-colors hover:bg-white/5 disabled:opacity-40" style={{ color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.1)' }}>
-              Try Example → github.com
+              Try Example â†’ github.com
             </button>
           </div>
         </div>
@@ -125,8 +125,8 @@ function SSLInspectorContent() {
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(167,139,250,0.05)', borderColor: 'rgba(167,139,250,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited inspections with Pro</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Monitor SSL health across all your domains with Pro — $79/month.</p>
-            <Link href="/monitor" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-white" style={{ background: 'linear-gradient(135deg,#7c3aed,#6d28d9)' }}>Start Pro — $79/month</Link>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Monitor SSL health across all your domains with Pro â€” $79/month.</p>
+            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-white" style={{ background: 'linear-gradient(135deg,#7c3aed,#6d28d9)' }}>Start Pro â€” $79/month</Link>
           </div>
         )}
 
@@ -151,7 +151,7 @@ function SSLInspectorContent() {
               <button onClick={shareResult}
                 className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all hover:bg-white/5"
                 style={{ color: shared ? '#4ade80' : 'rgba(255,255,255,0.4)', borderColor: shared ? 'rgba(74,222,128,0.3)' : 'rgba(255,255,255,0.1)' }}>
-                {shared ? '✓ Copied!' : '🔗 Share result'}
+                {shared ? 'âœ“ Copied!' : 'ðŸ”— Share result'}
               </button>
             </div>
 
@@ -159,7 +159,7 @@ function SSLInspectorContent() {
               <div className="rounded-xl border px-5 py-4" style={{ background: 'rgba(248,113,113,0.05)', borderColor: 'rgba(248,113,113,0.15)' }}>
                 <div className="text-xs font-black uppercase tracking-widest text-red-400 mb-3">Issues Found</div>
                 <ul className="space-y-2">
-                  {result.issues.map((issue, i) => <li key={i} className="text-sm text-white/70 flex items-start gap-2"><span className="text-red-400 flex-shrink-0 mt-0.5">•</span>{issue}</li>)}
+                  {result.issues.map((issue, i) => <li key={i} className="text-sm text-white/70 flex items-start gap-2"><span className="text-red-400 flex-shrink-0 mt-0.5">â€¢</span>{issue}</li>)}
                 </ul>
               </div>
             )}
@@ -194,9 +194,9 @@ function SSLInspectorContent() {
 
         <section className="mt-16 pt-8 border-t max-w-2xl" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-lg font-black text-white mb-4">How SSL/TLS inspection works</h2>
-          <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>This tool opens a real TLS handshake to your server — the same process a browser performs when you visit an HTTPS site. It reads the certificate chain directly from the server, not from a cached database. You get the actual expiry date, the issuer, every domain on the certificate (Subject Alternative Names), the negotiated TLS version, and the cipher suite your server prefers.</p>
+          <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>This tool opens a real TLS handshake to your server â€” the same process a browser performs when you visit an HTTPS site. It reads the certificate chain directly from the server, not from a cached database. You get the actual expiry date, the issuer, every domain on the certificate (Subject Alternative Names), the negotiated TLS version, and the cipher suite your server prefers.</p>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>TLS 1.3 is the current standard. If your server still negotiates TLS 1.2 it will work but may lose points on security audits. TLS 1.0 and 1.1 are deprecated and will cause browser warnings on some configurations. The cipher suite matters too: ECDHE key exchange with AES-GCM encryption is what you want; RC4 or 3DES are deprecated and insecure.</p>
-          <p className="text-sm leading-relaxed" style={{ color: '#A1A1AA' }}>Certificate expiry is the most common cause of preventable outages. Browsers show a hard error when a cert expires — no warning, no bypass for most users. If your cert expires in under 30 days, set up auto-renewal immediately. Let&apos;s Encrypt renews at 60 days remaining; most commercial CAs renew at 30 days. Wildcard certs cover all subdomains but require DNS-01 challenge validation and don&apos;t appear in public Certificate Transparency logs per subdomain.</p>
+          <p className="text-sm leading-relaxed" style={{ color: '#A1A1AA' }}>Certificate expiry is the most common cause of preventable outages. Browsers show a hard error when a cert expires â€” no warning, no bypass for most users. If your cert expires in under 30 days, set up auto-renewal immediately. Let&apos;s Encrypt renews at 60 days remaining; most commercial CAs renew at 30 days. Wildcard certs cover all subdomains but require DNS-01 challenge validation and don&apos;t appear in public Certificate Transparency logs per subdomain.</p>
         </section>
       </main>
       <Footer />

@@ -125,7 +125,7 @@ export default function PrivacyAnalyzerPage() {
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(251,146,60,0.05)', borderColor: 'rgba(251,146,60,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited policy analysis with Pro</h3>
             <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro gives you unlimited GDPR/CCPA analysis and full compliance reports â€” $79/month.</p>
-            <Link href="/monitor" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-white" style={{ background: 'linear-gradient(135deg,#ea580c,#c2410c)' }}>Start Pro â€” $79/month</Link>
+            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-white" style={{ background: 'linear-gradient(135deg,#ea580c,#c2410c)' }}>Start Pro â€” $79/month</Link>
           </div>
         )}
 

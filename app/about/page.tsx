@@ -40,7 +40,7 @@ const WHAT_WE_BUILD = [
 
 const FACTS = [
   { label: 'Castle Rock, CO', sub: 'Colorado LLC' },
-  { label: 'Founded 2026', sub: 'Moving fast' },
+  { label: 'Founded 2024', sub: 'Moving fast' },
   { label: '48 Tools Live', sub: 'All working, all real' },
   { label: 'Real Data Only', sub: 'No simulated results, ever' },
 ]

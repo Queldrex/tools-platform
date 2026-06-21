@@ -229,7 +229,7 @@ export default function HomePage() {
                 48 tools across 4 categories
               </h2>
               <p className="text-lg" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                Every tool free to start. Pro unlocks unlimited access to all of them.
+                Every tool free to start. Go Pro for unlimited access.
               </p>
             </div>
           </ScrollReveal>

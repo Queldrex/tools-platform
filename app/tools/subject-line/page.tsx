@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
@@ -91,7 +91,7 @@ export default function SubjectLinePage() {
   const gradeColor = result ? (result.score >= 70 ? '#06d6ff' : result.score >= 50 ? '#facc15' : '#f87171') : '#06d6ff'
 
   const loadExample = () => {
-    handleChange("Your free trial expires in 24 hours — here's what you'll lose")
+    handleChange("Your free trial expires in 24 hours â€” here's what you'll lose")
   }
 
   return (
@@ -104,22 +104,22 @@ export default function SubjectLinePage() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#06d6ff', borderColor: 'rgba(6,214,255,0.3)', background: 'rgba(6,214,255,0.08)' }}>Instant</span>
-          <span className="text-sm font-bold text-white/30">5 free tests/day · Unlimited with $79/month Pro</span>
+          <span className="text-sm font-bold text-white/30">5 free tests/day Â· Unlimited with $79/month Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Email Subject Line <span style={{ color: '#06d6ff' }}>Tester</span></h1>
-        <p className="text-white/55 text-base mb-6 max-w-2xl">Score your subject line in real time — spam risk, personalization, power words, emoji, and open rate estimate. No AI, no waiting.</p>
+        <p className="text-white/55 text-base mb-6 max-w-2xl">Score your subject line in real time â€” spam risk, personalization, power words, emoji, and open rate estimate. No AI, no waiting.</p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">How it works</p>
-            <p className="text-sm text-white/60 leading-relaxed">Scores email subject lines across 7 dimensions using deterministic rules — no AI, instant results. Checks length (35-50 chars is optimal), spam words, power words, personalization signals, question format, emoji usage, and number inclusion. Also generates 3 alternative subject lines and estimates open rate based on aggregate benchmarks.</p>
+            <p className="text-sm text-white/60 leading-relaxed">Scores email subject lines across 7 dimensions using deterministic rules â€” no AI, instant results. Checks length (35-50 chars is optimal), spam words, power words, personalization signals, question format, emoji usage, and number inclusion. Also generates 3 alternative subject lines and estimates open rate based on aggregate benchmarks.</p>
           </div>
           <div className="rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">What you get</p>
             <ul className="space-y-2">
               {['Score out of 100 with letter grade', 'Estimated open rate range based on score', '7-dimension breakdown with specific feedback', 'Spam word detection with list of flagged words', '3 alternative subject lines you can use immediately'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-white/55">
-                  <span className="text-green-400 mt-0.5 flex-shrink-0">✓</span>{item}
+                  <span className="text-green-400 mt-0.5 flex-shrink-0">âœ“</span>{item}
                 </li>
               ))}
             </ul>
@@ -139,7 +139,7 @@ export default function SubjectLinePage() {
             </div>
           </div>
           <div className="flex justify-end -mt-1 mb-3">
-            <button onClick={loadExample} className="px-4 py-2 rounded-xl text-sm font-bold border transition-colors hover:bg-white/5" style={{ color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.1)' }}>Try Example →</button>
+            <button onClick={loadExample} className="px-4 py-2 rounded-xl text-sm font-bold border transition-colors hover:bg-white/5" style={{ color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.1)' }}>Try Example â†’</button>
           </div>
           <div>
             <label className="block text-xs font-bold uppercase tracking-widest text-white/35 mb-2">Preheader (optional)</label>
@@ -152,8 +152,8 @@ export default function SubjectLinePage() {
         {paywall && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(6,214,255,0.05)', borderColor: 'rgba(6,214,255,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited testing with Pro</h3>
-            <p className="text-white/50 text-sm mb-6">Test unlimited subject lines — $79/month.</p>
-            <Link href="/monitor" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro — $79/month</Link>
+            <p className="text-white/50 text-sm mb-6">Test unlimited subject lines â€” $79/month.</p>
+            <Link href="/pricing" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro â€” $79/month</Link>
           </div>
         )}
 
@@ -165,7 +165,7 @@ export default function SubjectLinePage() {
                 <div className="flex-1">
                   <div className="text-2xl font-black mb-1" style={{ color: gradeColor }}>Grade {result.grade}</div>
                   <p className="text-sm text-white/55 mb-2">{result.estimatedOpenRate}</p>
-                  <p className="text-xs text-white/30">{result.characterCount} chars · {result.wordCount} words</p>
+                  <p className="text-xs text-white/30">{result.characterCount} chars Â· {result.wordCount} words</p>
                 </div>
               </div>
             </div>
@@ -189,7 +189,7 @@ export default function SubjectLinePage() {
                     <ul className="space-y-1.5">
                       {result.issues.map((issue, i) => (
                         <li key={i} className="flex gap-2 text-xs text-white/60">
-                          <span className="text-amber-400 flex-shrink-0">⚠</span>
+                          <span className="text-amber-400 flex-shrink-0">âš </span>
                           {issue}
                         </li>
                       ))}
@@ -232,7 +232,7 @@ export default function SubjectLinePage() {
         {loading && !result && (
           <div className="flex items-center gap-3 text-sm text-white/35 py-8">
             <div className="w-4 h-4 border-2 border-white/15 border-t-cyan-400 rounded-full animate-spin" />
-            Analyzing…
+            Analyzingâ€¦
           </div>
         )}
       </main>

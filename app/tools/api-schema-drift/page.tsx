@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -100,7 +100,7 @@ export default function ApiSchemaDriftPage() {
 
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: 'rgb(99,102,241)', borderColor: 'rgba(99,102,241,0.3)', background: 'rgba(99,102,241,0.08)' }}>Live</span>
-          <span className="text-sm font-bold text-white/30">Pro Tool · Unlimited with $79/month</span>
+          <span className="text-sm font-bold text-white/30">Pro Tool Â· Unlimited with $79/month</span>
         </div>
 
         <h1 className="text-4xl font-black text-white mb-3">API Schema <span style={{ color: 'rgb(99,102,241)' }}>Drift Scanner</span></h1>
@@ -111,7 +111,7 @@ export default function ApiSchemaDriftPage() {
             <div key={side} className="rounded-2xl border p-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-bold text-white/50 uppercase tracking-wider">{label}</span>
-                <button onClick={() => set(example)} className="text-xs text-white/30 hover:text-white/60 transition-colors">Load example →</button>
+                <button onClick={() => set(example)} className="text-xs text-white/30 hover:text-white/60 transition-colors">Load example â†’</button>
               </div>
               <textarea
                 value={value}
@@ -132,7 +132,7 @@ export default function ApiSchemaDriftPage() {
             className="flex items-center gap-2 px-8 py-3.5 rounded-xl text-sm font-black text-white transition-all hover:scale-[1.02] disabled:opacity-50"
             style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)', boxShadow: '0 0 24px rgba(99,102,241,0.35)' }}
           >
-            {loading ? 'Comparing…' : 'Compare Schemas'}
+            {loading ? 'Comparingâ€¦' : 'Compare Schemas'}
           </button>
         </div>
 
@@ -142,15 +142,15 @@ export default function ApiSchemaDriftPage() {
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.2)' }}>
             <svg className="w-10 h-10 mx-auto mb-4" style={{ color: 'rgb(99,102,241)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
             <h3 className="text-xl font-black text-white mb-2">Unlimited comparisons with Pro</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro includes all tools plus monthly AI visibility monitoring — $79/month, cancel anytime.</p>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro includes all tools plus monthly AI visibility monitoring â€” $79/month, cancel anytime.</p>
             <div className="flex items-center justify-center gap-3 flex-wrap">
-              <Link href="/monitor" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro — $79/month</Link>
-              <Link href="/pricing" className="text-sm text-white/45 hover:text-white transition-colors">See all features →</Link>
+              <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro â€” $79/month</Link>
+              <Link href="/pricing" className="text-sm text-white/45 hover:text-white transition-colors">See all features â†’</Link>
             </div>
           </div>
         )}
 
-        {/* Sample output — always visible */}
+        {/* Sample output â€” always visible */}
         {!result && !loading && (
           <div className="mt-10">
             <div className="flex items-center gap-3 mb-4">
@@ -178,9 +178,9 @@ export default function ApiSchemaDriftPage() {
             <div className="mb-3">
               <div className="text-xs font-bold uppercase tracking-widest text-red-400 mb-2">Breaking Changes</div>
               {[
-                { method: 'GET', path: '/users', detail: 'New required query parameter org_id added — existing clients will get 400 Bad Request' },
-                { method: 'GET', path: '/users/{id}', detail: 'Parameter id type changed string → integer — existing string IDs will fail validation' },
-                { method: 'DELETE', path: '/users/{id}', detail: 'Endpoint removed — clients calling this will get 404' },
+                { method: 'GET', path: '/users', detail: 'New required query parameter org_id added â€” existing clients will get 400 Bad Request' },
+                { method: 'GET', path: '/users/{id}', detail: 'Parameter id type changed string â†’ integer â€” existing string IDs will fail validation' },
+                { method: 'DELETE', path: '/users/{id}', detail: 'Endpoint removed â€” clients calling this will get 404' },
               ].map((b, i) => (
                 <div key={i} className="rounded-xl border p-4 mb-2" style={{ background: '#0d1117', borderColor: 'rgba(248,113,113,0.2)' }}>
                   <div className="flex items-start gap-3">
@@ -199,8 +199,8 @@ export default function ApiSchemaDriftPage() {
             <div>
               <div className="text-xs font-bold uppercase tracking-widest text-green-400 mb-2">Additive Changes (safe)</div>
               {[
-                { method: 'GET', path: '/users', detail: 'New response field createdAt added — backwards compatible' },
-                { method: 'GET', path: '/users/{id}/profile', detail: 'New endpoint added — clients unaffected' },
+                { method: 'GET', path: '/users', detail: 'New response field createdAt added â€” backwards compatible' },
+                { method: 'GET', path: '/users/{id}/profile', detail: 'New endpoint added â€” clients unaffected' },
               ].map((a, i) => (
                 <div key={i} className="rounded-xl border p-4 mb-2" style={{ background: '#0d1117', borderColor: 'rgba(74,222,128,0.15)' }}>
                   <div className="flex items-start gap-3">
@@ -214,7 +214,7 @@ export default function ApiSchemaDriftPage() {
                 </div>
               ))}
             </div>
-            <p className="text-[10px] text-white/20 text-center mt-3">← This is a sample. Your drift report will appear here.</p>
+            <p className="text-[10px] text-white/20 text-center mt-3">â† This is a sample. Your drift report will appear here.</p>
           </div>
         )}
 

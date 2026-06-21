@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
@@ -44,10 +44,10 @@ export default function EmailDeliverabilityPage() {
   const loadExample = () => { setDomain('mailchimp.com'); check('mailchimp.com') }
 
   const checks: CheckItem[] = result ? [
-    { label: 'SPF Record', pass: result.spf.found, detail: result.spf.found ? (result.spf.passAll ? '~all (softfail)' : result.spf.record?.slice(0, 80)) : 'No SPF record found — emails may fail delivery' },
-    { label: 'DMARC Policy', pass: result.dmarc.found, detail: result.dmarc.found ? `p=${result.dmarc.policy}` : 'No DMARC record — spoofed emails will not be blocked' },
-    { label: 'DKIM Selectors', pass: result.dkim.selectorsFound.length > 0, detail: result.dkim.selectorsFound.length > 0 ? `Found: ${result.dkim.selectorsFound.join(', ')}` : `Checked ${result.dkim.selectorsChecked.length} common selectors — none found` },
-    { label: 'MX Records', pass: result.mx.found, detail: result.mx.found ? result.mx.records.map(r => `${r.exchange} (${r.priority})`).join(', ').slice(0, 100) : 'No MX records — domain cannot receive email' },
+    { label: 'SPF Record', pass: result.spf.found, detail: result.spf.found ? (result.spf.passAll ? '~all (softfail)' : result.spf.record?.slice(0, 80)) : 'No SPF record found â€” emails may fail delivery' },
+    { label: 'DMARC Policy', pass: result.dmarc.found, detail: result.dmarc.found ? `p=${result.dmarc.policy}` : 'No DMARC record â€” spoofed emails will not be blocked' },
+    { label: 'DKIM Selectors', pass: result.dkim.selectorsFound.length > 0, detail: result.dkim.selectorsFound.length > 0 ? `Found: ${result.dkim.selectorsFound.join(', ')}` : `Checked ${result.dkim.selectorsChecked.length} common selectors â€” none found` },
+    { label: 'MX Records', pass: result.mx.found, detail: result.mx.found ? result.mx.records.map(r => `${r.exchange} (${r.priority})`).join(', ').slice(0, 100) : 'No MX records â€” domain cannot receive email' },
     { label: 'Blacklist Clean', pass: !result.blacklisted, detail: result.blacklisted ? `Listed on: ${result.blacklists.filter(b => b.listed).map(b => b.host).join(', ')}` : `Clean across ${result.blacklists.length} RBL blacklists` },
   ] : []
 
@@ -60,7 +60,7 @@ export default function EmailDeliverabilityPage() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#06d6ff', borderColor: 'rgba(6,214,255,0.3)', background: 'rgba(6,214,255,0.08)' }}>Live</span>
-          <span className="text-sm font-bold text-white/30">3 free checks/day · Unlimited with Pro</span>
+          <span className="text-sm font-bold text-white/30">3 free checks/day Â· Unlimited with Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Email <span style={{ color: '#06d6ff' }}>Deliverability Checker</span></h1>
         <p className="text-white/55 text-base mb-6 max-w-xl">Check SPF, DMARC, DKIM, MX records, and blacklist status for any domain. Real DNS lookups via Cloudflare. Know exactly why your emails land in spam.</p>
@@ -75,7 +75,7 @@ export default function EmailDeliverabilityPage() {
             <ul className="space-y-2">
               {['SPF record and policy strength (pass / softfail / fail)', 'DKIM selectors found (Google, SendGrid, Mailchimp +12)', 'DMARC policy: p=none vs p=quarantine vs p=reject', 'MX records with priority order', 'Deliverability score with plain-English explanation'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-white/55">
-                  <span className="text-green-400 mt-0.5 flex-shrink-0">✓</span>{item}
+                  <span className="text-green-400 mt-0.5 flex-shrink-0">âœ“</span>{item}
                 </li>
               ))}
             </ul>
@@ -91,12 +91,12 @@ export default function EmailDeliverabilityPage() {
             <button onClick={() => check()} disabled={loading || !domain.trim()}
               className="px-5 py-3 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.02] disabled:opacity-50 whitespace-nowrap"
               style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 16px rgba(6,214,255,0.25)' }}>
-              {loading ? 'Checking DNS…' : 'Check'}
+              {loading ? 'Checking DNSâ€¦' : 'Check'}
             </button>
           </div>
           <div className="flex justify-end mt-3">
             <button onClick={loadExample} disabled={loading} className="px-4 py-2 rounded-xl text-sm font-bold border transition-colors hover:bg-white/5 disabled:opacity-40" style={{ color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.1)' }}>
-              Try Example → mailchimp.com
+              Try Example â†’ mailchimp.com
             </button>
           </div>
         </div>
@@ -105,8 +105,8 @@ export default function EmailDeliverabilityPage() {
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(6,214,255,0.05)', borderColor: 'rgba(6,214,255,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited checks with Pro</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Monitor all your domains for deliverability issues with Pro — $79/month.</p>
-            <Link href="/monitor" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro — $79/month</Link>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Monitor all your domains for deliverability issues with Pro â€” $79/month.</p>
+            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro â€” $79/month</Link>
           </div>
         )}
 
@@ -143,8 +143,8 @@ export default function EmailDeliverabilityPage() {
         <section className="mt-16 pt-8 border-t max-w-2xl" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-lg font-black text-white mb-4">SPF, DKIM, and DMARC explained</h2>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>SPF (Sender Policy Framework) is a DNS TXT record that lists which mail servers are authorized to send email for your domain. When a recipient server receives a message from you, it checks the sending IP against your SPF record. A &quot;softfail&quot; (~all) flags unauthorized senders but still delivers the message. A &quot;fail&quot; (-all) tells servers to reject them outright. Missing SPF means anyone can spoof your domain as a sender.</p>
-          <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>DKIM (DomainKeys Identified Mail) adds a cryptographic signature to every outbound email. The signature is verified using a public key published in your DNS. Even if a message is forwarded or relayed, the signature travels with it. Without DKIM, your emails have no proof of authenticity — spam filters treat them with more suspicion, and phishing using your domain name is trivial.</p>
-          <p className="text-sm leading-relaxed" style={{ color: '#A1A1AA' }}>DMARC ties SPF and DKIM together and tells recipient servers what to do with email that fails both checks. &quot;p=none&quot; only sends reports — no filtering. &quot;p=quarantine&quot; routes failing messages to spam. &quot;p=reject&quot; blocks them entirely. A perfect score means SPF is present with -all, DKIM is configured, and DMARC is set to at least p=quarantine with an rua reporting address. Google and Yahoo now require these records for bulk senders.</p>
+          <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>DKIM (DomainKeys Identified Mail) adds a cryptographic signature to every outbound email. The signature is verified using a public key published in your DNS. Even if a message is forwarded or relayed, the signature travels with it. Without DKIM, your emails have no proof of authenticity â€” spam filters treat them with more suspicion, and phishing using your domain name is trivial.</p>
+          <p className="text-sm leading-relaxed" style={{ color: '#A1A1AA' }}>DMARC ties SPF and DKIM together and tells recipient servers what to do with email that fails both checks. &quot;p=none&quot; only sends reports â€” no filtering. &quot;p=quarantine&quot; routes failing messages to spam. &quot;p=reject&quot; blocks them entirely. A perfect score means SPF is present with -all, DKIM is configured, and DMARC is set to at least p=quarantine with an rua reporting address. Google and Yahoo now require these records for bulk senders.</p>
         </section>
       </main>
       <Footer />

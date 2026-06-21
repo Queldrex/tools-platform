@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     default: 'Queldrex — Free Developer & Business Tools',
     template: '%s | Queldrex',
   },
-  description: 'Free tools for developers and small teams. DNS health checker, SSL inspector, CVE scanner, NDA generator, break-even calculator, and 40+ more. No account required.',
+  description: '48 tools for developers and small teams. Security scanning, DNS health, legal documents, business analytics, and more. No account required.',
   keywords: ['developer tools', 'dns health checker', 'ssl checker', 'cve scanner', 'nda generator', 'free online tools', 'security tools', 'business tools'],
   authors: [{ name: 'Queldrex LLC' }],
   creator: 'Queldrex LLC',
