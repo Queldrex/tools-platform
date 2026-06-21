@@ -53,7 +53,7 @@ export default function Footer() {
               <QueldrexLogo size="lg" />
             </Link>
             <p className="text-sm leading-relaxed mt-4 max-w-xs" style={{ color: '#A1A1AA' }}>
-              48 tools for developers and small teams. Free to start.
+  Security, DNS, legal docs, and business analytics — free to start.
             </p>
             <a
               href="https://x.com/queldrex"

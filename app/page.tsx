@@ -74,19 +74,22 @@ export default function HomePage() {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border mb-8 text-xs font-black uppercase tracking-widest"
             style={{ color: 'rgba(255,255,255,0.35)', borderColor: 'rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.04)' }}
           >
-            48 tools · Free to start
+            No account · No card · Works right now
           </div>
 
           <h1
             className="text-5xl md:text-6xl lg:text-7xl font-black mb-6"
             style={{ color: '#FAFAFA', lineHeight: '1.05', letterSpacing: '-0.02em' }}
           >
-            <span style={{ background: 'linear-gradient(135deg, #a78bfa, #06b6d4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>48 tools</span>
-            {' '}for developers<br />and small teams.
+            Stop switching tabs<br />
+            <span style={{ background: 'linear-gradient(135deg, #a78bfa, #06b6d4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>to get things done.</span>
           </h1>
 
-          <p className="text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed" style={{ color: '#A1A1AA' }}>
-            Security scanning, legal documents, business analytics, and developer utilities. Built for people who ship.
+          <p className="text-lg md:text-xl max-w-2xl mx-auto mb-4 leading-relaxed" style={{ color: '#A1A1AA' }}>
+            Security scanning, DNS health, legal documents, business analytics — everything your team reaches for, in one place.
+          </p>
+          <p className="text-sm max-w-xl mx-auto mb-10" style={{ color: 'rgba(255,255,255,0.3)' }}>
+            47 tools. Free to use right now. No signup, no waiting, no credit card.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
@@ -95,7 +98,7 @@ export default function HomePage() {
               className="px-8 py-4 rounded-xl text-base font-black text-white transition-all hover:scale-[1.02]"
               style={{ background: 'linear-gradient(135deg,#7c3aed,#6d28d9)', boxShadow: '0 0 30px rgba(124,58,237,0.35)' }}
             >
-              Browse Free Tools →
+              Start for free →
             </Link>
             <GoProButton
               returnTo="/tools"

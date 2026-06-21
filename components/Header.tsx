@@ -225,7 +225,7 @@ export default function Header() {
               </Link>
             ))}
             <Link href="/tools" onClick={() => setMobileOpen(false)} className="flex items-center px-4 py-3 rounded-xl text-sm font-semibold text-white/50 hover:text-white hover:bg-white/5 transition-colors">
-              View all 48 tools →
+              View all 47 tools →
             </Link>
 
             <div className="h-px my-3" style={{ background: 'rgba(255,255,255,0.06)' }} />
