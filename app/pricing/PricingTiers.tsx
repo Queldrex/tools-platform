@@ -15,7 +15,7 @@ const FREE_FEATURES = [
 
 const FREE_LOCKED = [
   'Unlimited uses per day',
-  'All 47 tools',
+  'All 48 tools',
   'Priority support',
 ]
 

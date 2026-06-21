@@ -11,31 +11,31 @@ const PAIN_POINTS = [
   {
     icon: '🔒',
     problem: 'You need a security audit.',
-    reality: 'A real pentest costs $5,000. You need to know if your package.json is a liability before Tuesday.',
+    reality: "A real pentest costs $5,000. You need to know if your package.json is a liability before Tuesday.",
     solution: 'CVE scanner, dependency checker, vibe security scan — run them in 30 seconds.',
     accent: '#f87171',
   },
   {
     icon: '📝',
     problem: 'You need a legal document.',
-    reality: 'A lawyer charges $400/hr. You need an NDA for a new client call tomorrow morning.',
+    reality: "A lawyer charges $400/hr. You need an NDA for a new client call tomorrow morning.",
     solution: 'NDA generator, ToS builder, refund policy — clean output, no attorney required.',
     accent: '#4ade80',
   },
   {
     icon: '🌐',
     problem: 'Your email deliverability is broken.',
-    reality: 'Your cold outreach is going to spam. You have no idea if it\'s DMARC, SPF, or MX.',
+    reality: "Your cold outreach is going to spam. You have no idea if it's DMARC, SPF, or MX.",
     solution: 'DNS health checker, email deliverability scanner — know exactly what\'s wrong in 10 seconds.',
     accent: '#06b6d4',
   },
 ]
 
 const CATEGORIES = [
-  { name: 'Security', accent: '#f87171', count: 12, desc: 'CVE scanner, SSL inspector, breach lookup, contract scanner, and more', href: '/tools#security' },
-  { name: 'Developer', accent: '#06b6d4', count: 10, desc: 'DNS health, email deliverability, JSON formatter, JWT decoder, and more', href: '/tools#developer' },
-  { name: 'Business', accent: '#4ade80', count: 21, desc: 'NDA generator, SaaS metrics, break-even calculator, cash flow, and more', href: '/tools#business' },
-  { name: 'AI Visibility', accent: '#a78bfa', count: 4, desc: 'Schema validator, robots.txt builder, structured data, and more', href: '/tools#ai-visibility' },
+  { name: 'Security',      accent: '#f87171', count: 12, desc: 'CVE scanner, SSL inspector, breach lookup, contract scanner, and more', href: '/tools#security' },
+  { name: 'Developer',     accent: '#06b6d4', count: 10, desc: 'DNS health, email deliverability, JSON formatter, JWT decoder, and more', href: '/tools#developer' },
+  { name: 'Business',      accent: '#4ade80', count: 22, desc: 'NDA generator, SaaS metrics, break-even calculator, cash flow, and more', href: '/tools#business' },
+  { name: 'AI Visibility', accent: '#a78bfa', count:  4, desc: 'Schema validator, robots.txt builder, structured data, and more',        href: '/tools#ai-visibility' },
 ]
 
 const TESTIMONIALS = [
@@ -50,20 +50,20 @@ export default function HomePage() {
       <style>{`
         @keyframes glow-drift {
           0%, 100% { transform: translate(-50%, -50%) scale(1); }
-          33% { transform: translate(-48%, -52%) scale(1.08); }
-          66% { transform: translate(-52%, -48%) scale(1.05); }
+          33%       { transform: translate(-48%, -52%) scale(1.08); }
+          66%       { transform: translate(-52%, -48%) scale(1.05); }
         }
         @keyframes glow-pulse {
           0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
-          50% { opacity: 0.9; transform: translateX(-50%) scale(1.1); }
+          50%       { opacity: 0.9; transform: translateX(-50%) scale(1.1); }
         }
-        .hero-glow { animation: glow-drift 9s ease-in-out infinite; }
-        .footer-glow { animation: glow-pulse 7s ease-in-out infinite; }
+        .hero-glow  { animation: glow-drift  9s ease-in-out infinite; }
+        .footer-glow{ animation: glow-pulse  7s ease-in-out infinite; }
       `}</style>
 
       <Header />
 
-      {/* ── HERO ─────────────────────────────────────────────────────────────── */}
+      {/* ── HERO ──────────────────────────────────────────────────────────────── */}
       <section className="pt-32 pb-24 px-6 text-center" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="hero-glow" style={{
           position: 'absolute', top: '45%', left: '50%',
@@ -85,10 +85,7 @@ export default function HomePage() {
             style={{ fontSize: 'clamp(2.6rem, 6.5vw, 5rem)', lineHeight: 1.05, letterSpacing: '-0.03em', color: '#FAFAFA' }}
           >
             We build the tools<br />
-            <span style={{
-              background: 'linear-gradient(130deg, #a78bfa 0%, #818cf8 40%, #38bdf8 100%)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-            }}>
+            <span style={{ background: 'linear-gradient(130deg, #a78bfa 0%, #818cf8 40%, #38bdf8 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
               your team actually needs.
             </span>
           </h1>
@@ -97,7 +94,7 @@ export default function HomePage() {
             Professional security audits, legal documents, DNS health checks, and business analytics — built for developers and small teams who do everything themselves.
           </p>
           <p className="text-base mb-12 max-w-lg mx-auto" style={{ color: 'rgba(255,255,255,0.28)' }}>
-            47 tools. Free to use right now. No account, no card, no setup.
+            48 tools. Free to use right now. No account, no card, no setup.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
@@ -119,20 +116,20 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── TRUST BAR ────────────────────────────────────────────────────────── */}
+      {/* ── TRUST BAR ─────────────────────────────────────────────────────────── */}
       <div className="border-t border-b px-6 py-4" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
         <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[11px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>
           <ScanCounter />
           <span className="hidden sm:inline" style={{ color: 'rgba(255,255,255,0.06)' }}>·</span>
           <span>Free forever · No card required</span>
           <span className="hidden sm:inline" style={{ color: 'rgba(255,255,255,0.06)' }}>·</span>
-          <span>47 tools across 4 categories</span>
+          <span>48 tools across 4 categories</span>
           <span className="hidden sm:inline" style={{ color: 'rgba(255,255,255,0.06)' }}>·</span>
           <span>Payments by Stripe</span>
         </div>
       </div>
 
-      {/* ── WHO WE ARE ───────────────────────────────────────────────────────── */}
+      {/* ── WHO WE ARE ────────────────────────────────────────────────────────── */}
       <section className="py-28 px-6" style={{ background: '#0c0e14' }}>
         <div className="max-w-5xl mx-auto">
           <ScrollReveal>
@@ -148,7 +145,7 @@ export default function HomePage() {
                 <p className="text-lg leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
                   So we built the toolkit we wished existed: professional tools that work the second you open them, with no account, no trial period, and no sales call required.
                 </p>
-                <div className="mt-8 flex items-center gap-4">
+                <div className="mt-8">
                   <Link href="/about" className="text-sm font-black" style={{ color: '#a78bfa' }}>
                     Learn more about us →
                   </Link>
@@ -156,9 +153,9 @@ export default function HomePage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { value: '47', label: 'Professional tools' },
-                  { value: '4', label: 'Tool categories' },
-                  { value: '$0', label: 'To get started' },
+                  { value: '48',    label: 'Professional tools' },
+                  { value: '4',     label: 'Tool categories' },
+                  { value: '$0',    label: 'To get started' },
                   { value: '< 30s', label: 'From landing to results' },
                 ].map(stat => (
                   <div key={stat.label} className="rounded-2xl border p-6 text-center" style={{ background: '#09090B', borderColor: 'rgba(255,255,255,0.07)' }}>
@@ -172,14 +169,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── THE PROBLEM WE SOLVE ─────────────────────────────────────────────── */}
+      {/* ── THE PROBLEM WE SOLVE ──────────────────────────────────────────────── */}
       <section className="py-28 px-6">
         <div className="max-w-5xl mx-auto">
           <ScrollReveal>
             <div className="text-center mb-16">
               <p className="text-[11px] font-bold uppercase tracking-[0.16em] mb-4" style={{ color: 'rgba(255,255,255,0.2)' }}>Why Queldrex exists</p>
               <h2 className="font-black mb-4" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', lineHeight: 1.1, letterSpacing: '-0.025em', color: '#FAFAFA' }}>
-                You're not just a developer.<br />You're everything.
+                {"You're not just a developer."}<br />{"You're everything."}
               </h2>
               <p className="text-lg max-w-xl mx-auto" style={{ color: 'rgba(255,255,255,0.4)' }}>
                 Security team. Legal department. DevOps. Finance. We build the tools for the person who has to be all of them.
@@ -209,7 +206,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── LIVE DEMO ────────────────────────────────────────────────────────── */}
+      {/* ── LIVE DEMO ─────────────────────────────────────────────────────────── */}
       <section className="py-10 px-6" style={{ background: '#0c0e14' }}>
         <div className="max-w-4xl mx-auto">
           <ScrollReveal>
@@ -222,22 +219,21 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── TOOLS ────────────────────────────────────────────────────────────── */}
+      {/* ── TOOLS ─────────────────────────────────────────────────────────────── */}
       <section className="py-28 px-6">
         <div className="max-w-6xl mx-auto">
           <ScrollReveal>
             <div className="text-center mb-16">
               <p className="text-[11px] font-bold uppercase tracking-[0.16em] mb-4" style={{ color: 'rgba(255,255,255,0.2)' }}>The toolkit</p>
               <h2 className="font-black mb-3" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', lineHeight: 1.1, letterSpacing: '-0.025em', color: '#FAFAFA' }}>
-                47 tools across 4 categories
+                48 tools across 4 categories
               </h2>
               <p className="text-lg" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                Every tool free to start. Upgrade to Pro for unlimited access to all of them.
+                Every tool free to start. Pro unlocks unlimited access to all of them.
               </p>
             </div>
           </ScrollReveal>
 
-          {/* Category cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
             {CATEGORIES.map((cat, i) => (
               <ScrollReveal key={cat.name} delay={i * 60}>
@@ -257,17 +253,16 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Featured tool cards */}
           <ToolCards />
           <div className="text-center mt-10">
             <Link href="/tools" className="text-sm font-bold transition-colors hover:text-white/60" style={{ color: 'rgba(255,255,255,0.3)' }}>
-              View all 47 tools — most are free →
+              View all 48 tools — most are free →
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ─────────────────────────────────────────────────────── */}
+      {/* ── TESTIMONIALS ──────────────────────────────────────────────────────── */}
       <section className="py-28 px-6" style={{ background: '#0c0e14' }}>
         <div className="max-w-5xl mx-auto">
           <ScrollReveal>
@@ -297,7 +292,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── PRICING ──────────────────────────────────────────────────────────── */}
+      {/* ── PRICING ───────────────────────────────────────────────────────────── */}
       <section className="py-28 px-6">
         <div className="max-w-4xl mx-auto">
           <ScrollReveal>
@@ -313,7 +308,6 @@ export default function HomePage() {
           </ScrollReveal>
 
           <div className="grid md:grid-cols-2 gap-5 max-w-2xl mx-auto">
-            {/* Free */}
             <ScrollReveal>
               <div className="rounded-2xl border p-8 flex flex-col h-full" style={{ background: '#0c0e14', borderColor: 'rgba(255,255,255,0.08)' }}>
                 <p className="text-[11px] font-black uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.3)' }}>Free</p>
@@ -322,9 +316,11 @@ export default function HomePage() {
                 </div>
                 <p className="text-xs mb-7 mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>No account. No card. Open a tool and go.</p>
                 <ul className="space-y-2.5 mb-8 flex-1 text-sm" style={{ color: 'rgba(255,255,255,0.48)' }}>
-                  {['All 47 tools, free tier', '3–10 uses per tool per day', 'No account required', 'Instant results'].map(f => (
+                  {['All 48 tools, free tier', '3–10 uses per tool per day', 'No account required', 'Instant results'].map(f => (
                     <li key={f} className="flex items-start gap-2">
-                      <svg className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: '#4ade80' }} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                      <svg className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: '#4ade80' }} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
+                      </svg>
                       {f}
                     </li>
                   ))}
@@ -335,7 +331,6 @@ export default function HomePage() {
               </div>
             </ScrollReveal>
 
-            {/* Pro */}
             <ScrollReveal delay={80}>
               <div className="rounded-2xl border p-8 flex flex-col h-full" style={{ background: '#0c0e14', borderColor: 'rgba(124,58,237,0.4)', boxShadow: '0 0 60px rgba(124,58,237,0.1)' }}>
                 <div className="flex items-center justify-between mb-4">
@@ -348,9 +343,11 @@ export default function HomePage() {
                 </div>
                 <p className="text-xs mb-7 mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>Every tool. No limits. Cancel anytime.</p>
                 <ul className="space-y-2.5 mb-8 flex-1 text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                  {['All 47 tools, unlimited use', 'New tools added regularly', 'Every category included', '7-day full refund guarantee', 'Cancel from Stripe portal anytime'].map(f => (
+                  {['All 48 tools, unlimited use', 'New tools added regularly', 'Every category included', '7-day full refund guarantee', 'Cancel from Stripe portal anytime'].map(f => (
                     <li key={f} className="flex items-start gap-2">
-                      <svg className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: '#a78bfa' }} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                      <svg className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: '#a78bfa' }} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
+                      </svg>
                       {f}
                     </li>
                   ))}
@@ -370,12 +367,13 @@ export default function HomePage() {
           </div>
 
           <p className="text-center text-xs mt-8" style={{ color: 'rgba(255,255,255,0.2)' }}>
-            Need white-label reports and 50 client scans? <Link href="/pricing" className="underline hover:text-white/35 transition-colors">View Agency plan →</Link>
+            Need white-label reports and 50 client scans?{' '}
+            <Link href="/pricing" className="underline hover:text-white/35 transition-colors">View Agency plan →</Link>
           </p>
         </div>
       </section>
 
-      {/* ── FOOTER CTA ───────────────────────────────────────────────────────── */}
+      {/* ── FOOTER CTA ────────────────────────────────────────────────────────── */}
       <section className="py-28 px-6" style={{ borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden' }}>
         <div className="footer-glow" style={{
           position: 'absolute', bottom: 0, left: '50%',
@@ -423,7 +421,7 @@ export default function HomePage() {
             '@type': 'Organization',
             name: 'Queldrex LLC',
             url: 'https://queldrex.com',
-            description: 'Developer tools company based in Castle Rock, Colorado. We build professional security, DNS, legal, and business analytics tools for developers and small teams.',
+            description: 'Developer tools company based in Castle Rock, Colorado. Professional security, DNS, legal, and business analytics tools for developers and small teams.',
             address: { '@type': 'PostalAddress', addressLocality: 'Castle Rock', addressRegion: 'CO', postalCode: '80104', addressCountry: 'US' },
             sameAs: ['https://x.com/queldrex'],
           }),
