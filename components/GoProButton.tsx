@@ -4,12 +4,13 @@ import { useState } from 'react'
 
 interface GoProButtonProps {
   returnTo?: string
+  billing?: 'monthly' | 'annual'
   className?: string
   style?: React.CSSProperties
   children?: React.ReactNode
 }
 
-export default function GoProButton({ returnTo = '/tools', className, style, children }: GoProButtonProps) {
+export default function GoProButton({ returnTo = '/tools', billing = 'monthly', className, style, children }: GoProButtonProps) {
   const [loading, setLoading] = useState(false)
 
   const start = async () => {
@@ -18,7 +19,7 @@ export default function GoProButton({ returnTo = '/tools', className, style, chi
       const res = await fetch('/api/checkout/pro', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ returnTo }),
+        body: JSON.stringify({ returnTo, billing }),
       })
       const data = await res.json()
       if (data.url) window.location.href = data.url

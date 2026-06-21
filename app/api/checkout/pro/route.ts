@@ -8,12 +8,13 @@ export async function POST(request: NextRequest) {
   const stripeKey = (process.env.STRIPE_SECRET_KEY || '').replace(/^﻿/, '').trim()
   if (!stripeKey) return Response.json({ error: 'Payment not configured' }, { status: 503 })
 
-  let body: { returnTo?: string }
+  let body: { returnTo?: string; billing?: string }
   try { body = await request.json() } catch { body = {} }
 
-  const { returnTo = '/tools' } = body
+  const { returnTo = '/tools', billing = 'monthly' } = body
   const safeReturn = returnTo.startsWith('/') ? returnTo : '/tools'
   const baseUrl = env('NEXT_PUBLIC_BASE_URL', 'https://queldrex.com')
+  const isAnnual = billing === 'annual'
 
   const stripe = new Stripe(stripeKey)
 
@@ -24,11 +25,13 @@ export async function POST(request: NextRequest) {
         price_data: {
           currency: 'usd',
           product_data: {
-            name: 'Queldrex Pro',
-            description: 'All 48 tools, unlimited. Cancel anytime.',
+            name: isAnnual ? 'Queldrex Pro (Annual)' : 'Queldrex Pro',
+            description: isAnnual
+              ? 'All tools, unlimited. Billed yearly. Cancel anytime.'
+              : 'All tools, unlimited. Cancel anytime.',
           },
-          unit_amount: 7900,
-          recurring: { interval: 'month' },
+          unit_amount: isAnnual ? 79000 : 7900,
+          recurring: { interval: isAnnual ? 'year' : 'month' },
         },
         quantity: 1,
       }],

@@ -10,7 +10,7 @@ import ToolCards from './ToolCards'
 const CATEGORIES = [
   { name: 'Security', accent: '#f87171', count: 12, tools: ['CVE Scanner', 'SSL Inspector', 'Contract Scanner', 'Breach Lookup'], href: '/tools#security' },
   { name: 'Developer', accent: '#06b6d4', count: 10, tools: ['DNS Health', 'Email Deliverability', 'JSON Formatter', 'JWT Decoder'], href: '/tools#developer' },
-  { name: 'Business', accent: '#4ade80', count: 22, tools: ['NDA Generator', 'SaaS Metrics', 'Break-Even', 'Cash Flow'], href: '/tools#business' },
+  { name: 'Business', accent: '#4ade80', count: 21, tools: ['NDA Generator', 'SaaS Metrics', 'Break-Even', 'Cash Flow'], href: '/tools#business' },
   { name: 'AI Visibility', accent: '#a78bfa', count: 4, tools: ['Schema Validator', 'Schema Generator', 'robots.txt', 'Vibe Security'], href: '/tools#ai-visibility' },
 ]
 
@@ -22,8 +22,8 @@ const REVENUE_STREAMS = [
 
 const PRICING = [
   { name: 'Free', price: '$0', period: '/mo', sub: 'No account. No credit card. Just use it.', features: ['All free tools included', 'No account required', '3 to 10 uses per day per tool', 'Instant results'], cta: 'Browse Free Tools', href: '/tools', highlight: false },
-  { name: 'Individual Tool', price: 'From $9', period: '/mo', sub: 'Pay once per tool. Cancel any month.', features: ['One tool of your choice', 'Unlimited daily use', 'Monthly billing', 'Cancel anytime'], cta: 'Browse Tools', href: '/tools', highlight: false },
-  { name: 'Pro', price: '$79', period: '/mo', sub: 'Every tool. Every update. One price.', features: ['All 48 tools, no limits', 'New tools added regularly', 'Every category included', 'Cancel anytime'], cta: 'Go Pro', href: '/pricing', highlight: true },
+  { name: 'Individual Tool', price: 'From $9', period: ' one-time', sub: 'Buy just the tool you need. Keep it forever.', features: ['One tool of your choice', 'Unlimited daily use', 'One-time purchase', 'No subscription'], cta: 'Browse Tools', href: '/tools', highlight: false },
+  { name: 'Pro', price: '$79', period: '/mo', sub: 'Every tool. Every update. One price.', features: ['All 47 tools, no limits', 'New tools added regularly', 'Every category included', 'Cancel anytime'], cta: 'Go Pro', href: '/pricing', highlight: true },
 ]
 
 const TESTIMONIALS = [

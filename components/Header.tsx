@@ -25,7 +25,7 @@ const CATEGORIES = [
   {
     label: 'Business',
     icon: '💼',
-    count: 22,
+    count: 21,
     desc: 'Finance, legal docs, marketing & more',
     href: '/tools#business',
     color: '#4ade80',
@@ -161,7 +161,7 @@ export default function Header() {
                         onClick={() => setToolsOpen(false)}
                         className="flex items-center justify-center gap-2 w-full py-2 rounded-xl text-sm font-bold text-white/50 hover:text-white transition-colors hover:bg-white/5"
                       >
-                        View all 48 tools — most are free
+                        View all 47 tools — most are free
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                         </svg>

@@ -165,6 +165,7 @@ export default function PricingTiers() {
           </ul>
           <GoProButton
             returnTo="/tools"
+            billing={billing}
             className="block w-full text-center py-3.5 rounded-xl text-sm font-black text-white transition-all hover:scale-[1.02]"
             style={{ background: 'linear-gradient(135deg,#7c3aed,#6d28d9)', boxShadow: '0 0 24px rgba(109,40,217,0.35)' }}
           >
