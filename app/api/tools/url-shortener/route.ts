@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getRedis } from '@/lib/store/redis'
-import { hasToolAccess } from '@/lib/tool-access'
+import { hasFreeOrProAccess } from '@/lib/tool-access'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,22 +21,16 @@ function isValidUrl(url: string): boolean {
 }
 
 export async function POST(req: NextRequest) {
-  if (!await hasToolAccess(req)) return NextResponse.json({ paywall: true }, { status: 402 })
+  const access = await hasFreeOrProAccess(req, 'url-shortener', 10)
+  if (!access.allowed) return NextResponse.json({ paywall: true, remaining: 0 }, { status: 402 })
   try {
     const { url, customCode } = await req.json()
     if (!url || !isValidUrl(url)) {
       return NextResponse.json({ error: 'A valid http or https URL is required.' }, { status: 400 })
     }
 
-    // Rate limit: 10 per IP per day
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
-    const redis = await getRedis()
-    const rateLimitKey = `url-shortener:rate:${ip}`
-    const count = await redis.incr(rateLimitKey)
-    if (count === 1) await redis.expire(rateLimitKey, 86400)
-    if (count > 10) {
-      return NextResponse.json({ error: 'Rate limit reached. 10 URLs per day on the free tier.' }, { status: 429 })
-    }
+    const redis = getRedis()
 
     let code = customCode?.trim().replace(/[^a-zA-Z0-9-_]/g, '') || generateCode()
     if (code.length < 3 || code.length > 20) code = generateCode()
@@ -61,7 +55,7 @@ export async function GET(req: NextRequest) {
   if (!code) return NextResponse.json({ error: 'Code required' }, { status: 400 })
 
   try {
-    const redis = await getRedis()
+    const redis = getRedis()
     const data = await redis.hgetall(`url:${code}`)
     if (!data || !data.url) return NextResponse.json({ error: 'Short URL not found.' }, { status: 404 })
 

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { randomUUID } from 'crypto'
-import { saveProSession } from '@/lib/store/redis'
+import { saveProSession, saveProCustomer } from '@/lib/store/redis'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,6 +28,9 @@ export async function GET(request: NextRequest) {
 
     const proSessionId = randomUUID()
     await saveProSession(proSessionId)
+
+    const customerId = typeof session.customer === 'string' ? session.customer : null
+    if (customerId) await saveProCustomer(customerId, proSessionId).catch(() => {})
 
     const response = NextResponse.redirect(new URL(`${safeReturn}?pro_activated=1`, request.url))
     response.cookies.set('queldrex_pro', proSessionId, {

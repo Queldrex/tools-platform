@@ -643,3 +643,34 @@ export async function checkToolPurchase(token: string, toolId: string): Promise<
   const stored = await getRedis().get<string>(`tool_purchase:${token}`)
   return stored === toolId
 }
+
+// ── Subscription Customer Mappings ────────────────────────────────────────────
+// Maps Stripe customer ID -> session token so the invoice.payment_succeeded
+// webhook can refresh Redis TTLs on renewal without needing the browser cookie.
+
+const CUSTOMER_MAP_TTL = 60 * 60 * 24 * 400  // 400 days
+
+export async function saveProCustomer(customerId: string, proSessionId: string): Promise<void> {
+  await getRedis().set(`pro_customer:${customerId}`, proSessionId, { ex: CUSTOMER_MAP_TTL })
+}
+
+export async function getProCustomer(customerId: string): Promise<string | null> {
+  const val = await getRedis().get<string>(`pro_customer:${customerId}`)
+  return val ?? null
+}
+
+export async function saveToolCustomer(customerId: string, toolId: string, token: string): Promise<void> {
+  const key = `tool_customer:${customerId}`
+  const raw = await getRedis().get<string>(key)
+  let entries: Array<{ toolId: string; token: string }> = []
+  if (raw) { try { entries = typeof raw === 'string' ? JSON.parse(raw) : raw } catch {} }
+  entries = entries.filter(e => e.toolId !== toolId)
+  entries.push({ toolId, token })
+  await getRedis().set(key, JSON.stringify(entries), { ex: CUSTOMER_MAP_TTL })
+}
+
+export async function getToolCustomers(customerId: string): Promise<Array<{ toolId: string; token: string }>> {
+  const raw = await getRedis().get<string>(`tool_customer:${customerId}`)
+  if (!raw) return []
+  try { return typeof raw === 'string' ? JSON.parse(raw) : raw } catch { return [] }
+}

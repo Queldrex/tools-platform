@@ -170,9 +170,14 @@ export default function PricingTiers() {
           >
             {billing === 'annual' ? 'Start Pro · $790/yr' : 'Start Pro · $79/mo'}
           </GoProButton>
-          <p className="text-center text-xs mt-1" style={{ color: 'rgba(255,255,255,0.25)' }}>
-            Already subscribed?{' '}
-            <a href="/restore-access" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'underline' }}>Restore access</a>
+          <p className="text-center text-xs mt-2" style={{ color: 'rgba(255,255,255,0.3)' }}>
+            {billing === 'annual'
+              ? 'Billed annually · Auto-renews at $790/yr · Cancel anytime'
+              : 'Billed monthly · Auto-renews at $79/mo · Cancel anytime'}
+          </p>
+          <p className="text-center text-xs" style={{ color: 'rgba(255,255,255,0.2)' }}>
+            7-day full refund for new subscribers.{' '}
+            <a href="/restore-access" style={{ color: 'rgba(255,255,255,0.35)', textDecoration: 'underline' }}>Restore access</a>
           </p>
         </div>
 

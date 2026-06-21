@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { randomUUID } from 'crypto'
-import { saveToolPurchase } from '@/lib/store/redis'
+import { saveToolPurchase, saveToolCustomer } from '@/lib/store/redis'
 import { TOOL_PRICING } from '@/lib/tool-pricing'
 import { sendGenericEmail } from '@/lib/email/resend'
 
@@ -31,6 +31,9 @@ export async function GET(request: NextRequest) {
 
     const token = randomUUID()
     await saveToolPurchase(token, toolId)
+
+    const customerId = typeof session.customer === 'string' ? session.customer : null
+    if (customerId) await saveToolCustomer(customerId, toolId, token).catch(() => {})
 
     const toolInfo = TOOL_PRICING[toolId]
     const toolName = toolInfo?.name ?? toolId.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())

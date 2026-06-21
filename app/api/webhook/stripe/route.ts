@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import Stripe from 'stripe'
 import { v4 as uuidv4 } from 'uuid'
 import { randomUUID } from 'crypto'
-import { getScan, saveScan, saveDownloadToken, updateScanLog, getDfySession, saveDfySession, updateDfyApplication, getRedis } from '@/lib/store/redis'
+import { getScan, saveScan, saveDownloadToken, updateScanLog, getDfySession, saveDfySession, updateDfyApplication, getRedis, getProCustomer, saveProSession, getToolCustomers, saveToolPurchase } from '@/lib/store/redis'
 import { sendDeliveryEmail, sendDfyAuthorizationEmail, sendAdminPurchaseAlert } from '@/lib/email/resend'
 import { sendSmsAlert } from '@/lib/sms/twilio'
 import { env } from '@/lib/env'
@@ -28,6 +28,23 @@ export async function POST(request: NextRequest) {
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret)
   } catch {
     return Response.json({ error: 'Invalid signature' }, { status: 400 })
+  }
+
+  // ── invoice.payment_succeeded — refresh subscription access on renewal ───
+  if (event.type === 'invoice.payment_succeeded') {
+    const invoice = event.data.object as Stripe.Invoice
+    const customerId = typeof invoice.customer === 'string' ? invoice.customer : (invoice.customer as Stripe.Customer | null)?.id
+    if (customerId) {
+      const [proSessionId, toolEntries] = await Promise.all([
+        getProCustomer(customerId),
+        getToolCustomers(customerId),
+      ])
+      await Promise.all([
+        proSessionId ? saveProSession(proSessionId) : Promise.resolve(),
+        ...toolEntries.map(({ toolId, token }) => saveToolPurchase(token, toolId)),
+      ])
+    }
+    return Response.json({ received: true })
   }
 
   // ── invoice.payment_failed — tool subscriptions ──────────────────────────

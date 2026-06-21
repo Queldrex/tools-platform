@@ -156,8 +156,8 @@ export default function ToolsPage() {
         <div className="flex flex-wrap gap-3 mb-8">
           <div className="flex items-center gap-2.5 px-4 py-2 rounded-xl border" style={{ background: 'rgba(52,211,153,0.06)', borderColor: 'rgba(52,211,153,0.2)' }}>
             <span className="w-2 h-2 rounded-full bg-emerald-400" />
-            <span className="text-xs font-bold text-emerald-400">Free tier</span>
-            <span className="text-xs text-white/40">on every tool · no account needed</span>
+            <span className="text-xs font-bold text-emerald-400">Most tools are free</span>
+            <span className="text-xs text-white/40">no account needed</span>
           </div>
           <div className="flex items-center gap-2.5 px-4 py-2 rounded-xl border" style={{ background: 'rgba(109,40,217,0.06)', borderColor: 'rgba(109,40,217,0.2)' }}>
             <span className="w-2 h-2 rounded-full bg-purple-400" />
@@ -287,10 +287,10 @@ export default function ToolsPage() {
             Every tool has a free daily tier. No account, no email, no credit card. When you hit the limit, buy just that tool or get everything with Pro.
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Link href="/tools#security"
+            <Link href="/tools"
               className="px-7 py-3.5 rounded-xl text-sm font-black text-white transition-all hover:scale-105"
               style={{ background: 'linear-gradient(135deg,#7c3aed,#6d28d9)', boxShadow: '0 0 24px rgba(109,40,217,0.35)' }}>
-              Browse Free Tools
+              Browse All Tools
             </Link>
             <GoProButton
               returnTo="/tools"

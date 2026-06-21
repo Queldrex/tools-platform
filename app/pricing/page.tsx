@@ -125,7 +125,7 @@ export default function PricingPage() {
               className="flex items-center justify-between gap-3 rounded-xl border px-4 py-3 transition-all hover:scale-[1.02] group"
               style={{ background: '#111318', borderColor: 'rgba(255,255,255,0.07)' }}>
               <span className="text-xs font-bold group-hover:text-white transition-colors truncate" style={{ color: '#A1A1AA' }}>{tool.name}</span>
-              <span className="text-sm font-black text-purple-400 flex-shrink-0">${tool.price}/mo</span>
+              <span className="text-sm font-black text-purple-400 flex-shrink-0">${tool.price} one-time</span>
             </a>
           ))}
         </div>

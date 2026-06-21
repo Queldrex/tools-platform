@@ -57,8 +57,8 @@ export default function TermsPage() {
                 <p>Monthly automated rescans of your domain with email alerts when your AI visibility score drops. Includes full access to all Pro Tools while subscription is active. <strong className="text-white/70">Auto-renews monthly.</strong> You will be charged $79 on the same date each month until you cancel. Cancel anytime — see Section 5.</p>
               </div>
               <div>
-                <p className="font-semibold text-white/80 mb-1">Agency Plan — $99/month subscription</p>
-                <p>Multi-client AI visibility management for agencies. Includes 25 client scans/month, white-label PDF reports, bulk client dashboard, and monthly auto-delivered client reports. <strong className="text-white/70">Auto-renews monthly.</strong> Cancel anytime — see Section 5.</p>
+                <p className="font-semibold text-white/80 mb-1">Agency Plan — $299/month subscription</p>
+                <p>Multi-client AI visibility management for agencies. Includes 50 client scans/month, white-label PDF reports, bulk client dashboard, and monthly auto-delivered client reports. <strong className="text-white/70">Auto-renews monthly.</strong> You will be charged $299 on the same date each month until you cancel. Cancel anytime — see Section 5.</p>
               </div>
               <div>
                 <p className="font-semibold text-white/80 mb-1">Pro Tools — included with Monitor and Agency subscriptions</p>
