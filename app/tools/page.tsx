@@ -67,8 +67,8 @@ const SECURITY_TOOLS = [
   },
   {
     name: 'Breach Lookup',
-    tagline: 'Check if an email address or domain has appeared in known data breaches.',
-    description: 'Search breach records from HaveIBeenPwned — one of the most comprehensive breach intelligence databases available. See which breaches exposed your data, what fields were leaked, and the steps to secure your accounts. Completely free.',
+    tagline: 'Check if a password has been exposed in known breaches, and audit your domain\'s security configuration.',
+    description: 'Two tools in one. The password tab uses HaveIBeenPwned\'s k-anonymity API to check if a password has appeared in breaches — your password is hashed locally and never sent in full. The domain tab audits your security headers (HTTPS, HSTS, CSP) and email authentication (DMARC, SPF). Both are completely free.',
     price: 'Free',
     priceSub: 'always',
     href: '/tools/breach-lookup',
@@ -76,12 +76,12 @@ const SECURITY_TOOLS = [
     color: 'rgba(248,113,113,0.06)',
     border: 'rgba(248,113,113,0.2)',
     features: [
-      'Search by email address or domain',
-      'Powered by HaveIBeenPwned breach intelligence',
-      'Severity ratings and exposed field breakdown',
-      'Credentials redacted — safe and private to use',
+      'Password breach check via HaveIBeenPwned k-anonymity',
+      'Your password is hashed locally, never sent in full',
+      'Domain security audit: HTTPS, HSTS, CSP, X-Frame-Options',
+      'Email authentication check: DMARC and SPF records',
     ],
-    cta: 'Search Breaches',
+    cta: 'Check Breaches',
   },
   {
     name: 'Threat Intelligence Feed',

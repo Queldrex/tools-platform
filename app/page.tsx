@@ -387,8 +387,8 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-10">
             <p className="text-cyan-500 text-xs font-bold tracking-[0.32em] uppercase mb-3">Built For</p>
-            <h2 className="text-3xl font-black text-white mb-3">Businesses. Agencies. Developers.</h2>
-            <p className="text-white/45 text-sm max-w-xl mx-auto">Every Queldrex tool is built to work in a real professional context.</p>
+            <h2 className="text-3xl font-black text-white mb-3">Built for businesses, agencies, and developers.</h2>
+            <p className="text-white/45 text-sm max-w-xl mx-auto">Every Queldrex tool is built to work in a real professional context — not a demo, not a mockup.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-4">
             <div className="rounded-2xl border p-6" style={{ background: 'rgba(6,182,212,0.05)', borderColor: 'rgba(6,182,212,0.15)' }}>
@@ -425,7 +425,7 @@ export default function HomePage() {
           <div>
             <p className="text-cyan-500 text-xs font-bold tracking-[0.32em] uppercase mb-5">About Queldrex</p>
             <h2 className="text-3xl font-black text-white leading-tight mb-6">
-              Built by developers.<br />No fluff. No lock-in.
+              Built by developers in Colorado, with a focus on precision and practicality.
             </h2>
             <p className="text-white/60 text-base leading-relaxed mb-5">
               Queldrex is a Colorado-based software tools company. We build focused, production-ready tools for businesses and developers — each one solving a single specific problem, precisely and without unnecessary complexity.
