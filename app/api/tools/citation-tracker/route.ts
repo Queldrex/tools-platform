@@ -3,30 +3,28 @@ import { getRedis, checkProSession } from '@/lib/store/redis'
 
 export const dynamic = 'force-dynamic'
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY
 
-async function askGPT(prompt: string): Promise<string> {
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${OPENAI_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 500,
-      temperature: 0.3,
-    }),
-  })
+async function askGemini(prompt: string): Promise<string> {
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { maxOutputTokens: 500, temperature: 0.3 },
+      }),
+    }
+  )
   const data = await res.json()
-  return data.choices?.[0]?.message?.content ?? ''
+  return data.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
 }
 
 export async function POST(request: NextRequest) {
-  if (!OPENAI_API_KEY) {
+  if (!GEMINI_API_KEY) {
     return Response.json({
-      error: 'AI Citation Tracker requires an OpenAI API key. Add OPENAI_API_KEY to your environment variables.',
+      error: 'AI Citation Tracker requires a Gemini API key. Add GEMINI_API_KEY to your environment variables.',
       setup_required: true,
     }, { status: 503 })
   }
@@ -54,24 +52,24 @@ export async function POST(request: NextRequest) {
   let response1: string, response2: string, response3: string
   try {
     ;[response1, response2, response3] = await Promise.all([
-      askGPT(
+      askGemini(
         `Does "${businessName}" in ${city} come up when people ask you about ${industry} businesses in that area? ` +
         `Answer honestly. If you know about this specific business, describe what you know. ` +
         `If you don't have information about this specific business, say so clearly. ` +
         `Keep your answer to 3-4 sentences.`
       ),
-      askGPT(
+      askGemini(
         `I'm looking for a good ${industry} business in ${city}. Can you give me some recommendations? ` +
         `List 3-5 specific businesses you would recommend, with a brief reason for each.`
       ),
-      askGPT(
+      askGemini(
         `For a ${industry} business called "${businessName}" in ${city} that wants to appear in your recommendations ` +
         `when people ask for ${industry} businesses in that area, what are the 3 most important things they should do? ` +
         `Be specific and actionable.`
       ),
     ])
   } catch (err) {
-    console.error('[citation-tracker] OpenAI error:', err instanceof Error ? err.message : err)
+    console.error('[citation-tracker] Gemini error:', err instanceof Error ? err.message : err)
     return Response.json({ error: 'AI service temporarily unavailable. Please try again.' }, { status: 503 })
   }
 
