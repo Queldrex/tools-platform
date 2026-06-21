@@ -36,6 +36,9 @@ export async function POST(request: NextRequest) {
         const subId = typeof session.subscription === 'string' ? session.subscription : (session.subscription as Stripe.Subscription)?.id || ''
         const customerId = typeof session.customer === 'string' ? session.customer : (session.customer as Stripe.Customer)?.id || ''
         if (!email || !subId) break
+        // Idempotency: skip if agency already exists for this subscription
+        const existing = await getAgencyByStripe(subId)
+        if (existing) break
         const agency: AgencySubscription = {
           id: crypto.randomUUID(),
           email,

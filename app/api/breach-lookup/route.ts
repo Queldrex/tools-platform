@@ -8,9 +8,31 @@ interface CheckResult {
   detail: string
 }
 
+function isPrivateHost(host: string): boolean {
+  // Block numeric IPs in private/reserved ranges
+  if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host)) {
+    const parts = host.split('.').map(Number)
+    const [a, b] = parts
+    if (a === 10) return true
+    if (a === 127) return true
+    if (a === 169 && b === 254) return true
+    if (a === 172 && b >= 16 && b <= 31) return true
+    if (a === 192 && b === 168) return true
+    if (a === 0) return true
+    if (a === 100 && b >= 64 && b <= 127) return true
+    return true // block all bare IPs
+  }
+  if (host === 'localhost' || host === '::1') return true
+  return false
+}
+
 async function checkDomain(domain: string): Promise<CheckResult[]> {
   const results: CheckResult[] = []
   const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0].trim()
+
+  if (isPrivateHost(cleanDomain)) {
+    return [{ label: 'Domain', pass: false, detail: 'Private or reserved IP addresses are not allowed.' }]
+  }
 
   // 1. HTTPS check + security headers
   try {

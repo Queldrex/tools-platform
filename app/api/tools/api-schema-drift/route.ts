@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+import { getRedis, checkProSession } from '@/lib/store/redis'
 
 export const dynamic = 'force-dynamic'
 
@@ -37,6 +38,17 @@ function extractEndpoints(spec: OpenApiSpec): Map<string, { parameters: Array<{ 
 }
 
 export async function POST(request: NextRequest) {
+  const proSessionId = request.cookies.get('queldrex_pro')?.value ?? ''
+  const isPro = proSessionId ? await checkProSession(proSessionId) : false
+
+  if (!isPro) {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+    const redis = getRedis()
+    const uses = await redis.incr(`drift_uses:${ip}`)
+    if (uses === 1) await redis.expire(`drift_uses:${ip}`, 60 * 60 * 24)
+    if (uses > 1) return Response.json({ paywall: true }, { status: 402 })
+  }
+
   let body: { specA?: string; specB?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 

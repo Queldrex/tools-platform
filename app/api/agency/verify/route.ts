@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
-import { getRedis, getAgency } from '@/lib/store/redis'
+import { randomUUID } from 'crypto'
+import { getRedis, getAgency, saveProSession } from '@/lib/store/redis'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,7 +19,10 @@ export async function GET(request: NextRequest) {
   const agency = await getAgency(typeof agencyId === 'string' ? agencyId : String(agencyId))
   if (!agency) return Response.json({ error: 'Agency not found' }, { status: 404 })
 
-  return Response.json({
+  const proSessionId = randomUUID()
+  await saveProSession(proSessionId)
+
+  const body = JSON.stringify({
     agencyId: agency.id,
     email: agency.email,
     agencyName: agency.agencyName,
@@ -26,4 +30,9 @@ export async function GET(request: NextRequest) {
     scansUsedThisMonth: agency.scansUsedThisMonth,
     scansLimit: agency.scansLimit,
   })
+
+  const headers = new Headers({ 'Content-Type': 'application/json' })
+  headers.append('Set-Cookie', `queldrex_pro=${proSessionId}; Path=/; Max-Age=2592000; HttpOnly; SameSite=Strict`)
+
+  return new Response(body, { status: 200, headers })
 }

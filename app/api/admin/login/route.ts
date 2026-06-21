@@ -25,8 +25,8 @@ export async function POST(request: NextRequest) {
     if (count === 3) sendAttackAlert(ip, count).catch(() => {})
     const remaining = Math.max(0, 5 - count)
     return Response.json({
-      error: !secretOk ? 'Invalid credentials' : 'Invalid authenticator code',
-      code: !secretOk ? 'BAD_SECRET' : 'BAD_TOTP',
+      error: 'Invalid credentials',
+      code: 'INVALID_CREDENTIALS',
       remaining,
     }, { status: 401 })
   }

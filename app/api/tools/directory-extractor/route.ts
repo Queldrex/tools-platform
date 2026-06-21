@@ -9,6 +9,21 @@ interface PathNode {
   isLeaf: boolean
 }
 
+function isPrivateHost(host: string): boolean {
+  if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host)) {
+    const parts = host.split('.').map(Number)
+    const [a, b] = parts
+    if (a === 10) return true
+    if (a === 127) return true
+    if (a === 169 && b === 254) return true
+    if (a === 172 && b >= 16 && b <= 31) return true
+    if (a === 192 && b === 168) return true
+    return true // block all bare IPs
+  }
+  if (host === 'localhost' || host === '::1') return true
+  return false
+}
+
 function normalizeDomain(input: string): string {
   let u = input.trim()
   if (!u.startsWith('http')) u = 'https://' + u
@@ -64,6 +79,7 @@ export async function POST(request: NextRequest) {
 
   const domain = normalizeDomain(raw)
   if (!domain || domain.length < 3) return Response.json({ error: 'Invalid domain' }, { status: 400 })
+  if (isPrivateHost(domain)) return Response.json({ error: 'Private or internal addresses are not allowed' }, { status: 400 })
 
   const base = `https://${domain}`
   const attempts = [`${base}/sitemap.xml`, `${base}/sitemap_index.xml`]

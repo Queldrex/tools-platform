@@ -598,3 +598,18 @@ export async function recordReferralUse(code: string, newUserEmail: string, prod
     redis.set(`referraluse:${Date.now()}`, JSON.stringify({ code, referrerEmail: ref.ownerEmail, newUserEmail, product, creditAmount: 10, usedAt: new Date().toISOString() })),
   ])
 }
+
+// ── Pro Tool Sessions ─────────────────────────────────────────────────────────
+// Used to grant unlimited Pro tool access to Monitor/Agency subscribers.
+
+const PRO_SESSION_TTL = 60 * 60 * 24 * 30 // 30 days
+
+export async function saveProSession(sessionId: string): Promise<void> {
+  await getRedis().set(`pro_session:${sessionId}`, '1', { ex: PRO_SESSION_TTL })
+}
+
+export async function checkProSession(sessionId: string): Promise<boolean> {
+  if (!sessionId || sessionId.length < 10) return false
+  const val = await getRedis().get(`pro_session:${sessionId}`)
+  return val === '1'
+}

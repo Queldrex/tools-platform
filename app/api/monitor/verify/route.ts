@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
-import { getRedis } from '@/lib/store/redis'
+import { randomUUID } from 'crypto'
+import { getRedis, saveProSession } from '@/lib/store/redis'
 
 export const dynamic = 'force-dynamic'
 
@@ -16,5 +17,12 @@ export async function GET(request: NextRequest) {
   }
 
   await redis.del(`magic:${token}`)
-  return Response.json({ email: typeof email === 'string' ? email : String(email) })
+
+  const proSessionId = randomUUID()
+  await saveProSession(proSessionId)
+
+  const headers = new Headers({ 'Content-Type': 'application/json' })
+  headers.append('Set-Cookie', `queldrex_pro=${proSessionId}; Path=/; Max-Age=2592000; HttpOnly; SameSite=Strict`)
+
+  return new Response(JSON.stringify({ email: typeof email === 'string' ? email : String(email) }), { status: 200, headers })
 }

@@ -35,6 +35,9 @@ export async function POST(request: NextRequest) {
         const subId = typeof session.subscription === 'string' ? session.subscription : session.subscription?.id || ''
         const customerId = typeof session.customer === 'string' ? session.customer : session.customer?.id || ''
         if (!email || !domain || !subId) break
+        // Idempotency: skip if monitor already exists for this subscription
+        const existing = await getMonitorByStripe(subId)
+        if (existing) break
         await saveMonitor({
           id: uuidv4(),
           email,

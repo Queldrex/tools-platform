@@ -64,14 +64,14 @@ export default function ApiSchemaDriftPage() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<DriftResult | null>(null)
   const [error, setError] = useState('')
-  const [compareCount, setCompareCount] = useState(0)
+  const [paywall, setPaywall] = useState(false)
 
   const compare = async () => {
     if (!specA.trim() || !specB.trim()) return
-    if (compareCount >= 1) return
     setLoading(true)
     setError('')
     setResult(null)
+    setPaywall(false)
     try {
       const res = await fetch('/api/tools/api-schema-drift', {
         method: 'POST',
@@ -79,13 +79,14 @@ export default function ApiSchemaDriftPage() {
         body: JSON.stringify({ specA, specB }),
       })
       const data = await res.json()
+      if (data.paywall || res.status === 402) { setPaywall(true); return }
       if (!res.ok) throw new Error(data.error || 'Comparison failed')
       setResult(data)
-      setCompareCount(c => c + 1)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Comparison failed')
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   return (
@@ -137,7 +138,7 @@ export default function ApiSchemaDriftPage() {
 
         {error && <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>}
 
-        {compareCount >= 1 && (
+        {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.2)' }}>
             <svg className="w-10 h-10 mx-auto mb-4" style={{ color: 'rgb(99,102,241)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
             <h3 className="text-xl font-black text-white mb-2">Unlimited comparisons with Pro</h3>

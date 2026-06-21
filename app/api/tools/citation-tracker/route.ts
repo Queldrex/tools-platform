@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { getRedis } from '@/lib/store/redis'
+import { getRedis, checkProSession } from '@/lib/store/redis'
 
 export const dynamic = 'force-dynamic'
 
@@ -39,33 +39,41 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'businessName, city, and industry are required' }, { status: 400 })
   }
 
-  // Rate limit: 1 free use per IP
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
-  const rateKey = `cit_tracker_uses:${ip}`
-  const redis = getRedis()
-  const uses = await redis.incr(rateKey)
-  if (uses === 1) await redis.expire(rateKey, 60 * 60 * 24) // 24hr window
-  if (uses > 1) {
-    return Response.json({ paywall: true }, { status: 402 })
+  // Pro session check — bypass rate limit for paying subscribers
+  const proSessionId = request.cookies.get('queldrex_pro')?.value ?? ''
+  const isPro = proSessionId ? await checkProSession(proSessionId) : false
+
+  if (!isPro) {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+    const redis = getRedis()
+    const uses = await redis.incr(`cit_tracker_uses:${ip}`)
+    if (uses === 1) await redis.expire(`cit_tracker_uses:${ip}`, 60 * 60 * 24)
+    if (uses > 1) return Response.json({ paywall: true }, { status: 402 })
   }
 
-  const [response1, response2, response3] = await Promise.all([
-    askGPT(
-      `Does "${businessName}" in ${city} come up when people ask you about ${industry} businesses in that area? ` +
-      `Answer honestly. If you know about this specific business, describe what you know. ` +
-      `If you don't have information about this specific business, say so clearly. ` +
-      `Keep your answer to 3-4 sentences.`
-    ),
-    askGPT(
-      `I'm looking for a good ${industry} business in ${city}. Can you give me some recommendations? ` +
-      `List 3-5 specific businesses you would recommend, with a brief reason for each.`
-    ),
-    askGPT(
-      `For a ${industry} business called "${businessName}" in ${city} that wants to appear in your recommendations ` +
-      `when people ask for ${industry} businesses in that area, what are the 3 most important things they should do? ` +
-      `Be specific and actionable.`
-    ),
-  ])
+  let response1: string, response2: string, response3: string
+  try {
+    ;[response1, response2, response3] = await Promise.all([
+      askGPT(
+        `Does "${businessName}" in ${city} come up when people ask you about ${industry} businesses in that area? ` +
+        `Answer honestly. If you know about this specific business, describe what you know. ` +
+        `If you don't have information about this specific business, say so clearly. ` +
+        `Keep your answer to 3-4 sentences.`
+      ),
+      askGPT(
+        `I'm looking for a good ${industry} business in ${city}. Can you give me some recommendations? ` +
+        `List 3-5 specific businesses you would recommend, with a brief reason for each.`
+      ),
+      askGPT(
+        `For a ${industry} business called "${businessName}" in ${city} that wants to appear in your recommendations ` +
+        `when people ask for ${industry} businesses in that area, what are the 3 most important things they should do? ` +
+        `Be specific and actionable.`
+      ),
+    ])
+  } catch (err) {
+    console.error('[citation-tracker] OpenAI error:', err instanceof Error ? err.message : err)
+    return Response.json({ error: 'AI service temporarily unavailable. Please try again.' }, { status: 503 })
+  }
 
   const lc = response1.toLowerCase()
   const mentioned =

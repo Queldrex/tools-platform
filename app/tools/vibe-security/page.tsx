@@ -56,14 +56,14 @@ export default function VibeSecurityPage() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<ScanResult | null>(null)
   const [error, setError] = useState('')
-  const [scanCount, setScanCount] = useState(0)
+  const [paywall, setPaywall] = useState(false)
 
   const scan = async () => {
     if (!code.trim()) return
-    if (scanCount >= 1) return // show paywall
     setLoading(true)
     setError('')
     setResult(null)
+    setPaywall(false)
     try {
       const res = await fetch('/api/tools/vibe-security', {
         method: 'POST',
@@ -71,13 +71,14 @@ export default function VibeSecurityPage() {
         body: JSON.stringify({ code, language }),
       })
       const data = await res.json()
+      if (data.paywall || res.status === 402) { setPaywall(true); return }
       if (!res.ok) throw new Error(data.error || 'Scan failed')
       setResult(data)
-      setScanCount(c => c + 1)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Scan failed')
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   const scoreColor = result ? (result.score >= 80 ? '#4ade80' : result.score >= 50 ? '#facc15' : '#f87171') : '#06d6ff'
@@ -144,7 +145,7 @@ export default function VibeSecurityPage() {
         )}
 
         {/* Paywall */}
-        {scanCount >= 1 && !loading && (
+        {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(245,158,11,0.05)', borderColor: 'rgba(245,158,11,0.2)' }}>
             <svg className="w-10 h-10 mx-auto mb-4 text-amber-500" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
             <h3 className="text-xl font-black text-white mb-2">Unlimited scans with Pro</h3>

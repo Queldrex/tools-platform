@@ -1,8 +1,19 @@
 import { NextRequest } from 'next/server'
+import { getRedis } from '@/lib/store/redis'
 
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
+  // Rate limit: 3 submissions per IP per hour
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+  const rateKey = `contact:rate:${ip}`
+  try {
+    const redis = getRedis()
+    const uses = await redis.incr(rateKey)
+    if (uses === 1) await redis.expire(rateKey, 3600)
+    if (uses > 3) return Response.json({ error: 'Too many requests. Please try again in an hour.' }, { status: 429 })
+  } catch { /* Redis failure doesn't block contact */ }
+
   let body: { name?: string; email?: string; subject?: string; message?: string }
   try {
     body = await request.json()
