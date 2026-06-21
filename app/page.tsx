@@ -103,7 +103,7 @@ const CATEGORIES = [
 const FAQ = [
   {
     q: 'What is Queldrex?',
-    a: 'Queldrex is a platform of 10 precision tools for AI visibility, security auditing, and developer workflows. Every tool solves a specific problem — free scans to start, Pro plan unlocks everything at $29/month.',
+    a: 'Queldrex is a platform of precision tools and products for AI visibility, security auditing, and developer workflows. Every product solves a specific problem — free scans to start, Pro plan unlocks everything at $29/month.',
   },
   {
     q: 'What does the Pro plan include?',
@@ -150,7 +150,7 @@ export default function HomePage() {
             </h1>
 
             <p className="text-lg text-white/65 leading-relaxed mb-8 max-w-2xl">
-              10 live tools covering AI visibility, security auditing, and developer safety — all in one place.
+              Ten products covering AI visibility, security auditing, and developer safety — all in one place.
               Free to start. Pro unlocks everything for{' '}
               <span className="text-white font-bold">$29/month</span>.
             </p>
@@ -161,7 +161,7 @@ export default function HomePage() {
                 className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.03]"
                 style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 32px rgba(6,182,212,0.35)' }}
               >
-                See All 10 Tools
+                Browse All Products
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -196,7 +196,7 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-6 pb-20">
         <div className="text-center mb-10">
           <p className="text-cyan-500 text-xs font-bold tracking-[0.32em] uppercase mb-3">Our Tool Suite</p>
-          <h2 className="text-3xl font-black text-white mb-3">Three categories. Ten tools. All live.</h2>
+          <h2 className="text-3xl font-black text-white mb-3">Ten products across three categories, all live and ready to use.</h2>
           <p className="text-white/45 text-sm max-w-xl mx-auto">
             Every Queldrex tool solves one specific problem. Pick what you need — no platform lock-in.
           </p>
@@ -232,7 +232,7 @@ export default function HomePage() {
 
         <div className="text-center mt-6">
           <Link href="/tools" className="text-sm text-white/30 hover:text-white/60 transition-colors">
-            View all 10 tools with full descriptions →
+            View all products with full descriptions →
           </Link>
         </div>
       </section>
