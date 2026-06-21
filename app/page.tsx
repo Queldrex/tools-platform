@@ -63,39 +63,55 @@ const CATEGORIES = [
     color: '#06d6ff',
     bg: 'rgba(6,182,212,0.06)',
     border: 'rgba(6,182,212,0.25)',
-    description: 'Get found by ChatGPT, Perplexity, Claude, and Gemini. Track your score monthly. Run your agency clients.',
+    description: 'Get found by ChatGPT, Perplexity, Claude, and Gemini. Track your score monthly. Run AI visibility audits for agency clients.',
     href: '/tools#ai-visibility',
     tools: [
       { name: 'AI Visibility Scanner', price: '$149' },
-      { name: 'AI Monitor', price: '$29/mo' },
       { name: 'AI Citation Tracker', price: 'Pro' },
-      { name: 'Agency Plan', price: '$99/mo' },
+      { name: 'Schema Markup Generator', price: 'Free' },
+      { name: 'robots.txt Generator', price: 'Free' },
     ],
   },
   {
     label: 'Security',
-    color: 'rgb(245,158,11)',
-    bg: 'rgba(245,158,11,0.05)',
-    border: 'rgba(245,158,11,0.2)',
+    color: 'rgb(248,113,113)',
+    bg: 'rgba(248,113,113,0.05)',
+    border: 'rgba(248,113,113,0.2)',
     description: 'Audit AI-generated code for vulnerabilities, check breach exposure, and monitor live global threat indicators.',
     href: '/tools#security',
     tools: [
-      { name: 'Vibe Security Shield', price: 'Pro' },
+      { name: 'Vibe Coding Security Shield', price: 'Pro' },
+      { name: 'API Schema Drift Scanner', price: 'Pro' },
       { name: 'Breach Lookup', price: 'Free' },
       { name: 'Threat Intelligence Feed', price: 'Free' },
     ],
   },
   {
-    label: 'Developer Tools',
+    label: 'Developer',
     color: 'rgb(99,102,241)',
     bg: 'rgba(99,102,241,0.05)',
     border: 'rgba(99,102,241,0.2)',
-    description: 'Catch breaking API changes, validate SQL migrations, and map site structures before they cause problems.',
+    description: 'Format and decode data, build cron schedules, detect tech stacks, and catch dangerous SQL migrations.',
     href: '/tools#developer',
     tools: [
-      { name: 'API Schema Drift Scanner', price: 'Pro' },
-      { name: 'DB Migration Checker', price: 'Pro' },
-      { name: 'Directory Extractor', price: 'Free' },
+      { name: 'JSON Formatter', price: 'Free' },
+      { name: 'JWT Decoder', price: 'Free' },
+      { name: 'Tech Stack Detector', price: 'Free' },
+      { name: 'Cron Expression Builder', price: 'Free' },
+    ],
+  },
+  {
+    label: 'Business',
+    color: 'rgb(251,191,36)',
+    bg: 'rgba(251,191,36,0.05)',
+    border: 'rgba(251,191,36,0.2)',
+    description: 'Create invoices, shorten URLs, track meeting costs, generate privacy policies, and build email signatures.',
+    href: '/tools#business',
+    tools: [
+      { name: 'Invoice Generator', price: 'Free' },
+      { name: 'URL Shortener', price: 'Free' },
+      { name: 'Meeting Cost Calculator', price: 'Free' },
+      { name: 'GDPR / Privacy Policy Generator', price: 'Free' },
     ],
   },
 ]
@@ -103,7 +119,7 @@ const CATEGORIES = [
 const FAQ = [
   {
     q: 'What is Queldrex?',
-    a: 'Queldrex is a platform of precision tools and products for AI visibility, security auditing, and developer workflows. Every product solves a specific problem — free scans to start, Pro plan unlocks everything at $29/month.',
+    a: 'Queldrex is a platform of precision tools for AI visibility, security auditing, developer workflows, and business operations. Every tool solves one specific problem — free to start, Pro unlocks everything at $29/month.',
   },
   {
     q: 'What does the Pro plan include?',
@@ -115,7 +131,7 @@ const FAQ = [
   },
   {
     q: 'What tools are completely free?',
-    a: 'Breach Lookup, Threat Intelligence Feed, Directory Extractor, and the initial AI Visibility Scan (score + signal preview) are all free with no account required.',
+    a: 'More than 20 tools are free with no account required, including: JSON Formatter, JWT Decoder, Base64 Encoder, Hash Generator, Password Generator, Cron Builder, Tech Stack Detector, API Rate Limit Calculator, Schema Markup Generator, robots.txt Generator, Breach Lookup, Threat Intelligence Feed, Invoice Generator, URL Shortener, Meeting Cost Calculator, Uptime Calculator, Email Signature Generator, Color Palette Generator, GDPR Generator, and Directory Extractor. The AI Visibility Scan (score preview) is also free. Pro tools — Vibe Security Shield, API Schema Drift Scanner, Database Migration Checker, and AI Citation Tracker — require a $29/month subscription.',
   },
   {
     q: 'What is the Agency Plan?',
@@ -150,7 +166,7 @@ export default function HomePage() {
             </h1>
 
             <p className="text-lg text-white/65 leading-relaxed mb-8 max-w-2xl">
-              Ten products covering AI visibility, security auditing, and developer safety — all in one place.
+              25 tools covering AI visibility, security, developer workflows, and business operations — all in one place.
               Free to start. Pro unlocks everything for{' '}
               <span className="text-white font-bold">$29/month</span>.
             </p>
@@ -161,7 +177,7 @@ export default function HomePage() {
                 className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.03]"
                 style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 32px rgba(6,182,212,0.35)' }}
               >
-                Browse All Products
+                Browse All Tools
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -177,7 +193,7 @@ export default function HomePage() {
 
             <div className="flex flex-wrap items-center gap-8">
               {[
-                { value: '10', label: 'Tools live now' },
+                { value: '25', label: 'Tools live now' },
                 { value: 'Free', label: 'to start, no card' },
                 { value: '$29', label: '/mo Pro plan' },
                 { value: '$99', label: '/mo Agency plan' },
@@ -196,13 +212,13 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-6 pb-20">
         <div className="text-center mb-10">
           <p className="text-cyan-500 text-xs font-bold tracking-[0.32em] uppercase mb-3">Our Tool Suite</p>
-          <h2 className="text-3xl font-black text-white mb-3">Ten products across three categories, all live and ready to use.</h2>
+          <h2 className="text-3xl font-black text-white mb-3">25 tools across four categories, all live and ready to use.</h2>
           <p className="text-white/45 text-sm max-w-xl mx-auto">
             Every Queldrex tool solves one specific problem. Pick what you need — no platform lock-in.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {CATEGORIES.map((cat) => (
             <Link
               key={cat.label}
@@ -232,7 +248,7 @@ export default function HomePage() {
 
         <div className="text-center mt-6">
           <Link href="/tools" className="text-sm text-white/30 hover:text-white/60 transition-colors">
-            View all products with full descriptions →
+            View all tools with full descriptions →
           </Link>
         </div>
       </section>
@@ -435,7 +451,7 @@ export default function HomePage() {
             </p>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { label: '10 Tools Live', sub: 'All working, all real' },
+                { label: '25 Tools Live', sub: 'All working, all real' },
                 { label: 'Free to Start', sub: 'No credit card required' },
                 { label: 'Cancel Anytime', sub: 'Stripe portal, instant' },
                 { label: 'Colorado-Based', sub: 'Queldrex LLC' },
@@ -462,29 +478,41 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* COMING NEXT */}
+      {/* WHY QUELDREX */}
       <section className="border-t border-white/5 py-16">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between gap-4 mb-8">
-            <div>
-              <p className="text-cyan-500 text-xs font-bold tracking-[0.28em] uppercase mb-2">What&apos;s Next</p>
-              <h3 className="text-2xl font-black text-white">More tools in development.</h3>
-            </div>
-            <Link href="/roadmap" className="hidden md:flex items-center gap-1.5 text-sm text-white/40 hover:text-cyan-400 transition-colors">
-              See full roadmap
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-            </Link>
+          <div className="text-center mb-10">
+            <p className="text-cyan-500 text-xs font-bold tracking-[0.28em] uppercase mb-2">Why Queldrex</p>
+            <h3 className="text-2xl font-black text-white">Built different from the start.</h3>
           </div>
           <div className="grid sm:grid-cols-3 gap-4">
             {[
-              { name: 'Competitor AI Visibility Gap', desc: 'See exactly how your AI visibility compares to competitors across every signal.', label: 'In Dev', color: 'rgba(6,182,212,0.05)', border: 'rgba(6,182,212,0.15)' },
-              { name: 'Local Business AI Pack', desc: 'One-click generate schema, llms.txt, and citation strategy for any local business category.', label: 'Planned', color: 'rgba(245,158,11,0.05)', border: 'rgba(245,158,11,0.15)' },
-              { name: 'AI Search Monitor — Perplexity', desc: 'Dedicated monitoring for Perplexity and Google AI Overviews tracked separately from ChatGPT.', label: 'Planned', color: 'rgba(99,102,241,0.05)', border: 'rgba(99,102,241,0.15)' },
-            ].map((tool) => (
-              <div key={tool.name} className="rounded-xl p-5 border" style={{ background: tool.color, borderColor: tool.border }}>
-                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border inline-block mb-3" style={{ color: 'rgba(255,255,255,0.35)', borderColor: 'rgba(255,255,255,0.12)' }}>{tool.label}</span>
-                <h4 className="text-sm font-bold text-white mb-2">{tool.name}</h4>
-                <p className="text-xs text-white/45 leading-relaxed">{tool.desc}</p>
+              {
+                title: 'Zero fake data',
+                desc: 'Every tool runs against real data sources — live threat feeds, real breach databases, actual HTTP headers. Nothing is simulated, ever.',
+                color: 'rgba(6,182,212,0.05)',
+                border: 'rgba(6,182,212,0.15)',
+                accent: '#06d6ff',
+              },
+              {
+                title: 'Free to verify first',
+                desc: 'You see your AI visibility score, threat feed entries, and tool outputs before you pay a cent. Buy the fix, not the promise.',
+                color: 'rgba(52,211,153,0.05)',
+                border: 'rgba(52,211,153,0.15)',
+                accent: '#34d399',
+              },
+              {
+                title: 'Everything in one place',
+                desc: '25 tools across AI visibility, security, developer workflows, and business operations — one platform, one Pro subscription, no juggling.',
+                color: 'rgba(251,191,36,0.05)',
+                border: 'rgba(251,191,36,0.15)',
+                accent: 'rgb(251,191,36)',
+              },
+            ].map((item) => (
+              <div key={item.title} className="rounded-xl p-6 border" style={{ background: item.color, borderColor: item.border }}>
+                <div className="w-5 h-0.5 rounded-full mb-4" style={{ background: item.accent }} />
+                <h4 className="text-sm font-black text-white mb-2">{item.title}</h4>
+                <p className="text-xs text-white/50 leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -501,7 +529,7 @@ export default function HomePage() {
           }}
         >
           <div>
-            <h3 className="text-2xl font-black text-white mb-2">10 tools live. Free to start.</h3>
+            <h3 className="text-2xl font-black text-white mb-2">25 tools live. Free to start.</h3>
             <p className="text-white/55 text-sm">
               No account required for free tools. Pro subscription is $29/month — cancel anytime.
             </p>

@@ -40,7 +40,7 @@ export default function BlogPage() {
               Resources
             </div>
             <h1 className="text-4xl sm:text-5xl font-black text-white mb-4">
-              Blog
+              Queldrex Blog
             </h1>
             <p className="text-white/55 text-lg max-w-xl mx-auto leading-relaxed">
               Guides, strategies, and deep dives on AI visibility and search optimization.

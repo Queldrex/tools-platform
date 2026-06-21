@@ -1,73 +1,100 @@
 import Link from 'next/link'
 import QueldrexLogo from './Logo'
 
+const FOOTER_NAV = [
+  {
+    heading: 'Products',
+    links: [
+      { label: 'All Tools', href: '/tools' },
+      { label: 'AI Visibility Scanner', href: '/scanner' },
+      { label: 'AI Monitor', href: '/monitor' },
+      { label: 'Agency Plan', href: '/agency' },
+      { label: 'Pricing', href: '/pricing' },
+    ],
+  },
+  {
+    heading: 'Company',
+    links: [
+      { label: 'About', href: '/about' },
+      { label: 'Portfolio', href: '/portfolio' },
+      { label: 'Blog', href: '/blog' },
+      { label: 'Build for Me', href: '/services' },
+      { label: 'Contact', href: '/contact' },
+    ],
+  },
+  {
+    heading: 'Resources',
+    links: [
+      { label: 'Sample Audit Report', href: '/sample-audit' },
+      { label: 'Roadmap', href: '/roadmap' },
+      { label: 'Request a Tool', href: '/request-tool' },
+      { label: 'Feedback', href: '/feedback' },
+    ],
+  },
+  {
+    heading: 'Legal',
+    links: [
+      { label: 'Privacy Policy', href: '/privacy' },
+      { label: 'Terms of Service', href: '/terms' },
+      { label: 'Refund Policy', href: '/refunds' },
+    ],
+  },
+]
+
 export default function Footer() {
   return (
-    <footer className="border-t border-white/6 py-16" style={{ background: '#070b14' }}>
-      <div className="max-w-7xl mx-auto px-6 flex flex-col items-center text-center gap-8">
+    <footer className="border-t border-white/6 pt-16 pb-10" style={{ background: '#070b14' }}>
+      <div className="max-w-7xl mx-auto px-6">
 
-        <Link href="/">
-          <QueldrexLogo size="lg" center />
-        </Link>
+        {/* Top row: logo + tagline + columns */}
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-10 pb-12 border-b border-white/5">
 
-        <p className="text-white/55 text-sm leading-relaxed max-w-sm">
-          Precision software tools, custom builds, and AI visibility services for businesses. Queldrex LLC, Colorado.
-        </p>
+          {/* Brand */}
+          <div className="col-span-2">
+            <Link href="/">
+              <QueldrexLogo size="lg" />
+            </Link>
+            <p className="text-white/40 text-sm leading-relaxed mt-4 max-w-xs">
+              Precision AI visibility tools, security audits, and custom software for businesses. Queldrex LLC, Castle Rock, Colorado.
+            </p>
+            <a
+              href="https://x.com/queldrex"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 mt-5 text-white/35 hover:text-white transition-colors text-sm"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.261 5.631 5.903-5.631zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+              @queldrex
+            </a>
+          </div>
 
-        <nav className="flex flex-wrap justify-center items-center gap-x-8 gap-y-3 text-sm text-white/55">
-          <Link href="/tools" className="hover:text-white transition-colors">All Tools</Link>
-          <span className="text-white/15">·</span>
-          <Link href="/scanner" className="hover:text-white transition-colors">AI Scanner</Link>
-          <span className="text-white/15">·</span>
-          <Link href="/monitor" className="hover:text-white transition-colors">Monitor</Link>
-          <span className="text-white/15">·</span>
-          <Link href="/agency" className="hover:text-white transition-colors">Agency Plan</Link>
-          <span className="text-white/15">·</span>
-          <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
-          <span className="text-white/15">·</span>
-          <Link href="/services" className="hover:text-white transition-colors">Build for Me</Link>
-          <span className="text-white/15">·</span>
-          <Link href="/about" className="hover:text-white transition-colors">About</Link>
-          <span className="text-white/15">·</span>
-          <Link href="/portfolio" className="hover:text-white transition-colors">Portfolio</Link>
-          <span className="text-white/15">·</span>
-          <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
-          <span className="text-white/15">·</span>
-          <Link href="/roadmap" className="hover:text-white transition-colors">Roadmap</Link>
-          <span className="text-white/15">·</span>
-          <Link href="/sample-audit" className="hover:text-white transition-colors">Sample Report</Link>
-          <span className="text-white/15">·</span>
-          <Link href="/request-tool" className="hover:text-white transition-colors">Request a Tool</Link>
-          <span className="text-white/15">·</span>
-          <Link href="/feedback" className="hover:text-white transition-colors">Feedback</Link>
-          <span className="text-white/15">·</span>
-          <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
-          <span className="text-white/15">·</span>
-          <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-          <span className="text-white/15">·</span>
-          <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-          <span className="text-white/15">·</span>
-          <Link href="/refunds" className="hover:text-white transition-colors">Refund Policy</Link>
-          <span className="text-white/15">·</span>
-          <a href="mailto:hello@queldrex.com" className="hover:text-white transition-colors">hello@queldrex.com</a>
-        </nav>
-
-        <a href="https://x.com/queldrex" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/40 hover:text-white transition-colors text-sm">
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.261 5.631 5.903-5.631zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          @queldrex
-        </a>
-
-        <div className="w-full border-t border-white/5" />
-
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 w-full text-xs text-white/35">
-          <span>© {new Date().getFullYear()} Queldrex LLC, a Colorado limited liability company. All rights reserved.</span>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1.5">
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-              Payments secured by Stripe
+          {/* Nav columns */}
+          {FOOTER_NAV.map((col) => (
+            <div key={col.heading}>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 mb-4">{col.heading}</p>
+              <ul className="space-y-2.5">
+                {col.links.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="text-sm text-white/50 hover:text-white transition-colors">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <span className="text-white/15">·</span>
-            <span>This site uses functional cookies only. No tracking or advertising cookies.</span>
+          ))}
+        </div>
+
+        {/* Bottom bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-8 text-xs text-white/30">
+          <span>© {new Date().getFullYear()} Queldrex LLC, a Colorado limited liability company. All rights reserved.</span>
+          <div className="flex items-center gap-1.5">
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            Payments secured by Stripe
           </div>
         </div>
 
