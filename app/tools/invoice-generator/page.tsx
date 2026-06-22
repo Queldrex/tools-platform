@@ -39,7 +39,7 @@ const DEFAULTS: InvoiceData = {
   issueDate: today,
   dueDate,
   fromName: 'Queldrex LLC',
-  fromEmail: 'billing@queldrex.com',
+  fromEmail: 'hello@queldrex.com',
   fromAddress: '123 Main St',
   fromCity: 'Castle Rock',
   fromState: 'CO',
