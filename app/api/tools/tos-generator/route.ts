@@ -25,6 +25,9 @@ async function askGroq(prompt: string): Promise<string> {
 export async function POST(request: NextRequest) {
   if (!GROQ_API_KEY) return Response.json({ error: 'Service not configured' }, { status: 503 })
 
+  const access = await hasFreeOrProAccess(request, 'tos-generator', 1)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: {
     companyName?: string; websiteUrl?: string; serviceDescription?: string
     businessType?: string; jurisdiction?: string; contactEmail?: string
@@ -34,9 +37,6 @@ export async function POST(request: NextRequest) {
 
   if (!body.companyName?.trim()) return Response.json({ error: 'Company name is required' }, { status: 400 })
   if (!body.serviceDescription?.trim()) return Response.json({ error: 'Service description is required' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'tos-generator', 1)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
   const minAge = body.minimumAge ?? 13
