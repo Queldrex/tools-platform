@@ -246,13 +246,13 @@ export default function ThreatFeedPage() {
                       Pro subscribers get unlimited access to real-time threat intelligence — {visible.length} active indicators, updated every 15 minutes.
                     </p>
                     <div className="flex items-center justify-center gap-3 flex-wrap">
-                      <a href="/monitor"
+                      <a href="/pricing"
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-black text-black"
                         style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 20px rgba(6,182,212,0.25)' }}>
                         Start Pro — $79/month
                       </a>
                       <a href="/pricing" className="text-sm text-white/40 hover:text-white transition-colors">
-                        Learn more →
+                        See all plans →
                       </a>
                     </div>
                   </div>

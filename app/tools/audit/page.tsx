@@ -327,7 +327,7 @@ export default function AuditPage() {
             Every tool on Queldrex has been individually tested with real inputs and real outputs. No mocks. No stubs.
             This report shows exactly what each tool does, how it works, and proof it returns real data.
           </p>
-          <p className="text-white/25 text-xs mt-3">Last verified: June 2026 · All 25 tools · queldrex.com</p>
+          <p className="text-white/25 text-xs mt-3">Last verified: June 2026 · 25 of 48 tools documented · queldrex.com</p>
         </div>
 
         {/* Summary */}
