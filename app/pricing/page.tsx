@@ -6,6 +6,19 @@ import PricingTiers from './PricingTiers'
 export const metadata = {
   title: 'Pricing — Queldrex',
   description: '48 tools. Free to start, no account required. Pro is $79/month for unlimited access. Agency at $99/month for up to 25 client scans.',
+  alternates: { canonical: 'https://queldrex.com/pricing' },
+  openGraph: {
+    title: 'Pricing — Queldrex',
+    description: '48 tools. Free to start, no account required. Pro is $79/month for unlimited access.',
+    url: 'https://queldrex.com/pricing',
+    siteName: 'Queldrex',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image' as const,
+    title: 'Pricing — Queldrex',
+    description: '48 tools. Free to start, no account required. Pro is $79/month for unlimited access.',
+  },
 }
 
 const FAQ = [

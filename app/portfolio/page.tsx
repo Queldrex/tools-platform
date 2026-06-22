@@ -5,6 +5,19 @@ import Footer from '@/components/Footer'
 export const metadata = {
   title: 'Portfolio — What We\'ve Built | Queldrex',
   description: 'Every tool on queldrex.com was designed, engineered, and deployed by Queldrex. See our work — SaaS platforms, security tools, admin systems, and subscription infrastructure.',
+  alternates: { canonical: 'https://queldrex.com/portfolio' },
+  openGraph: {
+    title: 'Portfolio — What We\'ve Built | Queldrex',
+    description: 'Every tool on queldrex.com was designed, engineered, and deployed by Queldrex.',
+    url: 'https://queldrex.com/portfolio',
+    siteName: 'Queldrex',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image' as const,
+    title: 'Portfolio — What We\'ve Built | Queldrex',
+    description: 'Every tool on queldrex.com was designed, engineered, and deployed by Queldrex.',
+  },
 }
 
 const PROJECTS = [

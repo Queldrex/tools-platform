@@ -5,6 +5,19 @@ import Footer from '@/components/Footer'
 export const metadata = {
   title: 'About Queldrex — Built in Castle Rock, CO',
   description: 'Queldrex LLC builds developer and business tools. 48 tools live. Castle Rock, Colorado.',
+  alternates: { canonical: 'https://queldrex.com/about' },
+  openGraph: {
+    title: 'About Queldrex — Built in Castle Rock, CO',
+    description: 'Queldrex LLC builds developer and business tools. 48 tools live. Castle Rock, Colorado.',
+    url: 'https://queldrex.com/about',
+    siteName: 'Queldrex',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image' as const,
+    title: 'About Queldrex — Built in Castle Rock, CO',
+    description: 'Queldrex LLC builds developer and business tools. 48 tools live. Castle Rock, Colorado.',
+  },
 }
 
 const WHAT_WE_BUILD = [

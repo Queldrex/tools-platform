@@ -8,6 +8,19 @@ import RequestToolForm from '@/components/RequestToolForm'
 export const metadata = {
   title: 'All Tools | Queldrex',
   description: 'Security scanning, DNS health, legal documents, and business analytics. 48 professional tools, free to start, no account required.',
+  alternates: { canonical: 'https://queldrex.com/tools' },
+  openGraph: {
+    title: '48 Free Developer & Business Tools | Queldrex',
+    description: 'Security scanning, DNS health, legal documents, and business analytics. Free to start, no account required.',
+    url: 'https://queldrex.com/tools',
+    siteName: 'Queldrex',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image' as const,
+    title: '48 Free Developer & Business Tools | Queldrex',
+    description: 'Security scanning, DNS health, legal documents, and business analytics. Free to start, no account required.',
+  },
 }
 
 interface Tool {

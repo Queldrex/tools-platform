@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -6,6 +7,22 @@ import ScrollReveal from '@/components/ScrollReveal'
 import HomeDemo from './HomeDemo'
 import ScanCounter from './ScanCounter'
 import ToolCards from './ToolCards'
+
+export const metadata: Metadata = {
+  alternates: { canonical: 'https://queldrex.com' },
+  openGraph: {
+    title: 'Queldrex — Free Developer & Business Tools',
+    description: '48 tools for developers and small teams. Security, DNS, legal docs, business analytics. No account required.',
+    url: 'https://queldrex.com',
+    siteName: 'Queldrex',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Queldrex — Free Developer & Business Tools',
+    description: '48 tools for developers and small teams. Security, DNS, legal docs, business analytics. No account required.',
+  },
+}
 
 const PAIN_POINTS = [
   {
