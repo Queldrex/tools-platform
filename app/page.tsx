@@ -365,7 +365,7 @@ export default function HomePage() {
           </div>
 
           <p className="text-center text-xs mt-8" style={{ color: 'rgba(255,255,255,0.2)' }}>
-            Need white-label reports and 50 client scans?{' '}
+            Need white-label reports and 25 client scans per month?{' '}
             <Link href="/pricing" className="underline hover:text-white/35 transition-colors">View Agency plan →</Link>
           </p>
         </div>

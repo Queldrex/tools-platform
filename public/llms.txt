@@ -7,22 +7,25 @@ Queldrex LLC is a Colorado software company that builds precision tools for AI v
 
 ## Products
 
-### AI Visibility Scanner ($149 one-time)
+### AI Visibility Scanner ($399 one-time)
 Scans any business website across 14 signals to determine how visible it is to AI search engines including ChatGPT, Perplexity, Google AI Overview, Claude, and Gemini. Delivers a full PDF report with prioritized fixes. Free scan at queldrex.com/scanner.
 
-### AI Visibility Monitor ($29/month)
+### AI Visibility Monitor ($79/month)
 Monthly AI visibility rescans with email alerts when scores drop. Score history tracking. Cancel anytime. queldrex.com/monitor
+
+### Pro Plan ($79/month)
+Unlimited access to all 48 tools. Includes AI Visibility Monitor, legal document generators, security tools, business analytics, and every tool added in the future. queldrex.com/pricing
 
 ### Agency Plan ($99/month)
 Bulk AI visibility scanning for up to 25 client domains per month. White-label PDF reports. Client dashboard. queldrex.com/agency
 
-### Vibe Coding Security Shield (Pro — included in $29/month Monitor plan)
+### Vibe Coding Security Shield (Pro — $79/month)
 Scans AI-generated code for OWASP Top 10 vulnerabilities before it reaches production. queldrex.com/tools/vibe-security
 
-### API Schema Drift Scanner (Pro — included in $29/month Monitor plan)
+### API Schema Drift Scanner (Pro — $79/month)
 Compares OpenAPI specifications to detect breaking changes and additive changes between API versions. queldrex.com/tools/api-schema-drift
 
-### Database Migration Safety Checker (Pro — included in $29/month Monitor plan)
+### Database Migration Safety Checker (Pro — $79/month)
 Analyzes SQL migration scripts for risky patterns that could cause downtime or data loss. queldrex.com/tools/database-migration
 
 ### Directory Extractor (Free)

@@ -270,7 +270,7 @@ export const posts: BlogPost[] = [
 
 <h2>Step 10: Monitor Monthly - AI Rankings Change</h2>
 <p>AI systems update their training data, change their recommendation logic, and evolve how they handle real-time search. Your AI visibility score today is not your score in six months. New competitors enter the market, directories update their data, and the AI landscape itself shifts.</p>
-<p>The <a href="/monitor">Queldrex AI Visibility Monitor</a> rescans your site monthly and tracks your score over time, alerting you to drops and showing you what changed. For $29/month, you get a continuous picture of your AI presence instead of a one-time snapshot - so you can catch problems before they cost you customers.</p>
+<p>The <a href="/monitor">Queldrex AI Visibility Monitor</a> rescans your site monthly and tracks your score over time, alerting you to drops and showing you what changed. For $79/month, you get a continuous picture of your AI presence instead of a one-time snapshot - so you can catch problems before they cost you customers.</p>
 
 <h2>The Compound Effect</h2>
 <p>Each of these steps individually moves the needle. Together, they create a compounding effect: your schema makes it easier for AI to identify you, your citations confirm your identity across sources, your content establishes your expertise, and your monitoring ensures you stay ahead of changes. A business that does all ten of these steps well will consistently outrank competitors in AI search - and that advantage grows over time as the gap between optimized and unoptimized businesses widens.</p>

@@ -92,7 +92,7 @@ export default function RequestToolPage() {
                 href="/scanner"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white/60 border border-white/12 hover:text-white transition-colors"
               >
-                Try Tool 1 Free →
+                Try the AI Scanner free →
               </Link>
             </div>
           </div>
