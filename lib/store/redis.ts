@@ -31,7 +31,7 @@ export function getRedis(): Redis {
 }
 
 const SCAN_TTL = 60 * 60 * 48
-const TOKEN_TTL = 60 * 60 * 24 * 30  // 30 days
+const TOKEN_TTL = 60 * 60 * 24 * 365  // 1 year — matches cookie lifetime
 
 export async function saveScan(scan: ScanResult): Promise<void> {
   await getRedis().set(`scan:${scan.scanId}`, JSON.stringify(scan), { ex: SCAN_TTL })

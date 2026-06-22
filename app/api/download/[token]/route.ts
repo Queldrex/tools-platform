@@ -38,8 +38,16 @@ export async function GET(
     return Response.json({ error: 'Download link not found or expired' }, { status: 404 })
   }
 
-  // Set paid access cookie so $399 buyers can use Pro tools
-  const cookieHeader = `queldrex_paid=${token}; Path=/; Max-Age=${60 * 60 * 24 * 365}; SameSite=Lax; Secure`
+  // Grant Pro access cookie only to the FIRST browser that uses this token.
+  // Subsequent visits (shared links, re-downloads) still get the file but no cookie.
+  const redis = (await import('@/lib/store/redis')).getRedis()
+  const cookieIssuedKey = `download_cookie_issued:${token}`
+  const alreadyIssued = await redis.get(cookieIssuedKey)
+  let cookieHeader: string | null = null
+  if (!alreadyIssued) {
+    await redis.set(cookieIssuedKey, '1', { ex: 60 * 60 * 24 * 365 })
+    cookieHeader = `queldrex_paid=${token}; Path=/; Max-Age=${60 * 60 * 24 * 365}; SameSite=Lax; Secure; HttpOnly`
+  }
 
   const fileParam = request.nextUrl.searchParams.get('file')
 
@@ -49,13 +57,12 @@ export async function GET(
       return Response.json({ error: 'Unknown file' }, { status: 400 })
     }
     const content = entry.fn(scan)
-    return new Response(content, {
-      headers: {
-        'Content-Type': `${entry.mime}; charset=utf-8`,
-        'Content-Disposition': `attachment; filename="${entry.ext}"`,
-        'Set-Cookie': cookieHeader,
-      },
-    })
+    const headers: Record<string, string> = {
+      'Content-Type': `${entry.mime}; charset=utf-8`,
+      'Content-Disposition': `attachment; filename="${entry.ext}"`,
+    }
+    if (cookieHeader) headers['Set-Cookie'] = cookieHeader
+    return new Response(content, { headers })
   }
 
   // Track ZIP download and notify admin (fire-and-forget, only on full ZIP)
@@ -80,12 +87,12 @@ export async function GET(
   const zipBuffer = await generateReportZip(scan)
   const domain = (scan.businessInfo.domain || 'report').replace(/[^a-z0-9.-]/gi, '_')
 
-  return new Response(zipBuffer, {
-    headers: {
-      'Content-Type': 'application/zip',
-      'Content-Disposition': `attachment; filename="queldrex-ai-report-${domain}.zip"`,
-      'Content-Length': zipBuffer.byteLength.toString(),
-      'Set-Cookie': cookieHeader,
-    },
-  })
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/zip',
+    'Content-Disposition': `attachment; filename="queldrex-ai-report-${domain}.zip"`,
+    'Content-Length': zipBuffer.byteLength.toString(),
+  }
+  if (cookieHeader) headers['Set-Cookie'] = cookieHeader
+
+  return new Response(zipBuffer, { headers })
 }
