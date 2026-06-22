@@ -237,7 +237,7 @@ export default function ScannerPage() {
               Is your business invisible<br className="hidden sm:block" /> to AI search?
             </h1>
             <p className="text-lg text-white/65 leading-relaxed mb-4 max-w-2xl mx-auto">
-              ChatGPT, Claude, and Perplexity are recommending businesses to millions of users every day. The ones getting recommended have something most sites are missing.
+              ChatGPT, Claude, and Perplexity are recommending businesses to millions of users every day. Those businesses have something most sites are missing.
             </p>
             <p className="text-base text-white/50 leading-relaxed mb-10 max-w-xl mx-auto">
               We scan your site for 14 signals AI assistants look for — including whether ChatGPT and Claude are being blocked from reading your site. You get a score, a breakdown, and the exact files to fix it.
