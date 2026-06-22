@@ -108,7 +108,7 @@ function DnsHealthContent() {
             <ul className="space-y-2">
               {['A, AAAA, MX, TXT, NS, CNAME, and CAA records', 'Side-by-side Cloudflare vs Google resolver results', 'Propagation status — do both resolvers agree?', 'TTL values for every record', 'SPF record parsed and highlighted from TXT records'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-white/55">
-                  <span className=”text-green-400 mt-0.5 flex-shrink-0”>✓</span>{item}
+                  <span className="text-green-400 mt-0.5 flex-shrink-0">✓</span>{item}
                 </li>
               ))}
             </ul>

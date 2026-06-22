@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -38,7 +38,7 @@ const FAQS = [
   },
 ]
 
-export default function AgencyPage() {
+function AgencyContent() {
   const searchParams = useSearchParams()
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly')
   const [email, setEmail] = useState('')
@@ -339,4 +339,8 @@ export default function AgencyPage() {
       <Footer />
     </div>
   )
+}
+
+export default function AgencyPage() {
+  return <Suspense fallback={null}><AgencyContent /></Suspense>
 }

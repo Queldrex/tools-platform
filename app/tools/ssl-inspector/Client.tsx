@@ -95,7 +95,7 @@ function SSLInspectorContent() {
             <ul className="space-y-2">
               {['Certificate issuer, expiry date, and days remaining', 'TLS protocol version (1.2 vs 1.3) and cipher suite', 'Security header audit: HSTS, CSP, X-Frame-Options', 'Overall grade: A+ to F with specific issues', 'Subject Alternative Names (SANs) — all domains on the cert'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-white/55">
-                  <span className=”text-green-400 mt-0.5 flex-shrink-0”>✓</span>{item}
+                  <span className="text-green-400 mt-0.5 flex-shrink-0">✓</span>{item}
                 </li>
               ))}
             </ul>

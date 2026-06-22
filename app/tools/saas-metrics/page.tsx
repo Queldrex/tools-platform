@@ -113,7 +113,7 @@ export default function SaasMetricsPage() {
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">What you get</p>
             <ul className="space-y-2">
               {['MRR, ARR, and projected revenue at current growth', 'LTV:CAC ratio with benchmark grade (ideal is >3:1)', 'Net Revenue Retention (NRR) — the single most important SaaS metric', 'Quick Ratio graded: <1 = danger, 1-4 = growing, >4 = exceptional', 'CAC Payback Period: how many months to recover your acquisition cost'].map((item, i) => (
-                <li key={i} className="flex items-start gap-2 text-xs text-white/55"><span className=”text-green-400 mt-0.5 flex-shrink-0”>✓</span>{item}</li>
+                <li key={i} className="flex items-start gap-2 text-xs text-white/55"><span className="text-green-400 mt-0.5 flex-shrink-0">✓</span>{item}</li>
               ))}
             </ul>
           </div>

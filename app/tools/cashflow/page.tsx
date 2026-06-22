@@ -162,7 +162,7 @@ export default function CashFlowPage() {
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">What you get</p>
             <ul className="space-y-2">
               {['Month-by-month revenue, costs, net cash flow, and balance', 'Runway in months before cash runs out (if applicable)', 'Break-even month — when cumulative cash turns positive', 'Burn rate alerts when cash drops below 3 months of fixed costs', 'Color-coded table: green rows = profitable months, red = burning'].map((item, i) => (
-                <li key={i} className="flex items-start gap-2 text-xs text-white/55"><span className=”text-green-400 mt-0.5 flex-shrink-0”>✓</span>{item}</li>
+                <li key={i} className="flex items-start gap-2 text-xs text-white/55"><span className="text-green-400 mt-0.5 flex-shrink-0">✓</span>{item}</li>
               ))}
             </ul>
           </div>
@@ -276,7 +276,7 @@ export default function CashFlowPage() {
 
             {result.summary.breakEvenMonth && (
               <div className="rounded-xl border px-5 py-3 flex items-center gap-3" style={{ background: 'rgba(74,222,128,0.06)', borderColor: 'rgba(74,222,128,0.2)' }}>
-                <span className=”text-green-400 text-lg”>✓</span>
+                <span className="text-green-400 text-lg">✓</span>
                 <p className="text-sm text-white/65">Breaks even in <span className="font-bold text-green-400">Month {result.summary.breakEvenMonth}</span> ({result.months[result.summary.breakEvenMonth - 1]?.label})</p>
               </div>
             )}
