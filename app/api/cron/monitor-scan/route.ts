@@ -8,7 +8,8 @@ export async function GET(request: NextRequest) {
   const secret = request.headers.get('x-admin-secret')
   const cronSecret = (process.env.CRON_SECRET || '').replace(/^﻿/, '').trim()
   const adminSecret = (process.env.ADMIN_SECRET || '').replace(/^﻿/, '').trim()
-  if (!secret || (secret !== adminSecret && (cronSecret && secret !== cronSecret))) {
+  const validSecret = cronSecret || adminSecret
+  if (!validSecret || !secret || (secret !== cronSecret && secret !== adminSecret)) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

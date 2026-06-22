@@ -28,10 +28,13 @@ function addDays(dateStr: string, days: number): string {
 }
 
 export async function GET(request: NextRequest) {
-  // Verify Vercel cron secret
-  const cronSecret = process.env.CRON_SECRET
+  // Verify cron secret — fails closed if neither secret is configured
+  const cronSecret = (process.env.CRON_SECRET || '').trim()
+  const adminSecret = (process.env.ADMIN_SECRET || '').trim()
+  const validSecret = cronSecret || adminSecret
   const authHeader = request.headers.get('authorization')
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : authHeader
+  if (!validSecret || token !== validSecret) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
