@@ -51,7 +51,12 @@ export async function POST(request: NextRequest) {
     'startup-energy': 'energetic and bold, show company culture, use active exciting language',
   }
 
-  const raw = await askGroq(`You are a senior HR professional writing a job posting. Create a complete, ready-to-post job description.
+  const companyBlurb = body.companyBlurb || `${body.company} is a growing company looking for talented individuals to join our team.`
+  const toneLabel = toneInstructions[body.tone || 'professional'] || toneInstructions.professional
+
+  let raw: string
+  try {
+    raw = await askGroq(`You are a senior HR professional. Write a complete, ready-to-post job description.
 
 Role: ${body.jobTitle}
 Company: ${body.company}
@@ -59,35 +64,30 @@ Industry: ${body.industry || 'Technology'}
 Employment: ${body.employmentType || 'Full-time'}, ${body.remote || 'hybrid'}, ${body.location || 'Location flexible'}
 Experience Level: ${body.experienceLevel || 'mid'}-level
 Salary: ${salaryText}
-Tone: ${toneInstructions[body.tone || 'professional'] || toneInstructions.professional}
-
-Key Responsibilities (user notes): ${body.keyResponsibilities}
-Required Skills (user notes): ${body.requiredSkills || 'Not specified'}
+Tone: ${toneLabel}
+Key Responsibilities: ${body.keyResponsibilities}
+Required Skills: ${body.requiredSkills || 'Not specified'}
 Nice to Have: ${body.niceToHave || 'Not specified'}
-About the Company: ${body.companyBlurb || `${body.company} is a growing company looking for talented individuals to join our team.`}
+About the Company: ${companyBlurb}
 
-Write a compelling job description. Return ONLY valid JSON:
-{
-  "jobTitle": "${body.jobTitle}",
-  "sections": [
-    { "heading": "About the Role", "content": "<2-3 sentence overview of why this role matters and what makes it exciting>" },
-    { "heading": "What You'll Do", "content": "<5-8 bullet points starting with action verbs, one per line with • prefix>" },
-    { "heading": "What We're Looking For", "content": "<Required: 5-7 bullets with • prefix\\n\\nNice to Have:\\n<3-4 bullets with • prefix>" },
-    { "heading": "About ${body.company}", "content": "<2-3 sentences about the company>" },
-    { "heading": "Compensation & Benefits", "content": "${salaryText}<plus mention 3-4 typical benefits like health insurance, PTO, flexible hours, remote work if applicable>" },
-    { "heading": "Equal Opportunity", "content": "<standard EEO statement>" }
-  ],
-  "fullText": "<complete job posting as clean plain text, sections separated by newlines>",
-  "characterCount": <integer>,
-  "estimatedReadTime": "<e.g. '2 min read'>"
-}`)
+Return ONLY a raw JSON object (no markdown, no code fences). Use this exact structure:
+{"jobTitle":"...","sections":[{"heading":"About the Role","content":"..."},{"heading":"What You'll Do","content":"..."},{"heading":"What We're Looking For","content":"..."},{"heading":"Compensation and Benefits","content":"${salaryText}, plus standard benefits"},{"heading":"Equal Opportunity","content":"..."}],"fullText":"...","characterCount":0,"estimatedReadTime":"2 min read"}
+
+Fill every field with real content. No placeholder angle brackets. Escape any quotes inside strings with backslash.`)
+  } catch {
+    return Response.json({ error: 'Generation temporarily unavailable. Please try again.' }, { status: 503 })
+  }
 
   let result: { jobTitle: string; sections: Array<{ heading: string; content: string }>; fullText: string; characterCount: number; estimatedReadTime: string }
   try {
-    const match = raw.match(/\{[\s\S]*\}/)
-    result = JSON.parse(match ? match[0] : raw)
+    const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim()
+    const match = cleaned.match(/\{[\s\S]*\}/)
+    result = JSON.parse(match ? match[0] : cleaned)
+    if (!result.fullText && result.sections) {
+      result.fullText = result.sections.map((s: { heading: string; content: string }) => `${s.heading}\n${s.content}`).join('\n\n')
+    }
     if (!result.characterCount && result.fullText) result.characterCount = result.fullText.length
-    if (!result.estimatedReadTime) result.estimatedReadTime = `${Math.ceil(result.fullText.length / 1000)} min read`
+    if (!result.estimatedReadTime) result.estimatedReadTime = `${Math.ceil((result.fullText || '').length / 1000)} min read`
   } catch {
     return Response.json({ error: 'Generation failed. Please try again.' }, { status: 500 })
   }
