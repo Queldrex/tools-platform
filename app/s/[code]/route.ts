@@ -11,7 +11,7 @@ export async function GET(
   if (!code) return NextResponse.redirect('/', { status: 302 })
 
   try {
-    const redis = await getRedis()
+    const redis = getRedis()
     const data = await redis.hgetall(`url:${code}`)
     if (!data || !data.url) {
       return NextResponse.redirect('/tools/url-shortener?error=not_found', { status: 302 })
