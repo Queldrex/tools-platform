@@ -33,6 +33,9 @@ function fmtMoney(n: number): string {
 }
 
 export async function POST(request: NextRequest) {
+  const access = await hasFreeOrProAccess(request, 'saas-metrics', 10)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: {
     mrr?: number; newMrr?: number; churnedMrr?: number
     customers?: number; newCustomers?: number; lostCustomers?: number
@@ -50,9 +53,6 @@ export async function POST(request: NextRequest) {
 
   if (mrr <= 0) return Response.json({ error: 'MRR must be greater than 0' }, { status: 400 })
   if (customers <= 0) return Response.json({ error: 'Customer count must be greater than 0' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'saas-metrics', 10)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const arr = mrr * 12
   const arpu = body.arpu ? Number(body.arpu) : mrr / customers
