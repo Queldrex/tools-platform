@@ -118,6 +118,7 @@ export default function ContractScannerPage() {
           </div>
 
           <textarea
+            aria-label="Contract text"
             value={contractText}
             onChange={e => setContractText(e.target.value)}
             placeholder="Paste your contract, NDA, service agreement, employment contract, or any legal document here..."

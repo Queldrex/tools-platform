@@ -77,7 +77,10 @@ export default function JobDescriptionPage() {
           <span className="text-sm font-bold text-white/30">2 free/day · Unlimited with $79/month</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Job Description <span style={{ color: '#06d6ff' }}>Writer</span></h1>
-        <p className="text-white/55 text-base mb-8 max-w-2xl">Enter your rough notes and get a complete, ready-to-post job description in seconds. Attract better candidates with professionally written postings.</p>
+        <p className="text-white/55 text-base mb-4 max-w-2xl">Enter your rough notes and get a complete, ready-to-post job description in seconds. Attract better candidates with professionally written postings.</p>
+        <div className="mb-6 px-4 py-3 rounded-xl border text-xs leading-relaxed" style={{ background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.2)', color: 'rgba(251,191,36,0.7)' }}>
+          AI-generated job descriptions are a starting point only. Review all output for compliance with federal and state employment law (including equal opportunity requirements and salary disclosure obligations) before posting. This tool does not provide legal or HR compliance advice.
+        </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Form */}

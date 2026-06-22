@@ -71,7 +71,10 @@ export default function PrivacyAnalyzerPage() {
           <span className="text-sm font-bold text-white/30">1 free analysis/day · Unlimited with Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Privacy Policy <span style={{ color: '#fb923c' }}>GDPR/CCPA Analyzer</span></h1>
-        <p className="text-white/55 text-base mb-6 max-w-xl">Paste a privacy policy URL or text. AI reads the actual document and scores it for GDPR and CCPA compliance — lawful basis, data retention, user rights, third-party disclosures, and red flags.</p>
+        <p className="text-white/55 text-base mb-4 max-w-xl">Paste a privacy policy URL or text. AI reads the actual document and scores it for GDPR and CCPA compliance — lawful basis, data retention, user rights, third-party disclosures, and red flags.</p>
+        <div className="mb-6 px-4 py-3 rounded-xl border text-xs leading-relaxed" style={{ background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.2)', color: 'rgba(251,191,36,0.7)' }}>
+          This tool uses AI to analyze privacy policy language for informational purposes only. Results do not constitute legal advice and do not establish an attorney-client relationship. Have a qualified attorney review your privacy policy and compliance posture before relying on any output.
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
@@ -100,11 +103,11 @@ export default function PrivacyAnalyzerPage() {
             ))}
           </div>
           {tab === 'url' ? (
-            <input value={url} onChange={e => setUrl(e.target.value)} onKeyDown={e => e.key === 'Enter' && analyze()}
+            <input aria-label="Privacy policy URL" value={url} onChange={e => setUrl(e.target.value)} onKeyDown={e => e.key === 'Enter' && analyze()}
               placeholder="https://example.com/privacy-policy" className="w-full text-sm text-white placeholder-white/20 outline-none"
               style={{ background: '#0a0f1a', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 10, padding: '12px 16px' }} />
           ) : (
-            <textarea value={text} onChange={e => setText(e.target.value)} placeholder="Paste the full text of the privacy policy here…" rows={10}
+            <textarea aria-label="Privacy policy text" value={text} onChange={e => setText(e.target.value)} placeholder="Paste the full text of the privacy policy here…" rows={10}
               className="w-full text-sm text-white/80 placeholder-white/20 outline-none resize-y"
               style={{ background: '#0a0f1a', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 10, padding: '14px 16px', minHeight: 200 }} />
           )}
