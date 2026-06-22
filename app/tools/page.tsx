@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import GoProButton from '@/components/GoProButton'
+import RequestToolForm from '@/components/RequestToolForm'
 
 export const metadata = {
   title: 'All Tools | Queldrex',
@@ -291,6 +292,18 @@ export default function ToolsPage() {
             </Link>
           </div>
         </div>
+      </section>
+
+      {/* Request a tool */}
+      <section className="py-20 px-6" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="max-w-2xl mx-auto text-center mb-10">
+          <p className="text-[11px] font-black uppercase tracking-widest mb-3" style={{ color: '#a78bfa' }}>Don't see what you need?</p>
+          <h2 className="text-3xl font-black mb-3" style={{ color: '#FAFAFA', letterSpacing: '-0.02em' }}>Request a tool.</h2>
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
+            We build based on what people actually need. If you need a tool that isn't here, tell us. We review every request.
+          </p>
+        </div>
+        <RequestToolForm />
       </section>
 
       <Footer />

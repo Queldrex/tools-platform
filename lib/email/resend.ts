@@ -572,7 +572,7 @@ export async function sendDiscoveryEmail({ to, name, url, score, bookingUrl, agr
 }) {
   const firstName = name.split(' ')[0]
   await getResend().emails.send({
-    from: 'Sean at Queldrex <hello@queldrex.com>',
+    from: 'Queldrex <hello@queldrex.com>',
     to,
     replyTo: 'hello@queldrex.com',
     subject: `Quick call about your AI visibility — ${url}`,
@@ -744,7 +744,7 @@ export async function sendCredentialsDeletionEmail({
     hour: '2-digit', minute: '2-digit', timeZoneName: 'short', timeZone: 'UTC',
   })
   await getResend().emails.send({
-    from: 'Sean at Queldrex <hello@queldrex.com>',
+    from: 'Queldrex <hello@queldrex.com>',
     to,
     subject: `Your hosting credentials for ${domain} have been permanently deleted`,
     html: `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>

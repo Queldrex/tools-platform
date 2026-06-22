@@ -1756,7 +1756,7 @@ function TestTab({ sessionToken, baseUrl, notify }: { sessionToken: string; base
           ))}
         </div>
         <p style={{ fontSize: 11, color: '#475569', margin: '12px 0 0' }}>
-          Full = automated implementation via API. Manual = Sean manually applies fixes and delivers within 48 hours.
+          Full = automated implementation via API. Manual = Queldrex team applies fixes and delivers within 48 hours.
         </p>
       </div>
     </div>
