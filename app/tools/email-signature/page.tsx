@@ -21,13 +21,13 @@ interface SigData {
 }
 
 const DEFAULTS: SigData = {
-  name: 'Sean Holmes',
+  name: 'Alex Jordan',
   title: 'Founder & CEO',
-  company: 'Queldrex LLC',
-  email: 'hello@queldrex.com',
-  phone: '+1 (720) 555-0123',
-  website: 'queldrex.com',
-  linkedin: 'linkedin.com/in/seanholmes',
+  company: 'Acme Corp',
+  email: 'alex@acme.com',
+  phone: '+1 (555) 000-0100',
+  website: 'acme.com',
+  linkedin: 'linkedin.com/in/alexjordan',
   twitter: '',
   photoUrl: '',
   accentColor: '#06d6ff',
@@ -131,12 +131,12 @@ export default function EmailSignaturePage() {
             <div className="rounded-2xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
               <p className="text-xs font-black uppercase tracking-widest text-white/25 mb-4">Your Info</p>
               <div className="space-y-3">
-                <div><label className={labelCls}>Full Name</label><input className={inputCls} style={inputStyle} value={data.name} onChange={e => update({ name: e.target.value })} placeholder="Sean Holmes" /></div>
+                <div><label className={labelCls}>Full Name</label><input className={inputCls} style={inputStyle} value={data.name} onChange={e => update({ name: e.target.value })} placeholder="Alex Jordan" /></div>
                 <div><label className={labelCls}>Job Title</label><input className={inputCls} style={inputStyle} value={data.title} onChange={e => update({ title: e.target.value })} placeholder="Founder & CEO" /></div>
-                <div><label className={labelCls}>Company</label><input className={inputCls} style={inputStyle} value={data.company} onChange={e => update({ company: e.target.value })} placeholder="Queldrex LLC" /></div>
-                <div><label className={labelCls}>Email</label><input className={inputCls} style={inputStyle} value={data.email} onChange={e => update({ email: e.target.value })} placeholder="hello@company.com" /></div>
-                <div><label className={labelCls}>Phone</label><input className={inputCls} style={inputStyle} value={data.phone} onChange={e => update({ phone: e.target.value })} placeholder="+1 (720) 555-0123" /></div>
-                <div><label className={labelCls}>Website</label><input className={inputCls} style={inputStyle} value={data.website} onChange={e => update({ website: e.target.value })} placeholder="queldrex.com" /></div>
+                <div><label className={labelCls}>Company</label><input className={inputCls} style={inputStyle} value={data.company} onChange={e => update({ company: e.target.value })} placeholder="Acme Corp" /></div>
+                <div><label className={labelCls}>Email</label><input className={inputCls} style={inputStyle} value={data.email} onChange={e => update({ email: e.target.value })} placeholder="alex@company.com" /></div>
+                <div><label className={labelCls}>Phone</label><input className={inputCls} style={inputStyle} value={data.phone} onChange={e => update({ phone: e.target.value })} placeholder="+1 (555) 000-0100" /></div>
+                <div><label className={labelCls}>Website</label><input className={inputCls} style={inputStyle} value={data.website} onChange={e => update({ website: e.target.value })} placeholder="yoursite.com" /></div>
                 <div><label className={labelCls}>LinkedIn URL</label><input className={inputCls} style={inputStyle} value={data.linkedin} onChange={e => update({ linkedin: e.target.value })} placeholder="linkedin.com/in/yourname" /></div>
                 <div><label className={labelCls}>Twitter / X handle</label><input className={inputCls} style={inputStyle} value={data.twitter} onChange={e => update({ twitter: e.target.value })} placeholder="@yourhandle" /></div>
                 <div><label className={labelCls}>Photo URL (optional)</label><input className={inputCls} style={inputStyle} value={data.photoUrl} onChange={e => update({ photoUrl: e.target.value })} placeholder="https://yoursite.com/photo.jpg" /></div>
@@ -275,13 +275,13 @@ export default function EmailSignaturePage() {
                   <tbody>
                     <tr>
                       <td style={{ paddingRight: '16px', borderRight: '3px solid #06d6ff', verticalAlign: 'top' }}>
-                        <div style={{ fontWeight: 'bold', fontSize: '15px' }}>Sean Holmes</div>
-                        <div style={{ color: '#555', fontSize: '13px' }}>Founder, Queldrex LLC</div>
-                        <div style={{ color: '#06d6ff', fontSize: '12px', marginTop: '4px' }}>hello@queldrex.com</div>
+                        <div style={{ fontWeight: 'bold', fontSize: '15px' }}>Alex Jordan</div>
+                        <div style={{ color: '#555', fontSize: '13px' }}>Founder, Acme Corp</div>
+                        <div style={{ color: '#06d6ff', fontSize: '12px', marginTop: '4px' }}>alex@acme.com</div>
                       </td>
                       <td style={{ paddingLeft: '16px', verticalAlign: 'top' }}>
-                        <div style={{ color: '#888', fontSize: '12px' }}>queldrex.com</div>
-                        <div style={{ color: '#888', fontSize: '12px' }}>Castle Rock, CO</div>
+                        <div style={{ color: '#888', fontSize: '12px' }}>acme.com</div>
+                        <div style={{ color: '#888', fontSize: '12px' }}>San Francisco, CA</div>
                       </td>
                     </tr>
                   </tbody>

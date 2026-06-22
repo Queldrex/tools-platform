@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
 <div style="max-width:520px;margin:40px auto;padding:0 20px;">
   <div style="background:#0f172a;padding:28px 32px;border-radius:16px 16px 0 0;text-align:center;">
     <div style="color:#a78bfa;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Queldrex Pro</div>
-    <div style="color:white;font-size:22px;font-weight:800;">All 47 tools. No limits.</div>
+    <div style="color:white;font-size:22px;font-weight:800;">All 48 tools. No limits.</div>
   </div>
   <div style="background:white;padding:32px;border-radius:0 0 16px 16px;box-shadow:0 4px 6px rgba(0,0,0,0.05);">
     <p style="margin:0 0 16px;color:#374151;font-size:15px;">Your Pro subscription is active. Every tool on queldrex.com is now unlimited.</p>

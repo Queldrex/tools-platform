@@ -4,7 +4,7 @@ import Footer from '@/components/Footer'
 
 export const metadata = {
   title: 'Tool Audit & Verification — Queldrex',
-  description: 'Live verification report for all 25 Queldrex tools. Real test results, example inputs and outputs, and proof each tool works.',
+  description: 'Live verification report for all 48 Queldrex tools. Real test results, example inputs and outputs, and proof each tool works.',
 }
 
 interface ToolResult {
