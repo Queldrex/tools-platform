@@ -95,7 +95,7 @@ function SSLInspectorContent() {
             <ul className="space-y-2">
               {['Certificate issuer, expiry date, and days remaining', 'TLS protocol version (1.2 vs 1.3) and cipher suite', 'Security header audit: HSTS, CSP, X-Frame-Options', 'Overall grade: A+ to F with specific issues', 'Subject Alternative Names (SANs) — all domains on the cert'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-white/55">
-                  <span className="text-green-400 mt-0.5 flex-shrink-0">âœ“</span>{item}
+                  <span className=”text-green-400 mt-0.5 flex-shrink-0”>✓</span>{item}
                 </li>
               ))}
             </ul>
@@ -151,7 +151,7 @@ function SSLInspectorContent() {
               <button onClick={shareResult}
                 className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all hover:bg-white/5"
                 style={{ color: shared ? '#4ade80' : 'rgba(255,255,255,0.4)', borderColor: shared ? 'rgba(74,222,128,0.3)' : 'rgba(255,255,255,0.1)' }}>
-                {shared ? 'âœ“ Copied!' : 'ðŸ”— Share result'}
+                {shared ? '✓ Copied!' : '🔗 Share result'}
               </button>
             </div>
 

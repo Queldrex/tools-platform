@@ -138,7 +138,7 @@ export default function SchemaValidatorPage() {
                 </button>
                 {expanded.has(i) && (
                   <div className="border-t px-5 py-4 space-y-3" style={{ background: '#0a0f1a', borderColor: 'rgba(255,255,255,0.05)' }}>
-                    {s.errors.map((e, j) => <div key={j} className="text-xs text-red-400 flex gap-2"><span>âœ•</span>{e}</div>)}
+                    {s.errors.map((e, j) => <div key={j} className="text-xs text-red-400 flex gap-2"><span>✕</span>{e}</div>)}
                     {s.warnings.map((w, j) => <div key={j} className="text-xs text-yellow-400 flex gap-2"><span>!</span>{w}</div>)}
                     <div><div className="text-xs font-black text-white/30 mb-1.5 uppercase tracking-wider">Properties</div>
                       <div className="flex flex-wrap gap-1.5">{s.properties.map(p => <span key={p} className="text-xs font-mono px-2 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.4)' }}>{p}</span>)}</div>

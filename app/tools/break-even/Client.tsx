@@ -87,7 +87,7 @@ export default function BreakEvenPage() {
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">What you get</p>
             <ul className="space-y-2">
               {['Break-even units — exactly how many you need to sell', 'Break-even revenue — total sales needed to cover all costs', 'Contribution margin per unit and as a percentage', 'Profit/loss at any target sales volume you enter', 'Visual progress bar showing how close you are to profitability'].map((item, i) => (
-                <li key={i} className="flex items-start gap-2 text-xs text-white/55"><span className="text-green-400 mt-0.5 flex-shrink-0">âœ“</span>{item}</li>
+                <li key={i} className="flex items-start gap-2 text-xs text-white/55"><span className=”text-green-400 mt-0.5 flex-shrink-0”>✓</span>{item}</li>
               ))}
             </ul>
           </div>

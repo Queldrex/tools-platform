@@ -75,7 +75,7 @@ export default function EmailDeliverabilityPage() {
             <ul className="space-y-2">
               {['SPF record and policy strength (pass / softfail / fail)', 'DKIM selectors found (Google, SendGrid, Mailchimp +12)', 'DMARC policy: p=none vs p=quarantine vs p=reject', 'MX records with priority order', 'Deliverability score with plain-English explanation'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-white/55">
-                  <span className="text-green-400 mt-0.5 flex-shrink-0">âœ“</span>{item}
+                  <span className=”text-green-400 mt-0.5 flex-shrink-0”>✓</span>{item}
                 </li>
               ))}
             </ul>

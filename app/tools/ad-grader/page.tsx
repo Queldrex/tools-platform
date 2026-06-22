@@ -98,7 +98,7 @@ export default function AdGraderPage() {
             <ul className="space-y-2">
               {['Overall score (0-100) with letter grade', 'Breakdown by dimension — see exactly what to fix', 'Rewritten version of your copy, same platform/length', 'Spam flag detection — words that trigger spam filters', 'Platform-specific length scoring (Google vs Meta vs LinkedIn)'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-white/55">
-                  <span className="text-green-400 mt-0.5 flex-shrink-0">âœ“</span>{item}
+                  <span className=”text-green-400 mt-0.5 flex-shrink-0”>✓</span>{item}
                 </li>
               ))}
             </ul>

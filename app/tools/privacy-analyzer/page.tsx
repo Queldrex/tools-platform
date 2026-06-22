@@ -83,7 +83,7 @@ export default function PrivacyAnalyzerPage() {
             <ul className="space-y-2">
               {['GDPR compliance score (0-100) with letter grade', 'CCPA compliance assessment', '8 required sections checked — present or missing', 'Red flags: vague language, missing disclosures', 'Plain-English verdict on the most critical gaps'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-white/55">
-                  <span className="text-green-400 mt-0.5 flex-shrink-0">âœ“</span>{item}
+                  <span className=”text-green-400 mt-0.5 flex-shrink-0”>✓</span>{item}
                 </li>
               ))}
             </ul>

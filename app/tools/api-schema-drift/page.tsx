@@ -214,7 +214,7 @@ export default function ApiSchemaDriftPage() {
                 </div>
               ))}
             </div>
-            <p className="text-[10px] text-white/20 text-center mt-3">â† This is a sample. Your drift report will appear here.</p>
+            <p className="text-[10px] text-white/20 text-center mt-3">← This is a sample. Your drift report will appear here.</p>
           </div>
         )}
 

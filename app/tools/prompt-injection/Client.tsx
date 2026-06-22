@@ -68,7 +68,7 @@ export default function PromptInjectionPage() {
             <ul className="space-y-2">
               {['Pattern match count and risk level (Clean to Critical)', 'Each detected pattern named and explained', 'The exact matched text highlighted', 'Injection category: jailbreak / override / extraction', 'Use case: paste before sending to an LLM to catch attacks'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-white/55">
-                  <span className="text-green-400 mt-0.5 flex-shrink-0">âœ“</span>{item}
+                  <span className=”text-green-400 mt-0.5 flex-shrink-0”>✓</span>{item}
                 </li>
               ))}
             </ul>

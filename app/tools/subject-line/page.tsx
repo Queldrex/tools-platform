@@ -119,7 +119,7 @@ export default function SubjectLinePage() {
             <ul className="space-y-2">
               {['Score out of 100 with letter grade', 'Estimated open rate range based on score', '7-dimension breakdown with specific feedback', 'Spam word detection with list of flagged words', '3 alternative subject lines you can use immediately'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-white/55">
-                  <span className="text-green-400 mt-0.5 flex-shrink-0">âœ“</span>{item}
+                  <span className=”text-green-400 mt-0.5 flex-shrink-0”>✓</span>{item}
                 </li>
               ))}
             </ul>
