@@ -1,10 +1,11 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getRedis } from '@/lib/store/redis'
 import { hasFreeOrProAccess } from '@/lib/tool-access'
 
 export const dynamic = 'force-dynamic'
 
-const BASE_URL = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
+const BOM = String.fromCharCode(0xFEFF)
+const BASE_URL = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').split(BOM).join('').trim()
 
 function generateCode(): string {
   const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789'
@@ -29,7 +30,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'A valid http or https URL is required.' }, { status: 400 })
     }
 
-    const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
     const redis = getRedis()
 
     let code = customCode?.trim().replace(/[^a-zA-Z0-9-_]/g, '') || generateCode()
