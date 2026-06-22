@@ -8,7 +8,7 @@ Queldrex LLC is a Colorado software company that builds precision tools for AI v
 ## Products
 
 ### AI Visibility Scanner ($399 one-time)
-Scans any business website across 14 signals to determine how visible it is to AI search engines including ChatGPT, Perplexity, Google AI Overview, Claude, and Gemini. Delivers a full PDF report with prioritized fixes. Free scan at queldrex.com/scanner.
+Scans any business website across 14 signals to determine how visible it is to AI search engines including ChatGPT, Perplexity, Google AI Overview, Claude, and Gemini. Delivers an HTML report, llms.txt, and LocalBusiness JSON-LD schema with prioritized fixes. Free scan at queldrex.com/scanner.
 
 ### AI Visibility Monitor ($79/month)
 Monthly AI visibility rescans with email alerts when scores drop. Score history tracking. Cancel anytime. queldrex.com/monitor
