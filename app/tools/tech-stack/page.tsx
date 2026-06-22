@@ -39,6 +39,7 @@ export default function TechStackPage() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<ScanResult | null>(null)
   const [error, setError] = useState('')
+  const [paywall, setPaywall] = useState(false)
 
   async function scan(target?: string) {
     const scanUrl = target || url.trim()
@@ -47,6 +48,7 @@ export default function TechStackPage() {
     setLoading(true)
     setError('')
     setResult(null)
+    setPaywall(false)
 
     try {
       const res = await fetch('/api/tools/tech-stack', {
@@ -55,6 +57,7 @@ export default function TechStackPage() {
         body: JSON.stringify({ url: scanUrl }),
       })
       const data = await res.json()
+      if (data.paywall || res.status === 402) { setPaywall(true); setLoading(false); return }
       if (!res.ok) { setError(data.error ?? 'Scan failed'); setLoading(false); return }
       setResult(data)
     } catch {
@@ -114,6 +117,14 @@ export default function TechStackPage() {
           <div className="mb-4 px-4 py-3 rounded-xl border text-sm text-red-400"
             style={{ background: 'rgba(248,113,113,0.07)', borderColor: 'rgba(248,113,113,0.2)' }}>
             {error}
+          </div>
+        )}
+
+        {paywall && !loading && (
+          <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.2)' }}>
+            <h3 className="text-xl font-black text-white mb-2">Unlimited scans with Pro</h3>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Free tier includes 5 scans/day. Pro subscribers get unlimited tech stack detection — $79/month.</p>
+            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Start Pro — $79/month</Link>
           </div>
         )}
 

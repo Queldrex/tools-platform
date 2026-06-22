@@ -182,8 +182,8 @@ export default function EmailSignaturePage() {
 
           {/* PREVIEW + OUTPUT */}
           <div className="space-y-4">
-            <div className="rounded-2xl border p-5" style={{ background: 'white', borderColor: 'rgba(255,255,255,0.08)' }}>
-              <p className="text-xs font-black uppercase tracking-widest text-gray-300 mb-4">Preview</p>
+            <div className="rounded-2xl border p-5" style={{ background: 'white', borderColor: 'rgba(0,0,0,0.1)' }}>
+              <p className="text-xs font-black uppercase tracking-widest mb-4" style={{ color: '#9ca3af' }}>Preview</p>
               <div dangerouslySetInnerHTML={{ __html: html }} />
             </div>
 

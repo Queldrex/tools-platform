@@ -6,8 +6,8 @@ export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   const secret = request.headers.get('x-admin-secret')
-  const cronSecret = (process.env.CRON_SECRET || '').replace(/^﻿/, '').trim()
-  const adminSecret = (process.env.ADMIN_SECRET || '').replace(/^﻿/, '').trim()
+  const cronSecret = (process.env.CRON_SECRET || '').replace(/^\uFEFF/, '').trim()
+  const adminSecret = (process.env.ADMIN_SECRET || '').replace(/^\uFEFF/, '').trim()
   const validSecret = cronSecret || adminSecret
   if (!validSecret || !secret || (secret !== cronSecret && secret !== adminSecret)) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
@@ -48,8 +48,8 @@ export async function GET(request: NextRequest) {
 async function sendDropAlert(email: string, domain: string, oldScore: number, newScore: number) {
   try {
     const { Resend } = await import('resend')
-    const resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^﻿/, '').trim())
-    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
+    const resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^\uFEFF/, '').trim())
+    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^\uFEFF/, '').trim()
     await resend.emails.send({
       from: 'Queldrex Monitor <reports@queldrex.com>',
       to: email,

@@ -348,7 +348,7 @@ export default function InvoiceGeneratorPage() {
           <div className="grid sm:grid-cols-3 gap-4 mb-8">
             {[
               { n: '01', title: 'Fill invoice details', body: 'Add your business info, client details, invoice number, and due date. Add unlimited line items with quantity × rate.' },
-              { n: '02', title: 'Apply tax & discounts', body: 'Set tax % (e.g. 8.5% sales tax) and a discount % applied to the subtotal. Switch currency: USD, EUR, GBP, CAD, AUD, JPY.' },
+              { n: '02', title: 'Apply tax & discounts', body: 'Set tax % (e.g. 8.5% sales tax) and a discount % applied to the subtotal. Switch currency: USD, EUR, GBP, CAD, or AUD.' },
               { n: '03', title: 'Save as PDF', body: 'Click "Download PDF" — a print-optimized HTML invoice opens in a new tab and the print dialog appears. Save as PDF from there.' },
             ].map(s => (
               <div key={s.n} className="rounded-xl border p-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
