@@ -26,6 +26,9 @@ async function fetchPageText(url: string): Promise<string> {
 export async function POST(request: NextRequest) {
   if (!GROQ_API_KEY) return Response.json({ error: 'AI analysis service not configured' }, { status: 503 })
 
+  const access = await hasFreeOrProAccess(request, 'privacy-analyzer', 1)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: { url?: string; text?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
@@ -41,9 +44,6 @@ export async function POST(request: NextRequest) {
 
   if (!policyText) return Response.json({ error: 'Provide a URL or paste the privacy policy text' }, { status: 400 })
   if (policyText.length < 200) return Response.json({ error: 'Text too short — paste the full privacy policy' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'privacy-analyzer', 1)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const prompt = `You are a privacy law compliance analyst. Analyze this privacy policy for GDPR and CCPA compliance.
 

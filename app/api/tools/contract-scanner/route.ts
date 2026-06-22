@@ -62,15 +62,15 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Contract scanner requires a Groq API key.', setup_required: true }, { status: 503 })
   }
 
+  const access = await hasFreeOrProAccess(request, 'contract-scanner', 1)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: { contractText?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
   const contractText = (body.contractText || '').trim()
   if (!contractText) return Response.json({ error: 'Contract text is required' }, { status: 400 })
   if (contractText.length < 100) return Response.json({ error: 'Contract text is too short — paste the full contract' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'contract-scanner', 1)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   let raw: string
   try {

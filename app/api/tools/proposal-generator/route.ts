@@ -25,6 +25,9 @@ async function askGroq(prompt: string): Promise<string> {
 export async function POST(request: NextRequest) {
   if (!GROQ_API_KEY) return Response.json({ error: 'Service not configured' }, { status: 503 })
 
+  const access = await hasFreeOrProAccess(request, 'proposal-generator', 1)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: {
     yourCompany?: string; clientCompany?: string; projectTitle?: string
     serviceType?: string; projectScope?: string; timeline?: string
@@ -36,9 +39,6 @@ export async function POST(request: NextRequest) {
   if (!body.yourCompany?.trim()) return Response.json({ error: 'Your company name is required' }, { status: 400 })
   if (!body.clientCompany?.trim()) return Response.json({ error: 'Client company name is required' }, { status: 400 })
   if (!body.projectScope?.trim()) return Response.json({ error: 'Project scope is required' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'proposal-generator', 1)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const toneInstructions: Record<string, string> = {
     formal: 'formal and authoritative, sophisticated business language',

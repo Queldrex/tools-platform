@@ -30,12 +30,12 @@ export async function POST(request: NextRequest) {
     refundMethod?: string; requiresReturn?: boolean; restockingFee?: number
     nonRefundableItems?: string; jurisdiction?: string; contactEmail?: string; processingDays?: number
   }
+  const access = await hasFreeOrProAccess(request, 'refund-policy', 2)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
   if (!body.companyName?.trim()) return Response.json({ error: 'Company name is required' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'refund-policy', 2)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
   const productType = body.productType || 'digital'

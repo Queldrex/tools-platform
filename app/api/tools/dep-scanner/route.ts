@@ -91,14 +91,14 @@ function vulnUrl(vuln: OsvVuln): string {
 }
 
 export async function POST(request: NextRequest) {
+  const access = await hasFreeOrProAccess(request, 'dep-scanner', 2)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: { content?: string; ecosystem?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
   const content = (body.content || '').trim()
   if (!content) return Response.json({ error: 'Paste your package.json or requirements.txt content' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'dep-scanner', 2)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   let ecosystem = (body.ecosystem || 'auto').toLowerCase()
   let packages: Array<{ name: string; version: string }> = []

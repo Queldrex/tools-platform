@@ -119,6 +119,9 @@ async function checkBatch<T>(items: T[], fn: (item: T) => Promise<PackageResult>
 }
 
 export async function POST(request: NextRequest) {
+  const access = await hasFreeOrProAccess(request, 'package-hallucination', 2)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: { content?: string; type?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
@@ -126,9 +129,6 @@ export async function POST(request: NextRequest) {
   const type = body.type === 'python' ? 'python' : 'npm'
 
   if (!content) return Response.json({ error: 'Content is required' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'package-hallucination', 2)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   let packages = type === 'python' ? parsePythonPackages(content) : parseNpmPackages(content)
   if (packages.length === 0) {
