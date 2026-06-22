@@ -25,6 +25,9 @@ async function askGroq(prompt: string): Promise<string> {
 export async function POST(request: NextRequest) {
   if (!GROQ_API_KEY) return Response.json({ error: 'Service not configured' }, { status: 503 })
 
+  const access = await hasFreeOrProAccess(request, 'nda-generator', 1)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: {
     type?: string
     disclosingParty?: string
@@ -42,9 +45,6 @@ export async function POST(request: NextRequest) {
   if (!disclosingParty?.trim()) return Response.json({ error: 'Disclosing party name is required' }, { status: 400 })
   if (!receivingParty?.trim()) return Response.json({ error: 'Receiving party name is required' }, { status: 400 })
   if (!purpose?.trim()) return Response.json({ error: 'Purpose is required' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'nda-generator', 1)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const ndaType = type === 'mutual' ? 'Mutual Non-Disclosure Agreement' : 'One-Way Non-Disclosure Agreement'
   const obligationType = type === 'mutual' ? 'both parties' : `${receivingParty} (the Receiving Party)`

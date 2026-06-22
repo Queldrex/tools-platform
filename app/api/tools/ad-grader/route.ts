@@ -114,6 +114,9 @@ async function getGroqFeedback(copy: string, platform: string): Promise<Record<s
 }
 
 export async function POST(request: NextRequest) {
+  const access = await hasFreeOrProAccess(request, 'ad-grader', 3)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: { copy?: string; platform?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
@@ -122,9 +125,6 @@ export async function POST(request: NextRequest) {
   if (copy.length < 5) return Response.json({ error: 'Ad copy is too short' }, { status: 400 })
 
   const platform = (['google', 'meta', 'linkedin', 'twitter', 'email'].includes(body.platform ?? '') ? body.platform : 'meta') as Platform
-
-  const access = await hasFreeOrProAccess(request, 'ad-grader', 3)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const lengthScore = scoreLength(copy, platform)
   const ctaScore = scoreCTA(copy)

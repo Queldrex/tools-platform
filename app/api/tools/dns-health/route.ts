@@ -53,6 +53,9 @@ function parseCaa(data: string): { flag: number; tag: string; value: string } {
 }
 
 export async function POST(request: NextRequest) {
+  const access = await hasFreeOrProAccess(request, 'dns-health', 5)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: { domain?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
@@ -60,9 +63,6 @@ export async function POST(request: NextRequest) {
   if (!domain || !/^[a-z0-9]([a-z0-9\-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9\-]{0,61}[a-z0-9])?)+$/.test(domain)) {
     return Response.json({ error: 'Enter a valid domain name (e.g. example.com)' }, { status: 400 })
   }
-
-  const access = await hasFreeOrProAccess(request, 'dns-health', 5)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const [cfA, gA, cfAAAA, gAAAA, cfMX, cfNS, cfTXT, cfSOA, cfCAA, cfDMARC, cfWWW] = await Promise.all([
     cfDoh(domain, 'A'), gDoh(domain, 'A'),

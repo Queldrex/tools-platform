@@ -66,6 +66,9 @@ function getHeaders(domain: string): Promise<Record<string, string>> {
 }
 
 export async function POST(request: NextRequest) {
+  const access = await hasFreeOrProAccess(request, 'ssl-inspector', 3)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: { domain?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
@@ -73,9 +76,6 @@ export async function POST(request: NextRequest) {
   if (!domain || !/^[a-z0-9]([a-z0-9\-]{0,61}[a-z0-9])?(\.[a-z]{2,})+$/.test(domain)) {
     return Response.json({ error: 'Enter a valid domain (e.g. example.com)' }, { status: 400 })
   }
-
-  const access = await hasFreeOrProAccess(request, 'ssl-inspector', 3)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   let tlsInfo: Awaited<ReturnType<typeof getTlsInfo>>
   try { tlsInfo = await getTlsInfo(domain) } catch (e) {

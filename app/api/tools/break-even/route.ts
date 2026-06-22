@@ -4,6 +4,9 @@ import { hasFreeOrProAccess } from '@/lib/tool-access'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
+  const access = await hasFreeOrProAccess(request, 'break-even', 10)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: {
     fixedCosts?: number
     variableCostPerUnit?: number
@@ -20,9 +23,6 @@ export async function POST(request: NextRequest) {
   if (fixedCosts <= 0) return Response.json({ error: 'Fixed costs must be greater than 0' }, { status: 400 })
   if (pricePerUnit <= 0) return Response.json({ error: 'Price per unit must be greater than 0' }, { status: 400 })
   if (variableCostPerUnit >= pricePerUnit) return Response.json({ error: 'Variable cost per unit must be less than price per unit — otherwise you lose money on every sale' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'break-even', 10)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const contributionMargin = pricePerUnit - variableCostPerUnit
   const contributionMarginPct = (contributionMargin / pricePerUnit) * 100

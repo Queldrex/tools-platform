@@ -102,6 +102,9 @@ function detectFraud(invoice: InvoiceData): FraudFlag[] {
 }
 
 export async function POST(request: NextRequest) {
+  const access = await hasFreeOrProAccess(request, 'invoice-fraud', 2)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: { invoice?: InvoiceData; rawText?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
@@ -133,9 +136,6 @@ export async function POST(request: NextRequest) {
     }
     if (!invoice.description) invoice.description = rawText
   }
-
-  const access = await hasFreeOrProAccess(request, 'invoice-fraud', 2)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const flags = detectFraud(invoice)
 

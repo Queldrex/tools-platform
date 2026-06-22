@@ -25,6 +25,9 @@ async function askGroq(prompt: string): Promise<string> {
 export async function POST(request: NextRequest) {
   if (!GROQ_API_KEY) return Response.json({ error: 'AI service not configured', setup_required: true }, { status: 503 })
 
+  const access = await hasFreeOrProAccess(request, 'agency-report', 1)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: {
     clientName?: string
     agencyName?: string
@@ -42,9 +45,6 @@ export async function POST(request: NextRequest) {
 
   if (!clientName?.trim()) return Response.json({ error: 'Client name is required' }, { status: 400 })
   if (!wins?.trim() && !metrics?.length) return Response.json({ error: 'Provide at least wins or metrics' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'agency-report', 1)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const metricsText = metrics?.length
     ? metrics.map(m => `- ${m.name}: ${m.value}${m.change ? ` (${m.change})` : ''}`).join('\n')

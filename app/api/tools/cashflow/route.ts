@@ -24,6 +24,9 @@ function getMonthLabel(offset: number): string {
 }
 
 export async function POST(request: NextRequest) {
+  const access = await hasFreeOrProAccess(request, 'cashflow', 5)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: CashFlowInput
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
@@ -32,9 +35,6 @@ export async function POST(request: NextRequest) {
   if (isNaN(startingCash) || isNaN(monthlyRevenue) || isNaN(monthlyFixedCosts)) {
     return Response.json({ error: 'startingCash, monthlyRevenue, and monthlyFixedCosts are required numbers' }, { status: 400 })
   }
-
-  const access = await hasFreeOrProAccess(request, 'cashflow', 5)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const horizonMonths = Math.min(24, Math.max(1, Number(rawMonths) || 12))
   const growthRate = (Number(revenueGrowthRate) || 0) / 100

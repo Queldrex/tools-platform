@@ -120,15 +120,15 @@ function matchSaaS(description: string): { name: string; category: string } | nu
 }
 
 export async function POST(request: NextRequest) {
+  const access = await hasFreeOrProAccess(request, 'saas-spend', 1)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: { content?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
   const content = (body.content || '').trim()
   if (!content) return Response.json({ error: 'Transaction data is required' }, { status: 400 })
   if (content.length < 20) return Response.json({ error: 'Paste your bank/card export (CSV or text)' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'saas-spend', 1)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const transactions = parseTransactions(content)
   if (transactions.length === 0) {

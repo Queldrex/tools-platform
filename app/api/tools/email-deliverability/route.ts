@@ -103,6 +103,9 @@ async function checkBlacklist(mx: { records: Array<{ priority: number; exchange:
 }
 
 export async function POST(request: NextRequest) {
+  const access = await hasFreeOrProAccess(request, 'email-deliverability', 3)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: { domain?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
@@ -110,9 +113,6 @@ export async function POST(request: NextRequest) {
   if (!domain || !/^[a-z0-9]([a-z0-9\-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9\-]{0,61}[a-z0-9])?)+$/.test(domain)) {
     return Response.json({ error: 'Enter a valid domain name (e.g. example.com)' }, { status: 400 })
   }
-
-  const access = await hasFreeOrProAccess(request, 'email-deliverability', 3)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const [spf, dmarc, dkim, mx] = await Promise.all([checkSpf(domain), checkDmarc(domain), checkDkim(domain), checkMx(domain)])
   const blacklist = await checkBlacklist(mx)

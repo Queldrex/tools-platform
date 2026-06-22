@@ -4,6 +4,9 @@ import { hasFreeOrProAccess } from '@/lib/tool-access'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
+  const access = await hasFreeOrProAccess(request, 'roi-calculator', 10)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: {
     investmentCost?: number; additionalCosts?: number; expectedRevenue?: number
     timeframeMonths?: number; riskLevel?: 'low' | 'medium' | 'high'
@@ -18,9 +21,6 @@ export async function POST(request: NextRequest) {
 
   if (!investmentCost || investmentCost <= 0) return Response.json({ error: 'Investment cost must be greater than 0' }, { status: 400 })
   if (!expectedRevenue || expectedRevenue < 0) return Response.json({ error: 'Expected revenue is required' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'roi-calculator', 10)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const totalAdditionalCosts = additionalCosts * (timeframeMonths / 12)
   const netProfit = expectedRevenue - investmentCost - totalAdditionalCosts

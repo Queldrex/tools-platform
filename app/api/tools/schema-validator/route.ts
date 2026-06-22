@@ -60,15 +60,15 @@ function validateSchema(schema: Record<string, unknown>): { errors: string[]; wa
 }
 
 export async function POST(request: NextRequest) {
+  const access = await hasFreeOrProAccess(request, 'schema-validator', 2)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: { url?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
   const url = (body.url || '').trim()
   if (!url) return Response.json({ error: 'URL is required' }, { status: 400 })
   if (!/^https?:\/\/.+/.test(url)) return Response.json({ error: 'URL must start with http:// or https://' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'schema-validator', 2)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   let html: string
   try {

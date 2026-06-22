@@ -82,14 +82,14 @@ function getOpenRateLabel(score: number): string {
 }
 
 export async function POST(request: NextRequest) {
+  const access = await hasFreeOrProAccess(request, 'subject-line', 5)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: { subject?: string; preheader?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
   const subject = (body.subject || '').trim()
   if (!subject) return Response.json({ error: 'Subject line is required' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'subject-line', 5)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const length = scoreLength(subject)
   const spam = scoreSpam(subject)

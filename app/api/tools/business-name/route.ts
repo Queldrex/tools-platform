@@ -53,15 +53,15 @@ async function checkSocial(platform: string, url: string, handle: string): Promi
 }
 
 export async function POST(request: NextRequest) {
+  const access = await hasFreeOrProAccess(request, 'business-name', 5)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: { name?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
   const name = (body.name ?? '').trim()
   if (!name || name.length < 2) return Response.json({ error: 'Business name must be at least 2 characters' }, { status: 400 })
   if (name.length > 60) return Response.json({ error: 'Business name too long (max 60 characters)' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'business-name', 5)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   // Build slug: lowercase, replace spaces/special chars with hyphens, collapse multiple hyphens
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')

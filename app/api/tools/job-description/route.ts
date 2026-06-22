@@ -25,6 +25,9 @@ async function askGroq(prompt: string): Promise<string> {
 export async function POST(request: NextRequest) {
   if (!GROQ_API_KEY) return Response.json({ error: 'Service not configured' }, { status: 503 })
 
+  const access = await hasFreeOrProAccess(request, 'job-description', 2)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: {
     jobTitle?: string; company?: string; industry?: string
     employmentType?: string; location?: string; remote?: string
@@ -37,9 +40,6 @@ export async function POST(request: NextRequest) {
   if (!body.jobTitle?.trim()) return Response.json({ error: 'Job title is required' }, { status: 400 })
   if (!body.company?.trim()) return Response.json({ error: 'Company name is required' }, { status: 400 })
   if (!body.keyResponsibilities?.trim()) return Response.json({ error: 'Key responsibilities are required' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'job-description', 2)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const salaryText = body.salaryMin && body.salaryMax
     ? `$${body.salaryMin.toLocaleString()} – $${body.salaryMax.toLocaleString()}/year`
