@@ -84,11 +84,11 @@ export default function DatabaseMigrationPage() {
 
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: 'rgb(16,185,129)', borderColor: 'rgba(16,185,129,0.3)', background: 'rgba(16,185,129,0.08)' }}>Live</span>
-          <span className="text-sm font-bold text-white/30">Pro Tool Â· Unlimited with $79/month</span>
+          <span className="text-sm font-bold text-white/30">Pro Tool · Unlimited with $79/month</span>
         </div>
 
         <h1 className="text-4xl font-black text-white mb-3">Migration <span style={{ color: 'rgb(16,185,129)' }}>Safety Checker</span></h1>
-        <p className="text-white/55 text-base mb-8 max-w-2xl">Paste your SQL migration. Get an instant safety report â€” risky patterns flagged, positive signals highlighted, and a clear risk level before you run anything in production.</p>
+        <p className="text-white/55 text-base mb-8 max-w-2xl">Paste your SQL migration. Get an instant safety report — risky patterns flagged, positive signals highlighted, and a clear risk level before you run anything in production.</p>
 
         <div className="rounded-2xl border p-6 mb-6" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
           <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
@@ -102,7 +102,7 @@ export default function DatabaseMigrationPage() {
               <option value="mysql">MySQL</option>
               <option value="sqlite">SQLite</option>
             </select>
-            <button onClick={() => setSql(EXAMPLE_SQL)} className="text-xs text-white/30 hover:text-white/60 transition-colors">Load example â†’</button>
+            <button onClick={() => setSql(EXAMPLE_SQL)} className="text-xs text-white/30 hover:text-white/60 transition-colors">Load example →</button>
           </div>
 
           <textarea
@@ -122,7 +122,7 @@ export default function DatabaseMigrationPage() {
               className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-white transition-all hover:scale-[1.02] disabled:opacity-50"
               style={{ background: 'linear-gradient(135deg,#10b981,#059669)', boxShadow: '0 0 20px rgba(16,185,129,0.3)' }}
             >
-              {loading ? 'Checkingâ€¦' : 'Check Migration Safety'}
+              {loading ? 'Checking…' : 'Check Migration Safety'}
             </button>
           </div>
         </div>
@@ -133,15 +133,15 @@ export default function DatabaseMigrationPage() {
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(16,185,129,0.05)', borderColor: 'rgba(16,185,129,0.2)' }}>
             <svg className="w-10 h-10 mx-auto mb-4 text-emerald-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
             <h3 className="text-xl font-black text-white mb-2">Unlimited checks with Pro</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro subscribers get unlimited migration checks, all tools, and monthly AI visibility monitoring â€” $79/month.</p>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro subscribers get unlimited migration checks, all tools, and monthly AI visibility monitoring — $79/month.</p>
             <div className="flex items-center justify-center gap-3 flex-wrap">
-              <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro â€” $79/month</Link>
-              <Link href="/pricing" className="text-sm text-white/45 hover:text-white transition-colors">See all features â†’</Link>
+              <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro — $79/month</Link>
+              <Link href="/pricing" className="text-sm text-white/45 hover:text-white transition-colors">See all features →</Link>
             </div>
           </div>
         )}
 
-        {/* Sample Output â€” always visible so people know what they get */}
+        {/* Sample Output — always visible so people know what they get */}
         {!result && !loading && checkCount === 0 && (
           <div className="mt-10">
             <div className="flex items-center gap-3 mb-4">

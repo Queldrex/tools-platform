@@ -51,7 +51,7 @@ const DEFAULTS: InvoiceData = {
   toState: '',
   toZip: '',
   items: [
-    { description: 'AI Visibility Audit & Report', qty: 1, rate: 499 },
+    { description: 'AI Visibility Audit & Report', qty: 1, rate: 399 },
     { description: 'Monthly AI Monitor', qty: 1, rate: 79 },
   ],
   taxRate: 0,

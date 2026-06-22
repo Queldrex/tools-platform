@@ -62,7 +62,7 @@ export default function AdGraderPage() {
   const gradeColor = result ? (GRADE_COLOR[result.grade] ?? '#fb923c') : '#fb923c'
 
   const loadExample = () => {
-    const exampleCopy = "Tired of overpaying for security tools? Get real CVE scanning, SSL inspection, and email deliverability checks â€” all in one place. Start free, no credit card. 48 professional tools for developers and businesses. Try Queldrex today."
+    const exampleCopy = "Tired of overpaying for security tools? Get real CVE scanning, SSL inspection, and email deliverability checks — all in one place. Start free, no credit card. 48 professional tools for developers and businesses. Try Queldrex today."
     setPlatform('meta')
     setCopy(exampleCopy)
     setLoading(true); setError(''); setResult(null); setPaywall(false)
@@ -83,20 +83,20 @@ export default function AdGraderPage() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#fb923c', borderColor: 'rgba(251,146,60,0.3)', background: 'rgba(251,146,60,0.08)' }}>Live</span>
-          <span className="text-sm font-bold text-white/30">3 free grades/day Â· Unlimited with $79/month Pro</span>
+          <span className="text-sm font-bold text-white/30">3 free grades/day · Unlimited with $79/month Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Ad Copy <span style={{ color: '#fb923c' }}>Grader</span></h1>
-        <p className="text-white/55 text-base mb-6 max-w-2xl">Paste any ad copy and get an instant score on length, CTA strength, clarity, urgency, and social proof â€” plus an AI-improved rewrite.</p>
+        <p className="text-white/55 text-base mb-6 max-w-2xl">Paste any ad copy and get an instant score on length, CTA strength, clarity, urgency, and social proof — plus an AI-improved rewrite.</p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">How it works</p>
-            <p className="text-sm text-white/60 leading-relaxed">Scores your ad copy across 6 deterministic dimensions (length, CTA strength, clarity, urgency, social proof, spam flags) plus 3 AI-scored dimensions (emotional appeal, value proposition, brand voice). The AI also rewrites your copy with the same length constraints â€” so you get an improved version you can A/B test immediately.</p>
+            <p className="text-sm text-white/60 leading-relaxed">Scores your ad copy across 6 deterministic dimensions (length, CTA strength, clarity, urgency, social proof, spam flags) plus 3 AI-scored dimensions (emotional appeal, value proposition, brand voice). The AI also rewrites your copy with the same length constraints — so you get an improved version you can A/B test immediately.</p>
           </div>
           <div className="rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">What you get</p>
             <ul className="space-y-2">
-              {['Overall score (0-100) with letter grade', 'Breakdown by dimension â€” see exactly what to fix', 'Rewritten version of your copy, same platform/length', 'Spam flag detection â€” words that trigger spam filters', 'Platform-specific length scoring (Google vs Meta vs LinkedIn)'].map((item, i) => (
+              {['Overall score (0-100) with letter grade', 'Breakdown by dimension — see exactly what to fix', 'Rewritten version of your copy, same platform/length', 'Spam flag detection — words that trigger spam filters', 'Platform-specific length scoring (Google vs Meta vs LinkedIn)'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-white/55">
                   <span className="text-green-400 mt-0.5 flex-shrink-0">âœ“</span>{item}
                 </li>
@@ -122,11 +122,11 @@ export default function AdGraderPage() {
             <span className="absolute bottom-3 right-3 text-xs text-white/25 font-mono">{copy.length} chars</span>
           </div>
           <div className="flex justify-end gap-2 mt-4">
-            <button onClick={loadExample} className="px-4 py-3 rounded-xl text-sm font-bold border transition-colors hover:bg-white/5" style={{ color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.1)' }}>Try Example â†’</button>
+            <button onClick={loadExample} className="px-4 py-3 rounded-xl text-sm font-bold border transition-colors hover:bg-white/5" style={{ color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.1)' }}>Try Example →</button>
             <button onClick={grade} disabled={loading || !copy.trim()}
               className="px-6 py-3 rounded-xl text-sm font-black text-white disabled:opacity-40 transition-all hover:scale-[1.02]"
               style={{ background: 'linear-gradient(135deg,#f97316,#ea580c)', boxShadow: '0 0 20px rgba(249,115,22,0.3)' }}>
-              {loading ? 'Gradingâ€¦' : 'Grade My Copy'}
+              {loading ? 'Grading…' : 'Grade My Copy'}
             </button>
           </div>
         </div>
@@ -135,8 +135,8 @@ export default function AdGraderPage() {
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(251,146,60,0.05)', borderColor: 'rgba(251,146,60,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited grading with Pro</h3>
-            <p className="text-white/50 text-sm mb-6">Grade unlimited ad copy across all platforms â€” $79/month.</p>
-            <Link href="/pricing" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro â€” $79/month</Link>
+            <p className="text-white/50 text-sm mb-6">Grade unlimited ad copy across all platforms — $79/month.</p>
+            <Link href="/pricing" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro — $79/month</Link>
           </div>
         )}
 
@@ -149,7 +149,7 @@ export default function AdGraderPage() {
               </div>
               <div className="flex-1">
                 <div className="text-3xl font-black text-white mb-1">{result.score}<span className="text-lg text-white/30">/100</span></div>
-                <p className="text-sm text-white/55">{result.characterCount} characters Â· {result.wordCount} words Â· {result.platform}</p>
+                <p className="text-sm text-white/55">{result.characterCount} characters · {result.wordCount} words · {result.platform}</p>
                 {result.qualitative.summary && <p className="text-sm text-white/60 mt-2 italic">"{result.qualitative.summary}"</p>}
               </div>
             </div>

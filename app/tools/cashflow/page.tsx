@@ -148,7 +148,7 @@ export default function CashFlowPage() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#4ade80', borderColor: 'rgba(74,222,128,0.3)', background: 'rgba(74,222,128,0.08)' }}>Free</span>
-          <span className="text-sm font-bold text-white/30">5 free forecasts/day Â· Unlimited with $79/month Pro</span>
+          <span className="text-sm font-bold text-white/30">5 free forecasts/day · Unlimited with $79/month Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Cash Flow <span style={{ color: '#4ade80' }}>Forecaster</span></h1>
         <p className="text-white/55 text-base mb-6 max-w-2xl">Project your business cash position month by month. Model revenue growth, fixed costs, variable costs, and one-time expenses to see runway and break-even.</p>
@@ -161,7 +161,7 @@ export default function CashFlowPage() {
           <div className="rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">What you get</p>
             <ul className="space-y-2">
-              {['Month-by-month revenue, costs, net cash flow, and balance', 'Runway in months before cash runs out (if applicable)', 'Break-even month â€” when cumulative cash turns positive', 'Burn rate alerts when cash drops below 3 months of fixed costs', 'Color-coded table: green rows = profitable months, red = burning'].map((item, i) => (
+              {['Month-by-month revenue, costs, net cash flow, and balance', 'Runway in months before cash runs out (if applicable)', 'Break-even month — when cumulative cash turns positive', 'Burn rate alerts when cash drops below 3 months of fixed costs', 'Color-coded table: green rows = profitable months, red = burning'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-white/55"><span className="text-green-400 mt-0.5 flex-shrink-0">âœ“</span>{item}</li>
               ))}
             </ul>
@@ -240,11 +240,11 @@ export default function CashFlowPage() {
           </div>
 
           <div className="flex items-center justify-between">
-            <button onClick={loadExample} disabled={loading} className="px-4 py-3 rounded-xl text-sm font-bold border transition-colors hover:bg-white/5" style={{ color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.1)' }}>Try Example â†’</button>
+            <button onClick={loadExample} disabled={loading} className="px-4 py-3 rounded-xl text-sm font-bold border transition-colors hover:bg-white/5" style={{ color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.1)' }}>Try Example →</button>
             <button onClick={calculate} disabled={loading}
               className="px-6 py-3 rounded-xl text-sm font-black text-black disabled:opacity-40 transition-all hover:scale-[1.02]"
               style={{ background: 'linear-gradient(135deg,#4ade80,#16a34a)', boxShadow: '0 0 20px rgba(74,222,128,0.25)' }}>
-              {loading ? 'Calculatingâ€¦' : 'Forecast Cash Flow'}
+              {loading ? 'Calculating…' : 'Forecast Cash Flow'}
             </button>
           </div>
         </div>
@@ -253,8 +253,8 @@ export default function CashFlowPage() {
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(74,222,128,0.05)', borderColor: 'rgba(74,222,128,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited forecasts with Pro</h3>
-            <p className="text-white/50 text-sm mb-6">Forecast up to 24 months, unlimited scenarios â€” $79/month.</p>
-            <Link href="/pricing" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#4ade80,#16a34a)' }}>Start Pro â€” $79/month</Link>
+            <p className="text-white/50 text-sm mb-6">Forecast up to 24 months, unlimited scenarios — $79/month.</p>
+            <Link href="/pricing" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#4ade80,#16a34a)' }}>Start Pro — $79/month</Link>
           </div>
         )}
 

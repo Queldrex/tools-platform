@@ -99,10 +99,10 @@ export default function SaasMetricsPage() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#06d6ff', borderColor: 'rgba(6,214,255,0.3)', background: 'rgba(6,214,255,0.08)' }}>Free</span>
-          <span className="text-sm font-bold text-white/30">Founder tool Â· No account needed</span>
+          <span className="text-sm font-bold text-white/30">Founder tool · No account needed</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">SaaS <span style={{ color: '#06d6ff' }}>Metrics Calculator</span></h1>
-        <p className="text-white/55 text-base mb-6 max-w-2xl">Enter your monthly numbers and get every metric that matters â€” MRR, ARR, LTV, Churn, Quick Ratio, CAC Payback â€” with health grades.</p>
+        <p className="text-white/55 text-base mb-6 max-w-2xl">Enter your monthly numbers and get every metric that matters — MRR, ARR, LTV, Churn, Quick Ratio, CAC Payback — with health grades.</p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
@@ -112,7 +112,7 @@ export default function SaasMetricsPage() {
           <div className="rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">What you get</p>
             <ul className="space-y-2">
-              {['MRR, ARR, and projected revenue at current growth', 'LTV:CAC ratio with benchmark grade (ideal is >3:1)', 'Net Revenue Retention (NRR) â€” the single most important SaaS metric', 'Quick Ratio graded: <1 = danger, 1-4 = growing, >4 = exceptional', 'CAC Payback Period: how many months to recover your acquisition cost'].map((item, i) => (
+              {['MRR, ARR, and projected revenue at current growth', 'LTV:CAC ratio with benchmark grade (ideal is >3:1)', 'Net Revenue Retention (NRR) — the single most important SaaS metric', 'Quick Ratio graded: <1 = danger, 1-4 = growing, >4 = exceptional', 'CAC Payback Period: how many months to recover your acquisition cost'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-white/55"><span className="text-green-400 mt-0.5 flex-shrink-0">âœ“</span>{item}</li>
               ))}
             </ul>
@@ -131,11 +131,11 @@ export default function SaasMetricsPage() {
             <Field label="Cost to Acquire Customer (CAC)" value={cac} onChange={setCac} prefix="$" placeholder="250" />
           </div>
           <div className="flex items-center justify-between">
-            <button onClick={loadExample} disabled={loading} className="px-4 py-3 rounded-xl text-sm font-bold border transition-colors hover:bg-white/5" style={{ color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.1)' }}>Try Example â†’</button>
+            <button onClick={loadExample} disabled={loading} className="px-4 py-3 rounded-xl text-sm font-bold border transition-colors hover:bg-white/5" style={{ color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.1)' }}>Try Example →</button>
             <button onClick={calculate} disabled={loading || !mrr || !customers}
               className="px-6 py-3 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.02] disabled:opacity-50"
               style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 20px rgba(6,214,255,0.3)' }}>
-              {loading ? 'Calculatingâ€¦' : 'Calculate Metrics'}
+              {loading ? 'Calculating…' : 'Calculate Metrics'}
             </button>
           </div>
         </div>
@@ -144,7 +144,7 @@ export default function SaasMetricsPage() {
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center" style={{ background: 'rgba(6,214,255,0.05)', borderColor: 'rgba(6,214,255,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited calculations with Pro</h3>
-            <Link href="/pricing" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black mt-4" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro â€” $79/month</Link>
+            <Link href="/pricing" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black mt-4" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro — $79/month</Link>
           </div>
         )}
 

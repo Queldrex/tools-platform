@@ -283,7 +283,7 @@ export default function MeetingCostPage() {
               ))}
               <div className="sm:col-span-2 border-t border-white/8 pt-3 flex items-center justify-between">
                 <span className="text-sm font-bold text-white/60">45-minute cost</span>
-                <span className="text-xl font-black text-cyan-400">$172.13</span>
+                <span className="text-xl font-black text-cyan-400">$252.41</span>
               </div>
             </div>
           </div>

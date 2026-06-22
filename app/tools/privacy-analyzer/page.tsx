@@ -68,10 +68,10 @@ export default function PrivacyAnalyzerPage() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#fb923c', borderColor: 'rgba(251,146,60,0.3)', background: 'rgba(251,146,60,0.08)' }}>Live</span>
-          <span className="text-sm font-bold text-white/30">1 free analysis/day Â· Unlimited with Pro</span>
+          <span className="text-sm font-bold text-white/30">1 free analysis/day · Unlimited with Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Privacy Policy <span style={{ color: '#fb923c' }}>GDPR/CCPA Analyzer</span></h1>
-        <p className="text-white/55 text-base mb-6 max-w-xl">Paste a privacy policy URL or text. AI reads the actual document and scores it for GDPR and CCPA compliance â€” lawful basis, data retention, user rights, third-party disclosures, and red flags.</p>
+        <p className="text-white/55 text-base mb-6 max-w-xl">Paste a privacy policy URL or text. AI reads the actual document and scores it for GDPR and CCPA compliance — lawful basis, data retention, user rights, third-party disclosures, and red flags.</p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
@@ -81,7 +81,7 @@ export default function PrivacyAnalyzerPage() {
           <div className="rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">What you get</p>
             <ul className="space-y-2">
-              {['GDPR compliance score (0-100) with letter grade', 'CCPA compliance assessment', '8 required sections checked â€” present or missing', 'Red flags: vague language, missing disclosures', 'Plain-English verdict on the most critical gaps'].map((item, i) => (
+              {['GDPR compliance score (0-100) with letter grade', 'CCPA compliance assessment', '8 required sections checked — present or missing', 'Red flags: vague language, missing disclosures', 'Plain-English verdict on the most critical gaps'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-white/55">
                   <span className="text-green-400 mt-0.5 flex-shrink-0">âœ“</span>{item}
                 </li>
@@ -104,18 +104,18 @@ export default function PrivacyAnalyzerPage() {
               placeholder="https://example.com/privacy-policy" className="w-full text-sm text-white placeholder-white/20 outline-none"
               style={{ background: '#0a0f1a', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 10, padding: '12px 16px' }} />
           ) : (
-            <textarea value={text} onChange={e => setText(e.target.value)} placeholder="Paste the full text of the privacy policy hereâ€¦" rows={10}
+            <textarea value={text} onChange={e => setText(e.target.value)} placeholder="Paste the full text of the privacy policy here…" rows={10}
               className="w-full text-sm text-white/80 placeholder-white/20 outline-none resize-y"
               style={{ background: '#0a0f1a', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 10, padding: '14px 16px', minHeight: 200 }} />
           )}
           <div className="flex justify-between items-center mt-4">
             <button onClick={loadExample} disabled={loading} className="px-4 py-3 rounded-xl text-sm font-bold border transition-colors hover:bg-white/5 disabled:opacity-40" style={{ color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.1)' }}>
-              Try Example â†’ Apple Privacy Policy
+              Try Example → Apple Privacy Policy
             </button>
             <button onClick={() => analyze()} disabled={loading || (tab === 'url' ? !url.trim() : !text.trim())}
               className="px-6 py-3 rounded-xl text-sm font-black text-white transition-all hover:scale-[1.02] disabled:opacity-50"
               style={{ background: 'linear-gradient(135deg,#ea580c,#c2410c)', boxShadow: '0 0 20px rgba(234,88,12,0.3)' }}>
-              {loading ? 'Analyzing policyâ€¦' : 'Analyze'}
+              {loading ? 'Analyzing policy…' : 'Analyze'}
             </button>
           </div>
         </div>
@@ -124,8 +124,8 @@ export default function PrivacyAnalyzerPage() {
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(251,146,60,0.05)', borderColor: 'rgba(251,146,60,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited policy analysis with Pro</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro gives you unlimited GDPR/CCPA analysis and full compliance reports â€” $79/month.</p>
-            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-white" style={{ background: 'linear-gradient(135deg,#ea580c,#c2410c)' }}>Start Pro â€” $79/month</Link>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro gives you unlimited GDPR/CCPA analysis and full compliance reports — $79/month.</p>
+            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-white" style={{ background: 'linear-gradient(135deg,#ea580c,#c2410c)' }}>Start Pro — $79/month</Link>
           </div>
         )}
 
@@ -185,7 +185,7 @@ export default function PrivacyAnalyzerPage() {
             {result.missingClauses.length > 0 && (
               <div className="rounded-xl border px-5 py-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
                 <div className="text-xs font-black uppercase tracking-widest text-white/35 mb-3">Missing Required Clauses</div>
-                <ul className="space-y-1.5">{result.missingClauses.map((c, i) => <li key={i} className="text-xs text-white/55 flex gap-2"><span className="text-yellow-400 flex-shrink-0">â†’</span>{c}</li>)}</ul>
+                <ul className="space-y-1.5">{result.missingClauses.map((c, i) => <li key={i} className="text-xs text-white/55 flex gap-2"><span className="text-yellow-400 flex-shrink-0">→</span>{c}</li>)}</ul>
               </div>
             )}
 

@@ -73,20 +73,20 @@ export default function BreakEvenPage() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#a78bfa', borderColor: 'rgba(167,139,250,0.3)', background: 'rgba(167,139,250,0.08)' }}>Free</span>
-          <span className="text-sm font-bold text-white/30">Small business tool Â· No account needed</span>
+          <span className="text-sm font-bold text-white/30">Small business tool · No account needed</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Break-Even <span style={{ color: '#a78bfa' }}>Calculator</span></h1>
-        <p className="text-white/55 text-base mb-6 max-w-xl">Enter your costs and price â€” find out exactly how many units you need to sell to cover your expenses and start making profit.</p>
+        <p className="text-white/55 text-base mb-6 max-w-xl">Enter your costs and price — find out exactly how many units you need to sell to cover your expenses and start making profit.</p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">How it works</p>
-            <p className="text-sm text-white/60 leading-relaxed">Calculates your break-even point using contribution margin analysis â€” the same method used by finance teams and MBA programs. Enter your fixed costs (rent, salaries, software), variable cost per unit (materials, shipping, payment processing), and selling price. The tool instantly shows units needed to break even, target revenue, and profit at any sales volume.</p>
+            <p className="text-sm text-white/60 leading-relaxed">Calculates your break-even point using contribution margin analysis — the same method used by finance teams and MBA programs. Enter your fixed costs (rent, salaries, software), variable cost per unit (materials, shipping, payment processing), and selling price. The tool instantly shows units needed to break even, target revenue, and profit at any sales volume.</p>
           </div>
           <div className="rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">What you get</p>
             <ul className="space-y-2">
-              {['Break-even units â€” exactly how many you need to sell', 'Break-even revenue â€” total sales needed to cover all costs', 'Contribution margin per unit and as a percentage', 'Profit/loss at any target sales volume you enter', 'Visual progress bar showing how close you are to profitability'].map((item, i) => (
+              {['Break-even units — exactly how many you need to sell', 'Break-even revenue — total sales needed to cover all costs', 'Contribution margin per unit and as a percentage', 'Profit/loss at any target sales volume you enter', 'Visual progress bar showing how close you are to profitability'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-white/55"><span className="text-green-400 mt-0.5 flex-shrink-0">âœ“</span>{item}</li>
               ))}
             </ul>
@@ -121,7 +121,7 @@ export default function BreakEvenPage() {
               </div>
             </div>
             <div className="col-span-2">
-              <label className="text-xs font-bold text-white/35 uppercase tracking-wider mb-1.5 block">Current Monthly Units Sold <span className="text-white/20 normal-case font-normal">(optional â€” shows your progress)</span></label>
+              <label className="text-xs font-bold text-white/35 uppercase tracking-wider mb-1.5 block">Current Monthly Units Sold <span className="text-white/20 normal-case font-normal">(optional — shows your progress)</span></label>
               <div className="flex items-center rounded-lg overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.1)', background: '#161b22' }}>
                 <input type="number" min={0} value={currentUnits} onChange={e => setCurrentUnits(e.target.value)} placeholder="Leave blank if unknown"
                   className="flex-1 text-sm text-white py-2.5 px-3 outline-none" style={{ background: 'transparent' }} />
@@ -129,11 +129,11 @@ export default function BreakEvenPage() {
             </div>
           </div>
           <div className="flex items-center justify-between">
-            <button onClick={loadExample} disabled={loading} className="px-4 py-3 rounded-xl text-sm font-bold border transition-colors hover:bg-white/5" style={{ color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.1)' }}>Try Example â†’</button>
+            <button onClick={loadExample} disabled={loading} className="px-4 py-3 rounded-xl text-sm font-bold border transition-colors hover:bg-white/5" style={{ color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.1)' }}>Try Example →</button>
             <button onClick={calculate} disabled={loading || !fixedCosts || !price}
               className="px-6 py-3 rounded-xl text-sm font-black text-white transition-all hover:scale-[1.02] disabled:opacity-50"
               style={{ background: 'linear-gradient(135deg,#7c3aed,#6d28d9)', boxShadow: '0 0 20px rgba(124,58,237,0.35)' }}>
-              {loading ? 'Calculatingâ€¦' : 'Calculate Break-Even'}
+              {loading ? 'Calculating…' : 'Calculate Break-Even'}
             </button>
           </div>
         </div>
@@ -142,7 +142,7 @@ export default function BreakEvenPage() {
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center" style={{ background: 'rgba(167,139,250,0.05)', borderColor: 'rgba(167,139,250,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited calculations with Pro</h3>
-            <Link href="/pricing" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black mt-4" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro â€” $79/month</Link>
+            <Link href="/pricing" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black mt-4" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro — $79/month</Link>
           </div>
         )}
 
@@ -258,8 +258,8 @@ export default function BreakEvenPage() {
         <section className="mt-16 pt-8 border-t max-w-2xl" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-lg font-black text-white mb-4">Understanding break-even and contribution margin</h2>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>Contribution margin is what&apos;s left from each sale after subtracting variable costs. If you sell a product for $100 and it costs $30 to produce and ship, your contribution margin is $70 (70%). Every unit sold contributes $70 toward covering your fixed costs. Once your total contribution margin equals your fixed costs, you&apos;ve broken even. Every unit after that is pure profit.</p>
-          <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>Fixed costs are expenses that don&apos;t change with sales volume â€” rent, salaries, SaaS subscriptions, insurance. Variable costs change directly with each sale â€” materials, payment processing fees, shipping, commissions. The distinction matters because high fixed cost businesses (software, media) have dramatically better unit economics as they scale: fixed costs stay flat while contribution margin compounds. High variable cost businesses (manufacturing, services) scale more linearly.</p>
-          <p className="text-sm leading-relaxed" style={{ color: '#A1A1AA' }}>Healthy gross margins vary significantly by industry. SaaS companies typically target 70â€“85% gross margin. E-commerce businesses run 30â€“50%. Manufacturing businesses often see 25â€“40%. Agencies and services run 40â€“60%. If your contribution margin per unit is very low, break-even requires enormous volume â€” which is either the business model (high-volume commodities) or a signal to raise prices or reduce variable costs before scaling further.</p>
+          <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>Fixed costs are expenses that don&apos;t change with sales volume — rent, salaries, SaaS subscriptions, insurance. Variable costs change directly with each sale — materials, payment processing fees, shipping, commissions. The distinction matters because high fixed cost businesses (software, media) have dramatically better unit economics as they scale: fixed costs stay flat while contribution margin compounds. High variable cost businesses (manufacturing, services) scale more linearly.</p>
+          <p className="text-sm leading-relaxed" style={{ color: '#A1A1AA' }}>Healthy gross margins vary significantly by industry. SaaS companies typically target 70–85% gross margin. E-commerce businesses run 30–50%. Manufacturing businesses often see 25–40%. Agencies and services run 40–60%. If your contribution margin per unit is very low, break-even requires enormous volume — which is either the business model (high-volume commodities) or a signal to raise prices or reduce variable costs before scaling further.</p>
         </section>
       </main>
       <Footer />
