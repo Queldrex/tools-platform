@@ -102,9 +102,12 @@ export default function ContractScannerPage() {
         </div>
 
         <h1 className="text-4xl font-black text-white mb-3">Contract <span style={{ color: '#a78bfa' }}>Risk Scanner</span></h1>
-        <p className="text-white/55 text-base mb-8 max-w-2xl">
+        <p className="text-white/55 text-base mb-4 max-w-2xl">
           Paste any contract, agreement, or terms document. AI instantly identifies risky clauses — one-sided IP grabs, overly broad non-competes, unlimited liability exposure, predatory auto-renewal, and more.
         </p>
+        <div className="mb-6 px-4 py-3 rounded-xl border text-xs leading-relaxed" style={{ background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.2)', color: 'rgba(251,191,36,0.7)' }}>
+          This tool flags potentially risky language for your review. Output is not legal advice and does not create an attorney-client relationship. Have a licensed attorney review any contract before signing.
+        </div>
 
         <div className="rounded-2xl border p-6 mb-6" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
           <div className="flex items-center justify-between mb-4">

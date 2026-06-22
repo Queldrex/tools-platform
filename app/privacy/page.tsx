@@ -158,7 +158,7 @@ export default function PrivacyPage() {
           </section>
 
           <section id="gdpr">
-            <h2 className="text-base font-bold text-white mb-3">8. Additional Rights — EU/EEA Residents (GDPR)</h2>
+            <h2 className="text-base font-bold text-white mb-3">10. Additional Rights — EU/EEA Residents (GDPR)</h2>
             <p className="mb-3">
               If you are located in the European Union or European Economic Area, you have additional rights under the General Data Protection Regulation (GDPR). We process your personal data on the following legal bases:
             </p>
@@ -172,7 +172,7 @@ export default function PrivacyPage() {
           </section>
 
           <section id="email-communications">
-            <h2 className="text-base font-bold text-white mb-3">9. Email Communications (CAN-SPAM)</h2>
+            <h2 className="text-base font-bold text-white mb-3">11. Email Communications (CAN-SPAM)</h2>
             <p className="mb-3">
               Queldrex sends transactional emails only: scan reports, subscription receipts, score alerts, and magic login links. These are not marketing emails. We do not send unsolicited commercial email. All emails include:
             </p>
@@ -184,42 +184,42 @@ export default function PrivacyPage() {
           </section>
 
           <section id="children">
-            <h2 className="text-base font-bold text-white mb-3">11. Children&apos;s Privacy (COPPA)</h2>
+            <h2 className="text-base font-bold text-white mb-3">12. Children&apos;s Privacy (COPPA)</h2>
             <p>
               Queldrex tools and services are intended for users 18 years of age and older and are not directed at children. We do not knowingly collect personal information from anyone under 13. If we discover we have inadvertently collected data from a child under 13, we will delete it immediately. If you believe a child has provided us with personal information, contact us at <a href="mailto:hello@queldrex.com" className="text-cyan-400 hover:text-cyan-300">hello@queldrex.com</a>.
             </p>
           </section>
 
           <section id="dmca">
-            <h2 className="text-base font-bold text-white mb-3">12. Copyright / DMCA</h2>
+            <h2 className="text-base font-bold text-white mb-3">13. Copyright / DMCA</h2>
             <p>
               Queldrex respects intellectual property rights. If you believe content on queldrex.com infringes your copyright, send a DMCA takedown notice to <a href="mailto:hello@queldrex.com" className="text-cyan-400 hover:text-cyan-300">hello@queldrex.com</a> with: identification of the copyrighted work, identification of the infringing content and its location, your contact information, a statement of good faith belief, and your signature. We will respond promptly.
             </p>
           </section>
 
           <section id="exclusions">
-            <h2 className="text-base font-bold text-white mb-3">13. HIPAA and Financial Privacy</h2>
+            <h2 className="text-base font-bold text-white mb-3">14. HIPAA and Financial Privacy</h2>
             <p>
               Queldrex is not a covered entity under HIPAA and does not handle protected health information. Queldrex is not a financial institution subject to the Gramm-Leach-Bliley Act. These regulations do not apply to our services.
             </p>
           </section>
 
           <section id="accessibility">
-            <h2 className="text-base font-bold text-white mb-3">14. Accessibility</h2>
+            <h2 className="text-base font-bold text-white mb-3">15. Accessibility</h2>
             <p>
               Queldrex is committed to making queldrex.com accessible to users with disabilities. We make good faith efforts to comply with WCAG 2.1 Level AA guidelines. If you encounter an accessibility barrier, please email <a href="mailto:hello@queldrex.com" className="text-cyan-400 hover:text-cyan-300">hello@queldrex.com</a> and we will address it promptly.
             </p>
           </section>
 
           <section id="changes">
-            <h2 className="text-base font-bold text-white mb-3">15. Changes to This Policy</h2>
+            <h2 className="text-base font-bold text-white mb-3">16. Changes to This Policy</h2>
             <p>
               We may update this Privacy Policy when our services or legal requirements change. Material changes will be emailed to active subscribers at least 14 days before taking effect. Continued use of our services after the effective date constitutes acceptance of the revised policy.
             </p>
           </section>
 
           <section id="contact">
-            <h2 className="text-base font-bold text-white mb-3">16. Contact</h2>
+            <h2 className="text-base font-bold text-white mb-3">17. Contact</h2>
             <p>
               For any questions, concerns, or to exercise your rights under this policy or applicable law, contact us at <a href="mailto:hello@queldrex.com" className="text-cyan-400 hover:text-cyan-300">hello@queldrex.com</a>. We respond to general inquiries within one business day and to formal data rights requests within 45 days as required by the Colorado Privacy Act.
             </p>

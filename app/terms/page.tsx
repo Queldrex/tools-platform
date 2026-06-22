@@ -58,7 +58,7 @@ export default function TermsPage() {
               </div>
               <div>
                 <p className="font-semibold text-white/80 mb-1">Agency Plan — $99/month subscription</p>
-                <p>Multi-client AI visibility management for agencies. Includes 25 client scans/month, white-label PDF reports, bulk client dashboard, and monthly auto-delivered client reports. <strong className="text-white/70">Auto-renews monthly.</strong> You will be charged $99 on the same date each month until you cancel. Cancel anytime — see Section 5.</p>
+                <p>Multi-client AI visibility management for agencies. Includes 25 client scans/month, white-label HTML reports, bulk client dashboard, and monthly auto-delivered client reports. <strong className="text-white/70">Auto-renews monthly.</strong> You will be charged $99 on the same date each month until you cancel. Cancel anytime — see Section 5.</p>
               </div>
               <div>
                 <p className="font-semibold text-white/80 mb-1">Pro Tools — included with Monitor and Agency subscriptions</p>

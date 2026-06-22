@@ -87,7 +87,10 @@ export default function RefundPolicyPage() {
           <span className="text-sm font-bold text-white/30">2 free generations/day · Unlimited with $79/month</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Refund Policy <span style={{ color: '#fb923c' }}>Generator</span></h1>
-        <p className="text-white/55 text-base mb-8 max-w-2xl">Generate a professional, customer-friendly refund policy tailored to your product type and business rules. Ready to publish in seconds.</p>
+        <p className="text-white/55 text-base mb-4 max-w-2xl">Generate a professional, customer-friendly refund policy tailored to your product type and business rules. Ready to publish in seconds.</p>
+        <div className="mb-6 px-4 py-3 rounded-xl border text-xs leading-relaxed" style={{ background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.2)', color: 'rgba(251,191,36,0.7)' }}>
+          This tool generates document drafts using AI. Output is not legal advice and does not create an attorney-client relationship. Have a licensed attorney review any document before publishing.
+        </div>
 
         <div className="rounded-2xl border p-6 mb-6 space-y-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
           <div>
