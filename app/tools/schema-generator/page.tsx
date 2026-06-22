@@ -292,7 +292,7 @@ export default function SchemaGeneratorPage() {
         {/* How It Works */}
         <div className="mt-14 border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-xl font-black text-white mb-1">How It Works</h2>
-          <p className="text-white/35 text-sm mb-8">Schema markup (JSON-LD) tells AI search engines exactly what your business is — boosting AI citation chances by up to 40%.</p>
+          <p className="text-white/35 text-sm mb-8">Schema markup (JSON-LD) tells AI search engines exactly what your business is — structured data is one of the strongest signals for AI citations.</p>
           <div className="grid sm:grid-cols-3 gap-4 mb-8">
             {[
               { n: '01', title: 'Choose schema type', body: 'Pick your business category: Local Business, Restaurant, Doctor, Lawyer, HVAC/Plumber, Gym, Real Estate, or more.' },

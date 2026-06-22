@@ -26,9 +26,9 @@ interface Config {
 }
 
 const DEFAULTS: Config = {
-  companyName: 'Queldrex LLC',
-  website: 'queldrex.com',
-  email: 'privacy@queldrex.com',
+  companyName: 'Acme Corp',
+  website: 'acme.com',
+  email: 'privacy@acme.com',
   country: 'United States',
   jurisdiction: 'GDPR',
   output: 'privacy-policy',
