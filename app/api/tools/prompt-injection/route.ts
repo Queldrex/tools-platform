@@ -47,15 +47,15 @@ const RECOMMENDATIONS: Record<string, string> = {
 }
 
 export async function POST(request: NextRequest) {
+  const access = await hasFreeOrProAccess(request, 'prompt-injection', 3)
+  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
+
   let body: { prompt?: string }
   try { body = await request.json() } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
   const prompt = (body.prompt || '').trim()
   if (!prompt) return Response.json({ error: 'Prompt text is required' }, { status: 400 })
   if (prompt.length > 50000) return Response.json({ error: 'Prompt too long (max 50,000 characters)' }, { status: 400 })
-
-  const access = await hasFreeOrProAccess(request, 'prompt-injection', 3)
-  if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   const detections: Array<{ type: string; severity: string; match: string; description: string }> = []
   const seenTypes = new Set<string>()
