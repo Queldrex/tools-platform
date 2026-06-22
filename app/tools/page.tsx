@@ -156,6 +156,7 @@ export default function ToolsPage() {
           <div className="flex items-center gap-2 px-4 py-2 rounded-xl border" style={{ background: 'rgba(52,211,153,0.05)', borderColor: 'rgba(52,211,153,0.15)' }}>
             <span className="w-2 h-2 rounded-full bg-emerald-400" />
             <span className="text-xs font-bold text-emerald-400">Free</span>
+            <span className="text-xs" style={{ color: 'rgba(255,255,255,0.15)' }}>·</span>
             <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>no account needed</span>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 rounded-xl border" style={{ background: 'rgba(167,139,250,0.05)', borderColor: 'rgba(167,139,250,0.15)' }}>

@@ -46,9 +46,9 @@ export default function PricingPage() {
 
       <section className="max-w-7xl mx-auto px-6 pt-20 pb-8 text-center">
         <p className="text-xs font-bold tracking-[0.25em] uppercase mb-4" style={{ color: '#6d28d9' }}>Queldrex Pricing</p>
-        <h1 className="text-4xl lg:text-6xl font-black mb-4" style={{ color: '#FAFAFA' }}>Simple pricing. No surprises.</h1>
+        <h1 className="text-4xl lg:text-6xl font-black mb-4" style={{ color: '#FAFAFA' }}>48 tools. Pay for what you use.</h1>
         <p className="text-lg max-w-lg mx-auto" style={{ color: '#A1A1AA' }}>
-          Start free. Pay for what you use. Cancel any month.
+          Every tool has a free tier. No account required to start. Upgrade when you need more.
         </p>
       </section>
 

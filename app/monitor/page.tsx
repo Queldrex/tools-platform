@@ -270,7 +270,7 @@ export default function MonitorPage() {
               <button type="submit" disabled={subLoading}
                 className="w-full py-3.5 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed"
                 style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 20px rgba(6,182,212,0.3)' }}>
-                {subLoading ? 'Redirecting to checkout…' : 'Start Monitoring — $79/month →'}
+                {subLoading ? 'Redirecting to checkout…' : 'Start Monitoring — $79/month · Includes all 48 Pro tools →'}
               </button>
               <p className="text-center text-xs text-white/30">Secure payment via Stripe · Cancel anytime</p>
             </form>
