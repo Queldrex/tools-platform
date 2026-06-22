@@ -45,7 +45,7 @@ const TIERS = [
   {
     id: 'bundle',
     label: 'AI Visibility Bundle',
-    price: '$149',
+    price: '$399',
     priceSub: 'One-time · instant delivery',
     accent: true,
     badge: 'Most Popular',
@@ -61,8 +61,8 @@ const TIERS = [
     ],
     steps: [
       { title: 'Run the free scan', body: 'Enter your website URL. You will see your AI Visibility Score and a preview of your missing signals before paying anything.' },
-      { title: 'Click Unlock and Download', body: 'From the results page, click the unlock button. You will be taken to a secure Stripe checkout page with the $149 one-time price.' },
-      { title: 'Complete payment via Stripe', body: 'Payment is processed securely by Stripe. Queldrex does not store your card information. The charge is $149 USD, one time only.' },
+      { title: 'Click Unlock and Download', body: 'From the results page, click the unlock button. You will be taken to a secure Stripe checkout page with the $399 one-time price.' },
+      { title: 'Complete payment via Stripe', body: 'Payment is processed securely by Stripe. Queldrex does not store your card information. The charge is $399 USD, one time only.' },
       { title: 'Receive your files by email', body: 'Within minutes of payment, your complete fix package is sent to the email address you provided. No waiting, no manual steps on our end.' },
       { title: 'Deploy the files yourself', body: 'Follow the included deployment instructions. The llms.txt uploads to your site root. The JSON-LD schema is a single paste into your site head. Implementable by anyone with basic website access.' },
     ],
@@ -109,7 +109,7 @@ export default function PricingSection() {
             Three ways to get results
           </h2>
           <p className="text-white/60 text-lg max-w-xl mx-auto leading-relaxed">
-            Start free, self-serve for $149, or let us handle everything from start to finish.
+            Start free, self-serve for $399, or let us handle everything from start to finish.
           </p>
         </div>
 

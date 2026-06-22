@@ -125,7 +125,7 @@ export default function BlurredPreview({
             ) : (
               <>
                 Unlock Full Report
-                <span className="bg-black/20 px-3 py-1 rounded-lg text-base font-bold">$149</span>
+                <span className="bg-black/20 px-3 py-1 rounded-lg text-base font-bold">$399</span>
               </>
             )}
           </button>

@@ -316,7 +316,7 @@ export default function AppSumoPage() {
 
           <div className="rounded-2xl border p-8" style={{ background: '#0d1117', borderColor: '#06d6ff', boxShadow: '0 0 48px rgba(6,182,212,0.12)' }}>
             <div className="mb-2">
-              <span className="text-white/30 text-base line-through">$149/scan</span>
+              <span className="text-white/30 text-base line-through">$399/scan</span>
             </div>
             <div className="text-4xl font-black text-white mb-1">Lifetime Deal Price</div>
             <p className="text-white/45 text-sm mb-8">Set by AppSumo · One-time payment · Lifetime access</p>
