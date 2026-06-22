@@ -189,7 +189,7 @@ export default function SubjectLinePage() {
                     <ul className="space-y-1.5">
                       {result.issues.map((issue, i) => (
                         <li key={i} className="flex gap-2 text-xs text-white/60">
-                          <span className="text-amber-400 flex-shrink-0">âš </span>
+                          <span className="text-amber-400 flex-shrink-0">⚠</span>
                           {issue}
                         </li>
                       ))}
