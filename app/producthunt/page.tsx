@@ -55,7 +55,7 @@ const FAQS = [
   },
   {
     q: 'Can agencies use this?',
-    a: 'Yes. The Agency plan ($299/month) gives you a dashboard to manage up to 25 client domains, white-label PDF reports, and monthly auto-scans. Your clients never see the Queldrex name.',
+    a: 'Yes. The Agency plan ($99/month) gives you a dashboard to manage up to 25 client domains, white-label PDF reports, and monthly auto-scans. Your clients never see the Queldrex name.',
   },
   {
     q: 'Will you add more signals?',

@@ -34,7 +34,7 @@ const PRO_FEATURES = [
 
 const AGENCY_FEATURES = [
   'Everything in Pro',
-  '50 client AI visibility scans per month',
+  '25 client AI visibility scans per month',
   'White-label PDF reports with your branding',
   'Bulk client dashboard: all scores in one view',
   'Monthly auto-reports emailed to each client',
@@ -187,7 +187,7 @@ export default function PricingTiers() {
           <div>
             <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#A1A1AA' }}>Agency</div>
             <div className="flex items-end gap-1">
-              <span className="text-4xl font-black" style={{ color: '#FAFAFA' }}>$299</span>
+              <span className="text-4xl font-black" style={{ color: '#FAFAFA' }}>$99</span>
               <span className="text-sm mb-1.5" style={{ color: 'rgba(255,255,255,0.4)' }}>/month</span>
             </div>
             <div className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.3)' }}>Cancel anytime</div>

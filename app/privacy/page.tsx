@@ -40,7 +40,7 @@ export default function PrivacyPage() {
                 <strong className="text-white/80">AI Visibility Monitor ($79/month)</strong> — your email address and monitored domain(s). We store monthly scan scores and history to power alerts and your dashboard. Retained while subscription is active and 12 months after cancellation.
               </li>
               <li>
-                <strong className="text-white/80">Agency Plan ($299/month)</strong> — agency name, email address, client domain list, and scan history for up to 50 client domains per month. Retained while subscription is active and 12 months after cancellation.
+                <strong className="text-white/80">Agency Plan ($99/month)</strong> — agency name, email address, client domain list, and scan history for up to 25 client domains per month. Retained while subscription is active and 12 months after cancellation.
               </li>
               <li>
                 <strong className="text-white/80">Pro Tools (Vibe Security Shield, API Schema Drift Scanner, Database Migration Safety Checker)</strong> — no separate account required. Tool usage is linked to your Monitor or Agency subscription. Code and data you submit for security scanning is processed in memory and not stored after the session.

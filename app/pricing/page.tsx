@@ -5,7 +5,7 @@ import PricingTiers from './PricingTiers'
 
 export const metadata = {
   title: 'Pricing — Queldrex',
-  description: 'Simple pricing. Free tools need no account. Pro is $79/month for everything. Agency at $299/month.',
+  description: 'Simple pricing. Free tools need no account. Pro is $79/month for everything. Agency at $99/month.',
 }
 
 const FAQ = [
@@ -23,7 +23,7 @@ const FAQ = [
   },
   {
     q: 'What counts as a client scan on Agency?',
-    a: 'One full 14-signal AI visibility scan for one domain. Your counter resets to 50 each month. Need more? Email hello@queldrex.com.',
+    a: 'One full 14-signal AI visibility scan for one domain. Your counter resets to 25 each month. Need more? Email hello@queldrex.com.',
   },
   {
     q: 'Is the $399 scanner a subscription?',
