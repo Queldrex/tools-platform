@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
@@ -38,10 +39,16 @@ const FAQS = [
 ]
 
 export default function AgencyPage() {
+  const searchParams = useSearchParams()
+  const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly')
   const [email, setEmail] = useState('')
   const [agencyName, setAgencyName] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (searchParams.get('billing') === 'annual') setBilling('annual')
+  }, [searchParams])
 
   const [loginEmail, setLoginEmail] = useState('')
   const [loginLoading, setLoginLoading] = useState(false)
@@ -57,7 +64,7 @@ export default function AgencyPage() {
       const res = await fetch('/api/agency/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, agency_name: agencyName }),
+        body: JSON.stringify({ email, agency_name: agencyName, billing }),
       })
       const data = await res.json()
       if (!res.ok || !data.url) {
@@ -102,7 +109,7 @@ export default function AgencyPage() {
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-6"
             style={{ background: 'rgba(6,214,255,0.08)', border: '1px solid rgba(6,214,255,0.2)', color: '#06d6ff' }}>
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-            Agency Plan — $99/month · Up to 25 clients
+            Agency Plan — {billing === 'annual' ? '$996/yr ($83/mo)' : '$99/month'} · Up to 25 clients
           </div>
           <h1 className="text-5xl md:text-6xl font-black text-white mb-6 leading-tight">
             The AI Visibility Platform<br />
@@ -197,9 +204,16 @@ export default function AgencyPage() {
               <div>
                 <div className="text-xs font-bold tracking-[0.15em] uppercase text-cyan-400 mb-1">Agency Plan</div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-black text-white">$99</span>
-                  <span className="text-white/40 text-sm">/month</span>
+                  <span className="text-4xl font-black text-white">{billing === 'annual' ? '$83' : '$99'}</span>
+                  <span className="text-white/40 text-sm">/mo</span>
+                  {billing === 'annual' && <span className="text-white/25 text-sm line-through ml-1">$99</span>}
                 </div>
+                {billing === 'annual' && (
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-xs text-white/30">$996/yr</span>
+                    <span className="text-xs font-black px-2 py-0.5 rounded-full" style={{ background: 'rgba(74,222,128,0.15)', color: '#4ade80' }}>Save $192/yr</span>
+                  </div>
+                )}
               </div>
               <div className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: 'rgba(6,214,255,0.12)', color: '#06d6ff' }}>
                 25 clients/mo
@@ -249,7 +263,7 @@ export default function AgencyPage() {
                 className="w-full py-3.5 rounded-xl text-sm font-black text-black transition-all hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed"
                 style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 20px rgba(6,182,212,0.3)' }}
               >
-                {loading ? 'Redirecting to checkout…' : 'Start Agency Plan — $99/month →'}
+                {loading ? 'Redirecting to checkout…' : billing === 'annual' ? 'Start Agency Plan — $996/yr →' : 'Start Agency Plan — $99/month →'}
               </button>
               <p className="text-center text-xs text-white/30">Secure payment via Stripe · Cancel anytime · No contract</p>
             </form>

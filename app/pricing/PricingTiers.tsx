@@ -53,6 +53,8 @@ export default function PricingTiers() {
 
   const proMonthly = billing === 'annual' ? 66 : 79
   const proBilled = billing === 'annual' ? '($790/yr)' : null
+  const agencyMonthly = billing === 'annual' ? 83 : 99
+  const agencyYearly = 996
 
   return (
     <section className="max-w-5xl mx-auto px-6 py-8">
@@ -186,11 +188,23 @@ export default function PricingTiers() {
         <div className="rounded-2xl border p-7 flex flex-col gap-5" style={{ background: '#111318', borderColor: 'rgba(255,255,255,0.07)' }}>
           <div>
             <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#A1A1AA' }}>Agency</div>
-            <div className="flex items-end gap-1">
-              <span className="text-4xl font-black" style={{ color: '#FAFAFA' }}>$99</span>
-              <span className="text-sm mb-1.5" style={{ color: 'rgba(255,255,255,0.4)' }}>/month</span>
+            <div className="flex items-end gap-2">
+              <span className="text-4xl font-black" style={{ color: '#FAFAFA' }}>${agencyMonthly}</span>
+              <span className="text-sm mb-1.5" style={{ color: 'rgba(255,255,255,0.4)' }}>/mo</span>
+              {billing === 'annual' && (
+                <span className="text-sm mb-1.5 line-through" style={{ color: 'rgba(255,255,255,0.25)' }}>$99</span>
+              )}
             </div>
-            <div className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.3)' }}>Cancel anytime</div>
+            {billing === 'annual' ? (
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>(${agencyYearly}/yr)</span>
+                <span className="text-xs font-black px-2 py-0.5 rounded-full" style={{ background: 'rgba(74,222,128,0.15)', color: '#4ade80' }}>
+                  Save $192/yr
+                </span>
+              </div>
+            ) : (
+              <div className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.3)' }}>Cancel anytime</div>
+            )}
           </div>
           <ul className="space-y-3 flex-1">
             {AGENCY_FEATURES.map(f => (
@@ -203,12 +217,17 @@ export default function PricingTiers() {
             ))}
           </ul>
           <Link
-            href="/agency"
+            href={`/agency?billing=${billing}`}
             className="block text-center py-3 rounded-xl text-sm font-bold transition-colors"
             style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.75)', border: '1px solid rgba(255,255,255,0.14)' }}
           >
-            Start Agency Plan
+            {billing === 'annual' ? 'Start Agency Plan · $996/yr' : 'Start Agency Plan'}
           </Link>
+          {billing === 'annual' && (
+            <p className="text-center text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
+              Billed annually · Cancel anytime
+            </p>
+          )}
         </div>
       </div>
     </section>
