@@ -7,8 +7,8 @@ import { sendSmsAlert } from '@/lib/sms/twilio'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  const stripeKey = (process.env.STRIPE_SECRET_KEY || '').replace(/^﻿/, '').trim()
-  const webhookSecret = (process.env.STRIPE_AGENCY_WEBHOOK_SECRET || process.env.STRIPE_WEBHOOK_SECRET || '').replace(/^﻿/, '').trim()
+  const stripeKey = (process.env.STRIPE_SECRET_KEY || '').replace(/^\uFEFF/, '').trim()
+  const webhookSecret = (process.env.STRIPE_AGENCY_WEBHOOK_SECRET || process.env.STRIPE_WEBHOOK_SECRET || '').replace(/^\uFEFF/, '').trim()
   if (!stripeKey || !webhookSecret) {
     return Response.json({ error: 'Not configured' }, { status: 503 })
   }
@@ -87,8 +87,8 @@ export async function POST(request: NextRequest) {
 async function sendAgencyWelcomeEmail(email: string, agencyName: string) {
   try {
     const { Resend } = await import('resend')
-    const resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^﻿/, '').trim())
-    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
+    const resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^\uFEFF/, '').trim())
+    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^\uFEFF/, '').trim()
     await resend.emails.send({
       from: 'Queldrex <hello@queldrex.com>',
       to: email,
@@ -111,9 +111,9 @@ async function sendAgencyWelcomeEmail(email: string, agencyName: string) {
 async function sendAdminAgencyAlert(email: string, agencyName: string) {
   try {
     const { Resend } = await import('resend')
-    const resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^﻿/, '').trim())
+    const resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^\uFEFF/, '').trim())
     const adminEmail = process.env.ADMIN_EMAIL || 'hello@queldrex.com'
-    const adminUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim() + '/admin'
+    const adminUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^\uFEFF/, '').trim() + '/admin'
     await resend.emails.send({
       from: 'Queldrex System <reports@queldrex.com>',
       to: adminEmail,
@@ -135,7 +135,7 @@ async function sendAdminAgencyAlert(email: string, agencyName: string) {
 async function sendPaymentFailedEmail(email: string, agencyName: string) {
   try {
     const { Resend } = await import('resend')
-    const resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^﻿/, '').trim())
+    const resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^\uFEFF/, '').trim())
     await resend.emails.send({
       from: 'Queldrex <hello@queldrex.com>',
       to: email,

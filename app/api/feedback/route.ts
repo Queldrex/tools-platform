@@ -28,12 +28,12 @@ export async function POST(request: NextRequest) {
 
   // Notify admin — non-fatal
   const adminEmail = process.env.ADMIN_EMAIL || 'hello@queldrex.com'
-  const adminUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim() + '/admin'
+  const adminUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^\uFEFF/, '').trim() + '/admin'
   Promise.all([
     (async () => {
       try {
         const { Resend } = await import('resend')
-        const resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^﻿/, '').trim())
+        const resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^\uFEFF/, '').trim())
         await resend.emails.send({
           from: 'Queldrex System <reports@queldrex.com>',
           to: adminEmail,

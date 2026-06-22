@@ -68,7 +68,7 @@ export async function GET(
   // Track ZIP download and notify admin (fire-and-forget, only on full ZIP)
   if (scan.scanId) {
     const ts = new Date().toISOString()
-    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
+    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^\uFEFF/, '').trim()
     const downloadUrl = `${baseUrl}/download/${token}`
     updateScanLog(scan.scanId, { downloadedAt: ts }).catch(() => {})
     import('@/lib/email/resend').then(({ sendAdminDownloadAlert }) =>

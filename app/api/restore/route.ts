@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 }
 
 async function doRestore(email: string) {
-  const stripeKey = (process.env.STRIPE_SECRET_KEY || '').replace(/^﻿/, '').trim()
+  const stripeKey = (process.env.STRIPE_SECRET_KEY || '').replace(/^\uFEFF/, '').trim()
   if (!stripeKey) return
 
   const stripe = new Stripe(stripeKey)
@@ -58,7 +58,7 @@ async function doRestore(email: string) {
     { ex: 60 * 60 }  // 1 hour
   )
 
-  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^\uFEFF/, '').trim()
   const restoreUrl = `${baseUrl}/api/restore/apply?token=${restoreToken}`
 
   await sendGenericEmail({

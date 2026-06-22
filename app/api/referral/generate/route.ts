@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Valid email required' }, { status: 400 })
 
   const code = await createReferralCode(email)
-  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^\uFEFF/, '').trim()
   const record = await getReferralCode(code)
 
   return Response.json({ code, shareUrl: `${baseUrl}/r/${code}`, uses: record?.uses ?? 0, creditsEarned: record?.creditsEarned ?? 0 })

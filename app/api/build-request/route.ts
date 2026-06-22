@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
   // Email admin
   try {
     const { Resend } = await import('resend')
-    const resend = new Resend(process.env.RESEND_API_KEY!.replace(/^﻿/, '').trim())
+    const resend = new Resend(process.env.RESEND_API_KEY!.replace(/^\uFEFF/, '').trim())
     resend.emails.send({
       from: 'Queldrex System <reports@queldrex.com>',
       to: process.env.ADMIN_EMAIL || 'hello@queldrex.com',

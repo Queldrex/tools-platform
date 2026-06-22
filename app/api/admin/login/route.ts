@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
   let body: { secret?: string; totp?: string } = {}
   try { body = await request.json() } catch { /* ignore */ }
 
-  const adminSecret = (process.env.ADMIN_SECRET || '').replace(/^﻿/, '').trim()
+  const adminSecret = (process.env.ADMIN_SECRET || '').replace(/^\uFEFF/, '').trim()
   const secretOk = !!body.secret && !!adminSecret && body.secret === adminSecret
   const totpSecret = process.env.ADMIN_TOTP_SECRET
   const totpOk = totpSecret ? verifyTotp(totpSecret, body.totp || '') : true
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 async function sendAttackAlert(ip: string, count: number) {
   const { Resend } = await import('resend')
   const { sendSmsAlert } = await import('@/lib/sms/twilio')
-  const resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^﻿/, '').trim())
+  const resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^\uFEFF/, '').trim())
   await Promise.all([
     resend.emails.send({
       from: 'Queldrex Security <reports@queldrex.com>',

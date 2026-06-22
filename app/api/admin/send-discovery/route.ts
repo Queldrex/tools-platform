@@ -17,8 +17,8 @@ export async function POST(request: NextRequest) {
   const app = await getDfyApplication(applicationId)
   if (!app) return Response.json({ error: 'Application not found' }, { status: 404 })
 
-  const bookingUrl = (process.env.NEXT_PUBLIC_CAL_URL || 'https://calendar.google.com/appointments/schedules/AcZssZ3ZmKkDchOBweBeJ6JqS1ZRXYE6ZbZGJtwgIL2Ncv4Vkv5R6owavfNwZM4OGDT04IchOXFeD1Yh').replace(/^﻿/, '').trim()
-  const agreementUrl = `${(process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()}/dfy-agreement`
+  const bookingUrl = (process.env.NEXT_PUBLIC_CAL_URL || 'https://calendar.google.com/appointments/schedules/AcZssZ3ZmKkDchOBweBeJ6JqS1ZRXYE6ZbZGJtwgIL2Ncv4Vkv5R6owavfNwZM4OGDT04IchOXFeD1Yh').replace(/^\uFEFF/, '').trim()
+  const agreementUrl = `${(process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^\uFEFF/, '').trim()}/dfy-agreement`
 
   const { sendDiscoveryEmail } = await import('@/lib/email/resend')
   await sendDiscoveryEmail({

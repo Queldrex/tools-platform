@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
   results.adminEmail = { ok: true, detail: process.env.ADMIN_EMAIL || 'hello@queldrex.com (default)' }
 
   // Base URL
-  results.baseUrl = { ok: true, detail: (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim() }
+  results.baseUrl = { ok: true, detail: (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^\uFEFF/, '').trim() }
 
   // Calendar URL
   results.calUrl = process.env.NEXT_PUBLIC_CAL_URL
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
   }
 
   const { stage } = await request.json().catch(() => ({ stage: 'paid' }))
-  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^\uFEFF/, '').trim()
 
   const id = `${TEST_PREFIX}${randomUUID()}`
   const dfyToken = randomUUID()

@@ -25,12 +25,12 @@ export async function POST(request: NextRequest) {
   const token = crypto.randomUUID()
   await getRedis().set(`agencymagic:${token}`, agency.id, { ex: MAGIC_TTL })
 
-  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^\uFEFF/, '').trim()
   const loginLink = `${baseUrl}/agency/dashboard?token=${token}`
 
   try {
     const { Resend } = await import('resend')
-    const resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^﻿/, '').trim())
+    const resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^\uFEFF/, '').trim())
     await resend.emails.send({
       from: 'Queldrex <hello@queldrex.com>',
       to: email,

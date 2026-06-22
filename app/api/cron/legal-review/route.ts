@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
     return Response.json({ ok: false, error: 'No RESEND_API_KEY configured' }, { status: 500 })
   }
 
-  const resend = new Resend(resendKey.replace(/^﻿/, '').trim())
+  const resend = new Resend(resendKey.replace(/^\uFEFF/, '').trim())
 
   const rows = dueItems.map(doc => {
     const age = daysSince(doc.lastUpdated)

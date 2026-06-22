@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Invalid body' }, { status: 400 })
   }
 
-  const adminSecret = (process.env.ADMIN_SECRET || '').replace(/^﻿/, '').trim()
+  const adminSecret = (process.env.ADMIN_SECRET || '').replace(/^\uFEFF/, '').trim()
   if (!adminSecret || body.secret !== adminSecret) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }

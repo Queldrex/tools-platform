@@ -5,7 +5,7 @@ import { env } from '@/lib/env'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  const stripeKey = (process.env.STRIPE_SECRET_KEY || '').replace(/^﻿/, '').trim()
+  const stripeKey = (process.env.STRIPE_SECRET_KEY || '').replace(/^\uFEFF/, '').trim()
   if (!stripeKey) return Response.json({ error: 'Payment not configured' }, { status: 503 })
 
   let body: { email?: string; domain?: string }

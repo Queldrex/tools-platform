@@ -19,11 +19,11 @@ export async function POST(request: NextRequest) {
   const app = await getDfyApplication(applicationId)
   if (!app) return Response.json({ error: 'Application not found' }, { status: 404 })
 
-  const stripeKey = (process.env.STRIPE_SECRET_KEY || '').replace(/^﻿/, '').trim()
+  const stripeKey = (process.env.STRIPE_SECRET_KEY || '').replace(/^\uFEFF/, '').trim()
   if (!stripeKey) return Response.json({ error: 'Stripe not configured' }, { status: 503 })
 
   const stripe = new Stripe(stripeKey)
-  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^\uFEFF/, '').trim()
   const dfyToken = uuidv4()
 
   // Pre-create the DFY session so it exists when they pay

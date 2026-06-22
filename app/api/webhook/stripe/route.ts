@@ -10,8 +10,8 @@ import { env } from '@/lib/env'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  const stripeKey = (process.env.STRIPE_SECRET_KEY || '').replace(/^﻿/, '').trim()
-  const webhookSecret = (process.env.STRIPE_WEBHOOK_SECRET || '').replace(/^﻿/, '').trim()
+  const stripeKey = (process.env.STRIPE_SECRET_KEY || '').replace(/^\uFEFF/, '').trim()
+  const webhookSecret = (process.env.STRIPE_WEBHOOK_SECRET || '').replace(/^\uFEFF/, '').trim()
   if (!stripeKey || !webhookSecret) {
     return Response.json({ error: 'Webhook not configured' }, { status: 503 })
   }

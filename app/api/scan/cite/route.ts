@@ -78,9 +78,9 @@ export async function POST(request: NextRequest) {
   const { domain, businessName } = body
   if (!domain) return Response.json({ error: 'domain is required' }, { status: 400 })
 
-  const groqKey      = (process.env.GROQ_API_KEY      || '').replace(/^﻿/, '').trim()
-  const anthropicKey = (process.env.ANTHROPIC_API_KEY || '').replace(/^﻿/, '').trim()
-  const geminiKey    = (process.env.GEMINI_API_KEY    || '').replace(/^﻿/, '').trim()
+  const groqKey      = (process.env.GROQ_API_KEY      || '').replace(/^\uFEFF/, '').trim()
+  const anthropicKey = (process.env.ANTHROPIC_API_KEY || '').replace(/^\uFEFF/, '').trim()
+  const geminiKey    = (process.env.GEMINI_API_KEY    || '').replace(/^\uFEFF/, '').trim()
 
   if (!groqKey && !anthropicKey && !geminiKey) {
     return Response.json({ citation: null, configured: false, model: null })

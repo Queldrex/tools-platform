@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
     trySaveToRedis(completed)
 
     // Fire-and-forget score email + admin alert
-    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim()
+    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^\uFEFF/, '').trim()
     import('@/lib/email/resend').then(({ sendFreeScoreEmail, sendAdminScanAlert }) => {
       sendFreeScoreEmail({
         to: cleanEmail,

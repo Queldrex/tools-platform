@@ -6,7 +6,7 @@ import { getDownloadProduct } from '@/lib/download-products'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  const stripeKey = (process.env.STRIPE_SECRET_KEY || '').replace(/^﻿/, '').trim()
+  const stripeKey = (process.env.STRIPE_SECRET_KEY || '').replace(/^\uFEFF/, '').trim()
   if (!stripeKey) return Response.json({ error: 'Payment not configured' }, { status: 503 })
 
   let body: { productId?: string; returnTo?: string }
