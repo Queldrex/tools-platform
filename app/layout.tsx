@@ -67,7 +67,7 @@ const jsonLd = {
       url: 'https://queldrex.com/scanner',
       applicationCategory: 'BusinessApplication',
       operatingSystem: 'Web',
-      offers: { '@type': 'Offer', price: '149', priceCurrency: 'USD' },
+      offers: { '@type': 'Offer', price: '399', priceCurrency: 'USD' },
       description: 'Scans 14 signals to determine how visible your business is to AI search engines like ChatGPT and Perplexity.',
       provider: { '@id': 'https://queldrex.com/#organization' },
     },
