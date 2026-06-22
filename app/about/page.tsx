@@ -40,7 +40,7 @@ const WHAT_WE_BUILD = [
 
 const FACTS = [
   { label: 'Castle Rock, CO', sub: 'Colorado LLC' },
-  { label: 'Founded 2024', sub: 'Moving fast' },
+  { label: 'Founded 2024', sub: 'Ship every week' },
   { label: '48 Tools Live', sub: 'All working, all real' },
   { label: 'Real Data Only', sub: 'No simulated results, ever' },
 ]
@@ -139,7 +139,7 @@ export default function AboutPage() {
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-black"
             style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}
           >
-            Start a conversation
+            Email us about agency pricing
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>

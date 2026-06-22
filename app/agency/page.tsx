@@ -7,7 +7,7 @@ import Footer from '@/components/Footer'
 import Link from 'next/link'
 
 const FEATURES = [
-  { title: '25 client scans/month', desc: 'Normally $3,725 in one-off scanner fees. Included in your plan.' },
+  { title: '25 client scans/month', desc: 'Normally $9,975 at one-off scanner pricing. Included in your plan.' },
   { title: 'White-label PDF reports', desc: 'Your client sees their domain and score — not Queldrex branding.' },
   { title: 'Bulk client dashboard', desc: 'All your clients, all their scores, all their history in one view.' },
   { title: 'Monthly auto-reports', desc: 'We email each client their updated score every month automatically.' },
@@ -119,13 +119,12 @@ export default function AgencyPage() {
           </h1>
           <p className="text-lg text-white/55 max-w-2xl mx-auto leading-relaxed mb-10">
             Scan all your clients, deliver white-label reports, and become their AI visibility expert.
-            One plan. All your clients. $99/month.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a href="#signup"
               className="px-8 py-4 rounded-xl text-sm font-black text-black transition-all hover:scale-105"
               style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 24px rgba(6,182,212,0.35)' }}>
-              Start Agency Plan — $99/month →
+              {billing === 'annual' ? 'Start Agency Plan — $996/yr →' : 'Start Agency Plan — $99/month →'}
             </a>
             <a href="#how" className="text-sm font-semibold text-white/50 hover:text-white transition-colors">
               See how it works ↓

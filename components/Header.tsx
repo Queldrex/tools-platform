@@ -187,7 +187,7 @@ export default function Header() {
                 boxShadow: '0 0 20px rgba(124,58,237,0.35)',
               }}
             >
-              Go Pro $79/mo
+              Go Pro · $79/mo
             </Link>
 
             {/* Hamburger */}
@@ -242,7 +242,7 @@ export default function Header() {
               className="flex items-center justify-center gap-2 w-full text-sm font-black text-white py-4 rounded-xl"
               style={{ background: 'linear-gradient(135deg,#6d28d9,#7c3aed)', boxShadow: '0 0 24px rgba(124,58,237,0.35)' }}
             >
-              Go Pro $79/mo
+              Go Pro · $79/mo
             </Link>
           </div>
         </div>

@@ -5,7 +5,7 @@ import PricingTiers from './PricingTiers'
 
 export const metadata = {
   title: 'Pricing — Queldrex',
-  description: 'Simple pricing. Free tools need no account. Pro is $79/month for everything. Agency at $99/month.',
+  description: '48 tools. Free to start, no account required. Pro is $79/month for unlimited access. Agency at $99/month for up to 25 client scans.',
 }
 
 const FAQ = [
