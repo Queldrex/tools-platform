@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
 
   const contractText = (body.contractText || '').trim()
   if (!contractText) return Response.json({ error: 'Contract text is required' }, { status: 400 })
-  if (contractText.length < 100) return Response.json({ error: 'Contract text is too short — paste the full contract' }, { status: 400 })
+  if (contractText.length < 200) return Response.json({ error: 'Contract text is too short — paste the full contract (at least a few paragraphs)' }, { status: 400 })
 
   let raw: string
   try {

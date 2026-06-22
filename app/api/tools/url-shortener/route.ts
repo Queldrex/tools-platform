@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { getRedis } from '@/lib/store/redis'
 import { hasFreeOrProAccess } from '@/lib/tool-access'
 
