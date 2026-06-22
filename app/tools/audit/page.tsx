@@ -72,7 +72,7 @@ const TOOLS: ToolResult[] = [
     status: 'verified',
     statusNote: 'HTTP 200 — all checks returning live data',
     input: '{ "type": "domain", "query": "queldrex.com" }',
-    output: ['queldrex.com — 5/7 checks passed', '✓ HTTPS: responds on HTTPS (200)', '✓ HSTS: max-age=63072000; includeSubDomains; preload', '✓ X-Frame-Options: DENY', '✓ X-Content-Type-Options: nosniff', '✗ CSP: not set (XSS vector)', '✓ DMARC: record found', '✗ SPF: no record found'],
+    output: ['queldrex.com — 6/7 checks passed', '✓ HTTPS: responds on HTTPS (200)', '✓ HSTS: max-age=63072000; includeSubDomains; preload', '✓ X-Frame-Options: DENY', '✓ X-Content-Type-Options: nosniff', '✓ CSP: default-src \'self\'; script-src \'self\' \'unsafe-inline\'...', '✓ DMARC: record found', '✗ SPF: no record found'],
     method: 'POST /api/breach-lookup — live DNS + HTTP header probes. Password tab uses HIBP k-anonymity (SHA-1 prefix only, never sends full hash)',
   },
   {
