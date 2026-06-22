@@ -107,7 +107,7 @@ export default function SaasMetricsPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">How it works</p>
-            <p className="text-sm text-white/60 leading-relaxed">Calculates the 6 metrics that SaaS investors and operators use to evaluate business health. All calculations use standard industry formulas: LTV = ARPU Ã· Churn Rate, Quick Ratio = (New MRR + Expansion MRR) Ã· (Churned MRR + Contraction MRR), CAC Payback = CAC Ã· (ARPU Ã— Gross Margin). Each metric is graded against real-world SaaS benchmarks.</p>
+            <p className="text-sm text-white/60 leading-relaxed">Calculates the 6 metrics that SaaS investors and operators use to evaluate business health. All calculations use standard industry formulas: LTV = ARPU ÷ Churn Rate, Quick Ratio = (New MRR + Expansion MRR) ÷ (Churned MRR + Contraction MRR), CAC Payback = CAC ÷ (ARPU × Gross Margin). Each metric is graded against real-world SaaS benchmarks.</p>
           </div>
           <div className="rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">What you get</p>
