@@ -239,10 +239,8 @@ export default function HomePage() {
               <ScrollReveal key={cat.name} delay={i * 60}>
                 <Link
                   href={cat.href}
-                  className="rounded-2xl border p-6 block transition-all duration-200 hover:-translate-y-1 group"
-                  style={{ background: '#0c0e14', borderColor: 'rgba(255,255,255,0.07)', borderTop: `2px solid ${cat.accent}` }}
-                  onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.16)')}
-                  onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)')}
+                  className="rounded-2xl border border-white/[0.07] hover:border-white/[0.16] p-6 block transition-all duration-200 hover:-translate-y-1 group"
+                  style={{ background: '#0c0e14', borderTop: `2px solid ${cat.accent}` }}
                 >
                   <p className="text-sm font-black mb-0.5" style={{ color: cat.accent }}>{cat.name}</p>
                   <p className="text-[11px] font-bold mb-3" style={{ color: 'rgba(255,255,255,0.22)' }}>{cat.count} tools</p>

@@ -201,10 +201,8 @@ export default function ToolsPage() {
               const ps = PRICE_STYLES[tool.price] ?? PRICE_STYLES['Pro']
               return (
                 <Link key={tool.name} href={tool.href}
-                  className="group rounded-2xl border overflow-hidden transition-all hover:scale-[1.02] hover:shadow-xl cursor-pointer"
-                  style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}
-                  onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)')}
-                  onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)')}>
+                  className="group rounded-2xl border border-white/[0.07] hover:border-white/[0.14] overflow-hidden transition-all hover:scale-[1.02] hover:shadow-xl cursor-pointer"
+                  style={{ background: '#0d1117' }}>
 
                   <div className="relative overflow-hidden" style={{ height: 148 }}>
                     <Image
