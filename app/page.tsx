@@ -55,12 +55,6 @@ const CATEGORIES = [
   { name: 'AI Visibility', accent: '#a78bfa', count:  4, desc: 'Schema validator, robots.txt builder, structured data, and more',        href: '/tools#ai-visibility' },
 ]
 
-const TESTIMONIALS = [
-  { quote: "The DNS health checker caught a missing DMARC record that was killing our deliverability. Took 10 seconds.", name: 'Marcus T.', role: 'Backend Engineer' },
-  { quote: "I use the NDA generator for every freelance contract. Clean output, no account needed, done in 60 seconds.", name: 'Priya K.', role: 'Freelance Developer' },
-  { quote: "Ran the CVE scanner on our package.json before a release and found three critical lodash vulnerabilities we missed.", name: 'Jordan R.', role: 'DevOps Lead' },
-]
-
 export default function HomePage() {
   return (
     <div className="min-h-screen" style={{ background: '#09090B' }}>
@@ -273,36 +267,6 @@ export default function HomePage() {
             <Link href="/tools" className="text-sm font-bold transition-colors hover:text-white/60" style={{ color: 'rgba(255,255,255,0.3)' }}>
               View all 48 tools — most are free →
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── TESTIMONIALS ──────────────────────────────────────────────────────── */}
-      <section className="py-28 px-6" style={{ background: '#0c0e14' }}>
-        <div className="max-w-5xl mx-auto">
-          <ScrollReveal>
-            <div className="text-center mb-16">
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] mb-4" style={{ color: 'rgba(255,255,255,0.2)' }}>Real results</p>
-              <h2 className="font-black" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', lineHeight: 1.1, letterSpacing: '-0.025em', color: '#FAFAFA' }}>
-                What developers are catching
-              </h2>
-            </div>
-          </ScrollReveal>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {TESTIMONIALS.map((t, i) => (
-              <ScrollReveal key={i} delay={i * 70}>
-                <div className="rounded-2xl border p-7 flex flex-col gap-5 h-full" style={{ background: '#09090B', borderColor: 'rgba(255,255,255,0.07)' }}>
-                  <svg className="w-5 h-5 flex-shrink-0" style={{ color: 'rgba(124,58,237,0.45)' }} fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
-                  </svg>
-                  <p className="text-sm leading-relaxed flex-1" style={{ color: 'rgba(255,255,255,0.52)' }}>{t.quote}</p>
-                  <div>
-                    <p className="text-xs font-black" style={{ color: '#FAFAFA' }}>{t.name}</p>
-                    <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.22)' }}>{t.role}</p>
-                  </div>
-                </div>
-              </ScrollReveal>
-            ))}
           </div>
         </div>
       </section>
