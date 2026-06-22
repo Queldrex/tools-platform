@@ -12,7 +12,7 @@ const PROJECTS = [
     name: 'AI Visibility Scanner Platform',
     type: 'Full-Stack SaaS Product',
     stack: ['Next.js 16', 'TypeScript', 'Redis/Upstash', 'Stripe', 'Resend'],
-    desc: 'A 14-signal automated scanner that checks how visible any business is to ChatGPT, Perplexity, Google AI, and other AI search engines. Includes Stripe checkout, PDF report generation, email delivery, and a full admin triage system.',
+    desc: 'A 14-signal automated scanner that checks how visible any business is to ChatGPT, Perplexity, Google AI, and other AI search engines. Includes Stripe checkout, HTML report generation, email delivery, and a full admin triage system.',
     highlights: [
       'Scan completes in under 30 seconds, report delivered within minutes',
       'Dynamic OG image generation — every result is shareable on Twitter/LinkedIn',
