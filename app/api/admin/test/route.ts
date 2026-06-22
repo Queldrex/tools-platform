@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
     : { ok: false, detail: 'CREDENTIALS_ENCRYPTION_KEY not set — credentials stored unencrypted' }
 
   // Admin email
-  results.adminEmail = { ok: true, detail: process.env.ADMIN_EMAIL || 'janitor.clean.base@gmail.com (default)' }
+  results.adminEmail = { ok: true, detail: process.env.ADMIN_EMAIL || 'hello@queldrex.com (default)' }
 
   // Base URL
   results.baseUrl = { ok: true, detail: (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim() }
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
   await saveDfyApplication({
     id,
     name: 'Test Client',
-    email: process.env.ADMIN_EMAIL || 'janitor.clean.base@gmail.com',
+    email: process.env.ADMIN_EMAIL || 'hello@queldrex.com',
     url: 'test-business.com',
     platform: 'ftp',
     score: 12,
@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
     await saveDfySession({
       token: dfyToken,
       scanId: 'test-scan-id',
-      emailAddress: process.env.ADMIN_EMAIL || 'janitor.clean.base@gmail.com',
+      emailAddress: process.env.ADMIN_EMAIL || 'hello@queldrex.com',
       domain: 'test-business.com',
       score: 12,
       status: 'paid',

@@ -225,7 +225,7 @@ const TOOLS: ToolResult[] = [
     price: 'Free',
     status: 'verified',
     statusNote: 'HTTP 200 — fully client-side, outputs copy-paste HTML',
-    input: 'Name: Sean Holmes | Title: Founder | Company: Queldrex LLC | Email: hello@queldrex.com | Template: Clean',
+    input: 'Name: Alex Jordan | Title: Founder | Company: Acme Corp | Email: hello@acme.com | Template: Clean',
     output: ['HTML email signature generated', 'Compatible with Gmail, Outlook, Apple Mail', 'Step-by-step install instructions included', '3 templates: Clean, Bold, Minimal', 'One-click copy to clipboard'],
     method: 'Client-side — buildHtml(data) assembles styled HTML string with table-based layout (required for email clients), dangerouslySetInnerHTML for live preview, copy via navigator.clipboard',
   },

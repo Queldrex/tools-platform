@@ -693,7 +693,7 @@ export async function sendPaymentLinkEmail({ to, name, url, paymentUrl, score }:
 }
 
 // ── Admin alert emails ────────────────────────────────────────────────────────
-const ADMIN_EMAIL = 'janitor.clean.base@gmail.com'
+const ADMIN_EMAIL = 'hello@queldrex.com'
 
 export async function sendAdminScanAlert({ domain, email, score }: { domain: string; email: string; score: number }) {
   const adminUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim() + '/admin'

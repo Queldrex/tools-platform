@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
   // Use a lightweight check: store last-sent date in a Vercel env or just allow monthly emails when due
   // Since this cron runs monthly and only fires when docs are near/past due, monthly reminders are fine
 
-  const adminEmail = process.env.ADMIN_EMAIL || 'janitor.clean.base@gmail.com'
+  const adminEmail = process.env.ADMIN_EMAIL || 'hello@queldrex.com'
   const resendKey = process.env.RESEND_API_KEY
   if (!resendKey) {
     return Response.json({ ok: false, error: 'No RESEND_API_KEY configured' }, { status: 500 })

@@ -107,7 +107,7 @@ async function sendAdminMonitorAlert(email: string, domain: string) {
   try {
     const { Resend } = await import('resend')
     const resend = new Resend((process.env.RESEND_API_KEY || '').replace(/^﻿/, '').trim())
-    const adminEmail = process.env.ADMIN_EMAIL || 'janitor.clean.base@gmail.com'
+    const adminEmail = process.env.ADMIN_EMAIL || 'hello@queldrex.com'
     const adminUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim() + '/admin'
     await resend.emails.send({
       from: 'Queldrex System <reports@queldrex.com>',

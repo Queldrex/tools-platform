@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       // Notify admin
       resend.emails.send({
         from: 'Queldrex Contact <reports@queldrex.com>',
-        to: process.env.ADMIN_EMAIL || 'janitor.clean.base@gmail.com',
+        to: process.env.ADMIN_EMAIL || 'hello@queldrex.com',
         subject: `[Queldrex Contact] ${subject || 'General Question'} — from ${name}`,
         html: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;background:#f8fafc;padding:32px;">
 <div style="max-width:560px;margin:0 auto;background:#0f172a;padding:28px;border-radius:12px;">

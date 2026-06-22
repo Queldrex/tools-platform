@@ -1693,13 +1693,13 @@ function TestTab({ sessionToken, baseUrl, notify }: { sessionToken: string; base
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {[
                   { n: 1, text: 'Go to Applications tab → find "TEST: Test Client (test-business.com)"', link: null, action: 'Switch to Applications tab and locate the seeded record' },
-                  { n: 2, text: 'Click "Send Discovery Email" → check janitor.clean.base@gmail.com for the email', link: null, action: null },
+                  { n: 2, text: 'Click "Send Discovery Email" → check hello@queldrex.com for the email', link: null, action: null },
                   { n: 3, text: 'Click "Send Payment Link ($499)" → open the link below', link: null, action: null },
                   { n: 4, text: 'On Stripe checkout → click "Add promotion code" → enter TEST100 → pay $0', link: null, action: null },
                   ...(seededApp.links.implPage ? [
                     { n: 5, text: 'Submit credentials + signature:', link: seededApp.links.implPage, action: 'Open credential submission form' },
                     { n: 6, text: 'Back in admin Applications → click "⚙️ Run Implementation" (or skip, then click "🔒 Mark Complete & Delete Credentials")', link: null, action: null },
-                    { n: 7, text: 'Check janitor.clean.base@gmail.com for: signed agreement email + deletion receipt email', link: null, action: null },
+                    { n: 7, text: 'Check hello@queldrex.com for: signed agreement email + deletion receipt email', link: null, action: null },
                     { n: 8, text: 'Revisit impl page — should show green deletion confirmation:', link: seededApp.links.implPage, action: 'Verify deletion screen' },
                   ] : []),
                 ].map(step => (
@@ -1847,7 +1847,7 @@ function LegalTab() {
           <strong style={{ color: '#7eb8f0' }}>After updating any legal page:</strong> update the <code style={{ background: '#111', padding: '1px 5px', borderRadius: 3 }}>lastUpdated</code> date in{' '}
           <code style={{ background: '#111', padding: '1px 5px', borderRadius: 3 }}>app/api/cron/legal-review/route.ts</code> and the{' '}
           <code style={{ background: '#111', padding: '1px 5px', borderRadius: 3 }}>LEGAL_DOCS</code> array above so the countdown resets.
-          Auto-reminder emails go to <strong style={{ color: '#7eb8f0' }}>janitor.clean.base@gmail.com</strong> starting when any page is within 20 days of its review date.
+          Auto-reminder emails go to <strong style={{ color: '#7eb8f0' }}>hello@queldrex.com</strong> starting when any page is within 20 days of its review date.
         </p>
       </div>
     </div>

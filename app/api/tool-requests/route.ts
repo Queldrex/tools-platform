@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     const resend = new Resend(process.env.RESEND_API_KEY!.replace(/^﻿/, '').trim())
     resend.emails.send({
       from: 'Queldrex System <reports@queldrex.com>',
-      to: process.env.ADMIN_EMAIL || 'janitor.clean.base@gmail.com',
+      to: process.env.ADMIN_EMAIL || 'hello@queldrex.com',
       subject: `💡 New Tool Request — ${entry.toolName}`,
       html: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;background:#f8fafc;padding:32px;">
 <div style="max-width:520px;margin:0 auto;background:#0f172a;padding:28px;border-radius:12px;">

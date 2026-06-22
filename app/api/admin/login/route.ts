@@ -44,7 +44,7 @@ async function sendAttackAlert(ip: string, count: number) {
   await Promise.all([
     resend.emails.send({
       from: 'Queldrex Security <reports@queldrex.com>',
-      to: process.env.ADMIN_EMAIL || 'janitor.clean.base@gmail.com',
+      to: process.env.ADMIN_EMAIL || 'hello@queldrex.com',
       subject: `🚨 Admin Attack Alert — ${count} failed attempts from ${ip}`,
       html: `<div style="font-family:system-ui;background:#0f172a;padding:24px;color:white;border-radius:12px;max-width:480px;">
         <div style="color:#f87171;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">⚠ Security Alert</div>

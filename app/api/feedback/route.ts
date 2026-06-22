@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
   })
 
   // Notify admin — non-fatal
-  const adminEmail = process.env.ADMIN_EMAIL || 'janitor.clean.base@gmail.com'
+  const adminEmail = process.env.ADMIN_EMAIL || 'hello@queldrex.com'
   const adminUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://queldrex.com').replace(/^﻿/, '').trim() + '/admin'
   Promise.all([
     (async () => {

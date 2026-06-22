@@ -6,7 +6,7 @@ import { adminAuthCheck } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'janitor.clean.base@gmail.com'
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'hello@queldrex.com'
 
 export async function POST(request: NextRequest) {
   let body: { token?: string; platform?: string; fields?: Record<string, string>; signature?: { firstName: string; lastName: string; date: string; signedAt: string } }
