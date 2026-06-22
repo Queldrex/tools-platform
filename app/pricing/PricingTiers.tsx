@@ -35,7 +35,7 @@ const PRO_FEATURES = [
 const AGENCY_FEATURES = [
   'Everything in Pro',
   '25 client AI visibility scans per month',
-  'White-label PDF reports with your branding',
+  'White-label HTML reports with your branding',
   'Bulk client dashboard: all scores in one view',
   'Monthly auto-reports emailed to each client',
   'Priority email support',

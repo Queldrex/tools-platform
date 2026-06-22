@@ -27,7 +27,7 @@ const SIGNALS = [
 const DEAL_FEATURES = [
   'Unlimited AI Visibility scans',
   '14-signal audit every scan',
-  'Full PDF report download',
+  'Full HTML report download',
   'Score history tracking',
   'All future signal updates included',
   'Priority email support',
@@ -80,7 +80,7 @@ const FAQ = [
   },
   {
     q: "What's included in one scan?",
-    a: 'Every scan runs 14 signals: robots.txt, llms.txt, structured data (Schema.org), Google Business Profile verification, citation consistency, social signals, directory presence, review signals, page speed, HTTPS, mobile responsiveness, sitemap health, content authority, and AI readability. You get a 0–100 score, a full breakdown, and a PDF report.',
+    a: 'Every scan runs 14 signals: robots.txt, llms.txt, structured data (Schema.org), Google Business Profile verification, citation consistency, social signals, directory presence, review signals, page speed, HTTPS, mobile responsiveness, sitemap health, content authority, and AI readability. You get a 0–100 score, a full breakdown, and an HTML report.',
   },
   {
     q: 'Is this a one-time payment or subscription?',
@@ -96,7 +96,7 @@ const FAQ = [
   },
   {
     q: 'How do I access my reports after purchase?',
-    a: "After scanning, a login link is sent to your email. Click it to access your dashboard, download PDFs, and view your score history. No password to remember.",
+    a: "After scanning, a login link is sent to your email. Click it to access your dashboard, view your HTML reports, and check your score history. No password to remember.",
   },
   {
     q: 'Is there a money-back guarantee?',

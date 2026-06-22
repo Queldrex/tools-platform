@@ -7,9 +7,9 @@ export const metadata = {
 }
 
 const SHIPPED = [
-  { name: 'AI Visibility Scanner', desc: '14-signal analysis, PDF report, email delivery — $399 one-time' },
+  { name: 'AI Visibility Scanner', desc: '14-signal analysis, HTML report, email delivery — $399 one-time' },
   { name: 'AI Visibility Monitor', desc: '$79/month, monthly automated rescans, score drop alerts' },
-  { name: 'Agency Plan', desc: '$99/month — 25 client scans, white-label PDF reports, bulk dashboard, magic-link auth' },
+  { name: 'Agency Plan', desc: '$99/month — 25 client scans, white-label HTML reports, bulk dashboard, magic-link auth' },
   { name: 'Dependency CVE Scanner', desc: 'Paste package.json or requirements.txt — get live CVEs from Google\'s OSV database.' },
   { name: 'Shareable Scan Results', desc: 'One-click Twitter/LinkedIn score cards with dynamic OG images for every scan' },
   { name: 'Threat Intelligence Feed', desc: 'Real-time URLhaus + Feodo Tracker data, Redis-cached, category filtered' },

@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 const FEATURES = [
   { title: '25 client scans/month', desc: 'Normally $9,975 at one-off scanner pricing. Included in your plan.' },
-  { title: 'White-label PDF reports', desc: 'Your client sees their domain and score — not Queldrex branding.' },
+  { title: 'White-label HTML reports', desc: 'Your client sees their domain and score — not Queldrex branding.' },
   { title: 'Bulk client dashboard', desc: 'All your clients, all their scores, all their history in one view.' },
   { title: 'Monthly auto-reports', desc: 'We email each client their updated score every month automatically.' },
   { title: 'Priority email support', desc: 'Agency partners get faster response times than standard users.' },
@@ -22,7 +22,7 @@ const FAQS = [
   },
   {
     q: 'Can I resell reports to clients?',
-    a: 'Yes. Reports are white-labeled and yours to deliver however you like — PDF, email, in a proposal deck.',
+    a: 'Yes. Reports are white-labeled HTML — share by email, embed in a proposal deck, or print to PDF.',
   },
   {
     q: 'What happens if I need more than 25 scans?',

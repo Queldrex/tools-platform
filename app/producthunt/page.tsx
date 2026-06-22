@@ -35,7 +35,7 @@ const STEPS = [
 
 const PRICING = [
   { label: 'Free', price: '$0', items: ['Full 14-signal scan', 'Score and grade', 'Signal breakdown'] },
-  { label: 'Full Report', price: '$399', items: ['PDF report', 'Generated llms.txt', 'LocalBusiness schema', 'Deployment guide'], highlight: true },
+  { label: 'Full Report', price: '$399', items: ['HTML report', 'Generated llms.txt', 'LocalBusiness schema', 'Deployment guide'], highlight: true },
   { label: 'Monitor', price: '$79/mo', items: ['Monthly rescans', 'Score drop alerts', 'Score history'] },
   { label: 'Agency', price: '$99/mo', items: ['25 clients/month', 'White-label reports', 'Client dashboard'] },
 ]
@@ -55,7 +55,7 @@ const FAQS = [
   },
   {
     q: 'Can agencies use this?',
-    a: 'Yes. The Agency plan ($99/month) gives you a dashboard to manage up to 25 client domains, white-label PDF reports, and monthly auto-scans. Your clients never see the Queldrex name.',
+    a: 'Yes. The Agency plan ($99/month) gives you a dashboard to manage up to 25 client domains, white-label HTML reports, and monthly auto-scans. Your clients never see the Queldrex name.',
   },
   {
     q: 'Will you add more signals?',
