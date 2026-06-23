@@ -86,7 +86,21 @@ export default function AdGraderPage() {
           <span className="text-sm font-bold text-white/30">3 free grades/day · Unlimited with $79/month Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Ad Copy <span style={{ color: '#fb923c' }}>Grader</span></h1>
-        <p className="text-white/55 text-base mb-6 max-w-2xl">Paste any ad copy and get an instant score on length, CTA strength, clarity, urgency, and social proof — plus an AI-improved rewrite.</p>
+        <p className="text-white/55 text-base mb-4 max-w-2xl">Paste any ad copy and get an instant score on length, CTA strength, clarity, urgency, and social proof — plus an AI-improved rewrite.</p>
+        <div className="flex gap-3 flex-wrap mb-6">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
+
+        <div className="mt-10 mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• Performance marketers testing Google and Meta ad copy before spending budget</li>
+            <li>• Copywriters getting AI feedback on clarity, CTA strength, and spam risk</li>
+            <li>• Growth teams comparing rewritten variants before an A/B test</li>
+            <li>• Agencies reviewing client ad creative for brand voice and emotional appeal</li>
+          </ul>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
@@ -135,8 +149,8 @@ export default function AdGraderPage() {
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(251,146,60,0.05)', borderColor: 'rgba(251,146,60,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited grading with Pro</h3>
-            <p className="text-white/50 text-sm mb-6">Grade unlimited ad copy across all platforms — $79/month.</p>
-            <Link href="/pricing" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro — $79/month</Link>
+            <p className="text-white/50 text-sm mb-6">Grade unlimited ad copy across all platforms.</p>
+            <Link href="/pricing" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Upgrade to Pro →</Link>
           </div>
         )}
 
@@ -198,6 +212,14 @@ export default function AdGraderPage() {
             )}
           </div>
         )}
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(6,214,255,0.04)', borderColor: 'rgba(6,214,255,0.12)' }}>
+          <p className="text-white font-black mb-1">Add AI ad grading to your platform</p>
+          <p className="text-white/40 text-sm mb-4">6-dimension scoring, AI rewrite, multi-platform support (Google, Meta, LinkedIn). One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
