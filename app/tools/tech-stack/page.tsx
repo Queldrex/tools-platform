@@ -17,8 +17,9 @@ interface ScanResult {
   statusCode: number
   detections: Detection[]
   grouped: Record<string, Detection[]>
-  securityHeaders: { https: boolean; hsts: boolean; xframe: boolean; csp: boolean; xcontenttype: boolean }
+  securityHeaders: { https: boolean; hsts: boolean; xframe: boolean; csp: boolean; xcontenttype: boolean; referrerPolicy: boolean }
   responseHeaders: Record<string, string>
+  techCount: number
   scannedAt: string
 }
 
@@ -30,6 +31,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   'E-commerce': '#f97316',
   Marketing: '#f87171',
   Language: 'rgb(99,102,241)',
+  'UI Library': '#f472b6',
 }
 
 const EXAMPLE_SITES = ['vercel.com', 'shopify.com', 'wordpress.org', 'github.com', 'stripe.com']
@@ -40,6 +42,7 @@ export default function TechStackPage() {
   const [result, setResult] = useState<ScanResult | null>(null)
   const [error, setError] = useState('')
   const [paywall, setPaywall] = useState(false)
+  const [exported, setExported] = useState(false)
 
   async function scan(target?: string) {
     const scanUrl = target || url.trim()
@@ -66,6 +69,14 @@ export default function TechStackPage() {
     setLoading(false)
   }
 
+  function exportJson() {
+    if (!result) return
+    const json = JSON.stringify({ url: result.url, scannedAt: result.scannedAt, detections: result.detections, securityHeaders: result.securityHeaders }, null, 2)
+    navigator.clipboard.writeText(json)
+    setExported(true)
+    setTimeout(() => setExported(false), 2000)
+  }
+
   const secScore = result ? Object.values(result.securityHeaders).filter(Boolean).length : 0
 
   return (
@@ -81,10 +92,14 @@ export default function TechStackPage() {
         <div className="mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold tracking-widest uppercase mb-3"
             style={{ borderColor: 'rgba(99,102,241,0.25)', background: 'rgba(99,102,241,0.08)', color: 'rgb(99,102,241)' }}>
-            Free Tool · Developer
+            Free Tool · No Extension Required · Server-Side Scan
           </div>
-          <h1 className="text-3xl font-black text-white mb-1">Tech Stack Detector</h1>
-          <p className="text-white/40 text-sm">Detect the framework, CMS, CDN, analytics, and marketing tools any website uses — from its public response headers and page source. No login required.</p>
+          <h1 className="text-3xl font-black text-white mb-2">Tech Stack Detector</h1>
+          <p className="text-white/40 text-sm mb-4">Detect frameworks, CMS, hosting, CDN, analytics, and more from any URL's public response headers and source — no browser plugin needed. License from $29, or get all 51 tools from $99.</p>
+          <div className="flex gap-3 flex-wrap">
+            <Link href="/pricing" className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-black border text-white/60" style={{ borderColor: 'rgba(255,255,255,0.12)' }}>All 51 tools — from $99 →</Link>
+          </div>
         </div>
 
         {/* Input */}
@@ -123,8 +138,8 @@ export default function TechStackPage() {
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited scans with Pro</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Free tier includes 5 scans/day. Pro subscribers get unlimited tech stack detection — $79/month.</p>
-            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Start Pro — $79/month</Link>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Free tier includes 5 scans/day. Unlock unlimited tech stack detection with a Pro subscription.</p>
+            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Upgrade to Pro →</Link>
           </div>
         )}
 
@@ -151,6 +166,11 @@ export default function TechStackPage() {
                   <span className="text-[10px] text-white/30">
                     {result.detections.length} technologies detected
                   </span>
+                  <button onClick={exportJson}
+                    className="text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
+                    style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    {exported ? 'Copied!' : 'Export JSON'}
+                  </button>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -196,8 +216,8 @@ export default function TechStackPage() {
             <div className="rounded-xl border p-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
               <div className="flex items-center justify-between mb-3">
                 <p className="text-xs font-black uppercase tracking-widest text-white/40">Security Headers</p>
-                <span className="text-xs font-bold" style={{ color: secScore >= 4 ? '#34d399' : secScore >= 2 ? 'rgb(251,191,36)' : '#f87171' }}>
-                  {secScore}/5
+                <span className="text-xs font-bold" style={{ color: secScore >= 5 ? '#34d399' : secScore >= 3 ? 'rgb(251,191,36)' : '#f87171' }}>
+                  {secScore}/6
                 </span>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -207,6 +227,7 @@ export default function TechStackPage() {
                   { key: 'xframe', label: 'X-Frame-Options' },
                   { key: 'csp', label: 'Content-Security-Policy' },
                   { key: 'xcontenttype', label: 'X-Content-Type-Options' },
+                  { key: 'referrerPolicy', label: 'Referrer-Policy' },
                 ].map(({ key, label }) => {
                   const ok = result.securityHeaders[key as keyof typeof result.securityHeaders]
                   return (
@@ -225,6 +246,23 @@ export default function TechStackPage() {
           </div>
         )}
 
+        {/* Who This Is For */}
+        <div className="mt-10 rounded-2xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
+          <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-3">Who This Is For</p>
+          <ul className="space-y-1.5">
+            {[
+              "Developers evaluating a competitor's tech stack before building",
+              'Agency teams auditing client sites for migrations or security reviews',
+              'Recruiters and hiring managers researching company tech stacks',
+              'Security researchers checking for outdated or exposed frameworks',
+            ].map(item => (
+              <li key={item} className="text-xs text-white/50 flex items-start gap-2">
+                <span className="text-cyan-400 mt-0.5 flex-shrink-0">→</span>{item}
+              </li>
+            ))}
+          </ul>
+        </div>
+
         {/* How It Works */}
         {!result && !loading && (
           <div className="mt-14 border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
@@ -233,8 +271,8 @@ export default function TechStackPage() {
             <div className="grid sm:grid-cols-3 gap-4 mb-8">
               {[
                 { n: '01', title: 'Enter any URL', body: 'Enter a domain like shopify.com or click one of the example sites. HTTPS is assumed if no protocol is specified.' },
-                { n: '02', title: 'Server fetches + analyzes', body: '30+ technology signatures are checked against the page\'s HTML source and HTTP response headers. 7 categories: Framework, CMS, Hosting, Analytics, E-commerce, Marketing, Language.' },
-                { n: '03', title: 'See tech + security score', body: 'Each detection shows confidence (high/low) and the exact evidence. Security headers are scored out of 5.' },
+                { n: '02', title: 'Server fetches + analyzes', body: "55+ technology signatures are checked against the page's HTML source and HTTP response headers. 8 categories: Framework, CMS, Hosting, Analytics, E-commerce, Marketing, UI Library, Language." },
+                { n: '03', title: 'See tech + security score', body: 'Each detection shows confidence (high/low) and the exact evidence. Security headers are scored out of 6.' },
               ].map(s => (
                 <div key={s.n} className="rounded-xl border p-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
                   <div className="text-xs font-black text-white/20 mb-2">{s.n}</div>
@@ -258,13 +296,14 @@ export default function TechStackPage() {
                   </div>
                 ))}
               </div>
-              <div className="grid grid-cols-5 gap-2">
+              <div className="grid grid-cols-6 gap-2">
                 {[
                   { label: 'HTTPS', ok: true },
                   { label: 'HSTS', ok: true },
                   { label: 'X-Frame', ok: true },
                   { label: 'CSP', ok: true },
                   { label: 'X-Content', ok: true },
+                  { label: 'Referrer', ok: true },
                 ].map(h => (
                   <div key={h.label} className="text-center">
                     <div style={{ color: '#34d399' }} className="text-sm">✓</div>
@@ -272,10 +311,21 @@ export default function TechStackPage() {
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-green-400 text-center mt-2 font-bold">Security score: 5/5</p>
+              <p className="text-xs text-green-400 text-center mt-2 font-bold">Security score: 6/6</p>
             </div>
           </div>
         )}
+
+        {/* License CTA */}
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.15)' }}>
+          <p className="text-white font-black mb-1">Add this scanner to your platform</p>
+          <p className="text-white/40 text-sm mb-4">License the full source — tech stack detection, security headers, export. One-time payment.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
+
       </main>
       <Footer />
     </div>
