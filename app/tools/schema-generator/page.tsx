@@ -13,7 +13,7 @@ type HowToStep = { name: string; text: string; image: string }
 type BreadcrumbItem = { name: string; url: string }
 type StackItem = { id: string; label: string; schema: string }
 type HistoryItem = { id: string; type: string; label: string; schema: string; ts: number }
-type SchemaTab = 'localbusiness' | 'faqpage' | 'article' | 'product' | 'event' | 'organization' | 'howto' | 'website' | 'softwareapp' | 'breadcrumb' | 'video'
+type SchemaTab = 'localbusiness' | 'faqpage' | 'article' | 'product' | 'event' | 'organization' | 'howto' | 'website' | 'softwareapp' | 'breadcrumb' | 'video' | 'recipe' | 'jobposting' | 'course' | 'newsarticle' | 'podcastepisode'
 
 // ─── Constants ─────────────────────────────────────────────────────────────────
 
@@ -411,6 +411,162 @@ function buildVideo(f: {
   return JSON.stringify(schema, null, 2)
 }
 
+function buildRecipe(f: {
+  name: string; description: string; image: string; prepTime: string; cookTime: string
+  totalTime: string; recipeYield: string; recipeCategory: string; recipeCuisine: string
+  keywords: string; recipeIngredients: string; recipeInstructions: string
+  calories: string; ratingValue: string; ratingCount: string
+}) {
+  const schema: Record<string, unknown> = { '@context': 'https://schema.org', '@type': 'Recipe' }
+  if (f.name) schema['name'] = f.name
+  if (f.description) schema['description'] = f.description
+  if (f.image) schema['image'] = f.image.startsWith('http') ? f.image : `https://${f.image}`
+  if (f.prepTime) schema['prepTime'] = f.prepTime
+  if (f.cookTime) schema['cookTime'] = f.cookTime
+  if (f.totalTime) schema['totalTime'] = f.totalTime
+  if (f.recipeYield) schema['recipeYield'] = f.recipeYield
+  if (f.recipeCategory) schema['recipeCategory'] = f.recipeCategory
+  if (f.recipeCuisine) schema['recipeCuisine'] = f.recipeCuisine
+  if (f.keywords) schema['keywords'] = f.keywords
+  if (f.recipeIngredients) {
+    schema['recipeIngredient'] = f.recipeIngredients.split('\n').map(s => s.trim()).filter(Boolean)
+  }
+  if (f.recipeInstructions) {
+    schema['recipeInstructions'] = f.recipeInstructions.split('\n').map((s, i) => ({
+      '@type': 'HowToStep',
+      name: `Step ${i + 1}`,
+      text: s.trim(),
+    })).filter(s => s.text)
+  }
+  if (f.calories) schema['nutrition'] = { '@type': 'NutritionInformation', calories: f.calories }
+  if (f.ratingValue && f.ratingCount) {
+    schema['aggregateRating'] = { '@type': 'AggregateRating', ratingValue: parseFloat(f.ratingValue), reviewCount: parseInt(f.ratingCount), bestRating: 5, worstRating: 1 }
+  }
+  return JSON.stringify(schema, null, 2)
+}
+
+function buildJobPosting(f: {
+  title: string; description: string; datePosted: string; validThrough: string
+  employmentType: string; hiringOrgName: string; hiringOrgUrl: string
+  baseSalaryMin: string; baseSalaryMax: string; salaryCurrency: string; salaryPeriod: string
+  jobLocationCity: string; jobLocationState: string; jobLocationCountry: string; remote: boolean
+}) {
+  const schema: Record<string, unknown> = { '@context': 'https://schema.org', '@type': 'JobPosting' }
+  if (f.title) schema['title'] = f.title
+  if (f.description) schema['description'] = f.description
+  if (f.datePosted) schema['datePosted'] = f.datePosted
+  if (f.validThrough) schema['validThrough'] = f.validThrough
+  if (f.employmentType) schema['employmentType'] = f.employmentType
+  if (f.hiringOrgName) {
+    schema['hiringOrganization'] = {
+      '@type': 'Organization',
+      name: f.hiringOrgName,
+      ...(f.hiringOrgUrl && { sameAs: f.hiringOrgUrl.startsWith('http') ? f.hiringOrgUrl : `https://${f.hiringOrgUrl}` }),
+    }
+  }
+  if (f.remote) {
+    schema['applicantLocationRequirements'] = { '@type': 'Country', name: 'Anywhere' }
+    schema['jobLocationType'] = 'TELECOMMUTE'
+  } else if (f.jobLocationCity) {
+    schema['jobLocation'] = {
+      '@type': 'Place',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: f.jobLocationCity,
+        ...(f.jobLocationState && { addressRegion: f.jobLocationState }),
+        addressCountry: f.jobLocationCountry || 'US',
+      },
+    }
+  }
+  if (f.baseSalaryMin && f.salaryCurrency) {
+    schema['baseSalary'] = {
+      '@type': 'MonetaryAmount',
+      currency: f.salaryCurrency,
+      value: {
+        '@type': 'QuantitativeValue',
+        minValue: parseFloat(f.baseSalaryMin),
+        ...(f.baseSalaryMax && { maxValue: parseFloat(f.baseSalaryMax) }),
+        unitText: f.salaryPeriod || 'YEAR',
+      },
+    }
+  }
+  return JSON.stringify(schema, null, 2)
+}
+
+function buildCourse(f: {
+  name: string; description: string; provider: string; providerUrl: string
+  url: string; courseMode: string; price: string; priceCurrency: string
+  startDate: string; endDate: string
+}) {
+  const schema: Record<string, unknown> = { '@context': 'https://schema.org', '@type': 'Course' }
+  if (f.name) schema['name'] = f.name
+  if (f.description) schema['description'] = f.description
+  if (f.url) schema['url'] = f.url.startsWith('http') ? f.url : `https://${f.url}`
+  if (f.provider) {
+    schema['provider'] = {
+      '@type': 'Organization',
+      name: f.provider,
+      ...(f.providerUrl && { sameAs: f.providerUrl.startsWith('http') ? f.providerUrl : `https://${f.providerUrl}` }),
+    }
+  }
+  const instance: Record<string, unknown> = { '@type': 'CourseInstance' }
+  if (f.courseMode) instance['courseMode'] = f.courseMode
+  if (f.startDate) instance['startDate'] = f.startDate
+  if (f.endDate) instance['endDate'] = f.endDate
+  if (f.price && f.priceCurrency) {
+    instance['offers'] = { '@type': 'Offer', price: f.price, priceCurrency: f.priceCurrency }
+  }
+  schema['hasCourseInstance'] = instance
+  return JSON.stringify(schema, null, 2)
+}
+
+function buildNewsArticle(f: {
+  headline: string; description: string; image: string; datePublished: string
+  dateModified: string; articleSection: string; authorName: string
+  publisherName: string; publisherLogo: string; articleUrl: string
+}) {
+  const schema: Record<string, unknown> = { '@context': 'https://schema.org', '@type': 'NewsArticle' }
+  if (f.headline) schema['headline'] = f.headline
+  if (f.description) schema['description'] = f.description
+  if (f.image) schema['image'] = f.image.startsWith('http') ? f.image : `https://${f.image}`
+  if (f.articleUrl) schema['url'] = f.articleUrl.startsWith('http') ? f.articleUrl : `https://${f.articleUrl}`
+  if (f.datePublished) schema['datePublished'] = f.datePublished
+  if (f.dateModified) schema['dateModified'] = f.dateModified
+  if (f.articleSection) schema['articleSection'] = f.articleSection
+  if (f.authorName) schema['author'] = { '@type': 'Person', name: f.authorName }
+  if (f.publisherName) {
+    schema['publisher'] = {
+      '@type': 'Organization',
+      name: f.publisherName,
+      ...(f.publisherLogo && { logo: { '@type': 'ImageObject', url: f.publisherLogo.startsWith('http') ? f.publisherLogo : `https://${f.publisherLogo}` } }),
+    }
+  }
+  return JSON.stringify(schema, null, 2)
+}
+
+function buildPodcastEpisode(f: {
+  name: string; description: string; partOfSeriesName: string; partOfSeriesUrl: string
+  episodeNumber: string; datePublished: string; timeRequired: string; audioUrl: string
+}) {
+  const schema: Record<string, unknown> = { '@context': 'https://schema.org', '@type': 'PodcastEpisode' }
+  if (f.name) schema['name'] = f.name
+  if (f.description) schema['description'] = f.description
+  if (f.episodeNumber) schema['episodeNumber'] = parseInt(f.episodeNumber)
+  if (f.datePublished) schema['datePublished'] = f.datePublished
+  if (f.timeRequired) schema['timeRequired'] = f.timeRequired
+  if (f.partOfSeriesName) {
+    schema['partOfSeries'] = {
+      '@type': 'PodcastSeries',
+      name: f.partOfSeriesName,
+      ...(f.partOfSeriesUrl && { url: f.partOfSeriesUrl.startsWith('http') ? f.partOfSeriesUrl : `https://${f.partOfSeriesUrl}` }),
+    }
+  }
+  if (f.audioUrl) {
+    schema['associatedMedia'] = { '@type': 'MediaObject', contentUrl: f.audioUrl.startsWith('http') ? f.audioUrl : `https://${f.audioUrl}` }
+  }
+  return JSON.stringify(schema, null, 2)
+}
+
 // ─── Validation ────────────────────────────────────────────────────────────────
 
 function getLocalBizWarnings(f: { name: string; url: string; phone: string; image: string; description: string; ratingValue: string; ratingCount: string }) {
@@ -512,6 +668,44 @@ function getVideoWarnings(f: { name: string; description: string; thumbnailUrl: 
   if (!f.description) warnings.push('Description required for Video rich results')
   if (!f.thumbnailUrl) warnings.push('Thumbnail URL required for Video rich results')
   if (!f.uploadDate) warnings.push('Upload date required')
+  return warnings
+}
+
+function getRecipeWarnings(f: { name: string; image: string }) {
+  const warnings: string[] = []
+  if (!f.name) warnings.push('Recipe name is required')
+  if (!f.image) warnings.push('Image URL required for Recipe rich results')
+  return warnings
+}
+
+function getJobPostingWarnings(f: { title: string; description: string; datePosted: string; hiringOrgName: string; jobLocationCity: string; remote: boolean }) {
+  const warnings: string[] = []
+  if (!f.title) warnings.push('Job title is required')
+  if (!f.description) warnings.push('Job description is required')
+  if (!f.datePosted) warnings.push('Date posted is required')
+  if (!f.hiringOrgName) warnings.push('Hiring organization name is required')
+  if (!f.remote && !f.jobLocationCity) warnings.push('Job location city is required (or enable Remote)')
+  return warnings
+}
+
+function getCourseWarnings(f: { name: string; description: string }) {
+  const warnings: string[] = []
+  if (!f.name) warnings.push('Course name is required')
+  if (!f.description) warnings.push('Course description is required')
+  return warnings
+}
+
+function getNewsArticleWarnings(f: { headline: string; image: string; datePublished: string }) {
+  const warnings: string[] = []
+  if (!f.headline) warnings.push('Headline is required')
+  if (!f.image) warnings.push('Image URL required for Google News eligibility')
+  if (!f.datePublished) warnings.push('Date published is required')
+  return warnings
+}
+
+function getPodcastEpisodeWarnings(f: { name: string }) {
+  const warnings: string[] = []
+  if (!f.name) warnings.push('Episode name is required')
   return warnings
 }
 
@@ -735,6 +929,72 @@ function VideoPreview({ name, uploadDate, durationMin, durationSec }: { name: st
   )
 }
 
+function RecipePreview({ name, ratingValue, ratingCount, prepTime, cookTime }: { name: string; ratingValue: string; ratingCount: string; prepTime: string; cookTime: string }) {
+  const rating = parseFloat(ratingValue)
+  const stars = !isNaN(rating) ? Math.round(rating) : 0
+  return (
+    <div className="rounded-xl p-4 font-sans" style={{ background: '#fff', color: '#202124' }}>
+      <p className="text-base font-semibold text-blue-700 mb-1">{name || 'Recipe Name'}</p>
+      {ratingValue && ratingCount && (
+        <div className="flex items-center gap-1 mb-1">
+          <span className="text-yellow-500 text-sm">{'★'.repeat(stars)}{'☆'.repeat(5 - stars)}</span>
+          <span className="text-xs text-gray-600">{ratingValue} ({ratingCount})</span>
+        </div>
+      )}
+      <div className="flex gap-3 text-xs text-gray-500">
+        {prepTime && <span>Prep: {prepTime.replace('PT', '').toLowerCase()}</span>}
+        {cookTime && <span>Cook: {cookTime.replace('PT', '').toLowerCase()}</span>}
+      </div>
+      <p className="text-xs text-gray-400 mt-2 italic">Preview — actual appearance varies in Google</p>
+    </div>
+  )
+}
+
+function JobPostingPreview({ title, hiringOrgName, jobLocationCity, baseSalaryMin, salaryCurrency }: { title: string; hiringOrgName: string; jobLocationCity: string; baseSalaryMin: string; salaryCurrency: string }) {
+  return (
+    <div className="rounded-xl p-4 font-sans" style={{ background: '#fff', color: '#202124' }}>
+      <p className="text-base font-semibold text-blue-700 mb-1">{title || 'Job Title'}</p>
+      {hiringOrgName && <p className="text-sm text-gray-700 mb-0.5">{hiringOrgName}</p>}
+      {jobLocationCity && <p className="text-xs text-gray-500 mb-0.5">{jobLocationCity}</p>}
+      {baseSalaryMin && <p className="text-xs font-semibold text-gray-700">{salaryCurrency || 'USD'} {baseSalaryMin}+/yr</p>}
+      <p className="text-xs text-gray-400 mt-2 italic">Preview — actual appearance varies in Google for Jobs</p>
+    </div>
+  )
+}
+
+function CoursePreview({ name, provider, courseMode }: { name: string; provider: string; courseMode: string }) {
+  return (
+    <div className="rounded-xl p-4 font-sans" style={{ background: '#fff', color: '#202124' }}>
+      <p className="text-base font-semibold text-blue-700 mb-1">{name || 'Course Name'}</p>
+      {provider && <p className="text-xs text-gray-600 mb-0.5">{provider}</p>}
+      {courseMode && <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">{courseMode}</span>}
+      <p className="text-xs text-gray-400 mt-2 italic">Preview — actual appearance varies in Google</p>
+    </div>
+  )
+}
+
+function NewsArticlePreview({ headline, description, authorName, publisherName }: { headline: string; description: string; authorName: string; publisherName: string }) {
+  return (
+    <div className="rounded-xl p-4 font-sans" style={{ background: '#fff', color: '#202124' }}>
+      {publisherName && <p className="text-xs text-gray-500 mb-1">{publisherName}</p>}
+      <p className="text-base font-semibold text-blue-700 leading-snug mb-1">{headline || 'News Headline'}</p>
+      {description && <p className="text-xs text-gray-600 leading-relaxed mb-2 line-clamp-2">{description}</p>}
+      {authorName && <p className="text-xs text-gray-500">By {authorName}</p>}
+      <p className="text-xs text-gray-400 mt-2 italic">Preview — actual appearance varies in Google News</p>
+    </div>
+  )
+}
+
+function PodcastEpisodePreview({ name, partOfSeriesName, episodeNumber }: { name: string; partOfSeriesName: string; episodeNumber: string }) {
+  return (
+    <div className="rounded-xl p-4 font-sans" style={{ background: '#fff', color: '#202124' }}>
+      {partOfSeriesName && <p className="text-xs text-gray-500 mb-1">{partOfSeriesName}{episodeNumber ? ` · Ep. ${episodeNumber}` : ''}</p>}
+      <p className="text-base font-semibold text-blue-700 leading-snug">{name || 'Episode Title'}</p>
+      <p className="text-xs text-gray-400 mt-2 italic">Preview — actual appearance varies in AI podcast search</p>
+    </div>
+  )
+}
+
 // ─── Styles ────────────────────────────────────────────────────────────────────
 
 const inputStyle: React.CSSProperties = {
@@ -902,6 +1162,74 @@ export default function SchemaGeneratorPage() {
   const [vidPublisherName, setVidPublisherName] = useState('')
   const [vidPublisherLogo, setVidPublisherLogo] = useState('')
 
+  // Recipe state
+  const [recName, setRecName] = useState('')
+  const [recDescription, setRecDescription] = useState('')
+  const [recImage, setRecImage] = useState('')
+  const [recPrepTime, setRecPrepTime] = useState('')
+  const [recCookTime, setRecCookTime] = useState('')
+  const [recTotalTime, setRecTotalTime] = useState('')
+  const [recYield, setRecYield] = useState('')
+  const [recCategory, setRecCategory] = useState('')
+  const [recCuisine, setRecCuisine] = useState('')
+  const [recKeywords, setRecKeywords] = useState('')
+  const [recIngredients, setRecIngredients] = useState('')
+  const [recInstructions, setRecInstructions] = useState('')
+  const [recCalories, setRecCalories] = useState('')
+  const [recRatingValue, setRecRatingValue] = useState('')
+  const [recRatingCount, setRecRatingCount] = useState('')
+
+  // JobPosting state
+  const [jobTitle, setJobTitle] = useState('')
+  const [jobDescription, setJobDescription] = useState('')
+  const [jobDatePosted, setJobDatePosted] = useState('')
+  const [jobValidThrough, setJobValidThrough] = useState('')
+  const [jobEmploymentType, setJobEmploymentType] = useState('FULL_TIME')
+  const [jobHiringOrgName, setJobHiringOrgName] = useState('')
+  const [jobHiringOrgUrl, setJobHiringOrgUrl] = useState('')
+  const [jobSalaryMin, setJobSalaryMin] = useState('')
+  const [jobSalaryMax, setJobSalaryMax] = useState('')
+  const [jobSalaryCurrency, setJobSalaryCurrency] = useState('USD')
+  const [jobSalaryPeriod, setJobSalaryPeriod] = useState('YEAR')
+  const [jobLocationCity, setJobLocationCity] = useState('')
+  const [jobLocationState, setJobLocationState] = useState('')
+  const [jobLocationCountry, setJobLocationCountry] = useState('US')
+  const [jobRemote, setJobRemote] = useState(false)
+
+  // Course state
+  const [crsName, setCrsName] = useState('')
+  const [crsDescription, setCrsDescription] = useState('')
+  const [crsProvider, setCrsProvider] = useState('')
+  const [crsProviderUrl, setCrsProviderUrl] = useState('')
+  const [crsUrl, setCrsUrl] = useState('')
+  const [crsCourseMode, setCrsCourseMode] = useState('Online')
+  const [crsPrice, setCrsPrice] = useState('')
+  const [crsPriceCurrency, setCrsPriceCurrency] = useState('USD')
+  const [crsStartDate, setCrsStartDate] = useState('')
+  const [crsEndDate, setCrsEndDate] = useState('')
+
+  // NewsArticle state
+  const [naHeadline, setNaHeadline] = useState('')
+  const [naDescription, setNaDescription] = useState('')
+  const [naImage, setNaImage] = useState('')
+  const [naDatePublished, setNaDatePublished] = useState('')
+  const [naDateModified, setNaDateModified] = useState('')
+  const [naArticleSection, setNaArticleSection] = useState('')
+  const [naAuthorName, setNaAuthorName] = useState('')
+  const [naPublisherName, setNaPublisherName] = useState('')
+  const [naPublisherLogo, setNaPublisherLogo] = useState('')
+  const [naArticleUrl, setNaArticleUrl] = useState('')
+
+  // PodcastEpisode state
+  const [podName, setPodName] = useState('')
+  const [podDescription, setPodDescription] = useState('')
+  const [podSeriesName, setPodSeriesName] = useState('')
+  const [podSeriesUrl, setPodSeriesUrl] = useState('')
+  const [podEpisodeNumber, setPodEpisodeNumber] = useState('')
+  const [podDatePublished, setPodDatePublished] = useState('')
+  const [podTimeRequired, setPodTimeRequired] = useState('')
+  const [podAudioUrl, setPodAudioUrl] = useState('')
+
   // localStorage history
   useEffect(() => {
     try {
@@ -965,6 +1293,26 @@ export default function SchemaGeneratorPage() {
     schema = buildVideo({ name: vidName, description: vidDescription, thumbnailUrl: vidThumbnail, uploadDate: vidUploadDate, durationMin: vidDurationMin, durationSec: vidDurationSec, contentUrl: vidContentUrl, embedUrl: vidEmbedUrl, publisherName: vidPublisherName, publisherLogo: vidPublisherLogo })
     warnings = getVideoWarnings({ name: vidName, description: vidDescription, thumbnailUrl: vidThumbnail, uploadDate: vidUploadDate })
     preview = <VideoPreview name={vidName} uploadDate={vidUploadDate} durationMin={vidDurationMin} durationSec={vidDurationSec} />
+  } else if (activeTab === 'recipe') {
+    schema = buildRecipe({ name: recName, description: recDescription, image: recImage, prepTime: recPrepTime, cookTime: recCookTime, totalTime: recTotalTime, recipeYield: recYield, recipeCategory: recCategory, recipeCuisine: recCuisine, keywords: recKeywords, recipeIngredients: recIngredients, recipeInstructions: recInstructions, calories: recCalories, ratingValue: recRatingValue, ratingCount: recRatingCount })
+    warnings = getRecipeWarnings({ name: recName, image: recImage })
+    preview = <RecipePreview name={recName} ratingValue={recRatingValue} ratingCount={recRatingCount} prepTime={recPrepTime} cookTime={recCookTime} />
+  } else if (activeTab === 'jobposting') {
+    schema = buildJobPosting({ title: jobTitle, description: jobDescription, datePosted: jobDatePosted, validThrough: jobValidThrough, employmentType: jobEmploymentType, hiringOrgName: jobHiringOrgName, hiringOrgUrl: jobHiringOrgUrl, baseSalaryMin: jobSalaryMin, baseSalaryMax: jobSalaryMax, salaryCurrency: jobSalaryCurrency, salaryPeriod: jobSalaryPeriod, jobLocationCity, jobLocationState, jobLocationCountry, remote: jobRemote })
+    warnings = getJobPostingWarnings({ title: jobTitle, description: jobDescription, datePosted: jobDatePosted, hiringOrgName: jobHiringOrgName, jobLocationCity, remote: jobRemote })
+    preview = <JobPostingPreview title={jobTitle} hiringOrgName={jobHiringOrgName} jobLocationCity={jobLocationCity} baseSalaryMin={jobSalaryMin} salaryCurrency={jobSalaryCurrency} />
+  } else if (activeTab === 'course') {
+    schema = buildCourse({ name: crsName, description: crsDescription, provider: crsProvider, providerUrl: crsProviderUrl, url: crsUrl, courseMode: crsCourseMode, price: crsPrice, priceCurrency: crsPriceCurrency, startDate: crsStartDate, endDate: crsEndDate })
+    warnings = getCourseWarnings({ name: crsName, description: crsDescription })
+    preview = <CoursePreview name={crsName} provider={crsProvider} courseMode={crsCourseMode} />
+  } else if (activeTab === 'newsarticle') {
+    schema = buildNewsArticle({ headline: naHeadline, description: naDescription, image: naImage, datePublished: naDatePublished, dateModified: naDateModified, articleSection: naArticleSection, authorName: naAuthorName, publisherName: naPublisherName, publisherLogo: naPublisherLogo, articleUrl: naArticleUrl })
+    warnings = getNewsArticleWarnings({ headline: naHeadline, image: naImage, datePublished: naDatePublished })
+    preview = <NewsArticlePreview headline={naHeadline} description={naDescription} authorName={naAuthorName} publisherName={naPublisherName} />
+  } else if (activeTab === 'podcastepisode') {
+    schema = buildPodcastEpisode({ name: podName, description: podDescription, partOfSeriesName: podSeriesName, partOfSeriesUrl: podSeriesUrl, episodeNumber: podEpisodeNumber, datePublished: podDatePublished, timeRequired: podTimeRequired, audioUrl: podAudioUrl })
+    warnings = getPodcastEpisodeWarnings({ name: podName })
+    preview = <PodcastEpisodePreview name={podName} partOfSeriesName={podSeriesName} episodeNumber={podEpisodeNumber} />
   }
 
   const displaySchema = restoredSchema ?? schema
@@ -977,7 +1325,9 @@ export default function SchemaGeneratorPage() {
     localbusiness: 'Local Business', faqpage: 'FAQ Page', article: 'Article',
     product: 'Product', event: 'Event', organization: 'Organization',
     howto: 'HowTo', website: 'WebSite', softwareapp: 'Software App',
-    breadcrumb: 'Breadcrumb', video: 'Video',
+    breadcrumb: 'Breadcrumb', video: 'Video', recipe: 'Recipe',
+    jobposting: 'Job Posting', course: 'Course', newsarticle: 'News Article',
+    podcastepisode: 'Podcast Episode',
   }
 
   const testUrl = (() => {
@@ -1022,16 +1372,21 @@ export default function SchemaGeneratorPage() {
 
   const TABS: { id: SchemaTab; label: string; badge?: string }[] = [
     { id: 'localbusiness', label: 'Local Business' },
-    { id: 'faqpage', label: 'FAQ Page', badge: 'Popular' },
+    { id: 'faqpage', label: 'FAQ Page', badge: 'Deprecated' },
     { id: 'article', label: 'Article' },
     { id: 'product', label: 'Product' },
     { id: 'event', label: 'Event' },
     { id: 'organization', label: 'Organization' },
-    { id: 'howto', label: 'HowTo' },
+    { id: 'howto', label: 'HowTo', badge: 'Deprecated' },
     { id: 'website', label: 'WebSite' },
     { id: 'softwareapp', label: 'Software App' },
     { id: 'breadcrumb', label: 'Breadcrumb' },
     { id: 'video', label: 'Video' },
+    { id: 'recipe', label: 'Recipe', badge: 'Popular' },
+    { id: 'jobposting', label: 'Job Posting', badge: 'New' },
+    { id: 'course', label: 'Course' },
+    { id: 'newsarticle', label: 'News Article', badge: 'New' },
+    { id: 'podcastepisode', label: 'Podcast Episode' },
   ]
 
   return (
@@ -1058,7 +1413,7 @@ export default function SchemaGeneratorPage() {
           </div>
           <h1 className="text-3xl font-black text-white mb-2">Schema Markup Generator</h1>
           <p className="text-white/45 text-sm leading-relaxed max-w-2xl">
-            Generate valid JSON-LD structured data for Local Business, FAQ pages, Articles, Products, Events, and more. Runs entirely in your browser — paste the output into any website to help Google, ChatGPT, and Perplexity understand and recommend your content.
+            Generate valid JSON-LD structured data for 16 schema types — Local Business, Article, Product, Recipe, Job Posting, and more. Test free here, then license this tool for your own platform or agency. Runs entirely in your browser, no API key needed.
           </p>
         </div>
 
@@ -1262,8 +1617,8 @@ export default function SchemaGeneratorPage() {
                     + Add Question
                   </button>
                 </div>
-                <div className="rounded-xl p-3 text-xs" style={{ background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.15)', color: 'rgba(251,191,36,0.8)' }}>
-                  FAQPage schema can generate accordion-style rich results directly in Google Search — one of the highest-visibility schema types available.
+                <div className="rounded-xl p-3 text-xs" style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.3)', color: 'rgba(251,191,36,0.9)' }}>
+                  ⚠️ Google removed FAQ rich results on May 7, 2026. This schema no longer generates rich snippets in Google Search. It still helps AI assistants (ChatGPT, Perplexity) cite your content.
                 </div>
                 {faqs.map((faq, i) => (
                   <div key={i} className="rounded-xl border p-4 space-y-3" style={{ background: '#070b14', borderColor: 'rgba(255,255,255,0.06)' }}>
@@ -1572,8 +1927,8 @@ export default function SchemaGeneratorPage() {
             {activeTab === 'howto' && (
               <div className="rounded-2xl border p-6 space-y-4" style={sectionStyle}>
                 <p className="text-xs font-bold uppercase tracking-widest text-white/30">HowTo Details</p>
-                <div className="rounded-xl p-3 text-xs" style={{ background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.15)', color: 'rgba(251,191,36,0.8)' }}>
-                  HowTo schema generates step-by-step rich results in Google — perfect for guides, tutorials, and instructional content.
+                <div className="rounded-xl p-3 text-xs" style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.3)', color: 'rgba(251,191,36,0.9)' }}>
+                  ⚠️ Google removed HowTo rich results. This schema no longer generates rich snippets in Google Search. It still helps AI assistants cite your content.
                 </div>
                 <div><label style={labelStyle}>Guide Name *</label><input type="text" value={htName} onChange={e => setHtName(e.target.value)} placeholder="How to Change a Tire" style={inputStyle} /></div>
                 <div><label style={labelStyle}>Description</label><textarea value={htDescription} onChange={e => setHtDescription(e.target.value)} rows={2} placeholder="A step-by-step guide to..." style={{ ...inputStyle, resize: 'vertical' }} /></div>
@@ -1703,6 +2058,334 @@ export default function SchemaGeneratorPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div><label style={labelStyle}>Publisher Name</label><input type="text" value={vidPublisherName} onChange={e => setVidPublisherName(e.target.value)} placeholder="Queldrex" style={inputStyle} /></div>
                   <div><label style={labelStyle}>Publisher Logo URL</label><input type="text" value={vidPublisherLogo} onChange={e => setVidPublisherLogo(e.target.value)} placeholder="example.com/logo.png" style={inputStyle} /></div>
+                </div>
+              </div>
+            )}
+
+            {/* RECIPE */}
+            {activeTab === 'recipe' && (
+              <div className="rounded-2xl border p-6 space-y-4" style={sectionStyle}>
+                <p className="text-xs font-bold uppercase tracking-widest text-white/30">Recipe Details</p>
+                <div>
+                  <label style={labelStyle}>Recipe Name <span style={{ color: '#f87171' }}>*</span></label>
+                  <input type="text" value={recName} onChange={e => setRecName(e.target.value)} placeholder="Classic Chocolate Chip Cookies" style={inputStyle} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Description</label>
+                  <textarea value={recDescription} onChange={e => setRecDescription(e.target.value)} rows={2} placeholder="The best chewy chocolate chip cookies..." style={{ ...inputStyle, resize: 'vertical' }} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Image URL <span style={{ color: '#f87171' }}>*</span></label>
+                  <input type="text" value={recImage} onChange={e => setRecImage(e.target.value)} placeholder="example.com/cookies.jpg" style={inputStyle} />
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label style={labelStyle}>Prep Time</label>
+                    <input type="text" value={recPrepTime} onChange={e => setRecPrepTime(e.target.value)} placeholder="PT15M" style={inputStyle} />
+                    <p className="text-xs text-white/25 mt-1">PT15M = 15 min</p>
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Cook Time</label>
+                    <input type="text" value={recCookTime} onChange={e => setRecCookTime(e.target.value)} placeholder="PT12M" style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Total Time</label>
+                    <input type="text" value={recTotalTime} onChange={e => setRecTotalTime(e.target.value)} placeholder="PT27M" style={inputStyle} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label style={labelStyle}>Yield / Servings</label>
+                    <input type="text" value={recYield} onChange={e => setRecYield(e.target.value)} placeholder="24 cookies" style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Category</label>
+                    <input type="text" value={recCategory} onChange={e => setRecCategory(e.target.value)} placeholder="Dessert" style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Cuisine</label>
+                    <input type="text" value={recCuisine} onChange={e => setRecCuisine(e.target.value)} placeholder="American" style={inputStyle} />
+                  </div>
+                </div>
+                <div>
+                  <label style={labelStyle}>Keywords</label>
+                  <input type="text" value={recKeywords} onChange={e => setRecKeywords(e.target.value)} placeholder="cookies, chocolate chip, baking" style={inputStyle} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Ingredients (one per line)</label>
+                  <textarea value={recIngredients} onChange={e => setRecIngredients(e.target.value)} rows={5} placeholder={"2 1/4 cups all-purpose flour\n1 tsp baking soda\n1 tsp salt\n1 cup butter, softened"} style={{ ...inputStyle, resize: 'vertical' }} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Instructions (one step per line)</label>
+                  <textarea value={recInstructions} onChange={e => setRecInstructions(e.target.value)} rows={5} placeholder={"Preheat oven to 375°F.\nBeat butter and sugars until creamy.\nAdd eggs and vanilla, mix well.\nBake for 9-11 minutes or until golden brown."} style={{ ...inputStyle, resize: 'vertical' }} />
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label style={labelStyle}>Calories</label>
+                    <input type="text" value={recCalories} onChange={e => setRecCalories(e.target.value)} placeholder="150 calories" style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Avg Rating (1–5)</label>
+                    <input type="number" min="1" max="5" step="0.1" value={recRatingValue} onChange={e => setRecRatingValue(e.target.value)} placeholder="4.9" style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Review Count</label>
+                    <input type="number" min="1" value={recRatingCount} onChange={e => setRecRatingCount(e.target.value)} placeholder="842" style={inputStyle} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* JOB POSTING */}
+            {activeTab === 'jobposting' && (
+              <div className="rounded-2xl border p-6 space-y-4" style={sectionStyle}>
+                <p className="text-xs font-bold uppercase tracking-widest text-white/30">Job Posting Details</p>
+                <div>
+                  <label style={labelStyle}>Job Title <span style={{ color: '#f87171' }}>*</span></label>
+                  <input type="text" value={jobTitle} onChange={e => setJobTitle(e.target.value)} placeholder="Senior Software Engineer" style={inputStyle} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Job Description <span style={{ color: '#f87171' }}>*</span></label>
+                  <textarea value={jobDescription} onChange={e => setJobDescription(e.target.value)} rows={5} placeholder="We are looking for a Senior Software Engineer to join our team..." style={{ ...inputStyle, resize: 'vertical' }} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label style={labelStyle}>Date Posted <span style={{ color: '#f87171' }}>*</span></label>
+                    <input type="date" value={jobDatePosted} onChange={e => setJobDatePosted(e.target.value)} style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Valid Through</label>
+                    <input type="date" value={jobValidThrough} onChange={e => setJobValidThrough(e.target.value)} style={inputStyle} />
+                  </div>
+                </div>
+                <div>
+                  <label style={labelStyle}>Employment Type</label>
+                  <select value={jobEmploymentType} onChange={e => setJobEmploymentType(e.target.value)} style={{ ...inputStyle, cursor: 'pointer' }}>
+                    <option value="FULL_TIME">Full-time</option>
+                    <option value="PART_TIME">Part-time</option>
+                    <option value="CONTRACTOR">Contract</option>
+                    <option value="TEMPORARY">Temporary</option>
+                    <option value="INTERN">Intern</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label style={labelStyle}>Hiring Organization <span style={{ color: '#f87171' }}>*</span></label>
+                    <input type="text" value={jobHiringOrgName} onChange={e => setJobHiringOrgName(e.target.value)} placeholder="Acme Corp" style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Organization URL</label>
+                    <input type="text" value={jobHiringOrgUrl} onChange={e => setJobHiringOrgUrl(e.target.value)} placeholder="example.com" style={inputStyle} />
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 pt-1">
+                  <button onClick={() => setJobRemote(r => !r)} className="w-5 h-5 rounded flex-shrink-0 border flex items-center justify-center transition-colors" style={{ background: jobRemote ? 'rgba(6,182,212,0.2)' : 'rgba(255,255,255,0.05)', borderColor: jobRemote ? 'rgba(6,182,212,0.5)' : 'rgba(255,255,255,0.15)' }}>
+                    {jobRemote && <svg className="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>}
+                  </button>
+                  <span className="text-xs text-white/60">Remote / Work from Anywhere</span>
+                </div>
+                {!jobRemote && (
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <label style={labelStyle}>City <span style={{ color: '#f87171' }}>*</span></label>
+                      <input type="text" value={jobLocationCity} onChange={e => setJobLocationCity(e.target.value)} placeholder="Denver" style={inputStyle} />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>State</label>
+                      <select value={jobLocationState} onChange={e => setJobLocationState(e.target.value)} style={{ ...inputStyle, cursor: 'pointer' }}>
+                        <option value="">—</option>
+                        {STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Country</label>
+                      <input type="text" value={jobLocationCountry} onChange={e => setJobLocationCountry(e.target.value)} placeholder="US" style={inputStyle} />
+                    </div>
+                  </div>
+                )}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label style={labelStyle}>Min Salary</label>
+                    <input type="number" min="0" value={jobSalaryMin} onChange={e => setJobSalaryMin(e.target.value)} placeholder="80000" style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Max Salary</label>
+                    <input type="number" min="0" value={jobSalaryMax} onChange={e => setJobSalaryMax(e.target.value)} placeholder="120000" style={inputStyle} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label style={labelStyle}>Currency</label>
+                    <select value={jobSalaryCurrency} onChange={e => setJobSalaryCurrency(e.target.value)} style={{ ...inputStyle, cursor: 'pointer' }}>
+                      {CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Pay Period</label>
+                    <select value={jobSalaryPeriod} onChange={e => setJobSalaryPeriod(e.target.value)} style={{ ...inputStyle, cursor: 'pointer' }}>
+                      <option value="YEAR">Per Year</option>
+                      <option value="MONTH">Per Month</option>
+                      <option value="WEEK">Per Week</option>
+                      <option value="HOUR">Per Hour</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* COURSE */}
+            {activeTab === 'course' && (
+              <div className="rounded-2xl border p-6 space-y-4" style={sectionStyle}>
+                <p className="text-xs font-bold uppercase tracking-widest text-white/30">Course Details</p>
+                <div>
+                  <label style={labelStyle}>Course Name <span style={{ color: '#f87171' }}>*</span></label>
+                  <input type="text" value={crsName} onChange={e => setCrsName(e.target.value)} placeholder="Introduction to Machine Learning" style={inputStyle} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Description <span style={{ color: '#f87171' }}>*</span></label>
+                  <textarea value={crsDescription} onChange={e => setCrsDescription(e.target.value)} rows={3} placeholder="Learn the fundamentals of machine learning..." style={{ ...inputStyle, resize: 'vertical' }} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label style={labelStyle}>Provider / School</label>
+                    <input type="text" value={crsProvider} onChange={e => setCrsProvider(e.target.value)} placeholder="Coursera" style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Provider URL</label>
+                    <input type="text" value={crsProviderUrl} onChange={e => setCrsProviderUrl(e.target.value)} placeholder="coursera.org" style={inputStyle} />
+                  </div>
+                </div>
+                <div>
+                  <label style={labelStyle}>Course URL</label>
+                  <input type="text" value={crsUrl} onChange={e => setCrsUrl(e.target.value)} placeholder="coursera.org/learn/machine-learning" style={inputStyle} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Course Mode</label>
+                  <select value={crsCourseMode} onChange={e => setCrsCourseMode(e.target.value)} style={{ ...inputStyle, cursor: 'pointer' }}>
+                    <option value="Online">Online</option>
+                    <option value="OnSite">On-site / In-person</option>
+                    <option value="Blended">Blended</option>
+                  </select>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label style={labelStyle}>Price</label>
+                    <input type="number" min="0" step="0.01" value={crsPrice} onChange={e => setCrsPrice(e.target.value)} placeholder="49" style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Currency</label>
+                    <select value={crsPriceCurrency} onChange={e => setCrsPriceCurrency(e.target.value)} style={{ ...inputStyle, cursor: 'pointer' }}>
+                      {CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label style={labelStyle}>Start Date</label>
+                    <input type="date" value={crsStartDate} onChange={e => setCrsStartDate(e.target.value)} style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>End Date</label>
+                    <input type="date" value={crsEndDate} onChange={e => setCrsEndDate(e.target.value)} style={inputStyle} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* NEWS ARTICLE */}
+            {activeTab === 'newsarticle' && (
+              <div className="rounded-2xl border p-6 space-y-4" style={sectionStyle}>
+                <p className="text-xs font-bold uppercase tracking-widest text-white/30">News Article Details</p>
+                <div>
+                  <label style={labelStyle}>Headline <span style={{ color: '#f87171' }}>*</span></label>
+                  <input type="text" value={naHeadline} onChange={e => setNaHeadline(e.target.value)} placeholder="Breaking: Major Development in AI Regulation" style={inputStyle} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Description</label>
+                  <textarea value={naDescription} onChange={e => setNaDescription(e.target.value)} rows={2} placeholder="A brief summary of the article..." style={{ ...inputStyle, resize: 'vertical' }} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Article URL</label>
+                  <input type="text" value={naArticleUrl} onChange={e => setNaArticleUrl(e.target.value)} placeholder="example.com/news/ai-regulation" style={inputStyle} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Image URL <span style={{ color: '#f87171' }}>*</span></label>
+                  <input type="text" value={naImage} onChange={e => setNaImage(e.target.value)} placeholder="example.com/images/article.jpg" style={inputStyle} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label style={labelStyle}>Date Published <span style={{ color: '#f87171' }}>*</span></label>
+                    <input type="date" value={naDatePublished} onChange={e => setNaDatePublished(e.target.value)} style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Date Modified</label>
+                    <input type="date" value={naDateModified} onChange={e => setNaDateModified(e.target.value)} style={inputStyle} />
+                  </div>
+                </div>
+                <div>
+                  <label style={labelStyle}>Article Section</label>
+                  <input type="text" value={naArticleSection} onChange={e => setNaArticleSection(e.target.value)} placeholder="Technology" style={inputStyle} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Author Name</label>
+                  <input type="text" value={naAuthorName} onChange={e => setNaAuthorName(e.target.value)} placeholder="Jane Smith" style={inputStyle} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label style={labelStyle}>Publisher Name</label>
+                    <input type="text" value={naPublisherName} onChange={e => setNaPublisherName(e.target.value)} placeholder="The Daily Tech" style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Publisher Logo URL</label>
+                    <input type="text" value={naPublisherLogo} onChange={e => setNaPublisherLogo(e.target.value)} placeholder="example.com/logo.png" style={inputStyle} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* PODCAST EPISODE */}
+            {activeTab === 'podcastepisode' && (
+              <div className="rounded-2xl border p-6 space-y-4" style={sectionStyle}>
+                <p className="text-xs font-bold uppercase tracking-widest text-white/30">Podcast Episode Details</p>
+                <div>
+                  <label style={labelStyle}>Episode Title <span style={{ color: '#f87171' }}>*</span></label>
+                  <input type="text" value={podName} onChange={e => setPodName(e.target.value)} placeholder="How AI is Changing SEO in 2026" style={inputStyle} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Description</label>
+                  <textarea value={podDescription} onChange={e => setPodDescription(e.target.value)} rows={3} placeholder="In this episode we discuss..." style={{ ...inputStyle, resize: 'vertical' }} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label style={labelStyle}>Podcast Series Name</label>
+                    <input type="text" value={podSeriesName} onChange={e => setPodSeriesName(e.target.value)} placeholder="The AI Growth Podcast" style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Series URL</label>
+                    <input type="text" value={podSeriesUrl} onChange={e => setPodSeriesUrl(e.target.value)} placeholder="example.com/podcast" style={inputStyle} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label style={labelStyle}>Episode Number</label>
+                    <input type="number" min="1" value={podEpisodeNumber} onChange={e => setPodEpisodeNumber(e.target.value)} placeholder="42" style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Date Published</label>
+                    <input type="date" value={podDatePublished} onChange={e => setPodDatePublished(e.target.value)} style={inputStyle} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label style={labelStyle}>Duration</label>
+                    <input type="text" value={podTimeRequired} onChange={e => setPodTimeRequired(e.target.value)} placeholder="PT45M" style={inputStyle} />
+                    <p className="text-xs text-white/25 mt-1">PT45M = 45 minutes</p>
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Audio File URL</label>
+                    <input type="text" value={podAudioUrl} onChange={e => setPodAudioUrl(e.target.value)} placeholder="example.com/podcast/ep42.mp3" style={inputStyle} />
+                  </div>
                 </div>
               </div>
             )}
@@ -1855,6 +2538,55 @@ export default function SchemaGeneratorPage() {
           </div>
         </div>
 
+        {/* AI Citation Score Panel */}
+        <div className="mt-14 border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+          <h2 className="text-xl font-black text-white mb-1">AI Citation Impact by Schema Type</h2>
+          <p className="text-white/35 text-sm mb-6">How much each schema type improves your chances of being cited by ChatGPT, Perplexity, and Google AI Overviews.</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {([
+              { tab: 'localbusiness', label: 'Local Business', score: 95, note: 'Strongest signal for local AI citations and Google knowledge panel' },
+              { tab: 'article', label: 'Article', score: 88, note: 'Top driver of ChatGPT and Perplexity citations for written content' },
+              { tab: 'newsarticle', label: 'News Article', score: 82, note: 'Unlocks Google News and AI news digest citations' },
+              { tab: 'organization', label: 'Organization', score: 85, note: 'Confirms entity identity — critical for AI to trust and cite your brand' },
+              { tab: 'product', label: 'Product', score: 80, note: 'Google Shopping + AI product recommendations' },
+              { tab: 'recipe', label: 'Recipe', score: 75, note: 'High Google rich result traffic + AI cooking assistant citations' },
+              { tab: 'video', label: 'Video', score: 72, note: 'Video carousels and AI video recommendations' },
+              { tab: 'jobposting', label: 'Job Posting', score: 70, note: 'Google for Jobs + AI job search visibility' },
+              { tab: 'course', label: 'Course', score: 68, note: 'Growing AI education assistant citation signal' },
+              { tab: 'softwareapp', label: 'Software App', score: 65, note: 'App store-style AI citations' },
+              { tab: 'event', label: 'Event', score: 65, note: 'Event discovery in AI search answers' },
+              { tab: 'podcastepisode', label: 'Podcast Episode', score: 60, note: 'Growing AI podcast citation signal' },
+              { tab: 'website', label: 'WebSite', score: 55, note: 'Enables sitelinks searchbox — moderate AI impact' },
+              { tab: 'faqpage', label: 'FAQ Page', score: 40, note: 'Rich results removed May 2026 — AI citation value remains' },
+              { tab: 'howto', label: 'HowTo', score: 40, note: 'Rich results removed May 2026 — AI citation value remains' },
+              { tab: 'breadcrumb', label: 'Breadcrumb', score: 35, note: 'Navigation context for AI — low direct citation impact' },
+            ] as { tab: SchemaTab; label: string; score: number; note: string }[]).map(item => {
+              const isActive = activeTab === item.tab
+              const barOpacity = item.score >= 80 ? 1 : item.score >= 60 ? 0.65 : 0.4
+              return (
+                <button
+                  key={item.tab}
+                  onClick={() => setActiveTab(item.tab)}
+                  className="rounded-xl border p-4 text-left transition-all"
+                  style={{
+                    background: isActive ? 'rgba(6,182,212,0.08)' : '#0d1117',
+                    borderColor: isActive ? 'rgba(6,182,212,0.35)' : 'rgba(255,255,255,0.07)',
+                  }}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-black" style={{ color: isActive ? '#06d6ff' : 'rgba(255,255,255,0.7)' }}>{item.label}</p>
+                    <p className="text-xs font-black" style={{ color: isActive ? '#06d6ff' : 'rgba(255,255,255,0.35)' }}>{item.score}%</p>
+                  </div>
+                  <div className="w-full h-1.5 rounded-full mb-2" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                    <div className="h-full rounded-full" style={{ width: `${item.score}%`, background: `rgba(6,214,255,${barOpacity})` }} />
+                  </div>
+                  <p className="text-[10px] text-white/35 leading-relaxed">{item.note}</p>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
         {/* Requirements & Setup Instructions */}
         <div className="mt-14 border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <div className="grid lg:grid-cols-3 gap-8 mb-14">
@@ -1999,12 +2731,17 @@ export default function SchemaGeneratorPage() {
           <div className="grid sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {[
               { type: 'Local Business', label: 'Knowledge panel, map pack, and "best near me" AI citations', color: '#06d6ff' },
-              { type: 'FAQ Page', label: 'Accordion results in Google — one of the highest-visibility schema types', color: '#a78bfa' },
               { type: 'Article', label: 'Top Stories carousel, Google Discover, and news eligibility', color: '#34d399' },
-              { type: 'Product', label: 'Google Shopping results with price, rating, and availability', color: '#fb923c' },
-              { type: 'Event', label: 'Event cards in search with date, location, and ticket links', color: '#f472b6' },
+              { type: 'News Article', label: 'Google News eligibility and AI news digest citations', color: '#22d3ee' },
               { type: 'Organization', label: 'Knowledge panel for companies — links social profiles and disambiguates your entity', color: '#38bdf8' },
-              { type: 'HowTo', label: 'Step-by-step rich results — great for tutorial and guide content', color: '#4ade80' },
+              { type: 'Product', label: 'Google Shopping results with price, rating, and availability', color: '#fb923c' },
+              { type: 'Recipe', label: 'Recipe cards with image, rating, cook time, and calories in Google', color: '#f97316' },
+              { type: 'Job Posting', label: 'Google for Jobs listing with salary, location, and direct apply', color: '#a78bfa' },
+              { type: 'Course', label: 'Course cards in Google with provider, mode, and price', color: '#818cf8' },
+              { type: 'Event', label: 'Event cards in search with date, location, and ticket links', color: '#f472b6' },
+              { type: 'Podcast Episode', label: 'Growing signal for AI podcast search and audio discovery', color: '#e879f9' },
+              { type: 'FAQ Page', label: 'Rich results removed May 2026 — still helps AI assistant citations', color: '#a78bfa' },
+              { type: 'HowTo', label: 'Rich results removed May 2026 — still helps AI assistant citations', color: '#4ade80' },
               { type: 'WebSite', label: 'Enables the Google Sitelinks Searchbox for large or well-known sites', color: '#fbbf24' },
               { type: 'Software App', label: 'Star ratings and pricing shown directly in app search results', color: '#e879f9' },
               { type: 'Breadcrumb', label: 'Replaces URL slug in search result with readable navigation path', color: '#94a3b8' },
