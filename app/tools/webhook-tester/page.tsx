@@ -39,6 +39,7 @@ export default function WebhookTesterPage() {
   const [events, setEvents] = useState<WebhookEvent[]>([])
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
   const [copied, setCopied] = useState(false)
+  const [curlCopied, setCurlCopied] = useState(false)
   const [showHeaders, setShowHeaders] = useState<Set<string>>(new Set())
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const seenIds = useRef<Set<string>>(new Set())
@@ -100,7 +101,11 @@ export default function WebhookTesterPage() {
         </div>
 
         <h1 className="text-4xl font-black text-white mb-3">Webhook <span style={{ color: '#a78bfa' }}>Tester</span></h1>
-        <p className="text-white/55 text-base mb-8 max-w-2xl">Get a unique endpoint URL, send webhooks to it from Stripe, GitHub, or any service, and inspect every request in real time.</p>
+        <p className="text-white/55 text-base mb-4 max-w-2xl">Get a unique endpoint URL, send webhooks to it from Stripe, GitHub, or any service, and inspect every request in real time.</p>
+        <div className="flex gap-3 flex-wrap mb-8">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $15 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
 
         {/* Endpoint URL */}
         <div className="rounded-2xl border p-6 mb-8" style={{ background: '#111318', borderColor: 'rgba(167,139,250,0.2)' }}>
@@ -119,7 +124,19 @@ export default function WebhookTesterPage() {
               {copied ? 'Copied!' : 'Copy URL'}
             </button>
           </div>
-          <p className="text-xs mt-3" style={{ color: '#A1A1AA' }}>Accepts all HTTP methods (GET, POST, PUT, PATCH, DELETE). Stores up to 20 requests. Endpoint expires in 1 hour and is unique to this browser session.</p>
+          <div className="mt-3">
+            <div className="flex items-center gap-2 p-2 rounded-lg font-mono text-xs" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+              <code className="flex-1 text-white/40 truncate">{`curl -X POST ${endpointUrl} -H "Content-Type: application/json" -d '{"test":true}'`}</code>
+              <button onClick={() => {
+                navigator.clipboard.writeText(`curl -X POST ${endpointUrl} -H "Content-Type: application/json" -d '{"test":true}'`)
+                setCurlCopied(true)
+                setTimeout(() => setCurlCopied(false), 2000)
+              }} className="text-xs font-bold px-2 py-1 rounded flex-shrink-0" style={{ background: 'rgba(6,214,255,0.08)', color: '#06d6ff' }}>
+                {curlCopied ? 'Copied!' : 'Copy curl'}
+              </button>
+            </div>
+          </div>
+          <p className="text-xs mt-2" style={{ color: '#A1A1AA' }}>Accepts all HTTP methods (GET, POST, PUT, PATCH, DELETE). Stores up to 20 requests. Endpoint expires in 1 hour and is unique to this browser session.</p>
         </div>
 
         {/* Events list */}
@@ -229,12 +246,36 @@ export default function WebhookTesterPage() {
           </div>
         )}
 
-        <section className="mt-16 pt-8 border-t max-w-2xl" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+        <section className="mt-14 max-w-2xl">
+          <h2 className="text-base font-black text-white mb-4">Who This Is For</h2>
+          <ul className="space-y-2">
+            {[
+              'Backend developers testing webhook integrations with Stripe, GitHub, or Slack',
+              'DevOps engineers debugging event-driven pipelines without exposing local ports',
+              'QA engineers verifying webhook payload structures during API development',
+              'Developers building automations who need to inspect raw HTTP requests',
+            ].map((item, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm" style={{ color: '#A1A1AA' }}>
+                <span className="text-violet-400 flex-shrink-0 mt-0.5">→</span>{item}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="mt-10 pt-8 border-t max-w-2xl" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-lg font-black text-white mb-4">What is a webhook and how do you test one?</h2>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>A webhook is an HTTP callback — when an event happens in a third-party service (a Stripe payment, a GitHub push, a form submission), that service makes a POST request to your URL with the event data. Testing webhooks is hard during development because your localhost isn&apos;t publicly reachable. This tool gives you a real HTTPS URL that any external service can reach immediately, with no tunneling software needed.</p>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>To test a Stripe webhook: copy the endpoint URL above, go to Stripe Dashboard → Developers → Webhooks → Add endpoint, paste the URL, select the event types you want to test (e.g. checkout.session.completed), and trigger a test event. You&apos;ll see the full JSON payload here within seconds, including all headers Stripe sends (including its stripe-signature header for verification).</p>
           <p className="text-sm leading-relaxed" style={{ color: '#A1A1AA' }}>For GitHub webhooks: go to your repository Settings → Webhooks → Add webhook, paste the URL as the Payload URL, set Content-Type to application/json, and select which events to receive. Every push, pull request, issue, or deployment event will show up here with the full payload. Use this to understand the exact shape of the JSON your webhook handler needs to parse before writing a single line of code.</p>
         </section>
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(6,214,255,0.04)', borderColor: 'rgba(6,214,255,0.12)' }}>
+          <p className="text-white font-black mb-1">Add webhook testing to your platform</p>
+          <p className="text-white/40 text-sm mb-4">Unique endpoints, live polling, payload inspection, curl snippets. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $15 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
