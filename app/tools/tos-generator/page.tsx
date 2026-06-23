@@ -39,12 +39,12 @@ export default function TosGeneratorPage() {
 
   const loadExample = () => {
     setForm({
-      companyName: 'Queldrex LLC',
-      websiteUrl: 'queldrex.com',
+      companyName: 'Acme Software LLC',
+      websiteUrl: 'acmesoftware.example.com',
       serviceDescription: 'SaaS platform providing developer and business tools including security scanning, document generation, and business analytics',
       businessType: 'saas',
-      jurisdiction: 'Colorado, USA',
-      contactEmail: 'hello@queldrex.com',
+      jurisdiction: 'Delaware, USA',
+      contactEmail: 'legal@acmesoftware.example.com',
       minimumAge: '13',
       hasSubscription: true,
       sellsPhysicalGoods: false,
