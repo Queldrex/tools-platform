@@ -63,7 +63,11 @@ export default function EmailDeliverabilityPage() {
           <span className="text-sm font-bold text-white/30">3 free checks/day · Unlimited with Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Email <span style={{ color: '#06d6ff' }}>Deliverability Checker</span></h1>
-        <p className="text-white/55 text-base mb-6 max-w-xl">Check SPF, DMARC, DKIM, MX records, and blacklist status for any domain. Real DNS lookups via Cloudflare. Know exactly why your emails land in spam.</p>
+        <p className="text-white/55 text-base mb-4 max-w-xl">Check SPF, DMARC, DKIM, MX records, and blacklist status for any domain. Real DNS lookups via Cloudflare. Know exactly why your emails land in spam.</p>
+        <div className="flex gap-3 flex-wrap mb-6">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
@@ -105,8 +109,8 @@ export default function EmailDeliverabilityPage() {
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(6,214,255,0.05)', borderColor: 'rgba(6,214,255,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited checks with Pro</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Monitor all your domains for deliverability issues with Pro — $79/month.</p>
-            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro — $79/month</Link>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Unlimited checks across all your domains — upgrade to Pro.</p>
+            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Upgrade to Pro →</Link>
           </div>
         )}
 
@@ -131,21 +135,48 @@ export default function EmailDeliverabilityPage() {
                   {c.pass ? <svg className="w-3 h-3 text-green-400" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
                     : <svg className="w-3 h-3 text-red-400" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
                 </div>
-                <div>
+                <div className="flex-1">
                   <div className="text-sm font-black text-white">{c.label}</div>
                   {c.detail && <div className="text-xs text-white/40 mt-0.5 font-mono break-all">{c.detail}</div>}
                 </div>
               </div>
             ))}
+            {result && !result.spf.found && (
+              <div className="flex items-center gap-2 p-3 rounded-lg" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                <code className="flex-1 text-[11px] font-mono text-white/40 break-all">{`v=spf1 include:_spf.google.com include:sendgrid.net ~all`}</code>
+                <button onClick={() => navigator.clipboard.writeText('v=spf1 include:_spf.google.com include:sendgrid.net ~all')}
+                  className="text-[10px] font-bold px-2 py-1 rounded flex-shrink-0"
+                  style={{ background: 'rgba(248,113,113,0.08)', color: '#f87171' }}>
+                  Copy SPF
+                </button>
+              </div>
+            )}
           </div>
         )}
 
+        <div className="mt-10 mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• Founders checking SPF and DMARC before sending a cold email campaign</li>
+            <li>• DevOps engineers troubleshooting email deliverability after a domain migration</li>
+            <li>• Marketing teams verifying DKIM alignment to prevent emails landing in spam</li>
+            <li>• Agencies auditing client domains for blacklist entries and missing MX records</li>
+          </ul>
+        </div>
         <section className="mt-16 pt-8 border-t max-w-2xl" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-lg font-black text-white mb-4">SPF, DKIM, and DMARC explained</h2>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>SPF (Sender Policy Framework) is a DNS TXT record that lists which mail servers are authorized to send email for your domain. When a recipient server receives a message from you, it checks the sending IP against your SPF record. A &quot;softfail&quot; (~all) flags unauthorized senders but still delivers the message. A &quot;fail&quot; (-all) tells servers to reject them outright. Missing SPF means anyone can spoof your domain as a sender.</p>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>DKIM (DomainKeys Identified Mail) adds a cryptographic signature to every outbound email. The signature is verified using a public key published in your DNS. Even if a message is forwarded or relayed, the signature travels with it. Without DKIM, your emails have no proof of authenticity — spam filters treat them with more suspicion, and phishing using your domain name is trivial.</p>
           <p className="text-sm leading-relaxed" style={{ color: '#A1A1AA' }}>DMARC ties SPF and DKIM together and tells recipient servers what to do with email that fails both checks. &quot;p=none&quot; only sends reports — no filtering. &quot;p=quarantine&quot; routes failing messages to spam. &quot;p=reject&quot; blocks them entirely. A perfect score means SPF is present with -all, DKIM is configured, and DMARC is set to at least p=quarantine with an rua reporting address. Google and Yahoo now require these records for bulk senders.</p>
         </section>
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(6,214,255,0.04)', borderColor: 'rgba(6,214,255,0.12)' }}>
+          <p className="text-white font-black mb-1">Add email deliverability checks to your platform</p>
+          <p className="text-white/40 text-sm mb-4">SPF, DMARC, DKIM, MX, blacklist — grade A–F with fix snippets. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
