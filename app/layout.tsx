@@ -33,6 +33,9 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
   },
+  alternates: {
+    types: { 'application/rss+xml': 'https://queldrex.com/rss.xml' },
+  },
 }
 
 const jsonLd = {
