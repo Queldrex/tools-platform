@@ -1,8 +1,8 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'robots.txt Generator â€” Queldrex',
-  description: 'Generate a robots.txt file for your website. Configure crawler access rules for search engines and AI crawlers, then copy the finished file.',
+  title: 'robots.txt + llms.txt Generator',
+  description: 'Generate robots.txt with control over 18 AI crawlers and llms.txt to tell AI assistants what your site is about. Free, no account needed.',
   alternates: { canonical: 'https://queldrex.com/tools/robots-generator' },
 }
 
