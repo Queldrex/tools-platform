@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -39,11 +39,26 @@ function hslToHex(h: number, s: number, l: number): string {
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`
 }
 
-function isLight(hex: string): boolean {
-  const r = parseInt(hex.slice(1, 3), 16)
-  const g = parseInt(hex.slice(3, 5), 16)
-  const b = parseInt(hex.slice(5, 7), 16)
-  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.5
+function relativeLuminance(hex: string): number {
+  const r = parseInt(hex.slice(1, 3), 16) / 255
+  const g = parseInt(hex.slice(3, 5), 16) / 255
+  const b = parseInt(hex.slice(5, 7), 16) / 255
+  const toLinear = (c: number) => c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
+  return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b)
+}
+
+function contrastRatio(hex1: string, hex2: string): number {
+  const l1 = relativeLuminance(hex1)
+  const l2 = relativeLuminance(hex2)
+  const lighter = Math.max(l1, l2), darker = Math.min(l1, l2)
+  return (lighter + 0.05) / (darker + 0.05)
+}
+
+function wcagLabel(ratio: number): { level: string; color: string } {
+  if (ratio >= 7) return { level: 'AAA', color: '#34d399' }
+  if (ratio >= 4.5) return { level: 'AA', color: '#34d399' }
+  if (ratio >= 3) return { level: 'AA Large', color: 'rgb(251,191,36)' }
+  return { level: 'Fail', color: '#f87171' }
 }
 
 function generatePalette(baseHex: string) {
@@ -122,9 +137,23 @@ export default function ColorPalettePage() {
   const [baseColor, setBaseColor] = useState('#06d6ff')
   const [inputHex, setInputHex] = useState('#06d6ff')
   const [copiedCss, setCopiedCss] = useState(false)
+  const [tailwindCopied, setTailwindCopied] = useState(false)
+  const [shareCopied, setShareCopied] = useState(false)
+  const [contrastA, setContrastA] = useState(0)
+  const [contrastB, setContrastB] = useState(4)
+
+  useEffect(() => {
+    const hash = window.location.hash.slice(1)
+    if (/^[0-9a-fA-F]{6}$/.test(hash)) {
+      setBaseColor('#' + hash)
+      setInputHex('#' + hash)
+    }
+  }, [])
 
   const palette = generatePalette(baseColor)
   const [h, s, l] = hexToHsl(baseColor)
+
+  const allSwatchHexes = palette.shades.map(c => c.hex)
 
   function applyHex(val: string) {
     setInputHex(val)
@@ -142,7 +171,29 @@ export default function ColorPalettePage() {
     setTimeout(() => setCopiedCss(false), 2000)
   }
 
+  function copyTailwindConfig() {
+    const shadeKeys = [100, 300, 500, 700, 900]
+    const entries = palette.shades.map((c, i) => `      ${shadeKeys[i]}: '${c.hex}'`).join(',\n')
+    const config = `// tailwind.config.js\nmodule.exports = {\n  theme: {\n    extend: {\n      colors: {\n        primary: {\n${entries}\n        }\n      }\n    }\n  }\n}`
+    navigator.clipboard.writeText(config)
+    setTailwindCopied(true)
+    setTimeout(() => setTailwindCopied(false), 2000)
+  }
+
+  function shareUrl() {
+    const newUrl = window.location.pathname + '#' + baseColor.slice(1)
+    window.history.pushState({}, '', newUrl)
+    navigator.clipboard.writeText(window.location.origin + newUrl)
+    setShareCopied(true)
+    setTimeout(() => setShareCopied(false), 2000)
+  }
+
   const ACCENT = '#06d6ff'
+
+  const hex1 = allSwatchHexes[contrastA] || '#000000'
+  const hex2 = allSwatchHexes[contrastB] || '#ffffff'
+  const ratio = contrastRatio(hex1, hex2)
+  const { level, color: wcagColor } = wcagLabel(ratio)
 
   return (
     <div className="min-h-screen" style={{ background: '#070b14' }}>
@@ -157,10 +208,20 @@ export default function ColorPalettePage() {
         <div className="mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold tracking-widest uppercase mb-3"
             style={{ borderColor: 'rgba(6,182,212,0.25)', background: 'rgba(6,182,212,0.08)', color: '#06d6ff' }}>
-            Free Tool · Design
+            Free Tool · No Account · Browser Only
           </div>
-          <h1 className="text-3xl font-black text-white mb-1">Color Palette Generator</h1>
-          <p className="text-white/40 text-sm">Enter any base color and instantly generate monochromatic, complementary, analogous, and triadic palettes. Click any swatch to copy the hex code.</p>
+          <h1 className="text-3xl font-black text-white mb-2">Color Palette Generator</h1>
+          <p className="text-white/40 text-sm mb-4">Generate color palettes from any base color with WCAG contrast checking, Tailwind CSS export, and shareable URLs. License from $15, or get all 51 tools from $99.</p>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black text-black transition-all"
+              style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>
+              Get this tool — $15 →
+            </Link>
+            <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black border text-white/60 transition-all"
+              style={{ borderColor: 'rgba(255,255,255,0.12)' }}>
+              All 51 tools — from $99 →
+            </Link>
+          </div>
         </div>
 
         {/* Color picker + hex input */}
@@ -182,6 +243,11 @@ export default function ColorPalettePage() {
                 style={{ borderColor: 'rgba(255,255,255,0.12)' }} />
               <p className="text-xs text-white/20 mt-1">HSL: {h}° {s}% {l}%</p>
             </div>
+            <button onClick={shareUrl}
+              className="text-xs font-bold px-3 py-2 rounded-lg transition-all flex-shrink-0"
+              style={{ background: shareCopied ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.05)', color: shareCopied ? '#4ade80' : 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              {shareCopied ? 'Link Copied!' : '↗ Share'}
+            </button>
           </div>
           <div className="flex flex-wrap gap-2">
             <p className="w-full text-xs text-white/25 mb-1">Try a preset:</p>
@@ -203,15 +269,47 @@ export default function ColorPalettePage() {
         <PaletteRow title="Triadic" colors={palette.triadic} accent={ACCENT} />
         <PaletteRow title="Shades" colors={palette.shades} accent={ACCENT} />
 
-        {/* CSS Export */}
-        <div className="rounded-xl border overflow-hidden mt-2" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
+        {/* WCAG Contrast Checker */}
+        <div className="mt-2 rounded-xl border p-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
+          <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-3">WCAG Contrast Checker</p>
+          <div className="flex gap-2 mb-3">
+            {([contrastA, contrastB] as const).map((idx, i) => (
+              <select key={i} value={i === 0 ? contrastA : contrastB}
+                onChange={e => i === 0 ? setContrastA(Number(e.target.value)) : setContrastB(Number(e.target.value))}
+                className="flex-1 text-xs bg-transparent border rounded px-2 py-1.5 text-white/60 outline-none"
+                style={{ borderColor: 'rgba(255,255,255,0.1)', background: '#0a0f1a' }}>
+                {allSwatchHexes.map((hex, j) => (
+                  <option key={j} value={j} style={{ background: '#0a0f1a' }}>{hex}</option>
+                ))}
+              </select>
+            ))}
+          </div>
+          <div className="flex gap-3 items-center">
+            <div className="flex-1 rounded-lg p-3 text-center font-black text-lg" style={{ background: hex2, color: hex1 }}>Aa</div>
+            <div className="flex-1 rounded-lg p-3 text-center font-black text-lg" style={{ background: hex1, color: hex2 }}>Aa</div>
+            <div className="text-center flex-shrink-0">
+              <div className="text-xl font-black text-white">{ratio.toFixed(1)}:1</div>
+              <div className="text-xs font-bold px-2 py-0.5 rounded mt-1" style={{ background: `${wcagColor}20`, color: wcagColor }}>{level}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* CSS + Tailwind Export */}
+        <div className="rounded-xl border overflow-hidden mt-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
           <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/6">
             <span className="text-xs font-bold text-white/25 uppercase tracking-widest">CSS Variables (Shades)</span>
-            <button onClick={copyCss}
-              className="text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
-              style={{ background: copiedCss ? 'rgba(74,222,128,0.12)' : 'rgba(6,182,212,0.1)', color: copiedCss ? '#4ade80' : '#06d6ff', border: `1px solid ${copiedCss ? 'rgba(74,222,128,0.25)' : 'rgba(6,182,212,0.25)'}` }}>
-              {copiedCss ? 'Copied!' : 'Copy CSS'}
-            </button>
+            <div className="flex gap-2">
+              <button onClick={copyTailwindConfig}
+                className="text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
+                style={{ background: tailwindCopied ? 'rgba(74,222,128,0.12)' : 'rgba(99,102,241,0.1)', color: tailwindCopied ? '#4ade80' : '#818cf8', border: `1px solid ${tailwindCopied ? 'rgba(74,222,128,0.25)' : 'rgba(99,102,241,0.25)'}` }}>
+                {tailwindCopied ? 'Copied!' : 'Tailwind Config'}
+              </button>
+              <button onClick={copyCss}
+                className="text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
+                style={{ background: copiedCss ? 'rgba(74,222,128,0.12)' : 'rgba(6,182,212,0.1)', color: copiedCss ? '#4ade80' : '#06d6ff', border: `1px solid ${copiedCss ? 'rgba(74,222,128,0.25)' : 'rgba(6,182,212,0.25)'}` }}>
+                {copiedCss ? 'Copied!' : 'Copy CSS'}
+              </button>
+            </div>
           </div>
           <pre className="p-4 text-xs font-mono text-white/50 overflow-auto">{`:root {\n${cssVars}\n}`}</pre>
         </div>
@@ -219,6 +317,23 @@ export default function ColorPalettePage() {
         <p className="text-xs text-white/15 mt-4 text-center">
           All color math runs in your browser. Click any swatch to copy its hex code.
         </p>
+
+        {/* Who This Is For */}
+        <div className="mt-10 rounded-2xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
+          <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-3">Who This Is For</p>
+          <ul className="space-y-1.5">
+            {[
+              'UI designers building accessible color systems with WCAG compliance',
+              'Frontend developers exporting palettes directly to Tailwind CSS config',
+              'Brand teams generating on-brand color variations from a primary hex',
+              'Indie makers who need a quick shareable color palette without an Adobe account',
+            ].map(item => (
+              <li key={item} className="text-xs text-white/50 flex items-start gap-2">
+                <span className="text-cyan-400 mt-0.5 flex-shrink-0">→</span>{item}
+              </li>
+            ))}
+          </ul>
+        </div>
 
         {/* How It Works */}
         <div className="mt-14 border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
@@ -228,7 +343,7 @@ export default function ColorPalettePage() {
             {[
               { n: '01', title: 'Pick a base color', body: 'Enter any hex code or use the color picker. Use your brand primary color, logo color, or any starting point.' },
               { n: '02', title: 'Color math in HSL', body: 'Hex is converted to HSL. Complementary = +180° hue. Analogous = ±30°. Triadic = ±120°. Shades vary L% only.' },
-              { n: '03', title: 'Copy as CSS', body: 'Click any swatch to copy the hex code. Or export the full palette as CSS custom properties with one click.' },
+              { n: '03', title: 'Export + check WCAG', body: 'Copy any swatch, export CSS variables or Tailwind config, check WCAG contrast, and share a URL with your palette encoded.' },
             ].map(s => (
               <div key={s.n} className="rounded-xl border p-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
                 <div className="text-xs font-black text-white/20 mb-2">{s.n}</div>
@@ -258,6 +373,16 @@ export default function ColorPalettePage() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+
+        {/* License CTA */}
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(6,214,255,0.04)', borderColor: 'rgba(6,214,255,0.12)' }}>
+          <p className="text-white font-black mb-1">Add color palette generation to your platform</p>
+          <p className="text-white/40 text-sm mb-4">WCAG checker, Tailwind export, URL sharing. Client-side only, one-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $15 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
           </div>
         </div>
       </main>
