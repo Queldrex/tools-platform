@@ -35,7 +35,8 @@ function formatBody(body: string, contentType: string | null) {
 }
 
 export default function WebhookTesterPage() {
-  const [endpointId] = useState(() => genId())
+  const [endpointId, setEndpointId] = useState('')
+  useEffect(() => { setEndpointId(genId()) }, [])
   const [events, setEvents] = useState<WebhookEvent[]>([])
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
   const [copied, setCopied] = useState(false)
