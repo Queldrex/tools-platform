@@ -38,27 +38,36 @@ const DEFAULTS: InvoiceData = {
   invoiceNumber: 'INV-001',
   issueDate: today,
   dueDate,
-  fromName: 'Queldrex LLC',
-  fromEmail: 'hello@queldrex.com',
-  fromAddress: '123 Main St',
-  fromCity: 'Castle Rock',
-  fromState: 'CO',
-  fromZip: '80108',
-  toName: 'Client Company',
-  toEmail: 'billing@client.com',
+  fromName: '',
+  fromEmail: '',
+  fromAddress: '',
+  fromCity: '',
+  fromState: '',
+  fromZip: '',
+  toName: '',
+  toEmail: '',
   toAddress: '',
   toCity: '',
   toState: '',
   toZip: '',
   items: [
-    { description: 'AI Visibility Audit & Report', qty: 1, rate: 399 },
-    { description: 'Monthly AI Monitor', qty: 1, rate: 79 },
+    { description: 'Consulting Services', qty: 1, rate: 0 },
   ],
   taxRate: 0,
   discount: 0,
   notes: 'Thank you for your business. Payment is due within 30 days.',
   currency: 'USD',
   accentColor: '#06d6ff',
+}
+
+type PaymentTerms = 'due-on-receipt' | 'net-15' | 'net-30' | 'net-60'
+
+function computeDueDate(invoiceDate: string, terms: PaymentTerms): string {
+  if (terms === 'due-on-receipt') return invoiceDate
+  const days = parseInt(terms.split('-')[1])
+  const d = new Date(invoiceDate || Date.now())
+  d.setDate(d.getDate() + days)
+  return d.toISOString().slice(0, 10)
 }
 
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'AUD']
@@ -69,6 +78,8 @@ function formatCurrency(amount: number, currency: string): string {
 
 export default function InvoiceGeneratorPage() {
   const [data, setData] = useState<InvoiceData>(DEFAULTS)
+  const [paymentTerms, setPaymentTerms] = useState<PaymentTerms>('net-30')
+  const [isPaid, setIsPaid] = useState(false)
   const printRef = useRef<HTMLDivElement>(null)
 
   const update = (patch: Partial<InvoiceData>) => setData(d => ({ ...d, ...patch }))
@@ -124,7 +135,8 @@ export default function InvoiceGeneratorPage() {
           <h1>INVOICE</h1>
           <p>#${data.invoiceNumber}</p>
           <p style="margin-top:8px;">Issue date: <strong>${data.issueDate}</strong></p>
-          <p>Due date: <strong style="color:${data.accentColor};">${data.dueDate}</strong></p>
+          <p>Due date: <strong style="color:${data.accentColor};">${computeDueDate(data.issueDate, paymentTerms)}</strong></p>
+          <p style="color:#999;font-size:11px;">Payment terms: ${paymentTerms === 'due-on-receipt' ? 'Due on Receipt' : paymentTerms.toUpperCase().replace('-', ' ')}</p>
         </div>
       </div>
 
@@ -174,6 +186,7 @@ export default function InvoiceGeneratorPage() {
       </div>
 
       ${data.notes ? `<div class="notes"><div class="accent-bar"></div><p>${data.notes}</p></div>` : ''}
+      ${isPaid ? `<div style="position:fixed;top:40%;left:50%;transform:translate(-50%,-50%) rotate(-15deg);font-size:80px;font-weight:900;color:rgba(52,211,153,0.25);border:6px solid rgba(52,211,153,0.25);padding:0 20px;border-radius:8px;pointer-events:none;user-select:none;z-index:10;">PAID</div>` : ''}
     </body></html>`
 
     const win = window.open('', '_blank')
@@ -202,10 +215,14 @@ export default function InvoiceGeneratorPage() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold tracking-widest uppercase mb-3"
               style={{ borderColor: 'rgba(6,182,212,0.25)', background: 'rgba(6,182,212,0.08)', color: '#06d6ff' }}>
-              Free Tool · Business
+              Free Tool · No Account · Print to PDF
             </div>
             <h1 className="text-3xl font-black text-white mb-1">Invoice Generator</h1>
-            <p className="text-white/40 text-sm">Create professional invoices and save as PDF. No account required. Your data stays in your browser.</p>
+            <p className="text-white/40 text-sm mb-3">Create professional invoices with line items, tax, discount, and PDF export — entirely in your browser. License from $15, or get all 51 tools from $99.</p>
+            <div className="flex gap-3 flex-wrap">
+              <Link href="/pricing" className="inline-flex items-center px-4 py-2 rounded-lg text-xs font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $15 →</Link>
+              <Link href="/pricing" className="inline-flex items-center px-4 py-2 rounded-lg text-xs font-black border text-white/60" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+            </div>
           </div>
           <button onClick={print}
             className="flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-black text-black flex-shrink-0"
@@ -231,7 +248,34 @@ export default function InvoiceGeneratorPage() {
                   </select>
                 </div>
                 <div><label className={labelCls}>Issue Date</label><input type="date" className={inputCls} style={{ ...inputStyle, colorScheme: 'dark' }} value={data.issueDate} onChange={e => update({ issueDate: e.target.value })} /></div>
-                <div><label className={labelCls}>Due Date</label><input type="date" className={inputCls} style={{ ...inputStyle, colorScheme: 'dark' }} value={data.dueDate} onChange={e => update({ dueDate: e.target.value })} /></div>
+                <div>
+                  <label className={labelCls}>Payment Terms</label>
+                  <select value={paymentTerms} onChange={e => {
+                    const t = e.target.value as PaymentTerms
+                    setPaymentTerms(t)
+                    update({ dueDate: computeDueDate(data.issueDate, t) })
+                  }} className={inputCls} style={{ ...inputStyle, background: 'transparent', color: 'rgba(255,255,255,0.7)' }}>
+                    <option value="due-on-receipt" style={{ background: '#0d1117' }}>Due on Receipt</option>
+                    <option value="net-15" style={{ background: '#0d1117' }}>Net 15</option>
+                    <option value="net-30" style={{ background: '#0d1117' }}>Net 30</option>
+                    <option value="net-60" style={{ background: '#0d1117' }}>Net 60</option>
+                  </select>
+                </div>
+              </div>
+              <div className="mt-3 flex items-center gap-3">
+                <div className="flex-1">
+                  <label className={labelCls}>Due Date</label>
+                  <input type="date" className={inputCls} style={{ ...inputStyle, colorScheme: 'dark' }} value={data.dueDate} onChange={e => update({ dueDate: e.target.value })} />
+                </div>
+                <div className="flex-shrink-0 pt-5">
+                  <button onClick={() => setIsPaid(p => !p)}
+                    className="px-3 py-2 rounded-lg text-xs font-black transition-all"
+                    style={isPaid
+                      ? { background: 'rgba(52,211,153,0.15)', color: '#34d399', border: '1px solid rgba(52,211,153,0.3)' }
+                      : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    {isPaid ? '✓ PAID' : 'Mark as Paid'}
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -239,9 +283,9 @@ export default function InvoiceGeneratorPage() {
             <div className="rounded-2xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
               <p className="text-xs font-black uppercase tracking-widest text-white/25 mb-4">From (Your Business)</p>
               <div className="space-y-2">
-                <div><label className={labelCls}>Name / Company</label><input className={inputCls} style={inputStyle} value={data.fromName} onChange={e => update({ fromName: e.target.value })} /></div>
-                <div><label className={labelCls}>Email</label><input className={inputCls} style={inputStyle} value={data.fromEmail} onChange={e => update({ fromEmail: e.target.value })} /></div>
-                <div><label className={labelCls}>Address</label><input className={inputCls} style={inputStyle} value={data.fromAddress} onChange={e => update({ fromAddress: e.target.value })} /></div>
+                <div><label className={labelCls}>Name / Company</label><input className={inputCls} style={inputStyle} value={data.fromName} onChange={e => update({ fromName: e.target.value })} placeholder="Your Name / Business" /></div>
+                <div><label className={labelCls}>Email</label><input className={inputCls} style={inputStyle} value={data.fromEmail} onChange={e => update({ fromEmail: e.target.value })} placeholder="your@email.com" /></div>
+                <div><label className={labelCls}>Address</label><input className={inputCls} style={inputStyle} value={data.fromAddress} onChange={e => update({ fromAddress: e.target.value })} placeholder="123 Main St" /></div>
                 <div className="grid grid-cols-3 gap-2">
                   <div><label className={labelCls}>City</label><input className={inputCls} style={inputStyle} value={data.fromCity} onChange={e => update({ fromCity: e.target.value })} /></div>
                   <div><label className={labelCls}>State</label><input className={inputCls} style={inputStyle} value={data.fromState} onChange={e => update({ fromState: e.target.value })} /></div>
@@ -254,8 +298,8 @@ export default function InvoiceGeneratorPage() {
             <div className="rounded-2xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
               <p className="text-xs font-black uppercase tracking-widest text-white/25 mb-4">Bill To (Client)</p>
               <div className="space-y-2">
-                <div><label className={labelCls}>Name / Company</label><input className={inputCls} style={inputStyle} value={data.toName} onChange={e => update({ toName: e.target.value })} /></div>
-                <div><label className={labelCls}>Email</label><input className={inputCls} style={inputStyle} value={data.toEmail} onChange={e => update({ toEmail: e.target.value })} /></div>
+                <div><label className={labelCls}>Name / Company</label><input className={inputCls} style={inputStyle} value={data.toName} onChange={e => update({ toName: e.target.value })} placeholder="Client Company" /></div>
+                <div><label className={labelCls}>Email</label><input className={inputCls} style={inputStyle} value={data.toEmail} onChange={e => update({ toEmail: e.target.value })} placeholder="billing@client.com" /></div>
                 <div><label className={labelCls}>Address</label><input className={inputCls} style={inputStyle} value={data.toAddress} onChange={e => update({ toAddress: e.target.value })} /></div>
                 <div className="grid grid-cols-3 gap-2">
                   <div><label className={labelCls}>City</label><input className={inputCls} style={inputStyle} value={data.toCity} onChange={e => update({ toCity: e.target.value })} /></div>
@@ -341,6 +385,23 @@ export default function InvoiceGeneratorPage() {
 
         <div ref={printRef} />
 
+        {/* Who This Is For */}
+        <div className="mt-10 rounded-2xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
+          <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-3">Who This Is For</p>
+          <ul className="space-y-1.5">
+            {[
+              'Freelancers billing clients without a monthly SaaS subscription',
+              'Consultants who need quick branded invoices with tax calculation',
+              'Small agencies sending one-off invoices between recurring billing software',
+              'Solo developers billing for project work or code reviews',
+            ].map(item => (
+              <li key={item} className="text-xs text-white/50 flex items-start gap-2">
+                <span className="text-cyan-400 mt-0.5 flex-shrink-0">→</span>{item}
+              </li>
+            ))}
+          </ul>
+        </div>
+
         {/* How It Works */}
         <div className="mt-14 border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-xl font-black text-white mb-1">How It Works</h2>
@@ -376,6 +437,15 @@ export default function InvoiceGeneratorPage() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+        {/* License CTA */}
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(52,211,153,0.04)', borderColor: 'rgba(52,211,153,0.15)' }}>
+          <p className="text-white font-black mb-1">Add invoice generation to your platform</p>
+          <p className="text-white/40 text-sm mb-4">Line items, tax/discount, payment terms, PAID stamp, PDF export. Client-side only, one-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#34d399,#059669)' }}>Get this tool — $15 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
           </div>
         </div>
       </main>
