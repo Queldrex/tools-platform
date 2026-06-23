@@ -77,6 +77,10 @@ export default function BreakEvenPage() {
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Break-Even <span style={{ color: '#a78bfa' }}>Calculator</span></h1>
         <p className="text-white/55 text-base mb-6 max-w-xl">Enter your costs and price — find out exactly how many units you need to sell to cover your expenses and start making profit.</p>
+        <div className="flex gap-3 flex-wrap mt-3 mb-6">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $15 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
@@ -142,7 +146,7 @@ export default function BreakEvenPage() {
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center" style={{ background: 'rgba(167,139,250,0.05)', borderColor: 'rgba(167,139,250,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited calculations with Pro</h3>
-            <Link href="/pricing" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black mt-4" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro — $79/month</Link>
+            <Link href="/pricing" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black mt-4" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Upgrade to Pro →</Link>
           </div>
         )}
 
@@ -255,6 +259,23 @@ export default function BreakEvenPage() {
           </div>
         )}
 
+        <div className="mt-10 mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• Founders pricing a new product and calculating how many units to sell to break even</li>
+            <li>• E-commerce operators setting minimum order quantities and margin targets</li>
+            <li>• Finance leads presenting contribution margin and profit-target scenarios to the board</li>
+            <li>• Consultants modeling client pricing strategies with fixed vs variable cost breakdowns</li>
+          </ul>
+        </div>
+        <div className="mt-6 mb-10 rounded-2xl border p-6 text-center" style={{ background: 'rgba(6,214,255,0.04)', borderColor: 'rgba(6,214,255,0.12)' }}>
+          <p className="text-white font-black mb-1">Add break-even analysis to your platform</p>
+          <p className="text-white/40 text-sm mb-4">Break-even units and revenue, contribution margin, profit-target table, visual chart. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $15 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
         <section className="mt-16 pt-8 border-t max-w-2xl" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-lg font-black text-white mb-4">Understanding break-even and contribution margin</h2>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>Contribution margin is what&apos;s left from each sale after subtracting variable costs. If you sell a product for $100 and it costs $30 to produce and ship, your contribution margin is $70 (70%). Every unit sold contributes $70 toward covering your fixed costs. Once your total contribution margin equals your fixed costs, you&apos;ve broken even. Every unit after that is pure profit.</p>
