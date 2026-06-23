@@ -40,6 +40,15 @@ function fmtSeconds(secs: number): string {
   return `${d}d ${h}h`
 }
 
+function formatMins(mins: number): string {
+  if (mins < 0) return 'Exhausted'
+  const totalSecs = Math.round(mins * 60)
+  const h = Math.floor(totalSecs / 3600)
+  const m = Math.floor((totalSecs % 3600) / 60)
+  const s = totalSecs % 60
+  return [h > 0 && `${h}h`, m > 0 && `${m}m`, `${s}s`].filter(Boolean).join(' ')
+}
+
 function getStatus(pct: number): { label: string; color: string } {
   if (pct >= 99.999) return { label: 'Enterprise Grade', color: '#06d6ff' }
   if (pct >= 99.99) return { label: 'High Availability', color: '#34d399' }
@@ -48,9 +57,18 @@ function getStatus(pct: number): { label: string; color: string } {
   return { label: 'Unreliable', color: '#f87171' }
 }
 
+interface ServiceEntry { id: number; name: string; uptime: number }
+let svcNextId = 1
+
 export default function UptimeCalculatorPage() {
   const [input, setInput] = useState('99.9')
   const [customCost, setCustomCost] = useState('')
+  const [services, setServices] = useState<ServiceEntry[]>([
+    { id: svcNextId++, name: 'API Gateway', uptime: 99.9 },
+    { id: svcNextId++, name: 'Database', uptime: 99.95 },
+  ])
+  const [sloTarget, setSloTarget] = useState(99.9)
+  const [consumedMins, setConsumedMins] = useState<number | ''>('')
 
   const parsed = parseFloat(input)
   const valid = !isNaN(parsed) && parsed >= 0 && parsed <= 100
@@ -59,6 +77,15 @@ export default function UptimeCalculatorPage() {
 
   const costPerHour = customCost ? parseFloat(customCost) : null
   const annualCostLoss = downtime && costPerHour ? (downtime.year / 3600) * costPerHour : null
+
+  const combinedUptime = services.reduce((prod, s) => prod * (s.uptime / 100), 1) * 100
+  const combinedDowntimeMinsPerYear = ((100 - combinedUptime) / 100) * 525960
+  const combinedDowntimePerYear = fmtSeconds(combinedDowntimeMinsPerYear * 60)
+
+  const errorBudgetMinsPerMonth = ((100 - sloTarget) / 100) * (525960 / 12)
+  const remainingMins = consumedMins !== '' ? errorBudgetMinsPerMonth - Number(consumedMins) : errorBudgetMinsPerMonth
+  const budgetPct = consumedMins !== '' ? Math.min(100, (Number(consumedMins) / errorBudgetMinsPerMonth) * 100) : 0
+  const budgetExhausted = remainingMins < 0
 
   return (
     <div className="min-h-screen" style={{ background: '#070b14' }}>
@@ -73,10 +100,14 @@ export default function UptimeCalculatorPage() {
         <div className="mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold tracking-widest uppercase mb-3"
             style={{ borderColor: 'rgba(6,182,212,0.25)', background: 'rgba(6,182,212,0.08)', color: '#06d6ff' }}>
-            Free Tool · Infrastructure
+            Free Tool · No API Key · Browser Only
           </div>
           <h1 className="text-3xl font-black text-white mb-1">Uptime SLA Calculator</h1>
-          <p className="text-white/40 text-sm">Enter an uptime percentage and instantly see exactly how much downtime that allows per year, month, week, and day — in plain English.</p>
+          <p className="text-white/40 text-sm mb-4">Calculate downtime from SLA percentages, model compound multi-service availability, and track your monthly error budget. License from $15, or get all 51 tools from $99.</p>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $15 →</Link>
+            <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black border text-white/60" style={{ borderColor: 'rgba(255,255,255,0.12)' }}>All 51 tools — from $99 →</Link>
+          </div>
         </div>
 
         {/* Input */}
@@ -165,7 +196,7 @@ export default function UptimeCalculatorPage() {
         </div>
 
         {/* Reference table */}
-        <div className="rounded-2xl border overflow-hidden" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
+        <div className="rounded-2xl border overflow-hidden mb-6" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
           <div className="px-5 py-3 border-b border-white/6">
             <p className="text-xs font-black uppercase tracking-widest text-white/25">SLA Reference Table</p>
           </div>
@@ -198,9 +229,108 @@ export default function UptimeCalculatorPage() {
           </table>
         </div>
 
+        {/* Compound SLA */}
+        <div className="mt-2 rounded-2xl border p-5 mb-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-xs font-black uppercase tracking-widest text-white/40">Multi-Service Compound SLA</p>
+            <button onClick={() => setServices(s => [...s, { id: svcNextId++, name: 'Service', uptime: 99.9 }])}
+              className="text-xs font-bold px-3 py-1 rounded-lg" style={{ background: 'rgba(99,102,241,0.1)', color: '#818cf8', border: '1px solid rgba(99,102,241,0.2)' }}>
+              + Add Service
+            </button>
+          </div>
+          <div className="space-y-2 mb-4">
+            {services.map(svc => (
+              <div key={svc.id} className="flex items-center gap-2">
+                <input value={svc.name} onChange={e => setServices(s => s.map(x => x.id === svc.id ? { ...x, name: e.target.value } : x))}
+                  className="flex-1 text-xs bg-transparent border rounded px-2 py-1.5 text-white/70 outline-none"
+                  style={{ borderColor: 'rgba(255,255,255,0.1)' }} placeholder="Service name" />
+                <input type="number" value={svc.uptime} min={0} max={100} step={0.001}
+                  onChange={e => setServices(s => s.map(x => x.id === svc.id ? { ...x, uptime: Math.min(100, Math.max(0, parseFloat(e.target.value) || 0)) } : x))}
+                  className="w-24 text-xs bg-transparent border rounded px-2 py-1.5 text-white/60 outline-none font-mono text-right"
+                  style={{ borderColor: 'rgba(255,255,255,0.1)' }} />
+                <span className="text-xs text-white/30">%</span>
+                {services.length > 1 && (
+                  <button onClick={() => setServices(s => s.filter(x => x.id !== svc.id))} className="text-white/20 hover:text-red-400 transition-colors text-xs px-1">×</button>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="rounded-xl p-4 border" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.15)' }}>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-white/40">Combined uptime ({services.length} services)</span>
+              <span className="text-2xl font-black" style={{ color: combinedUptime >= 99.9 ? '#34d399' : combinedUptime >= 99 ? 'rgb(251,191,36)' : '#f87171' }}>
+                {combinedUptime.toFixed(4)}%
+              </span>
+            </div>
+            <p className="text-xs text-white/35">Max annual downtime: <span className="text-white font-bold">{combinedDowntimePerYear}</span></p>
+            {services.length > 1 && (
+              <p className="text-[11px] text-white/25 mt-1">
+                {services.map(s => s.uptime + '%').join(' × ')} = {combinedUptime.toFixed(4)}%
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Error Budget */}
+        <div className="rounded-2xl border p-5 mb-6" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
+          <p className="text-xs font-black uppercase tracking-widest text-white/40 mb-4">Monthly Error Budget</p>
+          <div className="flex items-center gap-3 mb-3 flex-wrap">
+            <div className="flex-1 min-w-32">
+              <label className="text-[10px] text-white/30 uppercase tracking-wider block mb-1">SLO Target</label>
+              <div className="flex items-center gap-1">
+                <input type="number" value={sloTarget} min={0} max={100} step={0.001}
+                  onChange={e => setSloTarget(Math.min(100, Math.max(0, parseFloat(e.target.value) || 0)))}
+                  className="w-28 text-xs bg-transparent border rounded px-2 py-1.5 text-white/70 outline-none font-mono"
+                  style={{ borderColor: 'rgba(255,255,255,0.1)' }} />
+                <span className="text-xs text-white/30">%</span>
+              </div>
+            </div>
+            <div className="flex-1 min-w-40">
+              <label className="text-[10px] text-white/30 uppercase tracking-wider block mb-1">Downtime consumed (minutes)</label>
+              <input type="number" value={consumedMins} min={0}
+                onChange={e => setConsumedMins(e.target.value ? parseFloat(e.target.value) : '')}
+                placeholder="0"
+                className="w-full text-xs bg-transparent border rounded px-2 py-1.5 text-white/70 outline-none font-mono"
+                style={{ borderColor: 'rgba(255,255,255,0.1)' }} />
+            </div>
+          </div>
+          <div className="rounded-xl p-4 border" style={{ background: budgetExhausted ? 'rgba(248,113,113,0.05)' : 'rgba(52,211,153,0.05)', borderColor: budgetExhausted ? 'rgba(248,113,113,0.2)' : 'rgba(52,211,153,0.15)' }}>
+            <div className="flex justify-between mb-2">
+              <span className="text-xs text-white/40">Monthly budget ({sloTarget}% SLO)</span>
+              <span className="text-xs font-mono text-white/60">{formatMins(errorBudgetMinsPerMonth)} total</span>
+            </div>
+            <div className="h-2 rounded-full bg-white/5 mb-2 overflow-hidden">
+              <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(100, budgetPct)}%`, background: budgetExhausted ? '#f87171' : budgetPct > 75 ? 'rgb(251,191,36)' : '#34d399' }} />
+            </div>
+            <div className="flex justify-between">
+              <span className="text-xs" style={{ color: budgetExhausted ? '#f87171' : '#34d399' }}>
+                {budgetExhausted ? '⚠ Budget exhausted — freeze deploys' : `Remaining: ${formatMins(remainingMins)}`}
+              </span>
+              <span className="text-xs text-white/30">{budgetPct.toFixed(1)}% used</span>
+            </div>
+          </div>
+        </div>
+
         <p className="text-xs text-white/15 mt-4 text-center">
           All calculations run in your browser. Assumes 365.25 days/year and 30.44 days/month.
         </p>
+
+        {/* Who This Is For */}
+        <div className="mt-10 rounded-2xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
+          <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-3">Who This Is For</p>
+          <ul className="space-y-1.5">
+            {[
+              'SRE and DevOps engineers setting and monitoring SLOs',
+              'Platform teams negotiating vendor SLA contracts',
+              'Startup CTOs determining acceptable downtime for early-stage products',
+              'Engineering managers building the case for reliability investments',
+            ].map(item => (
+              <li key={item} className="text-xs text-white/50 flex items-start gap-2">
+                <span className="text-cyan-400 mt-0.5 flex-shrink-0">→</span>{item}
+              </li>
+            ))}
+          </ul>
+        </div>
 
         {/* How It Works */}
         <div className="mt-14 border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
@@ -209,8 +339,8 @@ export default function UptimeCalculatorPage() {
           <div className="grid sm:grid-cols-3 gap-4 mb-8">
             {[
               { n: '01', title: 'Set your uptime %', body: 'Enter any SLA percentage — 99%, 99.9%, 99.99% — or click a tier in the reference table to load it automatically.' },
-              { n: '02', title: 'Downtime calculated', body: 'Formula: downtime_seconds = (1 - pct/100) × period. Converted to human-readable hours, minutes, and seconds.' },
-              { n: '03', title: 'Revenue impact', body: 'Enter your hourly revenue cost. Impact = (yearly_downtime_hours × cost_per_hour). Shows the real business cost of your SLA.' },
+              { n: '02', title: 'Compound multi-service', body: 'Add multiple services to see combined SLA. Three 99.9% services yield 99.7% combined — a killer detail for architecture decisions.' },
+              { n: '03', title: 'Track error budget', body: 'Set your SLO target and log downtime consumed. See remaining budget and a "freeze deploys" warning when exhausted.' },
             ].map(s => (
               <div key={s.n} className="rounded-xl border p-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
                 <div className="text-xs font-black text-white/20 mb-2">{s.n}</div>
@@ -237,6 +367,17 @@ export default function UptimeCalculatorPage() {
             </div>
           </div>
         </div>
+
+        {/* License CTA */}
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.15)' }}>
+          <p className="text-white font-black mb-1">Add SLA tooling to your platform</p>
+          <p className="text-white/40 text-sm mb-4">Uptime calculator, compound SLA, error budget tracker. Client-side only, one-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $15 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
+
       </main>
       <Footer />
     </div>
