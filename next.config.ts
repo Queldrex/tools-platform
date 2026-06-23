@@ -7,6 +7,16 @@ const nextConfig: NextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
   },
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.queldrex.com' }],
+        destination: 'https://queldrex.com/:path*',
+        permanent: true,
+      },
+    ]
+  },
   async headers() {
     return [
       {
