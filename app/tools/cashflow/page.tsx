@@ -148,10 +148,14 @@ export default function CashFlowPage() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#4ade80', borderColor: 'rgba(74,222,128,0.3)', background: 'rgba(74,222,128,0.08)' }}>Free</span>
-          <span className="text-sm font-bold text-white/30">5 free forecasts/day · Unlimited with $79/month Pro</span>
+          <span className="text-sm font-bold text-white/30">5 free forecasts/day · Unlimited with Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Cash Flow <span style={{ color: '#4ade80' }}>Forecaster</span></h1>
         <p className="text-white/55 text-base mb-6 max-w-2xl">Project your business cash position month by month. Model revenue growth, fixed costs, variable costs, and one-time expenses to see runway and break-even.</p>
+        <div className="flex gap-3 flex-wrap mt-3 mb-6">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#4ade80,#16a34a)' }}>Get this tool — $15 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
@@ -253,8 +257,8 @@ export default function CashFlowPage() {
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(74,222,128,0.05)', borderColor: 'rgba(74,222,128,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited forecasts with Pro</h3>
-            <p className="text-white/50 text-sm mb-6">Forecast up to 24 months, unlimited scenarios — $79/month.</p>
-            <Link href="/pricing" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#4ade80,#16a34a)' }}>Start Pro — $79/month</Link>
+            <p className="text-white/50 text-sm mb-6">Forecast up to 24 months, unlimited scenarios.</p>
+            <Link href="/pricing" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#4ade80,#16a34a)' }}>Upgrade to Pro →</Link>
           </div>
         )}
 
@@ -314,6 +318,23 @@ export default function CashFlowPage() {
             </div>
           </div>
         )}
+        <div className="mt-10 mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• Bootstrapped founders modeling runway and break-even month before raising or cutting</li>
+            <li>• CFOs forecasting 24-month cash positions with variable growth assumptions</li>
+            <li>• Startup operators planning one-time expenses (hires, equipment) against cash reserves</li>
+            <li>• Investors reviewing cash flow projections during due diligence</li>
+          </ul>
+        </div>
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(74,222,128,0.04)', borderColor: 'rgba(74,222,128,0.15)' }}>
+          <p className="text-white font-black mb-1">Add cashflow forecasting to your platform</p>
+          <p className="text-white/40 text-sm mb-4">24-month forecast, runway alerts, break-even detection, one-time expense planning. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#4ade80,#16a34a)' }}>Get this tool — $15 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
