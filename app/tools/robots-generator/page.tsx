@@ -189,6 +189,7 @@ export default function RobotsTxtGeneratorPage() {
   const [crawlDelay, setCrawlDelay] = useState('')
   const [hostDirective, setHostDirective] = useState('')
   const [showAdvanced, setShowAdvanced] = useState(false)
+  const [showCrawlers, setShowCrawlers] = useState(false)
   const [copied, setCopied] = useState(false)
 
   // Import state
@@ -313,7 +314,7 @@ export default function RobotsTxtGeneratorPage() {
       lines.push('')
     }
 
-    const blocked = ALL_CRAWLERS.filter(c => blockedCrawlers.has(c.id))
+    const blocked = showCrawlers ? ALL_CRAWLERS.filter(c => blockedCrawlers.has(c.id)) : []
     blocked.forEach(crawler => {
       lines.push(`User-agent: ${crawler.id}`)
       lines.push('Disallow: /')
@@ -623,6 +624,20 @@ export default function RobotsTxtGeneratorPage() {
                 </div>
               )}
 
+              {/* Crawler rules — optional, collapsible */}
+              <button
+                onClick={() => setShowCrawlers(s => !s)}
+                className="w-full flex items-center justify-between px-5 py-3 rounded-2xl border transition-all"
+                style={{ background: showCrawlers ? 'rgba(6,182,212,0.06)' : 'rgba(255,255,255,0.02)', borderColor: showCrawlers ? 'rgba(6,182,212,0.25)' : 'rgba(255,255,255,0.08)' }}
+              >
+                <div className="text-left">
+                  <p className="text-sm font-bold text-white">Per-crawler rules <span className="text-xs font-normal text-white/40">(optional)</span></p>
+                  <p className="text-xs text-white/35 mt-0.5">Allow or block individual AI bots — skip this section if you want the same rules for all crawlers</p>
+                </div>
+                <svg className={`w-4 h-4 text-white/30 flex-shrink-0 transition-transform ${showCrawlers ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+
+              {showCrawlers && <>
               {/* AI Search Crawlers */}
               <div className="rounded-2xl border p-6" style={sectionStyle}>
                 <div className="flex items-center justify-between mb-3">
@@ -692,6 +707,7 @@ export default function RobotsTxtGeneratorPage() {
                   ))}
                 </div>
               </div>
+              </>}
 
               {/* Sitemaps */}
               <div className="rounded-2xl border p-6" style={sectionStyle}>
