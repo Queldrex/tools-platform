@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -42,11 +42,26 @@ const DEFAULTS: Config = {
   retentionPeriod: '24 months',
 }
 
+const CPRA_TEXT = `Under the California Privacy Rights Act (CPRA), effective January 1, 2023, California residents have additional rights:
+
+- Right to Correct: You may request that we correct inaccurate personal information we hold about you.
+- Right to Limit Use of Sensitive Personal Information: You may direct us to limit our use and disclosure of sensitive personal information (such as Social Security number, financial account data, health information, and precise geolocation) to only what is necessary to provide you our services.
+- Right to Opt-Out of Automated Decision-Making: You may opt-out of automated decision-making technology, including profiling, that produces legal or similarly significant effects concerning you.
+
+To exercise these rights, contact us at [data protection email].`
+
 function generatePrivacyPolicy(c: Config): string {
   const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+
+  const ccpaRights = `**Your California Privacy Rights**\n\nUnder the California Consumer Privacy Act (CCPA), you have the right to:\n- Know what personal information we collect and how we use it\n- Delete personal information we have collected about you\n- Opt-out of the sale of your personal information (we do not sell personal information)\n- Non-discrimination for exercising your privacy rights\n\n${CPRA_TEXT}`
+
+  const gdprRights = `**Your Rights**\n\nUnder ${c.jurisdiction === 'UK-GDPR' ? 'UK GDPR' : 'GDPR'}, you have the following rights:\n- **Right of access**: Request a copy of the personal data we hold about you\n- **Right to rectification**: Request correction of inaccurate data\n- **Right to erasure**: Request deletion of your personal data ("right to be forgotten")\n- **Right to restriction**: Request that we limit how we use your data\n- **Right to data portability**: Receive your data in a structured, machine-readable format\n- **Right to object**: Object to processing based on legitimate interests or for direct marketing\n- **Right to withdraw consent**: Withdraw consent at any time where processing is based on consent`
+
   const rights = c.jurisdiction === 'CCPA'
-    ? `**Your California Privacy Rights**\n\nUnder the California Consumer Privacy Act (CCPA), you have the right to:\n- Know what personal information we collect and how we use it\n- Delete personal information we have collected about you\n- Opt-out of the sale of your personal information (we do not sell personal information)\n- Non-discrimination for exercising your privacy rights`
-    : `**Your Rights**\n\nUnder ${c.jurisdiction === 'UK-GDPR' ? 'UK GDPR' : 'GDPR'}, you have the following rights:\n- **Right of access**: Request a copy of the personal data we hold about you\n- **Right to rectification**: Request correction of inaccurate data\n- **Right to erasure**: Request deletion of your personal data ("right to be forgotten")\n- **Right to restriction**: Request that we limit how we use your data\n- **Right to data portability**: Receive your data in a structured, machine-readable format\n- **Right to object**: Object to processing based on legitimate interests or for direct marketing\n- **Right to withdraw consent**: Withdraw consent at any time where processing is based on consent`
+    ? ccpaRights
+    : c.jurisdiction === 'all'
+    ? `${gdprRights}\n\n${ccpaRights}`
+    : gdprRights
 
   const lawfulBasis = c.jurisdiction === 'CCPA'
     ? 'We process personal information in accordance with the California Consumer Privacy Act (CCPA) and applicable state law.'
@@ -132,6 +147,10 @@ For more information, see our Privacy Policy at ${c.website}/privacy.`
 
 function generateDPA(c: Config): string {
   const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  const cpraSection = (c.jurisdiction === 'CCPA' || c.jurisdiction === 'all')
+    ? `\n\n4a. CPRA ADDITIONAL RIGHTS\n\n${CPRA_TEXT}`
+    : ''
+
   return `DATA PROCESSING AGREEMENT
 
 This Data Processing Agreement ("DPA") is entered into between ${c.companyName} ("Data Controller" or "Controller") and the applicable service provider ("Data Processor" or "Processor").
@@ -162,7 +181,7 @@ The Processor shall:
 
 4. DATA SUBJECT RIGHTS
 
-The Processor shall assist the Controller in fulfilling its obligations to respond to requests from Data Subjects, including requests for access, rectification, erasure, restriction, portability, and objection.
+The Processor shall assist the Controller in fulfilling its obligations to respond to requests from Data Subjects, including requests for access, rectification, erasure, restriction, portability, and objection.${cpraSection}
 
 5. SECURITY MEASURES
 
@@ -222,14 +241,31 @@ function generateOutput(c: Config): string {
 export default function GdprGeneratorPage() {
   const [config, setConfig] = useState<Config>(DEFAULTS)
   const [copied, setCopied] = useState(false)
+  const [wordCount, setWordCount] = useState(0)
 
   const update = (patch: Partial<Config>) => setConfig(c => ({ ...c, ...patch }))
   const output = generateOutput(config)
+
+  useEffect(() => {
+    setWordCount(output.trim() ? output.trim().split(/\s+/).length : 0)
+  }, [output])
 
   function copy() {
     navigator.clipboard.writeText(output)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  function downloadOutput() {
+    const filename = config.output === 'privacy-policy' ? 'privacy-policy.txt'
+      : config.output === 'cookie-banner' ? 'cookie-banner.html'
+      : 'data-processing-agreement.txt'
+    const blob = new Blob([output], { type: config.output === 'cookie-banner' ? 'text/html' : 'text/plain' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = filename
+    a.click()
+    URL.revokeObjectURL(a.href)
   }
 
   const Toggle = ({ label, value, onChange, desc }: { label: string; value: boolean; onChange: (v: boolean) => void; desc?: string }) => (
@@ -264,10 +300,20 @@ export default function GdprGeneratorPage() {
         <div className="mb-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold tracking-widest uppercase mb-3"
             style={{ borderColor: 'rgba(248,113,113,0.25)', background: 'rgba(248,113,113,0.08)', color: '#f87171' }}>
-            Free Tool · Legal / Compliance
+            Free Tool · No Account Required · Instant Output
           </div>
           <h1 className="text-3xl font-black text-white mb-1">GDPR / Privacy Policy Generator</h1>
-          <p className="text-white/40 text-sm">Generate a privacy policy, cookie consent banner, or data processing agreement tailored to GDPR, UK GDPR, or CCPA. <span className="text-amber-400">For informational use — always have legal counsel review compliance documents before publishing.</span></p>
+          <p className="text-white/40 text-sm mb-3">Generate GDPR, CCPA/CPRA, and UK-GDPR compliant privacy policies, cookie banners, and DPAs — copy or download instantly. License from $29, or get all 51 tools from $99. <span className="text-amber-400">Always have legal counsel review compliance documents before publishing.</span></p>
+          <div className="flex gap-3 flex-wrap">
+            <Link href="/pricing" className="inline-flex items-center gap-1.5 text-xs font-black px-4 py-2 rounded-xl text-black transition-all"
+              style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>
+              Get this tool — $29 →
+            </Link>
+            <Link href="/pricing" className="inline-flex items-center gap-1.5 text-xs font-black px-4 py-2 rounded-xl border text-white/60 transition-all"
+              style={{ borderColor: 'rgba(255,255,255,0.12)' }}>
+              All 51 tools — from $99 →
+            </Link>
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
@@ -289,7 +335,7 @@ export default function GdprGeneratorPage() {
                 <button key={j} onClick={() => update({ jurisdiction: j })}
                   className="w-full text-left px-3 py-2 rounded-lg mb-1 text-sm font-semibold transition-all"
                   style={{ background: config.jurisdiction === j ? 'rgba(6,182,212,0.12)' : 'rgba(255,255,255,0.03)', color: config.jurisdiction === j ? '#06d6ff' : 'rgba(255,255,255,0.45)', border: config.jurisdiction === j ? '1px solid rgba(6,182,212,0.3)' : '1px solid transparent' }}>
-                  {j === 'all' ? 'All (GDPR + CCPA)' : j}
+                  {j === 'all' ? 'All (GDPR + CCPA + CPRA)' : j}
                 </button>
               ))}
             </div>
@@ -341,13 +387,20 @@ export default function GdprGeneratorPage() {
                   <p className="text-xs font-black uppercase tracking-widest text-white/25">
                     {config.output === 'privacy-policy' ? 'Privacy Policy' : config.output === 'cookie-banner' ? 'Cookie Banner' : 'Data Processing Agreement'}
                   </p>
-                  <p className="text-[10px] text-white/20 mt-0.5">Jurisdiction: {config.jurisdiction}</p>
+                  <p className="text-[10px] text-white/20 mt-0.5">Jurisdiction: {config.jurisdiction} · {wordCount.toLocaleString()} words · Last updated {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                 </div>
-                <button onClick={copy}
-                  className="text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
-                  style={{ background: copied ? 'rgba(74,222,128,0.12)' : 'rgba(6,182,212,0.1)', color: copied ? '#4ade80' : '#06d6ff', border: `1px solid ${copied ? 'rgba(74,222,128,0.25)' : 'rgba(6,182,212,0.25)'}` }}>
-                  {copied ? 'Copied!' : 'Copy'}
-                </button>
+                <div className="flex gap-2">
+                  <button onClick={copy}
+                    className="text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
+                    style={{ background: copied ? 'rgba(74,222,128,0.12)' : 'rgba(6,182,212,0.1)', color: copied ? '#4ade80' : '#06d6ff', border: `1px solid ${copied ? 'rgba(74,222,128,0.25)' : 'rgba(6,182,212,0.25)'}` }}>
+                    {copied ? 'Copied!' : 'Copy'}
+                  </button>
+                  <button onClick={downloadOutput}
+                    className="text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
+                    style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    ↓ Download
+                  </button>
+                </div>
               </div>
               <textarea readOnly value={output}
                 className="w-full p-5 text-xs text-white/55 font-mono resize-none outline-none leading-relaxed"
@@ -361,15 +414,32 @@ export default function GdprGeneratorPage() {
           <p className="text-xs text-white/40 mt-1">This tool generates template language for informational purposes. It does not constitute legal advice. Privacy and data protection laws vary by jurisdiction and change frequently. Always have a qualified attorney review your privacy policy and compliance documents before publishing them.</p>
         </div>
 
+        {/* Who This Is For */}
+        <div className="mt-10 rounded-2xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
+          <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-3">Who This Is For</p>
+          <ul className="space-y-1.5">
+            {[
+              'SaaS founders and indie developers who need a policy before launch day',
+              'Freelancers and agencies building client websites that collect email addresses',
+              'Small businesses adding a contact form or analytics and needing compliance docs',
+              'Startup CTOs who need a DPA template for vendor agreements',
+            ].map(item => (
+              <li key={item} className="text-xs text-white/50 flex items-start gap-2">
+                <span className="text-red-400 mt-0.5 flex-shrink-0">→</span>{item}
+              </li>
+            ))}
+          </ul>
+        </div>
+
         {/* How It Works */}
-        <div className="mt-14 border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+        <div className="mt-10 border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-xl font-black text-white mb-1">How It Works</h2>
           <p className="text-white/35 text-sm mb-8">Generates three distinct legal documents from your inputs — privacy policy, cookie banner HTML, and a Data Processing Agreement.</p>
           <div className="grid sm:grid-cols-3 gap-4 mb-8">
             {[
               { n: '01', title: 'Configure your details', body: 'Enter company name, DPO email, and website. Toggle which data types you collect: email, name, payment, analytics, cookies.' },
-              { n: '02', title: 'Select jurisdiction', body: 'Choose GDPR (EU), UK-GDPR, CCPA (California), or "All" to generate language covering multiple frameworks simultaneously.' },
-              { n: '03', title: 'Generate & copy', body: 'Three documents generated: full privacy policy (~1,200 words), cookie consent banner (HTML + JS), and a DPA template.' },
+              { n: '02', title: 'Select jurisdiction', body: 'Choose GDPR (EU), UK-GDPR, CCPA/CPRA (California), or "All" to generate language covering multiple frameworks simultaneously — including 2023 CPRA additions.' },
+              { n: '03', title: 'Generate, copy & download', body: 'Three documents generated: full privacy policy (~1,200 words), cookie consent banner (HTML + JS), and a DPA template. Copy or download as .txt/.html.' },
             ].map(s => (
               <div key={s.n} className="rounded-xl border p-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
                 <div className="text-xs font-black text-white/20 mb-2">{s.n}</div>
@@ -385,7 +455,7 @@ export default function GdprGeneratorPage() {
                 { section: 'Data Collected', content: 'We collect: email addresses, usage analytics. We do not sell your personal data to third parties.' },
                 { section: 'Legal Basis (GDPR Art. 6)', content: 'Processing is based on: (a) consent for marketing, (b) legitimate interests for analytics, (c) contract performance for service delivery.' },
                 { section: 'Your Rights', content: 'Under GDPR you have the right to: access, rectification, erasure, portability, restriction, and to lodge a complaint with a supervisory authority.' },
-                { section: 'Data Retention', content: 'Personal data is retained for no longer than necessary for the purpose collected, and deleted within 90 days of account closure.' },
+                { section: 'CPRA (California 2023)', content: 'Right to Correct, Right to Limit Use of Sensitive Personal Information, Right to Opt-Out of Automated Decision-Making.' },
               ].map(r => (
                 <div key={r.section} className="border-l-2 border-white/10 pl-3">
                   <p className="text-xs font-bold text-white/50 mb-0.5">{r.section}</p>
@@ -395,6 +465,17 @@ export default function GdprGeneratorPage() {
             </div>
           </div>
         </div>
+
+        {/* License CTA */}
+        <div className="mt-8 rounded-2xl border p-6 text-center" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.15)' }}>
+          <p className="text-white font-black mb-1">Add compliance document generation to your platform</p>
+          <p className="text-white/40 text-sm mb-4">GDPR + CCPA/CPRA + UK-GDPR, privacy policy + cookie banner + DPA, download as file. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
+
       </main>
       <Footer />
     </div>
