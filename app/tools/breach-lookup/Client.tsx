@@ -169,9 +169,13 @@ function BreachLookupContent() {
             Free Tool
           </div>
           <h1 className="text-3xl font-black text-white mb-2">Breach Lookup</h1>
-          <p className="text-white/45 text-sm leading-relaxed">
-            Check if a password has been exposed in known data breaches, or audit your domain&apos;s email security posture.
+          <p className="text-white/45 text-sm leading-relaxed mb-4">
+            Check if a password has been exposed in known data breaches, or audit your domain&apos;s email security posture. License from $15, or get all 51 tools from $99.
           </p>
+          <div className="flex gap-3 flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#f87171,#dc2626)' }}>Get this tool — $15 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
         </div>
 
         <div className="flex gap-1 p-1 rounded-xl mb-8" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
@@ -281,10 +285,10 @@ function BreachLookupContent() {
                 <h3 className="text-base font-black text-white mb-1">Unlimited domain security scans</h3>
                 <p className="text-sm text-white/45 mb-4">Pro subscribers can scan any domain, any time.</p>
                 <div className="flex items-center justify-center gap-3 flex-wrap">
-                  <a href="/monitor" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 20px rgba(6,182,212,0.25)' }}>
-                    Start Pro — $79/month
-                  </a>
-                  <a href="/pricing" className="text-sm text-white/40 hover:text-white transition-colors">See all features →</a>
+                  <Link href="/pricing" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 20px rgba(6,182,212,0.25)' }}>
+                    Unlock unlimited scans →
+                  </Link>
+                  <Link href="/pricing" className="text-sm text-white/40 hover:text-white transition-colors">See all features →</Link>
                 </div>
               </div>
             )}
@@ -339,6 +343,20 @@ function BreachLookupContent() {
         )}
 
         <div className="mt-14 border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+          <h2 className="text-xl font-black text-white mb-4">Who This Is For</h2>
+          <ul className="space-y-2 mb-10">
+            {[
+              'Security-conscious individuals checking if their email was in a known breach',
+              'DevOps engineers auditing domain security headers before a production launch',
+              'IT administrators verifying DMARC/SPF/HSTS configuration for email security',
+              'Developers building security-aware applications who need to test their own endpoints',
+            ].map(item => (
+              <li key={item} className="flex items-start gap-2 text-sm" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                <span className="mt-0.5 flex-shrink-0" style={{ color: '#f87171' }}>✓</span>{item}
+              </li>
+            ))}
+          </ul>
+
           <h2 className="text-xl font-black text-white mb-1">How It Works</h2>
           <p className="text-white/35 text-sm mb-8">Two tools in one: password breach check via k-anonymity, and domain security audit via live DNS + HTTP checks.</p>
           <div className="grid sm:grid-cols-2 gap-4">
@@ -352,6 +370,14 @@ function BreachLookupContent() {
                 <div className="text-xs text-white/45 leading-relaxed">{s.body}</div>
               </div>
             ))}
+          </div>
+        </div>
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(248,113,113,0.04)', borderColor: 'rgba(248,113,113,0.15)' }}>
+          <p className="text-white font-black mb-1">Add breach detection to your platform</p>
+          <p className="text-white/40 text-sm mb-4">k-anonymity password check, domain security audit, DMARC/SPF/HSTS. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#f87171,#dc2626)' }}>Get this tool — $15 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
           </div>
         </div>
       </main>
