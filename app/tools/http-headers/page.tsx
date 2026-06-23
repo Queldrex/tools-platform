@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -37,6 +37,13 @@ export default function HttpHeadersPage() {
   const [result, setResult] = useState<Result | null>(null)
   const [error, setError] = useState('')
   const [paywall, setPaywall] = useState(false)
+  const [copiedHeader, setCopiedHeader] = useState<string | null>(null)
+
+  const copySnippet = useCallback((name: string, value: string) => {
+    navigator.clipboard.writeText(value)
+    setCopiedHeader(name)
+    setTimeout(() => setCopiedHeader(null), 2000)
+  }, [])
 
   const check = async (urlArg?: string) => {
     const u = (urlArg ?? url).trim()
@@ -75,7 +82,11 @@ export default function HttpHeadersPage() {
         </div>
 
         <h1 className="text-4xl font-black text-white mb-3">HTTP Header <span style={{ color: '#34d399' }}>Inspector</span></h1>
-        <p className="text-white/55 text-base mb-8 max-w-2xl">Fetch any URL and inspect every response header with plain-English explanations. Get a security score and see exactly which headers are missing.</p>
+        <p className="text-white/55 text-base mb-4 max-w-2xl">Fetch any URL and inspect every response header with plain-English explanations. Get a security score and see exactly which headers are missing.</p>
+        <div className="flex gap-3 flex-wrap mb-8">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
 
         <div className="rounded-2xl border p-6 mb-6" style={{ background: '#111318', borderColor: 'rgba(255,255,255,0.08)' }}>
           <label className="block text-xs font-black uppercase tracking-widest text-white/40 mb-2">URL to inspect</label>
@@ -136,7 +147,18 @@ export default function HttpHeadersPage() {
                         <span className="text-xs px-1.5 py-0.5 rounded font-bold" style={{ background: 'rgba(250,204,21,0.15)', color: '#facc15' }}>MISSING</span>
                       </div>
                       <p className="text-xs mb-1" style={{ color: '#A1A1AA' }}>{h.purpose}</p>
-                      {h.good && <p className="text-xs" style={{ color: '#4ade80' }}>Recommended: {h.good}</p>}
+                      {h.good && (
+                        <div className="flex items-center gap-2 mt-1">
+                          <p className="text-xs flex-1" style={{ color: '#4ade80' }}>Recommended: {h.good}</p>
+                          <button
+                            onClick={() => copySnippet(h.name, `${h.name}: ${h.good}`)}
+                            className="text-[10px] font-bold px-2 py-1 rounded flex-shrink-0"
+                            style={{ background: 'rgba(99,102,241,0.08)', color: copiedHeader === h.name ? '#4ade80' : '#818cf8' }}
+                          >
+                            {copiedHeader === h.name ? 'Copied!' : 'Copy'}
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -166,12 +188,30 @@ export default function HttpHeadersPage() {
           </div>
         )}
 
+        <div className="mt-10 mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• Security engineers auditing response headers before a penetration test</li>
+            <li>• Developers adding HSTS, CSP, and X-Frame-Options to a new web app</li>
+            <li>• DevOps teams checking header configuration after a CDN or proxy change</li>
+            <li>• Agencies running security audits on client sites for compliance reports</li>
+          </ul>
+        </div>
+
         <section className="mt-16 pt-8 border-t max-w-2xl" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-lg font-black text-white mb-4">Understanding HTTP security headers</h2>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>HTTP response headers are instructions your server sends to browsers alongside every response. Security headers tell browsers how to handle your content: whether to allow iframing (X-Frame-Options), whether to sniff MIME types (X-Content-Type-Options), how long to remember to use HTTPS (Strict-Transport-Security), and what scripts are allowed to run (Content-Security-Policy). Browsers enforce these instructions automatically — no JavaScript needed.</p>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>The most important header missing from most sites is Content-Security-Policy. A well-configured CSP prevents cross-site scripting (XSS) attacks by defining exactly which script sources, image sources, and connection endpoints are allowed. A strict CSP with no &apos;unsafe-inline&apos; means even if an attacker injects a script tag, the browser will refuse to run it. CSP alone eliminates the most common class of web vulnerabilities.</p>
           <p className="text-sm leading-relaxed" style={{ color: '#A1A1AA' }}>Permissions-Policy (formerly Feature-Policy) is the most overlooked header. It controls whether embedded iframes and third-party scripts can access the camera, microphone, geolocation, payment APIs, and more. Even if your code doesn&apos;t use these features, third-party ad or analytics scripts embedded on your page might — and without Permissions-Policy, they can do so silently. Set it to deny all unused features: camera=(), microphone=(), geolocation=().</p>
         </section>
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.15)' }}>
+          <p className="text-white font-black mb-1">Add HTTP header analysis to your platform</p>
+          <p className="text-white/40 text-sm mb-4">Security grade A–F, missing header detection with fix snippets, full header table. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
