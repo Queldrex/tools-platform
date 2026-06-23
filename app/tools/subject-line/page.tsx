@@ -107,7 +107,11 @@ export default function SubjectLinePage() {
           <span className="text-sm font-bold text-white/30">5 free tests/day · Unlimited with $79/month Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Email Subject Line <span style={{ color: '#06d6ff' }}>Tester</span></h1>
-        <p className="text-white/55 text-base mb-6 max-w-2xl">Score your subject line in real time — spam risk, personalization, power words, emoji, and open rate estimate. No AI, no waiting.</p>
+        <p className="text-white/55 text-base mb-4 max-w-2xl">Score your subject line in real time — spam risk, personalization, power words, emoji, and open rate estimate. No AI, no waiting.</p>
+        <div className="flex gap-3 flex-wrap mb-6">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
@@ -152,8 +156,8 @@ export default function SubjectLinePage() {
         {paywall && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(6,214,255,0.05)', borderColor: 'rgba(6,214,255,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited testing with Pro</h3>
-            <p className="text-white/50 text-sm mb-6">Test unlimited subject lines — $79/month.</p>
-            <Link href="/pricing" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro — $79/month</Link>
+            <p className="text-white/50 text-sm mb-6">Upgrade for unlimited subject line tests and access to all 51 tools.</p>
+            <Link href="/pricing" className="inline-flex px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Upgrade to Pro →</Link>
           </div>
         )}
 
@@ -235,6 +239,23 @@ export default function SubjectLinePage() {
             Analyzing…
           </div>
         )}
+        <div className="mt-10 mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• Email marketers optimizing open rates before sending to a large list</li>
+            <li>• SaaS founders A/B testing onboarding and re-engagement email subject lines</li>
+            <li>• Copywriters checking spam risk and power word density before a campaign</li>
+            <li>• Growth teams using the AI-suggested alternatives to generate test variants</li>
+          </ul>
+        </div>
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(6,214,255,0.04)', borderColor: 'rgba(6,214,255,0.12)' }}>
+          <p className="text-white font-black mb-1">Add subject line testing to your platform</p>
+          <p className="text-white/40 text-sm mb-4">7-dimension scoring, spam risk, open rate estimate, AI-generated alternatives. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
