@@ -27,6 +27,16 @@ function truncate(s: string | null, max: number) {
   return s.length > max ? s.slice(0, max) + '…' : s
 }
 
+function getMissingOgSnippets(result: OGResult): Array<{ tag: string; snippet: string }> {
+  const missing: Array<{ tag: string; snippet: string }> = []
+  if (!result.title) missing.push({ tag: 'og:title', snippet: '<meta property="og:title" content="Your Page Title" />' })
+  if (!result.description) missing.push({ tag: 'og:description', snippet: '<meta property="og:description" content="Your page description (120–160 chars)" />' })
+  if (!result.image) missing.push({ tag: 'og:image', snippet: '<meta property="og:image" content="https://yourdomain.com/og-image.png" />' })
+  if (!result.siteName) missing.push({ tag: 'og:site_name', snippet: '<meta property="og:site_name" content="Your Site Name" />' })
+  if (!result.twitterCard) missing.push({ tag: 'twitter:card', snippet: '<meta name="twitter:card" content="summary_large_image" />' })
+  return missing
+}
+
 function TwitterCard({ title, description, image, siteName, url }: { title: string | null; description: string | null; image: string | null; siteName: string | null; url: string }) {
   const domain = (() => { try { return new URL(url).hostname } catch { return url } })()
   return (
@@ -114,12 +124,15 @@ export default function OGPreviewerPage() {
         </Link>
 
         <div className="flex flex-wrap items-center gap-3 mb-5">
-          <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#60a5fa', borderColor: 'rgba(96,165,250,0.3)', background: 'rgba(96,165,250,0.08)' }}>Free</span>
-          <span className="text-sm font-bold text-white/30">5 checks/day · Unlimited with $79/mo Pro</span>
+          <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#60a5fa', borderColor: 'rgba(96,165,250,0.3)', background: 'rgba(96,165,250,0.08)' }}>Free Tool · No API Key · 5 checks/day</span>
         </div>
 
         <h1 className="text-4xl font-black text-white mb-3">OpenGraph <span style={{ color: '#60a5fa' }}>Preview</span></h1>
-        <p className="text-white/55 text-base mb-8 max-w-2xl">See exactly how any URL looks when shared on Twitter/X, LinkedIn, and Facebook. Inspect every OG and Twitter Card meta tag your page is sending.</p>
+        <p className="text-white/55 text-base mb-5 max-w-2xl">See exactly how any URL looks when shared on Twitter/X, LinkedIn, and Facebook. Inspect every OG and Twitter Card meta tag your page is sending. License from $15, or get all 51 tools from $99.</p>
+        <div className="flex gap-3 flex-wrap mb-8">
+          <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#60a5fa,#2563eb)' }}>Get this tool — $15 →</Link>
+          <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+        </div>
 
         <div className="rounded-2xl border p-6 mb-6" style={{ background: '#111318', borderColor: 'rgba(255,255,255,0.08)' }}>
           <label className="block text-xs font-black uppercase tracking-widest text-white/40 mb-2">URL to inspect</label>
@@ -181,6 +194,25 @@ export default function OGPreviewerPage() {
               <FacebookCard title={result.title} description={result.description} image={result.image} siteName={result.siteName} url={result.url} />
             </div>
 
+            {/* Missing tags */}
+            {getMissingOgSnippets(result).length > 0 && (
+              <div className="rounded-xl border p-4" style={{ background: '#0d1117', borderColor: 'rgba(248,113,113,0.2)' }}>
+                <p className="text-[10px] font-black uppercase tracking-widest text-red-400/70 mb-3">Missing tags — add these to your &lt;head&gt;</p>
+                <div className="space-y-2">
+                  {getMissingOgSnippets(result).map(m => (
+                    <div key={m.tag} className="flex items-start gap-2">
+                      <code className="flex-1 text-[11px] font-mono text-white/40 break-all leading-relaxed">{m.snippet}</code>
+                      <button onClick={() => navigator.clipboard.writeText(m.snippet)}
+                        className="text-[10px] font-bold px-2 py-1 rounded flex-shrink-0 mt-0.5"
+                        style={{ background: 'rgba(248,113,113,0.08)', color: '#f87171' }}>
+                        Copy
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Raw tags */}
             <div>
               <button onClick={() => setShowRaw(v => !v)} className="text-xs font-black uppercase tracking-widest flex items-center gap-2 mb-3" style={{ color: '#A1A1AA' }}>
@@ -212,11 +244,33 @@ export default function OGPreviewerPage() {
         )}
 
         <section className="mt-16 pt-8 border-t max-w-2xl" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+          <h2 className="text-lg font-black text-white mb-4">Who This Is For</h2>
+          <ul className="space-y-2 mb-10">
+            {[
+              'Developers checking how shared links appear on Twitter/X, LinkedIn, and Facebook',
+              'Content marketers ensuring og:image is set before a campaign launch',
+              'SEO teams auditing social meta tags across landing pages',
+              'Founders verifying their homepage card before a Product Hunt launch',
+            ].map(item => (
+              <li key={item} className="flex items-start gap-2 text-sm" style={{ color: '#A1A1AA' }}>
+                <span className="mt-1 flex-shrink-0" style={{ color: '#60a5fa' }}>✓</span>{item}
+              </li>
+            ))}
+          </ul>
+
           <h2 className="text-lg font-black text-white mb-4">Why OpenGraph tags matter</h2>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>When someone shares your URL on social media, the platform fetches your page and reads the og:title, og:description, og:image, and og:site_name meta tags to build the preview card. Without these tags, platforms fall back to guessing — often picking the wrong image or showing a blank card with just the URL. A compelling OG image and title can double the click-through rate on shared links.</p>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>Twitter uses its own set of meta tags (twitter:card, twitter:title, twitter:description, twitter:image) but falls back to OG tags if the Twitter-specific ones are absent. Adding twitter:card with a value of summary_large_image enables the big image format — the one that takes up most of the tweet. Without it, you get a small thumbnail or no image at all.</p>
           <p className="text-sm leading-relaxed" style={{ color: '#A1A1AA' }}>OG images should be 1200x630 pixels (1.91:1 ratio) for best compatibility across all platforms. LinkedIn caches previews aggressively — use their Post Inspector tool to force a re-scrape after you update your tags. Facebook similarly caches for 24 hours unless you submit the URL to their Sharing Debugger. This tool fetches live, so it always shows your current tags without cache interference.</p>
         </section>
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(6,214,255,0.04)', borderColor: 'rgba(6,214,255,0.12)' }}>
+          <p className="text-white font-black mb-1">Add OG tag previewing to your platform</p>
+          <p className="text-white/40 text-sm mb-4">Twitter/LinkedIn/Facebook previews, OG score, missing tag snippets. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $15 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
