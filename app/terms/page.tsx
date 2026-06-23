@@ -5,6 +5,7 @@ import Footer from '@/components/Footer'
 export const metadata = {
   title: 'Terms of Service — Queldrex',
   description: 'Queldrex LLC terms of service — governed by Colorado law, covering all products: AI Visibility Scanner, Monitor, Agency Plan, Pro Tools, and custom development.',
+  alternates: { canonical: 'https://queldrex.com/terms' },
 }
 
 export default function TermsPage() {

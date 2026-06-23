@@ -7,6 +7,7 @@ import { getAllPosts } from '@/lib/blog/posts'
 export const metadata: Metadata = {
   title: 'Blog — Queldrex',
   description: 'Guides, strategies, and deep dives on AI visibility and search optimization for businesses.',
+  alternates: { canonical: 'https://queldrex.com/blog' },
   openGraph: {
     title: 'Blog — Queldrex',
     description: 'Guides, strategies, and deep dives on AI visibility and search optimization.',

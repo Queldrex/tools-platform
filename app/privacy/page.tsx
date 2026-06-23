@@ -5,6 +5,7 @@ import Footer from '@/components/Footer'
 export const metadata = {
   title: 'Privacy Policy — Queldrex',
   description: 'Queldrex LLC privacy policy — Colorado Privacy Act compliant, covering all products including AI Visibility Scanner, Monitor, Agency Plan, Pro Tools, and custom development.',
+  alternates: { canonical: 'https://queldrex.com/privacy' },
 }
 
 export default function PrivacyPage() {
