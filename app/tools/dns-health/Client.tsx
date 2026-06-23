@@ -96,7 +96,11 @@ function DnsHealthContent() {
           <span className="text-sm font-bold text-white/30">5 free checks/day · Unlimited with Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">DNS <span style={{ color: '#34d399' }}>Health Check</span></h1>
-        <p className="text-white/55 text-base mb-6 max-w-xl">Query A, AAAA, MX, NS, TXT, SOA, CAA, and DMARC records in real time via Cloudflare and Google DNS. Verify propagation status instantly.</p>
+        <p className="text-white/55 text-base mb-4 max-w-xl">Query A, AAAA, MX, NS, TXT, SOA, CAA, and DMARC records in real time via Cloudflare and Google DNS. Verify propagation status instantly.</p>
+        <div className="flex gap-3 flex-wrap mb-6">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#34d399,#059669)' }}>Get this tool — $29 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
@@ -138,8 +142,8 @@ function DnsHealthContent() {
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(52,211,153,0.05)', borderColor: 'rgba(52,211,153,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited DNS checks with Pro</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro includes unlimited DNS monitoring and full site health checks — $79/month.</p>
-            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#34d399,#059669)' }}>Start Pro — $79/month</Link>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro includes unlimited DNS monitoring and full site health checks.</p>
+            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#34d399,#059669)' }}>Upgrade to Pro →</Link>
           </div>
         )}
 
@@ -214,12 +218,30 @@ function DnsHealthContent() {
           </div>
         )}
 
+        <div className="mt-10 mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• DevOps engineers troubleshooting DNS propagation delays after a migration</li>
+            <li>• SaaS founders verifying MX, DMARC, and SPF records before launching email campaigns</li>
+            <li>• Agencies auditing client DNS configurations for missing CAA or IPv6 records</li>
+            <li>• Developers checking TTL values and resolver consistency across Cloudflare and Google</li>
+          </ul>
+        </div>
+
         <section className="mt-16 pt-8 border-t max-w-2xl" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-lg font-black text-white mb-4">How DNS health checking works</h2>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>This tool queries both Cloudflare (1.1.1.1) and Google (8.8.8.8) DNS resolvers simultaneously. If the two resolvers return different results for your domain, DNS propagation is still in progress — your zone change has reached one resolver but not the other. This is normal for 1 to 48 hours after a record change, depending on your TTL.</p>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>Each DNS record type has a specific role. A records map your domain to an IPv4 address. AAAA records do the same for IPv6. MX records control which mail servers receive your email — priority numbers determine delivery order (lower = higher priority). TXT records carry SPF (authorized senders), DKIM (cryptographic signature), and domain verification tokens. NS records identify your authoritative nameservers — these change when you migrate DNS providers. CAA records restrict which Certificate Authorities can issue SSL certs for your domain.</p>
           <p className="text-sm leading-relaxed" style={{ color: '#A1A1AA' }}>TTL (Time to Live) is how long resolvers cache your DNS records before re-querying. Low TTLs (300 seconds) mean changes propagate quickly but increase DNS query load. High TTLs (86400 seconds = 1 day) reduce load but slow propagation. Best practice: lower your TTL to 300 before any planned migration, wait for the old TTL to expire, make the change, then raise the TTL back after the migration is complete.</p>
         </section>
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(52,211,153,0.04)', borderColor: 'rgba(52,211,153,0.15)' }}>
+          <p className="text-white font-black mb-1">Add DNS health checking to your platform</p>
+          <p className="text-white/40 text-sm mb-4">Full DNS record audit, propagation check, DMARC/SPF/CAA, resolver comparison. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#34d399,#059669)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
