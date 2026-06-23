@@ -9,7 +9,7 @@ import Footer from '@/components/Footer'
 
 const AI_SEARCH_CRAWLERS = [
   { id: 'GPTBot', label: 'GPTBot', desc: 'OpenAI / ChatGPT training' },
-  { id: 'ChatGPT-User', label: 'ChatGPT-User', desc: 'ChatGPT browsing plugin' },
+  { id: 'ChatGPT-User', label: 'ChatGPT-User', desc: 'ChatGPT real-time browsing' },
   { id: 'OAI-SearchBot', label: 'OAI-SearchBot', desc: 'OpenAI search indexing' },
   { id: 'ClaudeBot', label: 'ClaudeBot', desc: 'Anthropic / Claude' },
   { id: 'Claude-Web', label: 'Claude-Web', desc: 'Claude web search' },
@@ -18,6 +18,9 @@ const AI_SEARCH_CRAWLERS = [
   { id: 'Google-Extended', label: 'Google-Extended', desc: 'Google Gemini / AI Overviews' },
   { id: 'Bingbot', label: 'Bingbot', desc: 'Microsoft Bing / Copilot' },
   { id: 'Googlebot', label: 'Googlebot', desc: 'Google Search' },
+  { id: 'MistralAI-User', label: 'MistralAI-User', desc: 'Mistral AI assistant' },
+  { id: 'DuckAssistBot', label: 'DuckAssistBot', desc: 'DuckDuckGo AI answers' },
+  { id: 'YouBot', label: 'YouBot', desc: 'You.com AI search' },
 ]
 
 const AI_TRAINING_CRAWLERS = [
@@ -32,7 +35,17 @@ const AI_TRAINING_CRAWLERS = [
   { id: 'Diffbot', label: 'Diffbot', desc: 'Diffbot AI training' },
 ]
 
-const ALL_CRAWLERS = [...AI_SEARCH_CRAWLERS, ...AI_TRAINING_CRAWLERS]
+const DATA_SCRAPER_CRAWLERS = [
+  { id: 'AhrefsBot', label: 'AhrefsBot', desc: 'Ahrefs SEO crawler' },
+  { id: 'SemrushBot', label: 'SemrushBot', desc: 'Semrush SEO crawler' },
+  { id: 'MJ12bot', label: 'MJ12bot', desc: 'Majestic SEO crawler' },
+  { id: 'DotBot', label: 'DotBot', desc: 'OpenLinkProfiler crawler' },
+  { id: 'BLEXBot', label: 'BLEXBot', desc: 'BLEXBot data crawler' },
+  { id: 'DataForSeoBot', label: 'DataForSeoBot', desc: 'DataForSEO API crawler' },
+  { id: 'PetalBot', label: 'PetalBot', desc: 'Huawei search crawler' },
+]
+
+const ALL_CRAWLERS = [...AI_SEARCH_CRAWLERS, ...AI_TRAINING_CRAWLERS, ...DATA_SCRAPER_CRAWLERS]
 
 type LlmsSection = { name: string; url: string; description: string }
 type ActiveTab = 'robots' | 'llms'
@@ -63,6 +76,10 @@ const PRESETS: Record<string, { paths: string; blockedCrawlers: string[] }> = {
   'Block AI Training': {
     paths: '/admin/\n/api/\n/private/',
     blockedCrawlers: AI_TRAINING_CRAWLERS.map(c => c.id),
+  },
+  'Block Data Scrapers': {
+    paths: '/admin/\n/api/\n/private/',
+    blockedCrawlers: DATA_SCRAPER_CRAWLERS.map(c => c.id),
   },
 }
 
@@ -217,6 +234,11 @@ export default function RobotsTxtGeneratorPage() {
     { name: '', url: '', description: '' },
   ])
   const [llmsCopied, setLlmsCopied] = useState(false)
+  const [llmsAttribution, setLlmsAttribution] = useState('preferred')
+  const [llmsLicense, setLlmsLicense] = useState('')
+  const [llmsLicensingContact, setLlmsLicensingContact] = useState('')
+
+  const [showExplainer, setShowExplainer] = useState(false)
 
   // ── Crawler helpers ──
   function toggleCrawler(id: string) {
@@ -366,10 +388,13 @@ export default function RobotsTxtGeneratorPage() {
       lines.push(`LLMs may use this content for: ${Array.from(llmsUses).join(', ')}.`)
       lines.push('')
     }
-    if (llmsContact) {
+    if (llmsContact || llmsAttribution !== 'preferred' || llmsLicense || llmsLicensingContact) {
       lines.push('## Contact')
       lines.push('')
-      lines.push(`For AI licensing inquiries: ${llmsContact}`)
+      if (llmsContact) lines.push(`For AI licensing inquiries: ${llmsContact}`)
+      if (llmsAttribution !== 'preferred') lines.push(`Attribution: ${llmsAttribution}`)
+      if (llmsLicense) lines.push(`License: ${llmsLicense.startsWith('http') ? llmsLicense : `https://${llmsLicense}`}`)
+      if (llmsLicensingContact) lines.push(`Contact-For-Licensing: ${llmsLicensingContact}`)
       lines.push('')
     }
     return lines.join('\n').trimEnd()
@@ -386,11 +411,32 @@ export default function RobotsTxtGeneratorPage() {
       if (p.includes('.css') || p.includes('.js')) warnings.push('Blocking .css or .js files can hurt search rankings and page rendering')
       if (seen.has(p)) warnings.push(`Duplicate path detected: ${p}`)
       seen.add(p)
+      const midWildcard = /^\/[^*]+\*[^$]/.test(p)
+      if (midWildcard) warnings.push(`Non-standard wildcard: \`${p}\` has * mid-path — may not work in all crawlers (RFC 9309)`)
     })
+
+    const rawLines = disallowPaths.split('\n')
+    if (rawLines.some(l => l.trim() === '' && rawLines.indexOf(l) < rawLines.length - 1 && rawLines[rawLines.indexOf(l) - 1]?.trim())) {
+      warnings.push('Empty line in paths — an empty Disallow means "allow everything" for that agent (RFC 9309)')
+    }
 
     const googlebotBlocked = blockedCrawlers.has('Googlebot')
     const bingbotBlocked = blockedCrawlers.has('Bingbot')
-    if (googlebotBlocked && bingbotBlocked) warnings.push('Both Googlebot and Bingbot are blocked — your site will not appear in Google or Bing search results')
+    if (googlebotBlocked && bingbotBlocked) warnings.push('Warning: Blocking Googlebot and Bingbot will remove your site from Google and Bing')
+    else if (googlebotBlocked) warnings.push('Warning: Googlebot is blocked — your site will be removed from Google Search')
+
+    if (!sitemaps.some(s => s.trim())) warnings.push('Sitemap URL recommended — helps crawlers find your content faster')
+
+    for (let i = 0; i < paths.length; i++) {
+      for (let j = 0; j < paths.length; j++) {
+        if (i === j) continue
+        const parent = paths[i].endsWith('/') ? paths[i] : paths[i] + '/'
+        if (paths[j].startsWith(parent) && paths[j] !== paths[i]) {
+          warnings.push(`Conflicting rules: \`${paths[j]}\` is blocked but \`${paths[i]}\` covers its parent — most specific rule wins in Googlebot`)
+          break
+        }
+      }
+    }
 
     return warnings
   }
@@ -447,13 +493,20 @@ export default function RobotsTxtGeneratorPage() {
         </Link>
 
         <div className="mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold tracking-widest uppercase mb-4"
-            style={{ borderColor: 'rgba(6,182,212,0.25)', background: 'rgba(6,182,212,0.08)', color: '#06d6ff' }}>
-            Free Tool · AI Visibility
+          <div className="flex items-center gap-2 flex-wrap mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold tracking-widest uppercase"
+              style={{ borderColor: 'rgba(6,182,212,0.25)', background: 'rgba(6,182,212,0.08)', color: '#06d6ff' }}>
+              Free Tool · AI Visibility
+            </div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-bold tracking-widest uppercase"
+              style={{ borderColor: 'rgba(74,222,128,0.25)', background: 'rgba(74,222,128,0.08)', color: '#4ade80' }}>
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+              No API Key Required
+            </div>
           </div>
           <h1 className="text-3xl font-black text-white mb-2">robots.txt + llms.txt Generator</h1>
           <p className="text-white/45 text-sm leading-relaxed max-w-2xl">
-            Generate robots.txt with precise control over 18 AI crawlers — and generate llms.txt to tell AI assistants exactly what your site is about. No competitor combines both.
+            Generate robots.txt with per-crawler AI bot controls and llms.txt with attribution fields — the only free tool that combines both. Test here, then license for your own platform or agency. Runs entirely in your browser.
           </p>
         </div>
 
@@ -585,6 +638,40 @@ export default function RobotsTxtGeneratorPage() {
                 )}
               </div>
 
+              {/* Plain-English Explainer */}
+              <div className="rounded-2xl border overflow-hidden" style={sectionStyle}>
+                <button
+                  onClick={() => setShowExplainer(v => !v)}
+                  className="w-full flex items-center justify-between px-6 py-4 text-left"
+                >
+                  <p className="text-xs font-bold uppercase tracking-widest text-white/30">What This File Does</p>
+                  <svg className={`w-4 h-4 text-white/30 transition-transform ${showExplainer ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                {showExplainer && (
+                  <div className="px-6 pb-6 border-t border-white/6 pt-4 space-y-2">
+                    <p className="text-xs text-white/50 leading-relaxed">
+                      {allowAll ? 'All crawlers can access your site by default.' : 'All crawlers are blocked by default.'}
+                    </p>
+                    {disallowPaths.split('\n').filter(p => p.trim()).map((p, i) => (
+                      <p key={i} className="text-xs text-white/50 leading-relaxed">
+                        <span className="text-cyan-400">→</span> <code className="text-white/70">{p.trim()}</code> is blocked from all crawlers
+                      </p>
+                    ))}
+                    {Array.from(blockedCrawlers).map(id => {
+                      const found = ALL_CRAWLERS.find(c => c.id === id)
+                      return found ? (
+                        <p key={id} className="text-xs text-white/50 leading-relaxed">
+                          <span className="text-red-400">→</span> <span className="text-white/70 font-mono">{found.label}</span> ({found.desc}) is blocked from your entire site
+                        </p>
+                      ) : null
+                    })}
+                    {!disallowPaths.split('\n').filter(p => p.trim()).length && blockedCrawlers.size === 0 && (
+                      <p className="text-xs text-white/50 leading-relaxed">Your site is fully open to all crawlers.</p>
+                    )}
+                  </div>
+                )}
+              </div>
+
               {/* General access */}
               <div className="rounded-2xl border p-6" style={sectionStyle}>
                 <p className="text-xs font-bold uppercase tracking-widest text-white/30 mb-4">General Access</p>
@@ -688,6 +775,41 @@ export default function RobotsTxtGeneratorPage() {
                 </div>
                 <div className="space-y-1">
                   {AI_TRAINING_CRAWLERS.map(crawler => (
+                    <div key={crawler.id} className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
+                      <div>
+                        <p className="text-xs font-bold text-white font-mono">{crawler.id}</p>
+                        <p className="text-[11px] text-white/35">{crawler.desc}</p>
+                      </div>
+                      <button
+                        onClick={() => toggleCrawler(crawler.id)}
+                        className="text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-lg border transition-all"
+                        style={{
+                          background: !blockedCrawlers.has(crawler.id) ? 'rgba(6,182,212,0.12)' : 'rgba(248,113,113,0.1)',
+                          color: !blockedCrawlers.has(crawler.id) ? '#06d6ff' : '#f87171',
+                          borderColor: !blockedCrawlers.has(crawler.id) ? 'rgba(6,182,212,0.3)' : 'rgba(248,113,113,0.3)',
+                        }}>
+                        {!blockedCrawlers.has(crawler.id) ? 'Allowed' : 'Blocked'}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Data & SEO Scrapers */}
+              <div className="rounded-2xl border p-6" style={sectionStyle}>
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-white/30">Data &amp; SEO Scrapers</p>
+                    <p className="text-[10px] text-white/20 mt-0.5">Commercial scrapers that drain bandwidth and expose pricing/content to competitors</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => allowGroup(DATA_SCRAPER_CRAWLERS.map(c => c.id))} className="text-[10px] font-bold text-cyan-400 hover:text-cyan-300 transition-colors">Allow all</button>
+                    <span className="text-white/15">·</span>
+                    <button onClick={() => blockGroup(DATA_SCRAPER_CRAWLERS.map(c => c.id))} className="text-[10px] font-bold text-red-400 hover:text-red-300 transition-colors">Block all</button>
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  {DATA_SCRAPER_CRAWLERS.map(crawler => (
                     <div key={crawler.id} className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
                       <div>
                         <p className="text-xs font-bold text-white font-mono">{crawler.id}</p>
@@ -965,6 +1087,28 @@ export default function RobotsTxtGeneratorPage() {
                 ))}
               </div>
 
+              <div className="rounded-2xl border p-6 space-y-4" style={sectionStyle}>
+                <p className="text-xs font-bold uppercase tracking-widest text-white/30">Attribution &amp; Licensing</p>
+                <div>
+                  <label style={labelStyle}>Content Attribution</label>
+                  <select value={llmsAttribution} onChange={e => setLlmsAttribution(e.target.value)} style={{ ...inputStyle, cursor: 'pointer' }}>
+                    <option value="preferred">Preferred — credit appreciated but not required</option>
+                    <option value="required">Required — AI platforms must credit your site</option>
+                    <option value="none">None — no attribution needed</option>
+                  </select>
+                  <p className="text-[10px] text-white/25 mt-1">Major AI platforms committed to respecting attribution requirements for content published after Jan 2026</p>
+                </div>
+                <div>
+                  <label style={labelStyle}>License URL (optional)</label>
+                  <input type="text" value={llmsLicense} onChange={e => setLlmsLicense(e.target.value)} placeholder="https://yoursite.com/terms" style={inputStyle} />
+                  <p className="text-[10px] text-white/25 mt-1">Link to your content license or terms of use</p>
+                </div>
+                <div>
+                  <label style={labelStyle}>Licensing Contact (optional)</label>
+                  <input type="email" value={llmsLicensingContact} onChange={e => setLlmsLicensingContact(e.target.value)} placeholder="licensing@yoursite.com" style={inputStyle} />
+                </div>
+              </div>
+
               <div className="rounded-2xl border p-6" style={sectionStyle}>
                 <label style={labelStyle}>Contact for AI Partnerships (optional)</label>
                 <input type="email" value={llmsContact} onChange={e => setLlmsContact(e.target.value)} placeholder="hello@example.com" style={inputStyle} />
@@ -998,6 +1142,43 @@ export default function RobotsTxtGeneratorPage() {
                 </pre>
               </div>
 
+              {/* What AI Assistants See preview */}
+              <div className="rounded-2xl border overflow-hidden" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                <div className="px-4 py-2.5 border-b border-white/6 flex items-center gap-2" style={{ background: '#0d1117' }}>
+                  <div className="w-2 h-2 rounded-full bg-green-400/60" />
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/30">What AI Assistants See</p>
+                </div>
+                <div className="p-5 font-sans" style={{ background: '#fff' }}>
+                  <h3 className="text-base font-bold text-gray-900 mb-1">{llmsSiteName || 'Your Site'}</h3>
+                  {llmsSiteUrl && <p className="text-xs text-blue-600 mb-2">{llmsSiteUrl.startsWith('http') ? llmsSiteUrl : `https://${llmsSiteUrl}`}</p>}
+                  {llmsDescription && <p className="text-sm text-gray-600 mb-3 leading-relaxed">{llmsDescription}</p>}
+                  {llmsUses.size > 0 && (
+                    <div className="mb-3">
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">Permitted uses</p>
+                      <ul className="space-y-0.5">
+                        {Array.from(llmsUses).map(u => (
+                          <li key={u} className="text-xs text-gray-600 flex items-center gap-1.5">
+                            <span className="text-green-500">✓</span>{u}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {llmsSections.filter(s => s.name || s.url).length > 0 && (
+                    <div>
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">Content</p>
+                      {llmsSections.filter(s => s.name || s.url).map((s, i) => (
+                        <div key={i} className="mb-1.5">
+                          <p className="text-xs font-semibold text-blue-700">{s.name || s.url}</p>
+                          {s.description && <p className="text-[11px] text-gray-500">{s.description}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {!llmsSiteName && !llmsDescription && <p className="text-xs text-gray-400 italic">Fill in site details to see preview</p>}
+                </div>
+              </div>
+
               <div className="rounded-xl border p-4" style={{ background: 'rgba(6,182,212,0.04)', borderColor: 'rgba(6,182,212,0.12)' }}>
                 <p className="text-xs font-bold text-cyan-400 mb-1">How to deploy llms.txt</p>
                 <p className="text-xs text-white/45 leading-relaxed">
@@ -1008,8 +1189,159 @@ export default function RobotsTxtGeneratorPage() {
           </div>
         )}
 
-        {/* How It Works */}
+        {/* Requirements & Setup */}
         <div className="mt-14 border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+          <div className="grid lg:grid-cols-3 gap-8 mb-14">
+
+            <div className="rounded-2xl border p-6" style={{ background: '#0d1117', borderColor: 'rgba(74,222,128,0.2)' }}>
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-widest mb-4"
+                style={{ background: 'rgba(74,222,128,0.1)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.25)' }}>
+                No API Key Required
+              </div>
+              <h3 className="text-base font-black text-white mb-2">Works right out of the box</h3>
+              <p className="text-sm text-white/45 leading-relaxed">
+                This tool runs entirely in your browser. Generate, customize, and download robots.txt and llms.txt files instantly — no account, no API key, no server needed.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border p-6" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
+              <p className="text-xs font-bold uppercase tracking-widest text-white/30 mb-4">Who This Is For</p>
+              <ul className="space-y-2.5">
+                {[
+                  'Website owners who want control over which AI bots crawl their site',
+                  'SEO agencies managing crawler rules for client sites',
+                  'Developers deploying sites on any platform',
+                  'Businesses protecting content from AI training scrapers',
+                  'Anyone wanting to appear in AI search answers via llms.txt',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-xs text-white/55 leading-relaxed">
+                    <span className="text-cyan-400 mt-0.5 flex-shrink-0">→</span>{item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="rounded-2xl border p-6" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
+              <p className="text-xs font-bold uppercase tracking-widest text-white/30 mb-4">What You Need</p>
+              <ul className="space-y-2.5">
+                {[
+                  { label: 'A website', note: 'Any platform — WordPress, Shopify, Vercel, cPanel, raw server' },
+                  { label: 'Access to your site root', note: 'Ability to upload or edit files at yoursite.com/robots.txt' },
+                  { label: 'Your sitemap URL', note: 'Optional but recommended — e.g. yoursite.com/sitemap.xml' },
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span className="text-green-400 mt-0.5 flex-shrink-0 text-xs font-black">✓</span>
+                    <div>
+                      <p className="text-xs font-bold text-white">{item.label}</p>
+                      <p className="text-xs text-white/40">{item.note}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Platform deploy instructions */}
+          <div className="mb-14">
+            <h2 className="text-xl font-black text-white mb-1">How to Deploy robots.txt to Your Site</h2>
+            <p className="text-white/35 text-sm mb-6">Download the file above, then follow the steps for your platform. The file must be accessible at <code className="text-white/60">yoursite.com/robots.txt</code> — not in a subfolder.</p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+              {[
+                {
+                  platform: 'WordPress',
+                  steps: [
+                    'Download the robots.txt file',
+                    'Connect via FTP or cPanel File Manager',
+                    'Upload to the root directory (same folder as wp-config.php)',
+                    'Verify at yoursite.com/robots.txt',
+                  ],
+                  note: 'WordPress may auto-generate a robots.txt — replace it with your downloaded file.',
+                },
+                {
+                  platform: 'Shopify',
+                  steps: [
+                    'Go to Online Store → Themes → Edit Code',
+                    'Find robots.txt.liquid in the Templates folder',
+                    'Replace contents with your generated rules',
+                    'Save — Shopify serves it automatically at /robots.txt',
+                  ],
+                  note: 'Shopify controls robots.txt through liquid templates, not file uploads.',
+                },
+                {
+                  platform: 'Next.js / Vercel',
+                  steps: [
+                    'Place robots.txt in your /public folder',
+                    'Vercel serves /public files at the root automatically',
+                    'Deploy — it\'s live at yoursite.com/robots.txt',
+                    'For dynamic rules, use Next.js MetadataRoute.robots instead',
+                  ],
+                  note: 'The public/ folder approach is simplest for static rules.',
+                },
+                {
+                  platform: 'Webflow',
+                  steps: [
+                    'Go to Project Settings → SEO',
+                    'Paste your rules into the robots.txt field',
+                    'Save and publish your site',
+                  ],
+                  note: 'Webflow has a built-in robots.txt editor — no file upload needed.',
+                },
+                {
+                  platform: 'Squarespace',
+                  steps: [
+                    'Go to Settings → Advanced → robots.txt',
+                    'Paste your generated rules',
+                    'Save — Squarespace applies it immediately',
+                  ],
+                  note: 'Squarespace Business plan or higher required.',
+                },
+                {
+                  platform: 'cPanel / Raw Server',
+                  steps: [
+                    'Log in to cPanel → File Manager',
+                    'Navigate to public_html (your site root)',
+                    'Upload the robots.txt file there',
+                    'Verify at yoursite.com/robots.txt',
+                  ],
+                  note: 'If a robots.txt already exists, replace it — do not create a duplicate.',
+                },
+              ].map(p => (
+                <div key={p.platform} className="rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
+                  <p className="text-sm font-black text-white mb-3">{p.platform}</p>
+                  <ol className="space-y-1.5 mb-3">
+                    {p.steps.map((step, i) => (
+                      <li key={i} className="flex items-start gap-2 text-xs text-white/50 leading-relaxed">
+                        <span className="text-white/20 font-bold flex-shrink-0">{i + 1}.</span>{step}
+                      </li>
+                    ))}
+                  </ol>
+                  <p className="text-[10px] text-white/25 leading-relaxed border-t border-white/6 pt-2">{p.note}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* llms.txt deploy */}
+            <div className="rounded-2xl border p-6" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
+              <p className="text-sm font-black text-white mb-1">Deploying llms.txt</p>
+              <p className="text-xs text-white/40 mb-4">llms.txt is an emerging standard (llmstxt.org) — place it at <code className="text-white/60">yoursite.com/llms.txt</code> using the same method as robots.txt above.</p>
+              <div className="grid sm:grid-cols-3 gap-4">
+                {[
+                  { label: 'Next.js / Vercel', step: 'Drop llms.txt in your /public folder. It\'s live immediately after deploy.' },
+                  { label: 'WordPress / cPanel', step: 'Upload to public_html root via FTP or File Manager.' },
+                  { label: 'Webflow / Squarespace', step: 'Use a redirect to a hosted file, or contact your platform — llms.txt support varies.' },
+                ].map(p => (
+                  <div key={p.label} className="rounded-xl border p-4" style={{ background: '#070b14', borderColor: 'rgba(255,255,255,0.06)' }}>
+                    <p className="text-xs font-bold text-white mb-1">{p.label}</p>
+                    <p className="text-xs text-white/40 leading-relaxed">{p.step}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* How It Works */}
+        <div className="border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-xl font-black text-white mb-1">How It Works</h2>
           <p className="text-white/35 text-sm mb-8">Control exactly which AI crawlers can access your site — and tell AI assistants what your site is about.</p>
           <div className="grid sm:grid-cols-4 gap-4">
