@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -9,7 +9,11 @@ import Footer from '@/components/Footer'
 
 type DayHours = { open: string; close: string; closed: boolean }
 type FaqItem = { question: string; answer: string }
-type SchemaTab = 'localbusiness' | 'faqpage' | 'article' | 'product' | 'event'
+type HowToStep = { name: string; text: string; image: string }
+type BreadcrumbItem = { name: string; url: string }
+type StackItem = { id: string; label: string; schema: string }
+type HistoryItem = { id: string; type: string; label: string; schema: string; ts: number }
+type SchemaTab = 'localbusiness' | 'faqpage' | 'article' | 'product' | 'event' | 'organization' | 'howto' | 'website' | 'softwareapp' | 'breadcrumb' | 'video'
 
 // ─── Constants ─────────────────────────────────────────────────────────────────
 
@@ -39,6 +43,12 @@ const BUSINESS_TYPES = [
 const STATES = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY']
 const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
 const CURRENCIES = ['USD','EUR','GBP','CAD','AUD','JPY','CHF','SEK','NOK','DKK']
+const OS_OPTIONS = ['Web', 'iOS', 'Android', 'Windows', 'macOS']
+const APP_CATEGORIES = [
+  'BusinessApplication','DeveloperApplication','FinanceApplication',
+  'HealthAndFitnessApplication','LifestyleApplication','MultimediaApplication',
+  'SecurityApplication','UtilitiesApplication',
+]
 
 const defaultHours: Record<string, DayHours> = {
   Monday: { open: '09:00', close: '17:00', closed: false },
@@ -275,6 +285,132 @@ function buildEvent(f: {
   return JSON.stringify(schema, null, 2)
 }
 
+function buildOrganization(f: {
+  name: string; description: string; url: string; logo: string; email: string; phone: string
+  foundingYear: string; employees: string; street: string; city: string; state: string; zip: string
+  socials: Record<string, string>
+}) {
+  const schema: Record<string, unknown> = { '@context': 'https://schema.org', '@type': 'Organization' }
+  if (f.name) schema['name'] = f.name
+  if (f.description) schema['description'] = f.description
+  if (f.url) schema['url'] = f.url.startsWith('http') ? f.url : `https://${f.url}`
+  if (f.email) schema['email'] = f.email
+  if (f.phone) schema['telephone'] = f.phone
+  if (f.foundingYear) schema['foundingDate'] = f.foundingYear
+  if (f.employees) schema['numberOfEmployees'] = { '@type': 'QuantitativeValue', value: parseInt(f.employees) }
+  if (f.logo) schema['logo'] = { '@type': 'ImageObject', url: f.logo.startsWith('http') ? f.logo : `https://${f.logo}` }
+  if (f.street || f.city || f.state || f.zip) {
+    schema['address'] = {
+      '@type': 'PostalAddress',
+      ...(f.street && { streetAddress: f.street }),
+      ...(f.city && { addressLocality: f.city }),
+      ...(f.state && { addressRegion: f.state }),
+      ...(f.zip && { postalCode: f.zip }),
+    }
+  }
+  const sameAs = SOCIAL_PLATFORMS.map(p => f.socials[p.key]).filter(Boolean)
+  if (sameAs.length > 0) schema['sameAs'] = sameAs
+  return JSON.stringify(schema, null, 2)
+}
+
+function buildHowTo(f: {
+  name: string; description: string; image: string; totalTime: string
+  costAmount: string; costCurrency: string; steps: HowToStep[]
+}) {
+  const schema: Record<string, unknown> = { '@context': 'https://schema.org', '@type': 'HowTo' }
+  if (f.name) schema['name'] = f.name
+  if (f.description) schema['description'] = f.description
+  if (f.image) schema['image'] = f.image.startsWith('http') ? f.image : `https://${f.image}`
+  if (f.totalTime) schema['totalTime'] = f.totalTime
+  if (f.costAmount && f.costCurrency) schema['estimatedCost'] = { '@type': 'MonetaryAmount', currency: f.costCurrency, value: f.costAmount }
+  const validSteps = f.steps.filter(s => s.name && s.text)
+  if (validSteps.length > 0) {
+    schema['step'] = validSteps.map(s => ({
+      '@type': 'HowToStep',
+      name: s.name,
+      text: s.text,
+      ...(s.image && { image: s.image.startsWith('http') ? s.image : `https://${s.image}` }),
+    }))
+  }
+  return JSON.stringify(schema, null, 2)
+}
+
+function buildWebSite(f: { name: string; url: string; description: string; enableSearch: boolean; searchUrl: string }) {
+  const schema: Record<string, unknown> = { '@context': 'https://schema.org', '@type': 'WebSite' }
+  if (f.name) schema['name'] = f.name
+  if (f.url) schema['url'] = f.url.startsWith('http') ? f.url : `https://${f.url}`
+  if (f.description) schema['description'] = f.description
+  if (f.enableSearch && f.searchUrl) {
+    schema['potentialAction'] = {
+      '@type': 'SearchAction',
+      target: { '@type': 'EntryPoint', urlTemplate: f.searchUrl },
+      'query-input': 'required name=search_term_string',
+    }
+  }
+  return JSON.stringify(schema, null, 2)
+}
+
+function buildSoftwareApp(f: {
+  name: string; description: string; url: string; image: string; category: string
+  os: string[]; price: string; currency: string; ratingValue: string; ratingCount: string
+}) {
+  const schema: Record<string, unknown> = { '@context': 'https://schema.org', '@type': 'SoftwareApplication' }
+  if (f.name) schema['name'] = f.name
+  if (f.description) schema['description'] = f.description
+  if (f.url) schema['url'] = f.url.startsWith('http') ? f.url : `https://${f.url}`
+  if (f.image) schema['image'] = f.image.startsWith('http') ? f.image : `https://${f.image}`
+  if (f.category) schema['applicationCategory'] = f.category
+  if (f.os.length > 0) schema['operatingSystem'] = f.os.join(', ')
+  const priceVal = f.price === '' ? '0' : f.price
+  schema['offers'] = { '@type': 'Offer', price: priceVal, priceCurrency: f.currency || 'USD' }
+  if (f.ratingValue && f.ratingCount) {
+    schema['aggregateRating'] = { '@type': 'AggregateRating', ratingValue: parseFloat(f.ratingValue), reviewCount: parseInt(f.ratingCount), bestRating: 5, worstRating: 1 }
+  }
+  return JSON.stringify(schema, null, 2)
+}
+
+function buildBreadcrumb(items: BreadcrumbItem[]) {
+  const valid = items.filter(i => i.name && i.url)
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: valid.map((item, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: item.name,
+      item: item.url.startsWith('http') ? item.url : `https://${item.url}`,
+    })),
+  }
+  return JSON.stringify(schema, null, 2)
+}
+
+function buildVideo(f: {
+  name: string; description: string; thumbnailUrl: string; uploadDate: string
+  durationMin: string; durationSec: string; contentUrl: string; embedUrl: string
+  publisherName: string; publisherLogo: string
+}) {
+  const schema: Record<string, unknown> = { '@context': 'https://schema.org', '@type': 'VideoObject' }
+  if (f.name) schema['name'] = f.name
+  if (f.description) schema['description'] = f.description
+  if (f.thumbnailUrl) schema['thumbnailUrl'] = f.thumbnailUrl.startsWith('http') ? f.thumbnailUrl : `https://${f.thumbnailUrl}`
+  if (f.uploadDate) schema['uploadDate'] = f.uploadDate
+  if (f.durationMin || f.durationSec) {
+    const m = parseInt(f.durationMin || '0')
+    const s = parseInt(f.durationSec || '0')
+    schema['duration'] = `PT${m}M${s}S`
+  }
+  if (f.contentUrl) schema['contentUrl'] = f.contentUrl.startsWith('http') ? f.contentUrl : `https://${f.contentUrl}`
+  if (f.embedUrl) schema['embedUrl'] = f.embedUrl
+  if (f.publisherName) {
+    schema['publisher'] = {
+      '@type': 'Organization',
+      name: f.publisherName,
+      ...(f.publisherLogo && { logo: { '@type': 'ImageObject', url: f.publisherLogo.startsWith('http') ? f.publisherLogo : `https://${f.publisherLogo}` } }),
+    }
+  }
+  return JSON.stringify(schema, null, 2)
+}
+
 // ─── Validation ────────────────────────────────────────────────────────────────
 
 function getLocalBizWarnings(f: { name: string; url: string; phone: string; image: string; description: string; ratingValue: string; ratingCount: string }) {
@@ -324,6 +460,58 @@ function getEventWarnings(f: { name: string; startDate: string; locationName: st
   if (!f.name) warnings.push('Event name is required')
   if (!f.startDate) warnings.push('Start date required for Event rich results')
   if (!f.locationName) warnings.push('Location name recommended')
+  return warnings
+}
+
+function getOrganizationWarnings(f: { name: string; url: string }) {
+  const warnings: string[] = []
+  if (!f.name) warnings.push('Organization name is required')
+  if (!f.url) warnings.push('Website URL required — helps AI assistants identify your organization')
+  return warnings
+}
+
+function getHowToWarnings(f: { name: string; steps: HowToStep[] }) {
+  const warnings: string[] = []
+  if (!f.name) warnings.push('HowTo name is required')
+  const valid = f.steps.filter(s => s.name && s.text)
+  if (valid.length === 0) warnings.push('Add at least one step with a name and instructions')
+  const incomplete = f.steps.filter(s => (s.name && !s.text) || (!s.name && s.text))
+  if (incomplete.length > 0) warnings.push(`${incomplete.length} step(s) are missing name or text`)
+  return warnings
+}
+
+function getWebSiteWarnings(f: { name: string; url: string; enableSearch: boolean; searchUrl: string }) {
+  const warnings: string[] = []
+  if (!f.name) warnings.push('Site name is required')
+  if (!f.url) warnings.push('Site URL is required')
+  if (f.enableSearch && !f.searchUrl) warnings.push('Search URL pattern required when search is enabled')
+  if (f.enableSearch && f.searchUrl && !f.searchUrl.includes('{search_term_string}')) warnings.push('Search URL must include {search_term_string} placeholder')
+  return warnings
+}
+
+function getSoftwareAppWarnings(f: { name: string; ratingValue: string; ratingCount: string }) {
+  const warnings: string[] = []
+  if (!f.name) warnings.push('App name is required')
+  if (f.ratingValue && !f.ratingCount) warnings.push('Review count required when rating is set')
+  if (f.ratingCount && !f.ratingValue) warnings.push('Rating value required when review count is set')
+  return warnings
+}
+
+function getBreadcrumbWarnings(items: BreadcrumbItem[]) {
+  const warnings: string[] = []
+  const valid = items.filter(i => i.name && i.url)
+  if (valid.length < 2) warnings.push('At least 2 complete breadcrumb items required')
+  const incomplete = items.filter(i => (i.name && !i.url) || (!i.name && i.url))
+  if (incomplete.length > 0) warnings.push(`${incomplete.length} item(s) are missing name or URL`)
+  return warnings
+}
+
+function getVideoWarnings(f: { name: string; description: string; thumbnailUrl: string; uploadDate: string }) {
+  const warnings: string[] = []
+  if (!f.name) warnings.push('Video name is required')
+  if (!f.description) warnings.push('Description required for Video rich results')
+  if (!f.thumbnailUrl) warnings.push('Thumbnail URL required for Video rich results')
+  if (!f.uploadDate) warnings.push('Upload date required')
   return warnings
 }
 
@@ -434,6 +622,119 @@ function EventPreview({ name, startDate, startTime, locationName }: { name: stri
   )
 }
 
+function OrganizationPreview({ name, url, description }: { name: string; url: string; description: string }) {
+  const domain = url ? (url.includes('://') ? url.replace(/^https?:\/\//, '') : url).split('/')[0] : 'yoursite.com'
+  return (
+    <div className="rounded-xl p-4 font-sans" style={{ background: '#fff', color: '#202124' }}>
+      <p className="text-xs text-gray-500 mb-1">{domain}</p>
+      <p className="text-base font-semibold text-blue-700 leading-snug mb-1">{name || 'Organization Name'}</p>
+      {description && <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{description}</p>}
+      <p className="text-xs text-gray-400 mt-2 italic">Preview — actual appearance varies in Google</p>
+    </div>
+  )
+}
+
+function HowToPreview({ name, steps }: { name: string; steps: HowToStep[] }) {
+  const valid = steps.filter(s => s.name && s.text)
+  return (
+    <div className="rounded-xl p-4 font-sans" style={{ background: '#fff', color: '#202124' }}>
+      <p className="text-sm font-semibold text-blue-700 mb-2">{name || 'How To Guide'}</p>
+      {valid.slice(0, 3).map((s, i) => (
+        <div key={i} className="flex gap-2 mb-1.5">
+          <span className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 text-blue-700 text-xs flex items-center justify-center font-bold">{i + 1}</span>
+          <div>
+            <p className="text-xs font-semibold text-gray-800">{s.name}</p>
+            <p className="text-xs text-gray-500 line-clamp-1">{s.text}</p>
+          </div>
+        </div>
+      ))}
+      {valid.length === 0 && <p className="text-xs text-gray-400">Add steps to see preview</p>}
+      <p className="text-xs text-gray-400 mt-2 italic">Preview — actual appearance varies in Google</p>
+    </div>
+  )
+}
+
+function WebSitePreview({ name, url, enableSearch }: { name: string; url: string; enableSearch: boolean }) {
+  const domain = url ? (url.includes('://') ? url.replace(/^https?:\/\//, '') : url).split('/')[0] : 'yoursite.com'
+  return (
+    <div className="rounded-xl p-4 font-sans" style={{ background: '#fff', color: '#202124' }}>
+      <p className="text-xs text-gray-500 mb-1">{domain}</p>
+      <p className="text-base font-semibold text-blue-700 mb-2">{name || 'Your Site Name'}</p>
+      {enableSearch && (
+        <div className="flex items-center gap-2 rounded-full border border-gray-300 px-3 py-1.5">
+          <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <span className="text-xs text-gray-400">Search {name || 'this site'}...</span>
+        </div>
+      )}
+      <p className="text-xs text-gray-400 mt-2 italic">Preview — actual appearance varies in Google</p>
+    </div>
+  )
+}
+
+function SoftwareAppPreview({ name, category, os, price, currency, ratingValue, ratingCount }: {
+  name: string; category: string; os: string[]; price: string; currency: string; ratingValue: string; ratingCount: string
+}) {
+  const rating = parseFloat(ratingValue)
+  const stars = !isNaN(rating) ? Math.round(rating) : 0
+  const priceLabel = (!price || price === '0') ? 'Free' : `${currency} ${price}`
+  return (
+    <div className="rounded-xl p-4 font-sans" style={{ background: '#fff', color: '#202124' }}>
+      {category && <p className="text-xs text-gray-500 mb-1">{category.replace('Application', '')}</p>}
+      <p className="text-base font-semibold text-blue-700 mb-1">{name || 'App Name'}</p>
+      {(ratingValue && ratingCount) && (
+        <div className="flex items-center gap-1 mb-1">
+          <span className="text-yellow-500 text-sm">{'★'.repeat(stars)}{'☆'.repeat(5 - stars)}</span>
+          <span className="text-xs text-gray-600">{ratingValue} ({ratingCount})</span>
+        </div>
+      )}
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className="text-xs font-bold text-gray-700">{priceLabel}</span>
+        {os.map(o => <span key={o} className="text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">{o}</span>)}
+      </div>
+      <p className="text-xs text-gray-400 mt-2 italic">Preview — actual appearance varies in Google</p>
+    </div>
+  )
+}
+
+function BreadcrumbPreview({ items }: { items: BreadcrumbItem[] }) {
+  const valid = items.filter(i => i.name)
+  return (
+    <div className="rounded-xl p-4 font-sans" style={{ background: '#fff', color: '#202124' }}>
+      <p className="text-xs text-gray-500 mb-2">Google Search result</p>
+      <div className="flex items-center gap-1 flex-wrap">
+        {valid.map((item, i) => (
+          <span key={i} className="flex items-center gap-1">
+            <span className="text-xs text-gray-600">{item.name}</span>
+            {i < valid.length - 1 && <span className="text-xs text-gray-400">›</span>}
+          </span>
+        ))}
+        {valid.length === 0 && <span className="text-xs text-gray-400">Home › Category › Page</span>}
+      </div>
+      <p className="text-xs text-gray-400 mt-2 italic">Preview — actual appearance varies in Google</p>
+    </div>
+  )
+}
+
+function VideoPreview({ name, uploadDate, durationMin, durationSec }: { name: string; uploadDate: string; durationMin: string; durationSec: string }) {
+  const dateStr = uploadDate ? new Date(uploadDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : ''
+  const dur = (durationMin || durationSec) ? `${durationMin || '0'}:${(durationSec || '0').padStart(2, '0')}` : ''
+  return (
+    <div className="rounded-xl p-4 font-sans" style={{ background: '#fff', color: '#202124' }}>
+      <div className="flex gap-3">
+        <div className="w-24 h-14 rounded bg-gray-200 flex items-center justify-center flex-shrink-0">
+          <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-blue-700 leading-snug">{name || 'Video Title'}</p>
+          {dateStr && <p className="text-xs text-gray-500 mt-0.5">{dateStr}</p>}
+          {dur && <p className="text-xs text-gray-500">{dur}</p>}
+        </div>
+      </div>
+      <p className="text-xs text-gray-400 mt-2 italic">Preview — actual appearance varies in Google</p>
+    </div>
+  )
+}
+
 // ─── Styles ────────────────────────────────────────────────────────────────────
 
 const inputStyle: React.CSSProperties = {
@@ -453,6 +754,11 @@ const sectionStyle: React.CSSProperties = {
 export default function SchemaGeneratorPage() {
   const [activeTab, setActiveTab] = useState<SchemaTab>('localbusiness')
   const [copied, setCopied] = useState(false)
+  const [minify, setMinify] = useState(false)
+  const [schemaStack, setSchemaStack] = useState<StackItem[]>([])
+  const [history, setHistory] = useState<HistoryItem[]>([])
+  const [historyOpen, setHistoryOpen] = useState(false)
+  const [restoredSchema, setRestoredSchema] = useState<string | null>(null)
 
   // LocalBusiness state
   const [lbType, setLbType] = useState('LocalBusiness')
@@ -531,6 +837,79 @@ export default function SchemaGeneratorPage() {
   const [evTicketUrl, setEvTicketUrl] = useState('')
   const [evUrl, setEvUrl] = useState('')
 
+  // Organization state
+  const [orgName, setOrgName] = useState('')
+  const [orgDescription, setOrgDescription] = useState('')
+  const [orgUrl, setOrgUrl] = useState('')
+  const [orgLogo, setOrgLogo] = useState('')
+  const [orgEmail, setOrgEmail] = useState('')
+  const [orgPhone, setOrgPhone] = useState('')
+  const [orgFoundingYear, setOrgFoundingYear] = useState('')
+  const [orgEmployees, setOrgEmployees] = useState('')
+  const [orgStreet, setOrgStreet] = useState('')
+  const [orgCity, setOrgCity] = useState('')
+  const [orgState, setOrgState] = useState('CO')
+  const [orgZip, setOrgZip] = useState('')
+  const [orgSocials, setOrgSocials] = useState<Record<string, string>>({})
+
+  // HowTo state
+  const [htName, setHtName] = useState('')
+  const [htDescription, setHtDescription] = useState('')
+  const [htImage, setHtImage] = useState('')
+  const [htTotalTime, setHtTotalTime] = useState('')
+  const [htCostAmount, setHtCostAmount] = useState('')
+  const [htCostCurrency, setHtCostCurrency] = useState('USD')
+  const [htSteps, setHtSteps] = useState<HowToStep[]>([
+    { name: '', text: '', image: '' },
+    { name: '', text: '', image: '' },
+  ])
+
+  // WebSite state
+  const [wsName, setWsName] = useState('')
+  const [wsUrl, setWsUrl] = useState('')
+  const [wsDescription, setWsDescription] = useState('')
+  const [wsEnableSearch, setWsEnableSearch] = useState(false)
+  const [wsSearchUrl, setWsSearchUrl] = useState('')
+
+  // SoftwareApp state
+  const [appName, setAppName] = useState('')
+  const [appDescription, setAppDescription] = useState('')
+  const [appUrl, setAppUrl] = useState('')
+  const [appImage, setAppImage] = useState('')
+  const [appCategory, setAppCategory] = useState('BusinessApplication')
+  const [appOs, setAppOs] = useState<string[]>(['Web'])
+  const [appPrice, setAppPrice] = useState('0')
+  const [appCurrency, setAppCurrency] = useState('USD')
+  const [appRatingValue, setAppRatingValue] = useState('')
+  const [appRatingCount, setAppRatingCount] = useState('')
+
+  // Breadcrumb state
+  const [bcItems, setBcItems] = useState<BreadcrumbItem[]>([
+    { name: 'Home', url: 'https://example.com' },
+    { name: 'Category', url: 'https://example.com/category' },
+    { name: 'Page', url: 'https://example.com/category/page' },
+  ])
+
+  // Video state
+  const [vidName, setVidName] = useState('')
+  const [vidDescription, setVidDescription] = useState('')
+  const [vidThumbnail, setVidThumbnail] = useState('')
+  const [vidUploadDate, setVidUploadDate] = useState('')
+  const [vidDurationMin, setVidDurationMin] = useState('')
+  const [vidDurationSec, setVidDurationSec] = useState('')
+  const [vidContentUrl, setVidContentUrl] = useState('')
+  const [vidEmbedUrl, setVidEmbedUrl] = useState('')
+  const [vidPublisherName, setVidPublisherName] = useState('')
+  const [vidPublisherLogo, setVidPublisherLogo] = useState('')
+
+  // localStorage history
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('sqx-schema-history')
+      if (stored) setHistory(JSON.parse(stored))
+    } catch {}
+  }, [])
+
   // ── Computed output ──
   let schema = ''
   let warnings: string[] = []
@@ -562,14 +941,75 @@ export default function SchemaGeneratorPage() {
     schema = buildEvent({ name: evName, description: evDescription, image: evImage, startDate: evStartDate, startTime: evStartTime, endDate: evEndDate, endTime: evEndTime, locationName: evLocationName, locationAddress: evLocationAddress, locationCity: evLocationCity, locationState: evLocationState, eventStatus: evStatus, attendanceMode: evAttendanceMode, organizerName: evOrganizerName, organizerUrl: evOrganizerUrl, price: evPrice, currency: evCurrency, ticketUrl: evTicketUrl, eventUrl: evUrl })
     warnings = getEventWarnings({ name: evName, startDate: evStartDate, locationName: evLocationName })
     preview = <EventPreview name={evName} startDate={evStartDate} startTime={evStartTime} locationName={evLocationName} />
+  } else if (activeTab === 'organization') {
+    schema = buildOrganization({ name: orgName, description: orgDescription, url: orgUrl, logo: orgLogo, email: orgEmail, phone: orgPhone, foundingYear: orgFoundingYear, employees: orgEmployees, street: orgStreet, city: orgCity, state: orgState, zip: orgZip, socials: orgSocials })
+    warnings = getOrganizationWarnings({ name: orgName, url: orgUrl })
+    preview = <OrganizationPreview name={orgName} url={orgUrl} description={orgDescription} />
+  } else if (activeTab === 'howto') {
+    schema = buildHowTo({ name: htName, description: htDescription, image: htImage, totalTime: htTotalTime, costAmount: htCostAmount, costCurrency: htCostCurrency, steps: htSteps })
+    warnings = getHowToWarnings({ name: htName, steps: htSteps })
+    preview = <HowToPreview name={htName} steps={htSteps} />
+  } else if (activeTab === 'website') {
+    schema = buildWebSite({ name: wsName, url: wsUrl, description: wsDescription, enableSearch: wsEnableSearch, searchUrl: wsSearchUrl })
+    warnings = getWebSiteWarnings({ name: wsName, url: wsUrl, enableSearch: wsEnableSearch, searchUrl: wsSearchUrl })
+    preview = <WebSitePreview name={wsName} url={wsUrl} enableSearch={wsEnableSearch} />
+  } else if (activeTab === 'softwareapp') {
+    schema = buildSoftwareApp({ name: appName, description: appDescription, url: appUrl, image: appImage, category: appCategory, os: appOs, price: appPrice, currency: appCurrency, ratingValue: appRatingValue, ratingCount: appRatingCount })
+    warnings = getSoftwareAppWarnings({ name: appName, ratingValue: appRatingValue, ratingCount: appRatingCount })
+    preview = <SoftwareAppPreview name={appName} category={appCategory} os={appOs} price={appPrice} currency={appCurrency} ratingValue={appRatingValue} ratingCount={appRatingCount} />
+  } else if (activeTab === 'breadcrumb') {
+    schema = buildBreadcrumb(bcItems)
+    warnings = getBreadcrumbWarnings(bcItems)
+    preview = <BreadcrumbPreview items={bcItems} />
+  } else if (activeTab === 'video') {
+    schema = buildVideo({ name: vidName, description: vidDescription, thumbnailUrl: vidThumbnail, uploadDate: vidUploadDate, durationMin: vidDurationMin, durationSec: vidDurationSec, contentUrl: vidContentUrl, embedUrl: vidEmbedUrl, publisherName: vidPublisherName, publisherLogo: vidPublisherLogo })
+    warnings = getVideoWarnings({ name: vidName, description: vidDescription, thumbnailUrl: vidThumbnail, uploadDate: vidUploadDate })
+    preview = <VideoPreview name={vidName} uploadDate={vidUploadDate} durationMin={vidDurationMin} durationSec={vidDurationSec} />
   }
 
-  const scriptTag = `<script type="application/ld+json">\n${schema}\n</script>`
+  const displaySchema = restoredSchema ?? schema
+  const outputJson = minify
+    ? (() => { try { return JSON.stringify(JSON.parse(displaySchema)) } catch { return displaySchema } })()
+    : displaySchema
+  const scriptTag = `<script type="application/ld+json">\n${outputJson}\n</script>`
+
+  const TAB_LABELS: Record<SchemaTab, string> = {
+    localbusiness: 'Local Business', faqpage: 'FAQ Page', article: 'Article',
+    product: 'Product', event: 'Event', organization: 'Organization',
+    howto: 'HowTo', website: 'WebSite', softwareapp: 'Software App',
+    breadcrumb: 'Breadcrumb', video: 'Video',
+  }
+
+  const testUrl = (() => {
+    const urlMap: Partial<Record<SchemaTab, string>> = {
+      localbusiness: lbUrl, article: artUrl, product: prodOfferUrl,
+      website: wsUrl, softwareapp: appUrl, organization: orgUrl,
+    }
+    const u = urlMap[activeTab]
+    if (u) return `https://search.google.com/test/rich-results?url=${encodeURIComponent(u.startsWith('http') ? u : `https://${u}`)}`
+    return 'https://search.google.com/test/rich-results'
+  })()
 
   function copy() {
-    navigator.clipboard.writeText(scriptTag)
+    if (restoredSchema) {
+      navigator.clipboard.writeText(`<script type="application/ld+json">\n${restoredSchema}\n</script>`)
+    } else {
+      navigator.clipboard.writeText(scriptTag)
+    }
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+    const newItem: HistoryItem = {
+      id: Date.now().toString(),
+      type: activeTab,
+      label: TAB_LABELS[activeTab],
+      schema: displaySchema,
+      ts: Date.now(),
+    }
+    try {
+      const next = [newItem, ...history].slice(0, 5)
+      localStorage.setItem('sqx-schema-history', JSON.stringify(next))
+      setHistory(next)
+    } catch {}
   }
 
   function download() {
@@ -586,6 +1026,12 @@ export default function SchemaGeneratorPage() {
     { id: 'article', label: 'Article' },
     { id: 'product', label: 'Product' },
     { id: 'event', label: 'Event' },
+    { id: 'organization', label: 'Organization' },
+    { id: 'howto', label: 'HowTo' },
+    { id: 'website', label: 'WebSite' },
+    { id: 'softwareapp', label: 'Software App' },
+    { id: 'breadcrumb', label: 'Breadcrumb' },
+    { id: 'video', label: 'Video' },
   ]
 
   return (
@@ -1073,6 +1519,209 @@ export default function SchemaGeneratorPage() {
                 </div>
               </div>
             )}
+
+            {/* ORGANIZATION */}
+            {activeTab === 'organization' && (
+              <>
+                <div className="rounded-2xl border p-6 space-y-4" style={sectionStyle}>
+                  <p className="text-xs font-bold uppercase tracking-widest text-white/30">Organization Details</p>
+                  <div><label style={labelStyle}>Organization Name *</label><input type="text" value={orgName} onChange={e => setOrgName(e.target.value)} placeholder="Acme Corp" style={inputStyle} /></div>
+                  <div><label style={labelStyle}>Description</label><textarea value={orgDescription} onChange={e => setOrgDescription(e.target.value)} placeholder="What does your organization do?" rows={3} style={{ ...inputStyle, resize: 'vertical' }} /></div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div><label style={labelStyle}>Website URL *</label><input type="text" value={orgUrl} onChange={e => setOrgUrl(e.target.value)} placeholder="example.com" style={inputStyle} /></div>
+                    <div><label style={labelStyle}>Logo URL</label><input type="text" value={orgLogo} onChange={e => setOrgLogo(e.target.value)} placeholder="example.com/logo.png" style={inputStyle} /></div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div><label style={labelStyle}>Email</label><input type="email" value={orgEmail} onChange={e => setOrgEmail(e.target.value)} placeholder="hello@example.com" style={inputStyle} /></div>
+                    <div><label style={labelStyle}>Phone</label><input type="text" value={orgPhone} onChange={e => setOrgPhone(e.target.value)} placeholder="+1-303-555-0100" style={inputStyle} /></div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div><label style={labelStyle}>Founding Year</label><input type="text" value={orgFoundingYear} onChange={e => setOrgFoundingYear(e.target.value)} placeholder="2015" style={inputStyle} /></div>
+                    <div><label style={labelStyle}>Number of Employees</label><input type="number" min="1" value={orgEmployees} onChange={e => setOrgEmployees(e.target.value)} placeholder="50" style={inputStyle} /></div>
+                  </div>
+                </div>
+                <div className="rounded-2xl border p-6 space-y-4" style={sectionStyle}>
+                  <p className="text-xs font-bold uppercase tracking-widest text-white/30">Address (optional)</p>
+                  <div><label style={labelStyle}>Street</label><input type="text" value={orgStreet} onChange={e => setOrgStreet(e.target.value)} placeholder="123 Main St" style={inputStyle} /></div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="col-span-1"><label style={labelStyle}>City</label><input type="text" value={orgCity} onChange={e => setOrgCity(e.target.value)} placeholder="Denver" style={inputStyle} /></div>
+                    <div><label style={labelStyle}>State</label><select value={orgState} onChange={e => setOrgState(e.target.value)} style={{ ...inputStyle, cursor: 'pointer' }}>{STATES.map(s => <option key={s} value={s}>{s}</option>)}</select></div>
+                    <div><label style={labelStyle}>ZIP</label><input type="text" value={orgZip} onChange={e => setOrgZip(e.target.value)} placeholder="80201" style={inputStyle} /></div>
+                  </div>
+                </div>
+                <div className="rounded-2xl border p-6 space-y-4" style={sectionStyle}>
+                  <p className="text-xs font-bold uppercase tracking-widest text-white/30">Social Profiles (sameAs)</p>
+                  {SOCIAL_PLATFORMS.map(platform => (
+                    <div key={platform.key}>
+                      <label style={labelStyle}>{platform.label}</label>
+                      <input type="text" value={orgSocials[platform.key] || ''} onChange={e => setOrgSocials(s => ({ ...s, [platform.key]: e.target.value }))} placeholder={platform.placeholder} style={inputStyle} />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* HOWTO */}
+            {activeTab === 'howto' && (
+              <div className="rounded-2xl border p-6 space-y-4" style={sectionStyle}>
+                <p className="text-xs font-bold uppercase tracking-widest text-white/30">HowTo Details</p>
+                <div className="rounded-xl p-3 text-xs" style={{ background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.15)', color: 'rgba(251,191,36,0.8)' }}>
+                  HowTo schema generates step-by-step rich results in Google — perfect for guides, tutorials, and instructional content.
+                </div>
+                <div><label style={labelStyle}>Guide Name *</label><input type="text" value={htName} onChange={e => setHtName(e.target.value)} placeholder="How to Change a Tire" style={inputStyle} /></div>
+                <div><label style={labelStyle}>Description</label><textarea value={htDescription} onChange={e => setHtDescription(e.target.value)} rows={2} placeholder="A step-by-step guide to..." style={{ ...inputStyle, resize: 'vertical' }} /></div>
+                <div><label style={labelStyle}>Image URL</label><input type="text" value={htImage} onChange={e => setHtImage(e.target.value)} placeholder="example.com/guide-image.jpg" style={inputStyle} /></div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div><label style={labelStyle}>Total Time</label><input type="text" value={htTotalTime} onChange={e => setHtTotalTime(e.target.value)} placeholder="PT30M" style={inputStyle} /><p className="text-xs text-white/25 mt-1">PT30M = 30 min, PT1H = 1 hr</p></div>
+                  <div><label style={labelStyle}>Est. Cost</label><input type="number" min="0" step="0.01" value={htCostAmount} onChange={e => setHtCostAmount(e.target.value)} placeholder="0" style={inputStyle} /></div>
+                  <div><label style={labelStyle}>Currency</label><select value={htCostCurrency} onChange={e => setHtCostCurrency(e.target.value)} style={{ ...inputStyle, cursor: 'pointer' }}>{CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}</select></div>
+                </div>
+                <div className="flex items-center justify-between pt-2">
+                  <p className="text-xs font-bold uppercase tracking-widest text-white/30">Steps</p>
+                  <button onClick={() => setHtSteps(s => [...s, { name: '', text: '', image: '' }])} className="text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: 'rgba(6,182,212,0.1)', color: '#06d6ff', border: '1px solid rgba(6,182,212,0.25)' }}>+ Add Step</button>
+                </div>
+                {htSteps.map((step, i) => (
+                  <div key={i} className="rounded-xl border p-4 space-y-3" style={{ background: '#070b14', borderColor: 'rgba(255,255,255,0.06)' }}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-white/30">Step {i + 1}</span>
+                      {htSteps.length > 1 && <button onClick={() => setHtSteps(s => s.filter((_, idx) => idx !== i))} className="text-xs text-red-400/60 hover:text-red-400 transition-colors">Remove</button>}
+                    </div>
+                    <div><label style={labelStyle}>Step Name *</label><input type="text" value={step.name} onChange={e => setHtSteps(s => s.map((x, idx) => idx === i ? { ...x, name: e.target.value } : x))} placeholder="Remove the flat tire" style={inputStyle} /></div>
+                    <div><label style={labelStyle}>Instructions *</label><textarea value={step.text} onChange={e => setHtSteps(s => s.map((x, idx) => idx === i ? { ...x, text: e.target.value } : x))} placeholder="Loosen the lug nuts counterclockwise..." rows={2} style={{ ...inputStyle, resize: 'vertical' }} /></div>
+                    <div><label style={labelStyle}>Step Image URL</label><input type="text" value={step.image} onChange={e => setHtSteps(s => s.map((x, idx) => idx === i ? { ...x, image: e.target.value } : x))} placeholder="example.com/step1.jpg" style={inputStyle} /></div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* WEBSITE */}
+            {activeTab === 'website' && (
+              <div className="rounded-2xl border p-6 space-y-4" style={sectionStyle}>
+                <p className="text-xs font-bold uppercase tracking-widest text-white/30">WebSite Details</p>
+                <div className="rounded-xl p-3 text-xs" style={{ background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.15)', color: 'rgba(251,191,36,0.8)' }}>
+                  WebSite schema with SearchAction enables the Google Sitelinks Searchbox — a search bar shown directly in your search result.
+                </div>
+                <div><label style={labelStyle}>Site Name *</label><input type="text" value={wsName} onChange={e => setWsName(e.target.value)} placeholder="Queldrex" style={inputStyle} /></div>
+                <div><label style={labelStyle}>Site URL *</label><input type="text" value={wsUrl} onChange={e => setWsUrl(e.target.value)} placeholder="queldrex.com" style={inputStyle} /></div>
+                <div><label style={labelStyle}>Description</label><textarea value={wsDescription} onChange={e => setWsDescription(e.target.value)} rows={2} placeholder="What your site does..." style={{ ...inputStyle, resize: 'vertical' }} /></div>
+                <div className="flex items-center gap-3 pt-1">
+                  <button onClick={() => setWsEnableSearch(s => !s)} className="w-5 h-5 rounded flex-shrink-0 border flex items-center justify-center transition-colors" style={{ background: wsEnableSearch ? 'rgba(6,182,212,0.2)' : 'rgba(255,255,255,0.05)', borderColor: wsEnableSearch ? 'rgba(6,182,212,0.5)' : 'rgba(255,255,255,0.15)' }}>
+                    {wsEnableSearch && <svg className="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>}
+                  </button>
+                  <span className="text-xs text-white/60">Enable Sitelinks Searchbox (SearchAction)</span>
+                </div>
+                {wsEnableSearch && (
+                  <div>
+                    <label style={labelStyle}>Search URL Pattern *</label>
+                    <input type="text" value={wsSearchUrl} onChange={e => setWsSearchUrl(e.target.value)} placeholder="https://example.com/search?q={search_term_string}" style={inputStyle} />
+                    <p className="text-xs text-white/25 mt-1">Must include {'{search_term_string}'} placeholder</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* SOFTWARE APP */}
+            {activeTab === 'softwareapp' && (
+              <div className="rounded-2xl border p-6 space-y-4" style={sectionStyle}>
+                <p className="text-xs font-bold uppercase tracking-widest text-white/30">Software Application</p>
+                <div><label style={labelStyle}>App Name *</label><input type="text" value={appName} onChange={e => setAppName(e.target.value)} placeholder="Queldrex AI Scanner" style={inputStyle} /></div>
+                <div><label style={labelStyle}>Description</label><textarea value={appDescription} onChange={e => setAppDescription(e.target.value)} rows={2} placeholder="What does your app do?" style={{ ...inputStyle, resize: 'vertical' }} /></div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div><label style={labelStyle}>App URL</label><input type="text" value={appUrl} onChange={e => setAppUrl(e.target.value)} placeholder="example.com/app" style={inputStyle} /></div>
+                  <div><label style={labelStyle}>Image URL</label><input type="text" value={appImage} onChange={e => setAppImage(e.target.value)} placeholder="example.com/icon.png" style={inputStyle} /></div>
+                </div>
+                <div><label style={labelStyle}>Category</label><select value={appCategory} onChange={e => setAppCategory(e.target.value)} style={{ ...inputStyle, cursor: 'pointer' }}>{APP_CATEGORIES.map(c => <option key={c} value={c}>{c.replace('Application', '')}</option>)}</select></div>
+                <div>
+                  <label style={labelStyle}>Operating System(s)</label>
+                  <div className="flex flex-wrap gap-2 mt-1">
+                    {OS_OPTIONS.map(os => (
+                      <button key={os} onClick={() => setAppOs(prev => prev.includes(os) ? prev.filter(x => x !== os) : [...prev, os])} className="text-xs font-bold px-3 py-1.5 rounded-lg transition-all" style={{ background: appOs.includes(os) ? 'rgba(6,182,212,0.15)' : 'rgba(255,255,255,0.05)', color: appOs.includes(os) ? '#06d6ff' : 'rgba(255,255,255,0.4)', border: `1px solid ${appOs.includes(os) ? 'rgba(6,182,212,0.35)' : 'rgba(255,255,255,0.1)'}` }}>{os}</button>
+                    ))}
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div><label style={labelStyle}>Price (0 = Free)</label><input type="number" min="0" step="0.01" value={appPrice} onChange={e => setAppPrice(e.target.value)} placeholder="0" style={inputStyle} /></div>
+                  <div><label style={labelStyle}>Currency</label><select value={appCurrency} onChange={e => setAppCurrency(e.target.value)} style={{ ...inputStyle, cursor: 'pointer' }}>{CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}</select></div>
+                  <div><label style={labelStyle}>Avg Rating</label><input type="number" min="1" max="5" step="0.1" value={appRatingValue} onChange={e => setAppRatingValue(e.target.value)} placeholder="4.5" style={inputStyle} /></div>
+                </div>
+                <div><label style={labelStyle}>Review Count</label><input type="number" min="1" value={appRatingCount} onChange={e => setAppRatingCount(e.target.value)} placeholder="234" style={inputStyle} /></div>
+              </div>
+            )}
+
+            {/* BREADCRUMB */}
+            {activeTab === 'breadcrumb' && (
+              <div className="rounded-2xl border p-6 space-y-4" style={sectionStyle}>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-bold uppercase tracking-widest text-white/30">Breadcrumb Items</p>
+                  <button onClick={() => setBcItems(s => [...s, { name: '', url: '' }])} className="text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: 'rgba(6,182,212,0.1)', color: '#06d6ff', border: '1px solid rgba(6,182,212,0.25)' }}>+ Add Item</button>
+                </div>
+                {bcItems.map((item, i) => (
+                  <div key={i} className="rounded-xl border p-4 space-y-3" style={{ background: '#070b14', borderColor: 'rgba(255,255,255,0.06)' }}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-white/30">Item {i + 1}</span>
+                      {bcItems.length > 2 && <button onClick={() => setBcItems(s => s.filter((_, idx) => idx !== i))} className="text-xs text-red-400/60 hover:text-red-400 transition-colors">Remove</button>}
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div><label style={labelStyle}>Name</label><input type="text" value={item.name} onChange={e => setBcItems(s => s.map((x, idx) => idx === i ? { ...x, name: e.target.value } : x))} placeholder="Home" style={inputStyle} /></div>
+                      <div><label style={labelStyle}>URL</label><input type="text" value={item.url} onChange={e => setBcItems(s => s.map((x, idx) => idx === i ? { ...x, url: e.target.value } : x))} placeholder="https://example.com" style={inputStyle} /></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* VIDEO */}
+            {activeTab === 'video' && (
+              <div className="rounded-2xl border p-6 space-y-4" style={sectionStyle}>
+                <p className="text-xs font-bold uppercase tracking-widest text-white/30">Video Details</p>
+                <div><label style={labelStyle}>Video Name *</label><input type="text" value={vidName} onChange={e => setVidName(e.target.value)} placeholder="How to Optimize Your AI Visibility" style={inputStyle} /></div>
+                <div><label style={labelStyle}>Description *</label><textarea value={vidDescription} onChange={e => setVidDescription(e.target.value)} rows={3} placeholder="In this video we cover..." style={{ ...inputStyle, resize: 'vertical' }} /></div>
+                <div><label style={labelStyle}>Thumbnail URL *</label><input type="text" value={vidThumbnail} onChange={e => setVidThumbnail(e.target.value)} placeholder="example.com/thumbnail.jpg" style={inputStyle} /></div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div><label style={labelStyle}>Upload Date *</label><input type="date" value={vidUploadDate} onChange={e => setVidUploadDate(e.target.value)} style={inputStyle} /></div>
+                  <div>
+                    <label style={labelStyle}>Duration</label>
+                    <div className="flex items-center gap-2">
+                      <input type="number" min="0" value={vidDurationMin} onChange={e => setVidDurationMin(e.target.value)} placeholder="5" style={{ ...inputStyle, width: 'auto' }} />
+                      <span className="text-white/30 text-xs flex-shrink-0">min</span>
+                      <input type="number" min="0" max="59" value={vidDurationSec} onChange={e => setVidDurationSec(e.target.value)} placeholder="30" style={{ ...inputStyle, width: 'auto' }} />
+                      <span className="text-white/30 text-xs flex-shrink-0">sec</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div><label style={labelStyle}>Content URL</label><input type="text" value={vidContentUrl} onChange={e => setVidContentUrl(e.target.value)} placeholder="example.com/video.mp4" style={inputStyle} /></div>
+                  <div><label style={labelStyle}>Embed URL</label><input type="text" value={vidEmbedUrl} onChange={e => setVidEmbedUrl(e.target.value)} placeholder="youtube.com/embed/..." style={inputStyle} /></div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div><label style={labelStyle}>Publisher Name</label><input type="text" value={vidPublisherName} onChange={e => setVidPublisherName(e.target.value)} placeholder="Queldrex" style={inputStyle} /></div>
+                  <div><label style={labelStyle}>Publisher Logo URL</label><input type="text" value={vidPublisherLogo} onChange={e => setVidPublisherLogo(e.target.value)} placeholder="example.com/logo.png" style={inputStyle} /></div>
+                </div>
+              </div>
+            )}
+
+            {/* Recent History */}
+            {history.length > 0 && (
+              <div className="rounded-2xl border overflow-hidden" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
+                <button onClick={() => setHistoryOpen(o => !o)} className="w-full flex items-center justify-between px-5 py-3 text-left">
+                  <p className="text-xs font-bold uppercase tracking-widest text-white/30">Recent Schemas ({history.length})</p>
+                  <svg className={`w-3.5 h-3.5 text-white/30 transition-transform ${historyOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                {historyOpen && (
+                  <div className="border-t border-white/6 p-3 space-y-1.5">
+                    {history.map(item => (
+                      <div key={item.id} className="flex items-center justify-between px-3 py-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                        <div>
+                          <span className="text-xs text-white/60">{item.label}</span>
+                          <span className="text-xs text-white/25 ml-2">· {Math.round((Date.now() - item.ts) / 60000) < 1 ? 'just now' : `${Math.round((Date.now() - item.ts) / 60000)} min ago`}</span>
+                        </div>
+                        <button onClick={() => { setRestoredSchema(item.schema); setHistoryOpen(false) }} className="text-xs font-bold text-cyan-400/60 hover:text-cyan-400 transition-colors">Restore</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* ── OUTPUT PANEL ──────────────────────────────────────────────── */}
@@ -1105,9 +1754,27 @@ export default function SchemaGeneratorPage() {
 
             {/* Generated code */}
             <div className="rounded-2xl border overflow-hidden" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
-              <div className="flex items-center justify-between px-5 py-3 border-b border-white/6">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-white/6 flex-wrap gap-2">
                 <p className="text-xs font-bold uppercase tracking-widest text-white/30">Generated Schema</p>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <button onClick={() => setMinify(m => !m)}
+                    className="text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
+                    style={{ background: minify ? 'rgba(6,182,212,0.12)' : 'rgba(255,255,255,0.05)', color: minify ? '#06d6ff' : 'rgba(255,255,255,0.4)', border: `1px solid ${minify ? 'rgba(6,182,212,0.3)' : 'rgba(255,255,255,0.08)'}` }}>
+                    Minify
+                  </button>
+                  <a href={testUrl} target="_blank" rel="noopener noreferrer"
+                    className="text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
+                    style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none' }}>
+                    Test in Google ↗
+                  </a>
+                  <button onClick={() => {
+                    if (schemaStack.length >= 6) return
+                    setSchemaStack(s => [...s, { id: Date.now().toString(), label: TAB_LABELS[activeTab], schema: displaySchema }])
+                  }}
+                    className="text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
+                    style={{ background: 'rgba(167,139,250,0.1)', color: '#a78bfa', border: '1px solid rgba(167,139,250,0.25)', opacity: schemaStack.length >= 6 ? 0.4 : 1 }}>
+                    + Stack
+                  </button>
                   <button onClick={download}
                     className="text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
                     style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.1)' }}>
@@ -1124,10 +1791,42 @@ export default function SchemaGeneratorPage() {
                   </button>
                 </div>
               </div>
+              {restoredSchema && (
+                <div className="px-4 py-2 flex items-center justify-between border-b border-white/6" style={{ background: 'rgba(167,139,250,0.06)' }}>
+                  <span className="text-xs text-violet-400">Showing restored schema</span>
+                  <button onClick={() => setRestoredSchema(null)} className="text-xs text-violet-400 hover:text-violet-300">Back to editor</button>
+                </div>
+              )}
               <pre className="p-5 text-xs text-white/65 overflow-auto max-h-[500px] leading-relaxed font-mono whitespace-pre-wrap">
                 {scriptTag}
               </pre>
             </div>
+
+            {/* Schema Stack */}
+            {schemaStack.length > 0 && (
+              <div className="rounded-2xl border overflow-hidden" style={{ background: '#0d1117', borderColor: 'rgba(167,139,250,0.2)' }}>
+                <div className="flex items-center justify-between px-4 py-3 border-b border-white/6">
+                  <p className="text-xs font-bold uppercase tracking-widest text-violet-400">Schema Stack ({schemaStack.length}/6)</p>
+                  <button
+                    onClick={() => {
+                      const all = schemaStack.map(s => `<script type="application/ld+json">\n${s.schema}\n</script>`).join('\n\n')
+                      navigator.clipboard.writeText(all)
+                    }}
+                    className="text-xs font-bold px-3 py-1 rounded-lg"
+                    style={{ background: 'rgba(167,139,250,0.15)', color: '#a78bfa', border: '1px solid rgba(167,139,250,0.3)' }}>
+                    Copy All
+                  </button>
+                </div>
+                <div className="p-3 space-y-1.5">
+                  {schemaStack.map(item => (
+                    <div key={item.id} className="flex items-center justify-between px-3 py-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <span className="text-xs text-white/60">{item.label}</span>
+                      <button onClick={() => setSchemaStack(s => s.filter(x => x.id !== item.id))} className="text-xs text-white/25 hover:text-red-400 transition-colors ml-3">×</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* How to add */}
             <div className="rounded-xl border p-4" style={{ background: 'rgba(6,182,212,0.04)', borderColor: 'rgba(6,182,212,0.12)' }}>
@@ -1153,13 +1852,19 @@ export default function SchemaGeneratorPage() {
         <div className="mt-14 border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-xl font-black text-white mb-1">Why Schema Markup Matters for AI Search</h2>
           <p className="text-white/35 text-sm mb-8">Structured data is one of the strongest signals for AI citations. When ChatGPT, Perplexity, and Google understand exactly what your business is, they can recommend it.</p>
-          <div className="grid sm:grid-cols-5 gap-4">
+          <div className="grid sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {[
-              { type: 'Local Business', label: 'Knowledge panel, map pack, "best near me" citations', color: '#06d6ff' },
-              { type: 'FAQ Page', label: 'Accordion results in Google Search — massive click-through boost', color: '#a78bfa' },
-              { type: 'Article', label: 'Top Stories carousel, Google Discover, news eligibility', color: '#34d399' },
-              { type: 'Product', label: 'Google Shopping results with price, rating, availability', color: '#fb923c' },
-              { type: 'Event', label: 'Event cards in search with date, location, ticket links', color: '#f472b6' },
+              { type: 'Local Business', label: 'Knowledge panel, map pack, and "best near me" AI citations', color: '#06d6ff' },
+              { type: 'FAQ Page', label: 'Accordion results in Google — one of the highest-visibility schema types', color: '#a78bfa' },
+              { type: 'Article', label: 'Top Stories carousel, Google Discover, and news eligibility', color: '#34d399' },
+              { type: 'Product', label: 'Google Shopping results with price, rating, and availability', color: '#fb923c' },
+              { type: 'Event', label: 'Event cards in search with date, location, and ticket links', color: '#f472b6' },
+              { type: 'Organization', label: 'Knowledge panel for companies — links social profiles and disambiguates your entity', color: '#38bdf8' },
+              { type: 'HowTo', label: 'Step-by-step rich results — great for tutorial and guide content', color: '#4ade80' },
+              { type: 'WebSite', label: 'Enables the Google Sitelinks Searchbox for large or well-known sites', color: '#fbbf24' },
+              { type: 'Software App', label: 'Star ratings and pricing shown directly in app search results', color: '#e879f9' },
+              { type: 'Breadcrumb', label: 'Replaces URL slug in search result with readable navigation path', color: '#94a3b8' },
+              { type: 'Video', label: 'Video carousel and rich snippet with thumbnail, duration, and date', color: '#f87171' },
             ].map(s => (
               <div key={s.type} className="rounded-xl border p-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
                 <div className="text-xs font-black mb-1" style={{ color: s.color }}>{s.type}</div>
