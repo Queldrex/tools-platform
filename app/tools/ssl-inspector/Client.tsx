@@ -83,7 +83,11 @@ function SSLInspectorContent() {
           <span className="text-sm font-bold text-white/30">3 free inspections/day · Unlimited with Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">SSL / TLS <span style={{ color: '#a78bfa' }}>Inspector</span></h1>
-        <p className="text-white/55 text-base mb-6 max-w-xl">Real TLS handshake — checks certificate expiry, cipher strength, protocol version, and security headers. No external scan APIs. Direct socket connection to your server.</p>
+        <p className="text-white/55 text-base mb-4 max-w-xl">Real TLS handshake — checks certificate expiry, cipher strength, protocol version, and security headers. No external scan APIs. Direct socket connection to your server.</p>
+        <div className="flex gap-3 flex-wrap mb-6">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
@@ -125,8 +129,8 @@ function SSLInspectorContent() {
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(167,139,250,0.05)', borderColor: 'rgba(167,139,250,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited inspections with Pro</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Monitor SSL health across all your domains with Pro — $79/month.</p>
-            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-white" style={{ background: 'linear-gradient(135deg,#7c3aed,#6d28d9)' }}>Start Pro — $79/month</Link>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">You&apos;ve used your 3 free inspections today. Upgrade to monitor SSL health across all your domains.</p>
+            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-white" style={{ background: 'linear-gradient(135deg,#7c3aed,#6d28d9)' }}>Upgrade to Pro — from $19/mo →</Link>
           </div>
         )}
 
@@ -192,12 +196,36 @@ function SSLInspectorContent() {
           </div>
         )}
 
-        <section className="mt-16 pt-8 border-t max-w-2xl" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+        <section className="mt-14 max-w-2xl">
+          <h2 className="text-base font-black text-white mb-4">Who This Is For</h2>
+          <ul className="space-y-2">
+            {[
+              'DevOps engineers monitoring TLS cert expiry across multiple domains',
+              'SaaS founders auditing security headers before a compliance review',
+              'Agencies checking client sites for HSTS, CSP, and mixed-content issues',
+              'Security consultants doing pre-pentest reconnaissance on SSL configuration',
+            ].map((item, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm" style={{ color: '#A1A1AA' }}>
+                <span className="text-violet-400 flex-shrink-0 mt-0.5">→</span>{item}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="mt-10 pt-8 border-t max-w-2xl" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-lg font-black text-white mb-4">How SSL/TLS inspection works</h2>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>This tool opens a real TLS handshake to your server — the same process a browser performs when you visit an HTTPS site. It reads the certificate chain directly from the server, not from a cached database. You get the actual expiry date, the issuer, every domain on the certificate (Subject Alternative Names), the negotiated TLS version, and the cipher suite your server prefers.</p>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>TLS 1.3 is the current standard. If your server still negotiates TLS 1.2 it will work but may lose points on security audits. TLS 1.0 and 1.1 are deprecated and will cause browser warnings on some configurations. The cipher suite matters too: ECDHE key exchange with AES-GCM encryption is what you want; RC4 or 3DES are deprecated and insecure.</p>
           <p className="text-sm leading-relaxed" style={{ color: '#A1A1AA' }}>Certificate expiry is the most common cause of preventable outages. Browsers show a hard error when a cert expires — no warning, no bypass for most users. If your cert expires in under 30 days, set up auto-renewal immediately. Let&apos;s Encrypt renews at 60 days remaining; most commercial CAs renew at 30 days. Wildcard certs cover all subdomains but require DNS-01 challenge validation and don&apos;t appear in public Certificate Transparency logs per subdomain.</p>
         </section>
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.15)' }}>
+          <p className="text-white font-black mb-1">Add SSL/TLS inspection to your platform</p>
+          <p className="text-white/40 text-sm mb-4">Real TLS handshake, cert expiry, security headers, grade A+–F. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
