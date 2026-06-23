@@ -1412,9 +1412,13 @@ export default function SchemaGeneratorPage() {
             </div>
           </div>
           <h1 className="text-3xl font-black text-white mb-2">Schema Markup Generator</h1>
-          <p className="text-white/45 text-sm leading-relaxed max-w-2xl">
+          <p className="text-white/45 text-sm leading-relaxed max-w-2xl mb-4">
             Generate valid JSON-LD structured data for 16 schema types — Local Business, Article, Product, Recipe, Job Posting, and more. Test free here, then license this tool for your own platform or agency. Runs entirely in your browser, no API key needed.
           </p>
+          <div className="flex gap-3 flex-wrap">
+            <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+          </div>
         </div>
 
         {/* Schema Type Tabs */}
@@ -2752,6 +2756,14 @@ export default function SchemaGeneratorPage() {
                 <div className="text-xs text-white/40 leading-relaxed">{s.label}</div>
               </div>
             ))}
+          </div>
+        </div>
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.15)' }}>
+          <p className="text-white font-black mb-1">Add schema markup generation to your platform</p>
+          <p className="text-white/40 text-sm mb-4">16 schema types, JSON-LD output, minified export. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
           </div>
         </div>
       </main>
