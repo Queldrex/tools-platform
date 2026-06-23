@@ -328,6 +328,10 @@ export default function AuditPage() {
             This report shows exactly what each tool does, how it works, and proof it returns real data.
           </p>
           <p className="text-white/25 text-xs mt-3">Last verified: June 2026 · 25 of 48 tools documented · queldrex.com</p>
+          <div className="flex gap-3 flex-wrap mt-4">
+            <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get all 51 tools — from $99 →</Link>
+            <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>View pricing →</Link>
+          </div>
         </div>
 
         {/* Summary */}
@@ -425,6 +429,17 @@ export default function AuditPage() {
               </div>
             )
           })}
+        </div>
+
+        {/* Who This Is For */}
+        <div className="mt-10 mb-8 max-w-2xl mx-auto">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• Developers evaluating Queldrex before licensing tools for their own platform</li>
+            <li>• Agencies vetting the toolset before recommending it to clients</li>
+            <li>• Founders who want verified proof that each tool works before subscribing</li>
+            <li>• Security-conscious buyers who want transparency about how each tool was tested</li>
+          </ul>
         </div>
 
         {/* Bottom CTA */}
