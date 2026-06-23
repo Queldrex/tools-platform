@@ -1045,13 +1045,20 @@ export default function SchemaGeneratorPage() {
         </Link>
 
         <div className="mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold tracking-widest uppercase mb-4"
-            style={{ borderColor: 'rgba(6,182,212,0.25)', background: 'rgba(6,182,212,0.08)', color: '#06d6ff' }}>
-            Free Tool · AI Visibility
+          <div className="flex items-center gap-2 flex-wrap mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold tracking-widest uppercase"
+              style={{ borderColor: 'rgba(6,182,212,0.25)', background: 'rgba(6,182,212,0.08)', color: '#06d6ff' }}>
+              Free Tool · AI Visibility
+            </div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-bold tracking-widest uppercase"
+              style={{ borderColor: 'rgba(74,222,128,0.25)', background: 'rgba(74,222,128,0.08)', color: '#4ade80' }}>
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+              No API Key Required
+            </div>
           </div>
           <h1 className="text-3xl font-black text-white mb-2">Schema Markup Generator</h1>
           <p className="text-white/45 text-sm leading-relaxed max-w-2xl">
-            Generate valid JSON-LD structured data for Local Business, FAQ pages, Articles, Products, and Events. Structured data helps Google, ChatGPT, and Perplexity understand — and recommend — your content.
+            Generate valid JSON-LD structured data for Local Business, FAQ pages, Articles, Products, Events, and more. Runs entirely in your browser — paste the output into any website to help Google, ChatGPT, and Perplexity understand and recommend your content.
           </p>
         </div>
 
@@ -1848,8 +1855,145 @@ export default function SchemaGeneratorPage() {
           </div>
         </div>
 
-        {/* Why Schema Matters */}
+        {/* Requirements & Setup Instructions */}
         <div className="mt-14 border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+          <div className="grid lg:grid-cols-3 gap-8 mb-14">
+
+            {/* No API required */}
+            <div className="rounded-2xl border p-6" style={{ background: '#0d1117', borderColor: 'rgba(74,222,128,0.2)' }}>
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-widest mb-4"
+                style={{ background: 'rgba(74,222,128,0.1)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.25)' }}>
+                No API Key Required
+              </div>
+              <h3 className="text-base font-black text-white mb-2">Works right out of the box</h3>
+              <p className="text-sm text-white/45 leading-relaxed">
+                This tool runs entirely in your browser. No account, no API key, no server setup needed. Generate schema markup and copy it directly to your site.
+              </p>
+            </div>
+
+            {/* Who it&apos;s for */}
+            <div className="rounded-2xl border p-6" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
+              <p className="text-xs font-bold uppercase tracking-widest text-white/30 mb-4">Who This Is For</p>
+              <ul className="space-y-2.5">
+                {[
+                  'Website owners who want to rank in AI search results',
+                  'SEO agencies managing schema for multiple clients',
+                  'Developers adding structured data to any web platform',
+                  'Marketers optimizing for Google rich results',
+                  'Businesses wanting to appear in ChatGPT and Perplexity answers',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-xs text-white/55 leading-relaxed">
+                    <span className="text-cyan-400 mt-0.5 flex-shrink-0">→</span>{item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* What you need */}
+            <div className="rounded-2xl border p-6" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
+              <p className="text-xs font-bold uppercase tracking-widest text-white/30 mb-4">What You Need</p>
+              <ul className="space-y-2.5">
+                {[
+                  { label: 'A website', note: 'Any platform — WordPress, Shopify, Webflow, custom HTML' },
+                  { label: 'Your business info', note: 'Name, address, hours, description, social profiles' },
+                  { label: 'Access to your site\'s code', note: 'Ability to edit the <head> tag or use a plugin' },
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span className="text-green-400 mt-0.5 flex-shrink-0 text-xs font-black">✓</span>
+                    <div>
+                      <p className="text-xs font-bold text-white">{item.label}</p>
+                      <p className="text-xs text-white/40">{item.note}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Platform setup instructions */}
+          <div className="mb-14">
+            <h2 className="text-xl font-black text-white mb-1">How to Add Schema to Your Site</h2>
+            <p className="text-white/35 text-sm mb-6">Copy the generated script tag above, then follow the instructions for your platform.</p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                {
+                  platform: 'WordPress',
+                  steps: [
+                    'Install the "Insert Headers and Footers" plugin',
+                    'Go to Settings → Insert Headers and Footers',
+                    'Paste the script tag into the Header section',
+                    'Save — schema is now live on every page',
+                  ],
+                  note: 'For page-specific schema, use a plugin like Yoast or RankMath instead.',
+                },
+                {
+                  platform: 'Shopify',
+                  steps: [
+                    'Go to Online Store → Themes → Edit Code',
+                    'Open theme.liquid',
+                    'Paste the script tag just before </head>',
+                    'Save — Shopify deploys instantly',
+                  ],
+                  note: 'For product schema, add to product.liquid instead.',
+                },
+                {
+                  platform: 'Squarespace',
+                  steps: [
+                    'Go to Settings → Advanced → Code Injection',
+                    'Paste the script tag into the Header field',
+                    'Save — applies site-wide',
+                  ],
+                  note: 'Squarespace Business plan or higher required for code injection.',
+                },
+                {
+                  platform: 'Webflow',
+                  steps: [
+                    'Open your project → Pages panel',
+                    'Click the gear icon on the page',
+                    'Paste into "Inside <head> tag" field',
+                    'Publish your site',
+                  ],
+                  note: 'For site-wide schema, use Project Settings → Custom Code.',
+                },
+                {
+                  platform: 'Next.js / React',
+                  steps: [
+                    'Copy just the JSON object (not the script tag)',
+                    'In your layout or page component add:',
+                    '<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />',
+                    'Deploy — Next.js renders it server-side',
+                  ],
+                  note: 'Place in generateMetadata or directly in JSX for best crawlability.',
+                },
+                {
+                  platform: 'Raw HTML',
+                  steps: [
+                    'Open your HTML file in any editor',
+                    'Find the <head> section',
+                    'Paste the full script tag before </head>',
+                    'Upload/save the file',
+                  ],
+                  note: 'Works on any static site, cPanel hosting, or hand-coded HTML.',
+                },
+              ].map(p => (
+                <div key={p.platform} className="rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
+                  <p className="text-sm font-black text-white mb-3">{p.platform}</p>
+                  <ol className="space-y-1.5 mb-3">
+                    {p.steps.map((step, i) => (
+                      <li key={i} className="flex items-start gap-2 text-xs text-white/50 leading-relaxed">
+                        <span className="text-white/20 font-bold flex-shrink-0">{i + 1}.</span>{step}
+                      </li>
+                    ))}
+                  </ol>
+                  <p className="text-[10px] text-white/25 leading-relaxed border-t border-white/6 pt-2">{p.note}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Why Schema Matters */}
+        <div className="border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-xl font-black text-white mb-1">Why Schema Markup Matters for AI Search</h2>
           <p className="text-white/35 text-sm mb-8">Structured data is one of the strongest signals for AI citations. When ChatGPT, Perplexity, and Google understand exactly what your business is, they can recommend it.</p>
           <div className="grid sm:grid-cols-3 lg:grid-cols-4 gap-4">
