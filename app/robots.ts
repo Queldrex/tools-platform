@@ -3,8 +3,13 @@ import { MetadataRoute } from 'next'
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
-      { userAgent: '*', allow: '/' },
-      { userAgent: '*', disallow: ['/api/', '/admin/', '/admin-login/', '/agency/dashboard/'] },
+      { userAgent: '*', allow: '/', disallow: ['/api/', '/admin/', '/admin-login/', '/agency/dashboard/'] },
+      { userAgent: 'GPTBot', allow: '/' },
+      { userAgent: 'ChatGPT-User', allow: '/' },
+      { userAgent: 'PerplexityBot', allow: '/' },
+      { userAgent: 'ClaudeBot', allow: '/' },
+      { userAgent: 'anthropic-ai', allow: '/' },
+      { userAgent: 'Google-Extended', allow: '/' },
     ],
     sitemap: 'https://queldrex.com/sitemap.xml',
   }
