@@ -215,7 +215,7 @@ export default function RefundPolicyPage() {
             </div>
           </div>
         )}
-      </main>
+
         <div className="mt-10 mb-8">
           <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
           <ul className="space-y-2 text-sm text-white/55">
@@ -225,7 +225,6 @@ export default function RefundPolicyPage() {
             <li>• Developers building product pages who need a policy without a legal team</li>
           </ul>
         </div>
-
         <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(6,214,255,0.04)', borderColor: 'rgba(6,214,255,0.12)' }}>
           <p className="text-white font-black mb-1">Add refund policy generation to your platform</p>
           <p className="text-white/40 text-sm mb-4">Digital/physical/subscription/service types, jurisdiction-specific, restocking fee, AI-generated document. One-time license.</p>
