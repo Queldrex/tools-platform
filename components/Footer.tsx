@@ -35,6 +35,14 @@ const FOOTER_NAV = [
       { label: 'Privacy Policy', href: '/privacy' },
       { label: 'Terms of Service', href: '/terms' },
       { label: 'Refund Policy', href: '/refunds' },
+      { label: 'Trust & Security', href: '/trust' },
+    ],
+  },
+  {
+    heading: 'More',
+    links: [
+      { label: 'Changelog', href: '/changelog' },
+      { label: 'Monitor', href: '/monitor' },
     ],
   },
 ]
@@ -45,7 +53,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6">
 
         {/* Top row: logo + tagline + columns */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-10 pb-12 border-b" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
+        <div className="grid grid-cols-2 md:grid-cols-7 gap-10 pb-12 border-b" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
 
           {/* Brand */}
           <div className="col-span-2">
