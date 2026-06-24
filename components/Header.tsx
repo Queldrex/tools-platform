@@ -17,7 +17,7 @@ const CATEGORIES = [
   {
     label: 'Developer',
     icon: '🛠',
-    count: 10,
+    count: 11,
     desc: 'DNS health, JSON, JWT, cron builder & more',
     href: '/tools#developer',
     color: '#06b6d4',
@@ -25,7 +25,7 @@ const CATEGORIES = [
   {
     label: 'Business',
     icon: '💼',
-    count: 22,
+    count: 24,
     desc: 'Finance, legal docs, marketing & more',
     href: '/tools#business',
     color: '#4ade80',
@@ -161,7 +161,7 @@ export default function Header() {
                         onClick={() => setToolsOpen(false)}
                         className="flex items-center justify-center gap-2 w-full py-2 rounded-xl text-sm font-bold text-white/50 hover:text-white transition-colors hover:bg-white/5"
                       >
-                        View all 48 tools — most are free
+                        View all 51 tools — most are free
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                         </svg>
@@ -225,7 +225,7 @@ export default function Header() {
               </Link>
             ))}
             <Link href="/tools" onClick={() => setMobileOpen(false)} className="flex items-center px-4 py-3 rounded-xl text-sm font-semibold text-white/50 hover:text-white hover:bg-white/5 transition-colors">
-              View all 48 tools →
+              View all 51 tools →
             </Link>
 
             <div className="h-px my-3" style={{ background: 'rgba(255,255,255,0.06)' }} />
