@@ -65,10 +65,14 @@ export default function DepScannerPage() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#f87171', borderColor: 'rgba(248,113,113,0.3)', background: 'rgba(248,113,113,0.08)' }}>Live</span>
-          <span className="text-sm font-bold text-white/30">2 free scans/day · Unlimited with $79/month Pro</span>
+          <span className="text-sm font-bold text-white/30">2 free scans/day · Unlimited with Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Dependency <span style={{ color: '#f87171' }}>CVE Scanner</span></h1>
-        <p className="text-white/55 text-base mb-6 max-w-2xl">Paste your package.json or requirements.txt and check every dependency against Google's OSV vulnerability database in real time. Real CVE data, real CVSS scores, real fix versions.</p>
+        <p className="text-white/55 text-base mb-4 max-w-2xl">Paste your package.json or requirements.txt and check every dependency against Google's OSV vulnerability database in real time. Real CVE data, real CVSS scores, real fix versions.</p>
+        <div className="flex gap-3 flex-wrap mb-6">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#f87171,#dc2626)' }}>Get this tool — $29 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
@@ -165,6 +169,15 @@ export default function DepScannerPage() {
             )}
           </div>
         )}
+        <div className="mt-10 mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• Developers auditing npm or PyPI dependencies for known CVEs before a release</li>
+            <li>• Security engineers checking CVSS scores and fixed versions before patching</li>
+            <li>• DevOps teams running quick vulnerability scans without installing Snyk or a CLI tool</li>
+            <li>• Open-source maintainers verifying their dependency tree is clean for contributors</li>
+          </ul>
+        </div>
         <section className="mt-16 pt-8 border-t max-w-2xl" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-lg font-black text-white mb-4">Understanding CVEs, CVSS scores, and OSV</h2>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>This tool queries the OSV (Open Source Vulnerability) database — a Google-maintained, open vulnerability database that powers GitHub&apos;s Dependabot alerts and the npm audit command. OSV aggregates vulnerability reports from GitHub Security Advisories, PyPI, NVD, and dozens of other sources into a single normalized format. When you paste your package file, every name and version is sent to the OSV batch API and results come back within seconds.</p>
@@ -172,6 +185,16 @@ export default function DepScannerPage() {
           <p className="text-sm leading-relaxed" style={{ color: '#A1A1AA' }}>When a vulnerability shows &quot;Fixed in version X&quot;, upgrade to that version or higher. Run your package manager&apos;s update command (npm update packagename or pip install --upgrade packagename) and then re-lock your dependencies. If a fix is not yet available, check the advisory for workarounds. Beyond security, keeping dependencies current reduces bundle size, improves performance, and prevents the compounding technical debt of skipping major versions for years.</p>
         </section>
       </main>
+      <div className="max-w-5xl mx-auto px-6 pb-12">
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(248,113,113,0.04)', borderColor: 'rgba(248,113,113,0.15)' }}>
+          <p className="text-white font-black mb-1">Add dependency scanning to your platform</p>
+          <p className="text-white/40 text-sm mb-4">OSV database, CVE IDs + CVSS scores, fixed versions, npm and Python support. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#f87171,#dc2626)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
+      </div>
       <Footer />
     </div>
   )
