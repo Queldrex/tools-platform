@@ -80,17 +80,21 @@ export default function AgencyReportPage() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#a78bfa', borderColor: 'rgba(167,139,250,0.3)', background: 'rgba(167,139,250,0.08)' }}>Live</span>
-          <span className="text-sm font-bold text-white/30">Agency Tool · 1 free report/day · Unlimited with $79/month</span>
+          <span className="text-sm font-bold text-white/30">Agency Tool · 1 free report/day · Unlimited with Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Agency Client <span style={{ color: '#a78bfa' }}>Report Generator</span></h1>
-        <p className="text-white/55 text-base mb-8 max-w-2xl">Enter your client's metrics, wins, and goals — get a polished monthly report ready to send. Stop spending hours writing what AI can generate in seconds.</p>
+        <p className="text-white/55 text-base mb-4 max-w-2xl">Enter your client's metrics, wins, and goals — get a polished monthly report ready to send. Stop spending hours writing what AI can generate in seconds.</p>
+        <div className="flex gap-3 flex-wrap mb-8">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
 
         <div className="rounded-2xl border p-6 mb-6 space-y-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
           <div className="grid grid-cols-2 gap-3">
             <div><label className="text-xs text-white/30 font-bold uppercase tracking-wider mb-1.5 block">Client Name <span className="text-red-400">*</span></label>
               <input value={clientName} onChange={e => setClientName(e.target.value)} placeholder="Acme Corp" className="w-full text-sm text-white rounded-lg px-3 py-2 outline-none" style={{ background: '#161b22', border: '1px solid rgba(255,255,255,0.1)' }} /></div>
             <div><label className="text-xs text-white/30 font-bold uppercase tracking-wider mb-1.5 block">Your Agency Name</label>
-              <input value={agencyName} onChange={e => setAgencyName(e.target.value)} placeholder="Queldrex Digital" className="w-full text-sm text-white rounded-lg px-3 py-2 outline-none" style={{ background: '#161b22', border: '1px solid rgba(255,255,255,0.1)' }} /></div>
+              <input value={agencyName} onChange={e => setAgencyName(e.target.value)} placeholder="Bright Digital" className="w-full text-sm text-white rounded-lg px-3 py-2 outline-none" style={{ background: '#161b22', border: '1px solid rgba(255,255,255,0.1)' }} /></div>
             <div><label className="text-xs text-white/30 font-bold uppercase tracking-wider mb-1.5 block">Report Period</label>
               <input value={period} onChange={e => setPeriod(e.target.value)} placeholder="June 2026" className="w-full text-sm text-white rounded-lg px-3 py-2 outline-none" style={{ background: '#161b22', border: '1px solid rgba(255,255,255,0.1)' }} /></div>
             <div><label className="text-xs text-white/30 font-bold uppercase tracking-wider mb-1.5 block">Service Type</label>
@@ -192,6 +196,24 @@ export default function AgencyReportPage() {
             )}
           </div>
         )}
+        <div className="mt-10 mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• Agency account managers generating monthly client reports in minutes</li>
+            <li>• Freelancers summarizing deliverables, wins, and next steps for retainer clients</li>
+            <li>• Marketing teams presenting campaign results with a professional narrative</li>
+            <li>• Consultants creating structured progress reports across 9 service types</li>
+          </ul>
+        </div>
+
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.15)' }}>
+          <p className="text-white font-black mb-1">Add agency report generation to your platform</p>
+          <p className="text-white/40 text-sm mb-4">9 service types, dynamic metrics table, wins/challenges/next steps, AI-generated full report. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
