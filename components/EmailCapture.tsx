@@ -10,11 +10,12 @@ export default function EmailCapture() {
     if (!email) return
     setStatus('loading')
     try {
-      await fetch('/api/contact', {
+      const res = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: 'Newsletter signup', email, message: 'New tool notifications signup', subject: 'newsletter' }),
+        body: JSON.stringify({ email }),
       })
+      if (!res.ok) throw new Error('Failed')
       setStatus('done')
     } catch {
       setStatus('error')
