@@ -140,10 +140,10 @@ export default function ApiSchemaDriftPage() {
         </div>
 
         <h1 className="text-4xl font-black text-white mb-3">API Schema <span style={{ color: 'rgb(99,102,241)' }}>Drift Scanner</span></h1>
-        <p className="text-white/55 text-base mb-4 max-w-2xl">Detect breaking changes between two OpenAPI specs instantly. Free comparison here — license this tool for your CI/CD pipeline from $29, or get all 51 tools from $99.</p>
+        <p className="text-white/55 text-base mb-4 max-w-2xl">Detect breaking changes between two OpenAPI specs instantly. Free comparison here — license this tool for your CI/CD pipeline from $49, or get all 51 tools from $99.</p>
 
         <div className="flex flex-wrap items-center gap-4 mb-8">
-          <Link href="/pricing" className="text-sm font-bold text-white hover:opacity-80 transition-opacity" style={{ color: 'rgb(99,102,241)' }}>Get this tool — $29 →</Link>
+          <Link href="/pricing" className="text-sm font-bold text-white hover:opacity-80 transition-opacity" style={{ color: 'rgb(99,102,241)' }}>Get this tool — $49 →</Link>
           <Link href="/pricing" className="text-sm font-bold text-white/50 hover:text-white/70 transition-colors">All 51 tools — from $99 →</Link>
         </div>
 
@@ -188,9 +188,9 @@ export default function ApiSchemaDriftPage() {
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.2)' }}>
             <svg className="w-10 h-10 mx-auto mb-4" style={{ color: 'rgb(99,102,241)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
             <h3 className="text-xl font-black text-white mb-2">Unlimited comparisons with a license</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Get this tool for your CI/CD pipeline — $29 one-time, or all 51 tools from $99.</p>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Get this tool for your CI/CD pipeline — $49 one-time, or all 51 tools from $99.</p>
             <div className="flex items-center justify-center gap-3 flex-wrap">
-              <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)', color: '#fff' }}>Get this tool — $29</Link>
+              <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)', color: '#fff' }}>Get this tool — $49</Link>
               <Link href="/pricing" className="text-sm text-white/45 hover:text-white transition-colors">All 51 tools — from $99 →</Link>
             </div>
           </div>
@@ -448,7 +448,7 @@ export default function ApiSchemaDriftPage() {
               { title: 'Backend Teams', desc: 'Doing API versioning — catch breaking changes before they ship to consumers.' },
               { title: 'Platform Engineers', desc: 'Maintaining internal SDK clients — see exactly what changes will break auto-generated code.' },
               { title: 'API-First SaaS Companies', desc: 'Managing consumer contracts — get semver recommendations and migration checklists automatically.' },
-              { title: 'DevOps Engineers', desc: 'Adding spec diff to CI/CD pipelines — license and embed into your pipeline for $29.' },
+              { title: 'DevOps Engineers', desc: 'Adding spec diff to CI/CD pipelines — license and embed into your pipeline for $49.' },
             ].map(item => (
               <div key={item.title} className="rounded-xl border px-5 py-4" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
                 <div className="text-sm font-black text-white mb-1">{item.title}</div>

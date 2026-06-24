@@ -117,7 +117,7 @@ export default function PackageHallucinationPage() {
 
         <h1 className="text-4xl font-black text-white mb-3">Hallucinated <span style={{ color: '#fb923c' }}>Package Detector</span></h1>
         <div className="flex gap-3 flex-wrap mt-3 mb-5">
-          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#f87171,#dc2626)' }}>Get this tool — $29 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#f87171,#dc2626)' }}>Get this tool — $49 →</Link>
           <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
         </div>
         <p className="text-white/55 text-base mb-8 max-w-2xl">
@@ -300,7 +300,7 @@ export default function PackageHallucinationPage() {
           <p className="text-white font-black mb-1">Add hallucination checking to your platform</p>
           <p className="text-white/40 text-sm mb-4">Live registry verification, NOT FOUND/VERY NEW/VERIFIED badges, npm and Python support. One-time license.</p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#f87171,#dc2626)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#f87171,#dc2626)' }}>Get this tool — $49 →</Link>
             <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
           </div>
         </div>
