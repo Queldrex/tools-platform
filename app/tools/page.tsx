@@ -7,10 +7,10 @@ import RequestToolForm from '@/components/RequestToolForm'
 
 export const metadata = {
   title: 'All Tools | Queldrex',
-  description: 'Security scanning, DNS health, legal documents, and business analytics. 48 professional tools, free to start, no account required.',
+  description: 'Security scanning, DNS health, legal documents, and business analytics. 51 professional tools, free to start, no account required.',
   alternates: { canonical: 'https://queldrex.com/tools' },
   openGraph: {
-    title: '48 Free Developer & Business Tools | Queldrex',
+    title: '51 Free Developer & Business Tools | Queldrex',
     description: 'Security scanning, DNS health, legal documents, and business analytics. Free to start, no account required.',
     url: 'https://queldrex.com/tools',
     siteName: 'Queldrex',
@@ -18,7 +18,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image' as const,
-    title: '48 Free Developer & Business Tools | Queldrex',
+    title: '51 Free Developer & Business Tools | Queldrex',
     description: 'Security scanning, DNS health, legal documents, and business analytics. Free to start, no account required.',
   },
 }
@@ -101,6 +101,7 @@ const CATEGORIES: Category[] = [
       { name: 'DNS Health Checker', tagline: 'Live DNS lookup across Cloudflare and Google resolvers — A, MX, TXT, NS, CAA, propagation status', price: 'Free', href: '/tools/dns-health', screenshot: 'dns-health', badge: 'New' },
       { name: 'Email Deliverability Suite', tagline: 'SPF, DKIM, DMARC, MX validation and blacklist check — know if your email will reach inboxes', price: 'Free', href: '/tools/email-deliverability', screenshot: 'email-deliverability', badge: 'New' },
       { name: 'Privacy Policy Analyzer', tagline: 'Paste any privacy policy URL and get an instant GDPR/CCPA compliance score and red flags', price: 'Pro', href: '/tools/privacy-analyzer', screenshot: 'privacy-analyzer', badge: 'New' },
+      { name: 'HTTP Header Inspector', tagline: 'Check security headers, CORS, CSP, HSTS, and more — full response header audit', price: 'Free', href: '/tools/http-headers', screenshot: 'http-headers', badge: 'New' },
     ],
   },
   {
@@ -134,6 +135,8 @@ const CATEGORIES: Category[] = [
       { name: 'SaaS Spend Optimizer', tagline: 'Paste bank statement CSV to find all SaaS subscriptions and consolidation opportunities', price: 'Pro', href: '/tools/saas-spend', screenshot: 'saas-spend', badge: 'New' },
       { name: 'Invoice Fraud Detector', tagline: 'Scan any invoice for BEC fraud, round-number manipulation, and fake vendor patterns', price: 'Pro', href: '/tools/invoice-fraud', screenshot: 'invoice-fraud', badge: 'New' },
       { name: 'Agency Client Report Generator', tagline: 'Turn your metrics and wins into a polished monthly client report — AI-written in seconds', price: 'Pro', href: '/tools/agency-report', screenshot: 'agency-report', badge: 'New' },
+      { name: 'OG Tag Previewer', tagline: 'Preview how any URL looks when shared on Twitter, LinkedIn, Facebook, and iMessage', price: 'Free', href: '/tools/og-previewer', screenshot: 'og-previewer', badge: 'New' },
+      { name: 'Webhook Tester', tagline: 'Get an instant endpoint, fire test webhooks, and inspect payloads in real-time', price: 'Free', href: '/tools/webhook-tester', screenshot: 'webhook-tester', badge: 'New' },
     ],
   },
 ]
@@ -175,7 +178,7 @@ export default function ToolsPage() {
           <div className="flex items-center gap-2 px-4 py-2 rounded-xl border" style={{ background: 'rgba(167,139,250,0.05)', borderColor: 'rgba(167,139,250,0.15)' }}>
             <span className="w-2 h-2 rounded-full bg-purple-400" />
             <span className="text-xs font-bold text-purple-400">Pro</span>
-            <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>$79/mo or $9+ per tool</span>
+            <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>$79/mo or $15–$49 one-time per tool</span>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 rounded-xl border" style={{ background: 'rgba(6,214,255,0.05)', borderColor: 'rgba(6,214,255,0.15)' }}>
             <span className="w-2 h-2 rounded-full" style={{ background: '#06d6ff' }} />

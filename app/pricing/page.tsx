@@ -5,11 +5,11 @@ import PricingTiers from './PricingTiers'
 
 export const metadata = {
   title: 'Pricing — Queldrex',
-  description: '48 tools. Free to start, no account required. Pro is $79/month for unlimited access. Agency at $99/month for up to 25 client scans.',
+  description: '51 tools. Free to start, no account required. Pro is $79/month for unlimited access. Agency at $99/month for up to 25 client scans.',
   alternates: { canonical: 'https://queldrex.com/pricing' },
   openGraph: {
     title: 'Pricing — Queldrex',
-    description: '48 tools. Free to start, no account required. Pro is $79/month for unlimited access.',
+    description: '51 tools. Free to start, no account required. Pro is $79/month for unlimited access.',
     url: 'https://queldrex.com/pricing',
     siteName: 'Queldrex',
     type: 'website',
@@ -17,7 +17,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image' as const,
     title: 'Pricing — Queldrex',
-    description: '48 tools. Free to start, no account required. Pro is $79/month for unlimited access.',
+    description: '51 tools. Free to start, no account required. Pro is $79/month for unlimited access.',
   },
 }
 
@@ -59,7 +59,7 @@ export default function PricingPage() {
 
       <section className="max-w-7xl mx-auto px-6 pt-20 pb-8 text-center">
         <p className="text-xs font-bold tracking-[0.25em] uppercase mb-4" style={{ color: '#6d28d9' }}>Queldrex Pricing</p>
-        <h1 className="text-4xl lg:text-6xl font-black mb-4" style={{ color: '#FAFAFA' }}>48 tools. Pay for what you use.</h1>
+        <h1 className="text-4xl lg:text-6xl font-black mb-4" style={{ color: '#FAFAFA' }}>51 tools. Pay for what you use.</h1>
         <p className="text-lg max-w-lg mx-auto" style={{ color: '#A1A1AA' }}>
           Every tool has a free tier. No account required to start. Upgrade when you need more.
         </p>
@@ -116,23 +116,28 @@ export default function PricingPage() {
       <section className="max-w-5xl mx-auto px-6 pb-16">
         <div className="text-center mb-8">
           <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: '#A1A1AA' }}>Individual Tools</p>
-          <h2 className="text-2xl font-black mb-3" style={{ color: '#FAFAFA' }}>Only need one tool? Pay for just that.</h2>
-          <p className="text-sm max-w-md mx-auto" style={{ color: '#A1A1AA' }}>Every Pro tool is available individually. No need to subscribe to everything if you only use one.</p>
+          <h2 className="text-2xl font-black mb-3" style={{ color: '#FAFAFA' }}>Only need one tool? Pay once. Own it forever.</h2>
+          <p className="text-sm max-w-md mx-auto" style={{ color: '#A1A1AA' }}>Every Pro tool is available individually. One-time payment — no subscription, no renewal. Better value than a month of any competitor.</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {([
-            { name: 'NDA Generator', price: 12, href: '/tools/nda-generator' },
-            { name: 'Terms of Service Generator', price: 12, href: '/tools/tos-generator' },
-            { name: 'Refund Policy Generator', price: 9, href: '/tools/refund-policy' },
-            { name: 'Proposal Generator', price: 19, href: '/tools/proposal-generator' },
-            { name: 'Job Description Writer', price: 12, href: '/tools/job-description' },
-            { name: 'Dependency CVE Scanner', price: 19, href: '/tools/dep-scanner' },
-            { name: 'Privacy Policy Analyzer', price: 14, href: '/tools/privacy-analyzer' },
-            { name: 'Contract Risk Scanner', price: 19, href: '/tools/contract-scanner' },
-            { name: 'SaaS Spend Optimizer', price: 19, href: '/tools/saas-spend' },
-            { name: 'Invoice Fraud Detector', price: 12, href: '/tools/invoice-fraud' },
-            { name: 'Agency Client Reports', price: 19, href: '/tools/agency-report' },
-            { name: 'Ad Copy Grader', price: 12, href: '/tools/ad-grader' },
+            { name: 'Contract Risk Scanner',         price: 49, href: '/tools/contract-scanner' },
+            { name: 'Invoice Fraud Detector',        price: 49, href: '/tools/invoice-fraud' },
+            { name: 'Agency Client Reports',         price: 49, href: '/tools/agency-report' },
+            { name: 'SaaS Spend Optimizer',          price: 49, href: '/tools/saas-spend' },
+            { name: 'Vibe Coding Security Shield',   price: 49, href: '/tools/vibe-security' },
+            { name: 'Database Migration Checker',    price: 49, href: '/tools/database-migration' },
+            { name: 'API Schema Drift Scanner',      price: 49, href: '/tools/api-schema-drift' },
+            { name: 'Hallucinated Package Detector', price: 49, href: '/tools/package-hallucination' },
+            { name: 'NDA Generator',                 price: 29, href: '/tools/nda-generator' },
+            { name: 'Terms of Service Generator',    price: 29, href: '/tools/tos-generator' },
+            { name: 'Refund Policy Generator',       price: 29, href: '/tools/refund-policy' },
+            { name: 'Proposal Generator',            price: 29, href: '/tools/proposal-generator' },
+            { name: 'Dependency CVE Scanner',        price: 29, href: '/tools/dep-scanner' },
+            { name: 'Privacy Policy Analyzer',       price: 29, href: '/tools/privacy-analyzer' },
+            { name: 'Ad Copy Grader',                price: 29, href: '/tools/ad-grader' },
+            { name: 'Structured Data Validator',     price: 29, href: '/tools/schema-validator' },
+            { name: 'Job Description Writer',        price: 15, href: '/tools/job-description' },
           ] as const).map(tool => (
             <a key={tool.name} href={tool.href}
               className="flex items-center justify-between gap-3 rounded-xl border px-4 py-3 transition-all hover:scale-[1.02] group"
@@ -143,7 +148,7 @@ export default function PricingPage() {
           ))}
         </div>
         <p className="text-center text-xs mt-5" style={{ color: 'rgba(255,255,255,0.3)' }}>
-          All individual tools included in Pro ($79/mo). Better value if you use 2 or more.
+          All individual tools included in Pro ($79/mo). Better value if you use 3 or more.
         </p>
       </section>
 

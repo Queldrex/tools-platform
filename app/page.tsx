@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://queldrex.com' },
   openGraph: {
     title: 'Queldrex — Free Developer & Business Tools',
-    description: '48 tools for developers and small teams. Security, DNS, legal docs, business analytics. No account required.',
+    description: '51 tools for developers and small teams. Security, DNS, legal docs, business analytics. No account required.',
     url: 'https://queldrex.com',
     siteName: 'Queldrex',
     type: 'website',
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Queldrex — Free Developer & Business Tools',
-    description: '48 tools for developers and small teams. Security, DNS, legal docs, business analytics. No account required.',
+    description: '51 tools for developers and small teams. Security, DNS, legal docs, business analytics. No account required.',
   },
 }
 
@@ -105,7 +105,7 @@ export default function HomePage() {
             Professional security audits, legal documents, DNS health checks, and business analytics — built for developers and small teams who do everything themselves.
           </p>
           <p className="text-base mb-12 max-w-lg mx-auto" style={{ color: 'rgba(255,255,255,0.28)' }}>
-            48 tools. Free to use right now. No account, no card, no setup.
+            51 tools. Free to use right now. No account, no card, no setup.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
@@ -134,7 +134,7 @@ export default function HomePage() {
           <span className="hidden sm:inline" style={{ color: 'rgba(255,255,255,0.06)' }}>·</span>
           <span>Free forever · No card required</span>
           <span className="hidden sm:inline" style={{ color: 'rgba(255,255,255,0.06)' }}>·</span>
-          <span>48 tools across 4 categories</span>
+          <span>51 tools across 4 categories</span>
           <span className="hidden sm:inline" style={{ color: 'rgba(255,255,255,0.06)' }}>·</span>
           <span>Payments by Stripe</span>
         </div>
@@ -164,7 +164,7 @@ export default function HomePage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { value: '48',    label: 'Professional tools' },
+                  { value: '51',    label: 'Professional tools' },
                   { value: '4',     label: 'Tool categories' },
                   { value: '$0',    label: 'To get started' },
                   { value: '< 30s', label: 'From landing to results' },
@@ -237,7 +237,7 @@ export default function HomePage() {
             <div className="text-center mb-16">
               <p className="text-[11px] font-bold uppercase tracking-[0.16em] mb-4" style={{ color: 'rgba(255,255,255,0.2)' }}>The toolkit</p>
               <h2 className="font-black mb-3" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', lineHeight: 1.1, letterSpacing: '-0.025em', color: '#FAFAFA' }}>
-                48 tools across 4 categories
+                51 tools across 4 categories
               </h2>
               <p className="text-lg" style={{ color: 'rgba(255,255,255,0.4)' }}>
                 Every tool free to start. Go Pro for unlimited access.
@@ -265,7 +265,7 @@ export default function HomePage() {
           <ToolCards />
           <div className="text-center mt-10">
             <Link href="/tools" className="text-sm font-bold transition-colors hover:text-white/60" style={{ color: 'rgba(255,255,255,0.3)' }}>
-              View all 48 tools — most are free →
+              View all 51 tools — most are free →
             </Link>
           </div>
         </div>
@@ -295,7 +295,7 @@ export default function HomePage() {
                 </div>
                 <p className="text-xs mb-7 mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>No account. No card. Open a tool and go.</p>
                 <ul className="space-y-2.5 mb-8 flex-1 text-sm" style={{ color: 'rgba(255,255,255,0.48)' }}>
-                  {['All 48 tools, free tier', '3–10 uses per tool per day', 'No account required', 'Instant results'].map(f => (
+                  {['All 51 tools, free tier', '3–10 uses per tool per day', 'No account required', 'Instant results'].map(f => (
                     <li key={f} className="flex items-start gap-2">
                       <svg className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: '#4ade80' }} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
@@ -322,7 +322,7 @@ export default function HomePage() {
                 </div>
                 <p className="text-xs mb-7 mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>Every tool. No limits. Cancel anytime.</p>
                 <ul className="space-y-2.5 mb-8 flex-1 text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                  {['All 48 tools, unlimited use', 'New tools added regularly', 'Every category included', '7-day full refund guarantee', 'Cancel from Stripe portal anytime'].map(f => (
+                  {['All 51 tools, unlimited use', 'New tools added regularly', 'Every category included', '7-day full refund guarantee', 'Cancel from Stripe portal anytime'].map(f => (
                     <li key={f} className="flex items-start gap-2">
                       <svg className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: '#a78bfa' }} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
