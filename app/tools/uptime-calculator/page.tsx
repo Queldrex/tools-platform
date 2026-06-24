@@ -103,9 +103,9 @@ export default function UptimeCalculatorPage() {
             Free Tool · No API Key · Browser Only
           </div>
           <h1 className="text-3xl font-black text-white mb-1">Uptime SLA Calculator</h1>
-          <p className="text-white/40 text-sm mb-4">Calculate downtime from SLA percentages, model compound multi-service availability, and track your monthly error budget. License from $15, or get all 51 tools from $99.</p>
+          <p className="text-white/40 text-sm mb-4">Calculate downtime from SLA percentages, model compound multi-service availability, and track your monthly error budget. License from $29, or get all 51 tools from $99.</p>
           <div className="flex flex-wrap gap-3">
-            <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $15 →</Link>
+            <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29 →</Link>
             <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black border text-white/60" style={{ borderColor: 'rgba(255,255,255,0.12)' }}>All 51 tools — from $99 →</Link>
           </div>
         </div>
@@ -373,7 +373,7 @@ export default function UptimeCalculatorPage() {
           <p className="text-white font-black mb-1">Add SLA tooling to your platform</p>
           <p className="text-white/40 text-sm mb-4">Uptime calculator, compound SLA, error budget tracker. Client-side only, one-time license.</p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $15 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
             <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
           </div>
         </div>

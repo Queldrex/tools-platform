@@ -381,12 +381,12 @@ export default function CronBuilderPage() {
             Free Tool · No API Key · Browser Only
           </div>
           <h1 className="text-3xl font-black text-white mb-2">Cron Expression Builder</h1>
-          <p className="text-white/40 text-sm mb-4">Build cron expressions visually with next-run preview, timezone support, and multi-platform output for Linux, GitHub Actions, AWS EventBridge, Kubernetes, and Vercel. License from $15, or get all 51 tools from $99.</p>
+          <p className="text-white/40 text-sm mb-4">Build cron expressions visually with next-run preview, timezone support, and multi-platform output for Linux, GitHub Actions, AWS EventBridge, Kubernetes, and Vercel. License from $29, or get all 51 tools from $99.</p>
           <div className="flex flex-wrap gap-3">
             <Link href="/pricing"
               className="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-lg transition-all"
               style={{ background: 'rgba(6,214,255,0.1)', color: '#06d6ff', border: '1px solid rgba(6,214,255,0.25)' }}>
-              Get this tool — $15 →
+              Get this tool — $29 →
             </Link>
             <Link href="/pricing"
               className="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-lg transition-all"
@@ -570,7 +570,7 @@ export default function CronBuilderPage() {
             <Link href="/pricing"
               className="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-lg transition-all"
               style={{ background: 'rgba(6,214,255,0.12)', color: '#06d6ff', border: '1px solid rgba(6,214,255,0.25)' }}>
-              Get this tool — $15 →
+              Get this tool — $29 →
             </Link>
             <Link href="/pricing"
               className="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-lg transition-all"
