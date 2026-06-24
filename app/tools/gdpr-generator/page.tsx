@@ -303,11 +303,11 @@ export default function GdprGeneratorPage() {
             Free Tool · No Account Required · Instant Output
           </div>
           <h1 className="text-3xl font-black text-white mb-1">GDPR / Privacy Policy Generator</h1>
-          <p className="text-white/40 text-sm mb-3">Generate GDPR, CCPA/CPRA, and UK-GDPR compliant privacy policies, cookie banners, and DPAs — copy or download instantly. License from $29, or get all 51 tools from $99. <span className="text-amber-400">Always have legal counsel review compliance documents before publishing.</span></p>
+          <p className="text-white/40 text-sm mb-3">Generate GDPR, CCPA/CPRA, and UK-GDPR compliant privacy policies, cookie banners, and DPAs — copy or download instantly. License from $49, or get all 51 tools from $99. <span className="text-amber-400">Always have legal counsel review compliance documents before publishing.</span></p>
           <div className="flex gap-3 flex-wrap">
             <Link href="/pricing" className="inline-flex items-center gap-1.5 text-xs font-black px-4 py-2 rounded-xl text-black transition-all"
               style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>
-              Get this tool — $29 →
+              Get this tool — $49 →
             </Link>
             <Link href="/pricing" className="inline-flex items-center gap-1.5 text-xs font-black px-4 py-2 rounded-xl border text-white/60 transition-all"
               style={{ borderColor: 'rgba(255,255,255,0.12)' }}>
@@ -471,7 +471,7 @@ export default function GdprGeneratorPage() {
           <p className="text-white font-black mb-1">Add compliance document generation to your platform</p>
           <p className="text-white/40 text-sm mb-4">GDPR + CCPA/CPRA + UK-GDPR, privacy policy + cookie banner + DPA, download as file. One-time license.</p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $49 →</Link>
             <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
           </div>
         </div>
