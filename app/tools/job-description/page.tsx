@@ -74,10 +74,14 @@ export default function JobDescriptionPage() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#06d6ff', borderColor: 'rgba(6,214,255,0.3)', background: 'rgba(6,214,255,0.08)' }}>HR</span>
-          <span className="text-sm font-bold text-white/30">2 free/day · Unlimited with $79/month</span>
+          <span className="text-sm font-bold text-white/30">2 free/day · Unlimited with Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Job Description <span style={{ color: '#06d6ff' }}>Writer</span></h1>
-        <p className="text-white/55 text-base mb-4 max-w-2xl">Enter your rough notes and get a complete, ready-to-post job description in seconds. Attract better candidates with professionally written postings.</p>
+        <p className="text-white/55 text-base mb-3 max-w-2xl">Enter your rough notes and get a complete, ready-to-post job description in seconds. Attract better candidates with professionally written postings.</p>
+        <div className="flex gap-3 flex-wrap mt-3 mb-4">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
         <div className="mb-6 px-4 py-3 rounded-xl border text-xs leading-relaxed" style={{ background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.2)', color: 'rgba(251,191,36,0.7)' }}>
           AI-generated job descriptions are a starting point only. Review all output for compliance with federal and state employment law (including equal opportunity requirements and salary disclosure obligations) before posting. This tool does not provide legal or HR compliance advice.
         </div>
@@ -93,7 +97,7 @@ export default function JobDescriptionPage() {
               </div>
               <div>
                 <label className="text-xs text-white/30 font-bold uppercase tracking-wider mb-1.5 block">Company <span className="text-red-400">*</span></label>
-                <input value={company} onChange={e => setCompany(e.target.value)} placeholder="Queldrex LLC"
+                <input value={company} onChange={e => setCompany(e.target.value)} placeholder="Acme Corp"
                   className="w-full text-sm text-white rounded-lg px-3 py-2 outline-none" style={{ background: '#161b22', border: '1px solid rgba(255,255,255,0.1)' }} />
               </div>
               <div>
@@ -236,6 +240,23 @@ export default function JobDescriptionPage() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+        <div className="mt-10 mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• Hiring managers writing job posts without an HR team or copywriter</li>
+            <li>• Founders drafting their first engineering, sales, or ops role descriptions</li>
+            <li>• Recruiters generating consistent, bias-checked JDs across 13 industries</li>
+            <li>• Agencies creating client job descriptions at scale with tone and level controls</li>
+          </ul>
+        </div>
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(6,214,255,0.04)', borderColor: 'rgba(6,214,255,0.12)' }}>
+          <p className="text-white font-black mb-1">Add job description generation to your platform</p>
+          <p className="text-white/40 text-sm mb-4">13 industries, 5 experience levels, 3 tones, work model, AI-generated with legal disclaimer. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
           </div>
         </div>
       </main>
