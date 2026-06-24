@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import GoProButton from '@/components/GoProButton'
+import BundleButton from '@/components/BundleButton'
 
 export const metadata = {
   title: 'Pricing — Queldrex',
@@ -238,6 +239,54 @@ export default function PricingPage() {
             style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}>
             Get a quote →
           </Link>
+        </div>
+      </section>
+
+      {/* BUNDLE */}
+      <section className="max-w-5xl mx-auto px-6 pb-8">
+        <div className="rounded-2xl border p-6 sm:p-8 relative overflow-hidden"
+          style={{ background: 'linear-gradient(135deg,rgba(167,139,250,0.08) 0%,rgba(109,40,217,0.05) 100%)', borderColor: 'rgba(167,139,250,0.3)', boxShadow: '0 0 48px rgba(167,139,250,0.06)' }}>
+          <div className="absolute top-4 right-4 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full text-black"
+            style={{ background: 'linear-gradient(135deg,#a78bfa,#7c3aed)' }}>
+            Best one-time value
+          </div>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: '#a78bfa' }}>All Tools Bundle</p>
+              <div className="flex items-baseline gap-2 mb-2">
+                <span className="text-4xl font-black" style={{ color: '#FAFAFA' }}>$149</span>
+                <span className="text-base font-bold" style={{ color: 'rgba(255,255,255,0.35)' }}>one-time</span>
+              </div>
+              <p className="text-sm max-w-lg leading-relaxed" style={{ color: '#A1A1AA' }}>
+                Every current paid tool — unlocked forever. Contract scanner, NDA generator, vibe security shield, CVE scanner, agency reports, and all 14 others. Pay once, use all of them on this browser forever.
+              </p>
+              <ul className="mt-3 space-y-1.5">
+                {[
+                  'All 17 paid tools, lifetime access',
+                  'No subscription — ever',
+                  'Use on queldrex.com forever',
+                  'Does not include future tools added after purchase',
+                  '7-day money-back guarantee',
+                ].map(f => (
+                  <li key={f} className="flex items-center gap-2 text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                    <svg className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#a78bfa' }} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="flex-shrink-0 w-full sm:w-48">
+              <BundleButton
+                className="w-full py-4 rounded-xl text-sm font-black text-white transition-all hover:scale-[1.02] disabled:opacity-50"
+                style={{ background: 'linear-gradient(135deg,#a78bfa,#7c3aed)', boxShadow: '0 0 28px rgba(167,139,250,0.3)' }}
+              >
+                Get the Bundle — $149
+              </BundleButton>
+              <p className="text-center text-[11px] mt-2" style={{ color: 'rgba(255,255,255,0.2)' }}>Secure checkout · Stripe</p>
+            </div>
+          </div>
         </div>
       </section>
 
