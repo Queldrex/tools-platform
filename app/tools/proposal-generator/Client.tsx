@@ -52,7 +52,7 @@ export default function ProposalGeneratorPage() {
   }
 
   const loadExample = () => {
-    setYourCompany('Queldrex LLC')
+    setYourCompany('Acme Consulting LLC')
     setClientCompany('Mountain West Realty Group')
     setProjectTitle('Website Redesign & Lead Generation System')
     setServiceType('Website Design & Development')
@@ -86,10 +86,14 @@ export default function ProposalGeneratorPage() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#4ade80', borderColor: 'rgba(74,222,128,0.3)', background: 'rgba(74,222,128,0.08)' }}>Business</span>
-          <span className="text-sm font-bold text-white/30">1 free proposal/day · Unlimited with $79/month</span>
+          <span className="text-sm font-bold text-white/30">1 free proposal/day · Unlimited with Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Business Proposal <span style={{ color: '#4ade80' }}>Generator</span></h1>
-        <p className="text-white/55 text-base mb-6 max-w-2xl">Turn your rough notes into a complete, professional business proposal in seconds. Win more clients with polished, persuasive proposals.</p>
+        <p className="text-white/55 text-base mb-4 max-w-2xl">Turn your rough notes into a complete, professional business proposal in seconds. Win more clients with polished, persuasive proposals.</p>
+        <div className="flex gap-3 flex-wrap mb-6">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
@@ -110,7 +114,7 @@ export default function ProposalGeneratorPage() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-white/30 font-bold uppercase tracking-wider mb-1.5 block">Your Company <span className="text-red-400">*</span></label>
-              <input value={yourCompany} onChange={e => setYourCompany(e.target.value)} placeholder="Queldrex LLC"
+              <input value={yourCompany} onChange={e => setYourCompany(e.target.value)} placeholder="Your Company Name"
                 className="w-full text-sm text-white rounded-lg px-3 py-2 outline-none" style={{ background: '#161b22', border: '1px solid rgba(255,255,255,0.1)' }} />
             </div>
             <div>
@@ -228,6 +232,23 @@ export default function ProposalGeneratorPage() {
             </div>
           </div>
         )}
+        <div className="mt-10 mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• Freelancers and consultants creating polished client proposals in minutes</li>
+            <li>• Agencies generating first drafts across 13 service types with tone controls</li>
+            <li>• Founders writing their first outbound proposal without a sales team</li>
+            <li>• Sales leads customizing proposals for enterprise clients with deliverable details</li>
+          </ul>
+        </div>
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.15)' }}>
+          <p className="text-white font-black mb-1">Add proposal generation to your platform</p>
+          <p className="text-white/40 text-sm mb-4">13 service types, 3 tones, timeline/budget/deliverables, AI-generated full proposal. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
