@@ -246,11 +246,11 @@ export default function ThreatFeedPage() {
                       Pro subscribers get unlimited access to real-time threat intelligence — {visible.length} active indicators, updated every 15 minutes.
                     </p>
                     <div className="flex items-center justify-center gap-3 flex-wrap">
-                      <a href="/pricing"
+                      <Link href="/pricing"
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-black text-black"
-                        style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', boxShadow: '0 0 20px rgba(6,182,212,0.25)' }}>
-                        Start Pro — $79/month
-                      </a>
+                        style={{ background: 'linear-gradient(135deg,#f87171,#dc2626)', boxShadow: '0 0 20px rgba(248,113,113,0.25)' }}>
+                        Upgrade to Pro →
+                      </Link>
                       <a href="/pricing" className="text-sm text-white/40 hover:text-white transition-colors">
                         See all plans →
                       </a>
@@ -265,6 +265,17 @@ export default function ThreatFeedPage() {
         <p className="text-xs text-white/20 mt-4 text-center">
           Data sourced from URLhaus and Feodo Tracker (abuse.ch). Updated every 15 minutes. For defensive use only.
         </p>
+
+        {/* Who This Is For */}
+        <div className="mt-10 mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• Security engineers monitoring live OSINT threat intelligence feeds</li>
+            <li>• DevOps teams tracking CVEs and threat actor activity relevant to their stack</li>
+            <li>• SOC analysts supplementing commercial feeds with a curated open-source alternative</li>
+            <li>• Founders staying informed on security incidents that could affect their vendors</li>
+          </ul>
+        </div>
 
         {/* How It Works */}
         <div className="mt-14 border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
