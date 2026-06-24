@@ -84,10 +84,14 @@ export default function RefundPolicyPage() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#fb923c', borderColor: 'rgba(251,146,60,0.3)', background: 'rgba(251,146,60,0.08)' }}>Free</span>
-          <span className="text-sm font-bold text-white/30">2 free generations/day · Unlimited with $79/month</span>
+          <span className="text-sm font-bold text-white/30">2 free generations/day · Unlimited with Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Refund Policy <span style={{ color: '#fb923c' }}>Generator</span></h1>
         <p className="text-white/55 text-base mb-4 max-w-2xl">Generate a professional, customer-friendly refund policy tailored to your product type and business rules. Ready to publish in seconds.</p>
+        <div className="flex gap-3 flex-wrap mt-3 mb-4">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
         <div className="mb-6 px-4 py-3 rounded-xl border text-xs leading-relaxed" style={{ background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.2)', color: 'rgba(251,191,36,0.7)' }}>
           This tool generates document drafts using AI. Output is not legal advice and does not create an attorney-client relationship. Have a licensed attorney review any document before publishing.
         </div>
@@ -173,8 +177,8 @@ export default function RefundPolicyPage() {
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(251,146,60,0.05)', borderColor: 'rgba(251,146,60,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited generations with Pro</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro plan: unlimited policy generation, all tools, and AI visibility monitoring. $79/month, cancel anytime.</p>
-            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Start Pro — $79/month</Link>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Upgrade for unlimited policy generation and access to all tools.</p>
+            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Upgrade to Pro →</Link>
           </div>
         )}
 
@@ -211,6 +215,25 @@ export default function RefundPolicyPage() {
             </div>
           </div>
         )}
+      </main>
+        <div className="mt-10 mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• E-commerce founders drafting a compliant refund policy before launching a store</li>
+            <li>• SaaS teams generating subscription refund terms with jurisdiction-specific language</li>
+            <li>• Freelancers and agencies adding a refund clause to service agreements</li>
+            <li>• Developers building product pages who need a policy without a legal team</li>
+          </ul>
+        </div>
+
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(6,214,255,0.04)', borderColor: 'rgba(6,214,255,0.12)' }}>
+          <p className="text-white font-black mb-1">Add refund policy generation to your platform</p>
+          <p className="text-white/40 text-sm mb-4">Digital/physical/subscription/service types, jurisdiction-specific, restocking fee, AI-generated document. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
