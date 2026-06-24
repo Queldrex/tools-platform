@@ -4,7 +4,7 @@ import Footer from '@/components/Footer'
 
 export const metadata = {
   title: 'Tool Audit & Verification — Queldrex',
-  description: 'Live verification report for all 48 Queldrex tools. Real test results, example inputs and outputs, and proof each tool works.',
+  description: 'Live verification report for Queldrex tools. Real test results, example inputs and outputs, and proof each tool works. 51 tools available.',
 }
 
 interface ToolResult {
@@ -327,7 +327,7 @@ export default function AuditPage() {
             Every tool on Queldrex has been individually tested with real inputs and real outputs. No mocks. No stubs.
             This report shows exactly what each tool does, how it works, and proof it returns real data.
           </p>
-          <p className="text-white/25 text-xs mt-3">Last verified: June 2026 · 25 of 48 tools documented · queldrex.com</p>
+          <p className="text-white/25 text-xs mt-3">Last verified: June 2026 · 51 tools live · 24 core tools documented below · queldrex.com</p>
           <div className="flex gap-3 flex-wrap mt-4">
             <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get all 51 tools — from $99 →</Link>
             <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>View pricing →</Link>
