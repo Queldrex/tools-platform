@@ -243,6 +243,27 @@ export default function AgencyReportPage() {
           </ul>
         </div>
 
+        {/* ── FAQ ─────────────────────────────────────────── */}
+        <div className="mt-10 mb-6 space-y-3">
+          <h2 className="text-sm font-black uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)' }}>Common questions</h2>
+          {[
+            { q: "What data do I need to generate a report?", a: "You need the client name, reporting period, service type, and key metrics (traffic, revenue, leads — whatever applies). The AI turns those numbers into a structured narrative with wins, challenges, and next steps. No template or spreadsheet required." },
+            { q: "Can I white-label the output?", a: "Yes. The generated report is plain text with no Queldrex branding. Paste it into your own report template, branded Google Doc, or client portal before delivery." },
+            { q: "Does Queldrex store my client data?", a: "No. Client names, metrics, and performance data entered into the tool are used to generate the report and are not stored or logged after the response is returned." },
+            { q: "How do I handle metrics I don't have?", a: "Leave those fields blank or enter 0 — the AI will omit those metrics from the narrative rather than fabricating numbers. Focus on the metrics you can speak to confidently; the report will still be complete." },
+          ].map(({ q, a }) => (
+            <details key={q} className="rounded-xl border group" style={{ borderColor: 'rgba(255,255,255,0.07)', background: '#0d1117' }}>
+              <summary className="px-4 py-3.5 text-sm font-bold cursor-pointer list-none flex items-center justify-between" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                {q}
+                <svg className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-180" style={{ color: 'rgba(255,255,255,0.3)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div className="px-4 pb-4 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{a}</div>
+            </details>
+          ))}
+        </div>
+
         <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.15)' }}>
           <p className="text-white font-black mb-1">Add agency report generation to your platform</p>
           <p className="text-white/40 text-sm mb-4">9 service types, dynamic metrics table, wins/challenges/next steps, AI-generated full report. One-time license.</p>

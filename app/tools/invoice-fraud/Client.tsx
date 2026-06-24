@@ -201,6 +201,28 @@ export default function InvoiceFraudPage() {
             )}
           </div>
         )}
+
+        {/* ── FAQ ─────────────────────────────────────────── */}
+        <div className="mt-10 mb-6 space-y-3">
+          <h2 className="text-sm font-black uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)' }}>Common questions</h2>
+          {[
+            { q: "What makes an invoice suspicious?", a: "Common red flags include round-number amounts (exactly $5,000), sequential invoice numbers suggesting bulk generation, missing vendor addresses, vague line items, payment instructions that differ from prior invoices, and amounts just below approval thresholds." },
+            { q: "Should I pay an invoice if it scores low risk?", a: "A low-risk score means the invoice matches expected patterns — it does not verify the vendor is legitimate or that the work was completed. Always cross-reference against your PO system and vendor master list before approving payment." },
+            { q: "Does this store the invoice data I paste?", a: "No. Invoice text is sent to our AI provider for analysis and is not stored or retained after the response is generated. Do not paste invoices containing employee personal data or bank account numbers." },
+            { q: "What's the most common invoice fraud pattern?", a: "Business Email Compromise (BEC) — where attackers impersonate a vendor and send a legitimate-looking invoice with updated banking details. The scanner flags changes in payment instructions and mismatches between vendor name and bank details as high-severity findings." },
+          ].map(({ q, a }) => (
+            <details key={q} className="rounded-xl border group" style={{ borderColor: 'rgba(255,255,255,0.07)', background: '#0d1117' }}>
+              <summary className="px-4 py-3.5 text-sm font-bold cursor-pointer list-none flex items-center justify-between" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                {q}
+                <svg className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-180" style={{ color: 'rgba(255,255,255,0.3)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div className="px-4 pb-4 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{a}</div>
+            </details>
+          ))}
+        </div>
+
         <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(248,113,113,0.04)', borderColor: 'rgba(248,113,113,0.15)' }}>
           <p className="text-white font-black mb-1">Add invoice fraud detection to your platform</p>
           <p className="text-white/40 text-sm mb-4">20+ deterministic fraud rules, risk level (Clear → DO NOT PAY), sorted flags with action guidance. One-time license.</p>

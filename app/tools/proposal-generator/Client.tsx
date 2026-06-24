@@ -274,6 +274,27 @@ export default function ProposalGeneratorPage() {
             <li>• Sales leads customizing proposals for enterprise clients with deliverable details</li>
           </ul>
         </div>
+        {/* ── FAQ ─────────────────────────────────────────── */}
+        <div className="mt-10 mb-6 space-y-3">
+          <h2 className="text-sm font-black uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)' }}>Common questions</h2>
+          {[
+            { q: "How long does it take to generate a proposal?", a: "Under 60 seconds. Fill in client name, project type, scope, and budget — the AI generates a complete proposal with an executive summary, scope of work, investment breakdown, and terms." },
+            { q: "Can I edit the output before sending?", a: "Yes — copy the text into Google Docs, Word, or Notion and customize as needed. The generated proposal is a starting point. Add your logo, payment terms, and portfolio links before sending to the client." },
+            { q: "Does this store my client information?", a: "No. Client names, project details, and budget figures are used to generate the proposal and are not stored after the response is returned." },
+            { q: "What project types work best?", a: "The tool performs well for web design, development, marketing, copywriting, consulting, and agency retainers. For highly technical or enterprise proposals with complex pricing models, use the output as a structural template and customize the investment section manually." },
+          ].map(({ q, a }) => (
+            <details key={q} className="rounded-xl border group" style={{ borderColor: 'rgba(255,255,255,0.07)', background: '#0d1117' }}>
+              <summary className="px-4 py-3.5 text-sm font-bold cursor-pointer list-none flex items-center justify-between" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                {q}
+                <svg className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-180" style={{ color: 'rgba(255,255,255,0.3)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div className="px-4 pb-4 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{a}</div>
+            </details>
+          ))}
+        </div>
+
         <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.15)' }}>
           <p className="text-white font-black mb-1">Add proposal generation to your platform</p>
           <p className="text-white/40 text-sm mb-4">13 service types, 3 tones, timeline/budget/deliverables, AI-generated full proposal. One-time license.</p>

@@ -492,6 +492,27 @@ export default function VibeSecurityPage() {
             )}
           </div>
         )}
+
+        {/* ── FAQ ─────────────────────────────────────────── */}
+        <div className="mt-10 mb-6 space-y-3">
+          <h2 className="text-sm font-black uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)' }}>Common questions</h2>
+          {[
+            { q: "What kind of code should I scan?", a: "Any server-side code handling user input, authentication, database queries, file uploads, or external API calls. Frontend code with eval(), dangerouslySetInnerHTML, or direct DOM manipulation is also worth scanning. Focus on code that touches data or handles permissions." },
+            { q: "How is this different from a linter?", a: "Linters check syntax and style rules. The security scanner looks for exploitable patterns — SQL injection vectors, unvalidated user input passed to shell commands, hardcoded secrets, insecure cryptography, and missing authorization checks. These are things a linter won't catch." },
+            { q: "Does Queldrex store the code I paste?", a: "No. Your code is sent to our AI provider for analysis and is not stored, indexed, or retained after the scan completes. Do not paste code containing hardcoded API keys or secrets — rotate any credentials you've already committed." },
+            { q: "What do the severity levels mean?", a: "Critical means direct exploitability — fix before deploying. High means a significant vulnerability requiring a fix in the current sprint. Medium means a real issue worth addressing in the next cycle. Low means a defensive improvement worth considering but not blocking." },
+          ].map(({ q, a }) => (
+            <details key={q} className="rounded-xl border group" style={{ borderColor: 'rgba(255,255,255,0.07)', background: '#0d1117' }}>
+              <summary className="px-4 py-3.5 text-sm font-bold cursor-pointer list-none flex items-center justify-between" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                {q}
+                <svg className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-180" style={{ color: 'rgba(255,255,255,0.3)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div className="px-4 pb-4 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{a}</div>
+            </details>
+          ))}
+        </div>
       </main>
       <Footer />
     </div>

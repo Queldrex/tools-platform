@@ -311,6 +311,27 @@ export default function ContractScannerPage() {
             </div>
           </div>
         )}
+        {/* ── FAQ ─────────────────────────────────────────── */}
+        <div className="mt-10 mb-6 space-y-3">
+          <h2 className="text-sm font-black uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)' }}>Common questions</h2>
+          {[
+            { q: "What contract formats does this support?", a: "Paste plain text or copy-paste directly from a PDF. The scanner processes raw text — not file uploads. Most contract PDFs can be selected all, copied, and pasted directly into the text box." },
+            { q: "How accurate is the risk detection?", a: "The scanner flags clause patterns that commonly appear in unfavorable contracts — one-sided IP grabs, unlimited liability, auto-renewal traps, non-competes. It does not replace attorney review for contracts over $10K or with complex IP terms." },
+            { q: "Does Queldrex store the contract text I paste?", a: "No. The text is sent to our AI provider for analysis and is not stored, logged, or retained after the response is generated. Do not paste contracts containing sensitive personal data like SSNs." },
+            { q: "What do the risk levels mean?", a: "High risk means clauses that commonly create serious legal exposure and should be negotiated or flagged to counsel. Medium risk means terms worth reviewing that may be standard in your industry. Low risk means minor issues unlikely to cause harm on their own." },
+          ].map(({ q, a }) => (
+            <details key={q} className="rounded-xl border group" style={{ borderColor: 'rgba(255,255,255,0.07)', background: '#0d1117' }}>
+              <summary className="px-4 py-3.5 text-sm font-bold cursor-pointer list-none flex items-center justify-between" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                {q}
+                <svg className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-180" style={{ color: 'rgba(255,255,255,0.3)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div className="px-4 pb-4 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{a}</div>
+            </details>
+          ))}
+        </div>
+
         <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.15)' }}>
           <p className="text-white font-black mb-1">Add contract scanning to your platform</p>
           <p className="text-white/40 text-sm mb-4">Risk score, red flag detection, risky clause extraction with negotiation guidance. One-time license.</p>

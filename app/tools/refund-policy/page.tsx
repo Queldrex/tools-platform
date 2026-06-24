@@ -226,6 +226,28 @@ export default function RefundPolicyPage() {
             <li>• Developers building product pages who need a policy without a legal team</li>
           </ul>
         </div>
+
+        {/* ── FAQ ─────────────────────────────────────────── */}
+        <div className="mt-10 mb-6 space-y-3">
+          <h2 className="text-sm font-black uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)' }}>Common questions</h2>
+          {[
+            { q: "Is a generated refund policy legally binding?", a: "When properly displayed and accepted by customers (via a checkbox or terms acceptance flow), AI-generated refund policies are generally enforceable. Consumer protection law varies by country — have an attorney review if you sell internationally or in regulated categories like health or financial products." },
+            { q: "What's the difference between the digital and subscription product types?", a: "Digital products (one-time purchases like templates, ebooks, or software licenses) typically have a no-refund-after-download policy with a short exception window. Subscription products trigger recurring charge obligations, requiring language about cancellation timing, pro-rated refunds, and billing cycle cutoffs." },
+            { q: "Does the tool store my business information?", a: "No. Business name, product type, and policy preferences are used to generate the document and are not stored or retained after the response is returned." },
+            { q: "Can I use this policy for multiple products?", a: "Yes, if the refund terms apply equally to all products. If some products have different refund windows or conditions, generate separate policies per product type and link to the correct one from each product page." },
+          ].map(({ q, a }) => (
+            <details key={q} className="rounded-xl border group" style={{ borderColor: 'rgba(255,255,255,0.07)', background: '#0d1117' }}>
+              <summary className="px-4 py-3.5 text-sm font-bold cursor-pointer list-none flex items-center justify-between" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                {q}
+                <svg className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-180" style={{ color: 'rgba(255,255,255,0.3)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div className="px-4 pb-4 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{a}</div>
+            </details>
+          ))}
+        </div>
+
         <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(6,214,255,0.04)', borderColor: 'rgba(6,214,255,0.12)' }}>
           <p className="text-white font-black mb-1">Add refund policy generation to your platform</p>
           <p className="text-white/40 text-sm mb-4">Digital/physical/subscription/service types, jurisdiction-specific, restocking fee, AI-generated document. One-time license.</p>

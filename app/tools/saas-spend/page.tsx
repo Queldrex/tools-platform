@@ -208,6 +208,27 @@ export default function SaasSpendPage() {
           </ul>
         </div>
 
+        {/* ── FAQ ─────────────────────────────────────────── */}
+        <div className="mt-10 mb-6 space-y-3">
+          <h2 className="text-sm font-black uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)' }}>Common questions</h2>
+          {[
+            { q: "What bank export formats work?", a: "Paste CSV text directly — most banks let you export transactions as CSV. Copy the rows from your spreadsheet and paste them in. The tool looks for vendor name, date, and amount columns and handles common variations in column naming." },
+            { q: "Does my bank data get stored?", a: "No. Your transaction data is processed to identify vendors and is not stored or logged after results are returned. Do not paste data containing account numbers or personal identifiable information beyond vendor names and amounts." },
+            { q: "How accurate is the vendor matching?", a: "The scanner recognizes 60+ SaaS vendors by name pattern — covering most common business tools. Generic or obscure vendors may appear as uncategorized. Review the uncategorized list manually for tools the scanner didn't recognize." },
+            { q: "What does the consolidation savings estimate mean?", a: "When duplicate tools in the same category are detected (e.g., two project management tools), the scanner estimates savings based on eliminating the lower-cost duplicate. The 25% figure is a typical outcome — actual savings depend on your contract terms." },
+          ].map(({ q, a }) => (
+            <details key={q} className="rounded-xl border group" style={{ borderColor: 'rgba(255,255,255,0.07)', background: '#0d1117' }}>
+              <summary className="px-4 py-3.5 text-sm font-bold cursor-pointer list-none flex items-center justify-between" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                {q}
+                <svg className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-180" style={{ color: 'rgba(255,255,255,0.3)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div className="px-4 pb-4 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{a}</div>
+            </details>
+          ))}
+        </div>
+
         <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(6,214,255,0.04)', borderColor: 'rgba(6,214,255,0.12)' }}>
           <p className="text-white font-black mb-1">Add SaaS spend analysis to your platform</p>
           <p className="text-white/40 text-sm mb-4">60+ vendor pattern matching, duplicate flags, category breakdown, CSV import. One-time license.</p>

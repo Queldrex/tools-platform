@@ -297,6 +297,27 @@ export default function PackageHallucinationPage() {
             </div>
           </div>
         )}
+        {/* ── FAQ ─────────────────────────────────────────── */}
+        <div className="mt-10 mb-6 space-y-3">
+          <h2 className="text-sm font-black uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)' }}>Common questions</h2>
+          {[
+            { q: "What is an AI hallucinated package?", a: "When you ask an AI coding assistant to suggest dependencies, it sometimes invents package names that don't exist in any public registry. These names look plausible but return a 404 when you try to install them — or worse, someone has registered a malicious package with that name specifically to catch developers who install it blindly." },
+            { q: "How does the scanner check for hallucinations?", a: "Each package name is verified against the live npm or PyPI registry. Packages that don't exist return NOT FOUND. Packages registered within the last 30 days return VERY NEW — a high-risk signal since new packages are the most common vector for dependency confusion attacks." },
+            { q: "What should I do if a package is flagged?", a: "For NOT FOUND: don't install it. Ask your AI assistant to confirm the correct name or check the registry manually. For VERY NEW: research the package before installing — check its GitHub repo age, download count, maintainer history, and whether its name is suspiciously close to a popular package." },
+            { q: "Can real packages get flagged as suspicious?", a: "Yes — a newly published legitimate package will show VERY NEW. This is a prompt to verify, not a certainty it's malicious. The scanner also flags packages with names very similar to popular ones (typosquatting patterns), even if real. Always verify before dismissing or installing." },
+          ].map(({ q, a }) => (
+            <details key={q} className="rounded-xl border group" style={{ borderColor: 'rgba(255,255,255,0.07)', background: '#0d1117' }}>
+              <summary className="px-4 py-3.5 text-sm font-bold cursor-pointer list-none flex items-center justify-between" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                {q}
+                <svg className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-180" style={{ color: 'rgba(255,255,255,0.3)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div className="px-4 pb-4 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{a}</div>
+            </details>
+          ))}
+        </div>
+
         <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(248,113,113,0.04)', borderColor: 'rgba(248,113,113,0.15)' }}>
           <p className="text-white font-black mb-1">Add hallucination checking to your platform</p>
           <p className="text-white/40 text-sm mb-4">Live registry verification, NOT FOUND/VERY NEW/VERIFIED badges, npm and Python support. One-time license.</p>

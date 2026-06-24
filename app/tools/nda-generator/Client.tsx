@@ -264,6 +264,28 @@ export default function NDAGeneratorPage() {
             <li>• Agencies onboarding new clients who require an NDA before a proposal</li>
           </ul>
         </div>
+
+        {/* ── FAQ ─────────────────────────────────────────── */}
+        <div className="mt-10 mb-6 space-y-3">
+          <h2 className="text-sm font-black uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)' }}>Common questions</h2>
+          {[
+            { q: "Is this NDA legally enforceable?", a: "AI-generated NDAs use standard legal language and are enforceable in most jurisdictions when signed by both parties. For high-stakes situations — M&A, employee agreements, or major vendor contracts — have a licensed attorney review before signing." },
+            { q: "What's the difference between mutual and one-way NDAs?", a: "A mutual NDA protects both parties' information equally — used when both sides are sharing confidential material, such as in a partnership discussion. A one-way NDA protects only the disclosing party's information, such as when sharing a business idea with a potential contractor." },
+            { q: "Does Queldrex store the information I enter?", a: "No. Your party names, purpose of disclosure, and jurisdiction are used to generate the document and are not stored or logged after the response is returned." },
+            { q: "Can I edit the generated NDA before signing?", a: "Yes — the output is plain text you can paste into Word, Google Docs, or any document editor. Customize dates, party details, governing law, and any clauses before sending for signature." },
+          ].map(({ q, a }) => (
+            <details key={q} className="rounded-xl border group" style={{ borderColor: 'rgba(255,255,255,0.07)', background: '#0d1117' }}>
+              <summary className="px-4 py-3.5 text-sm font-bold cursor-pointer list-none flex items-center justify-between" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                {q}
+                <svg className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-180" style={{ color: 'rgba(255,255,255,0.3)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div className="px-4 pb-4 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{a}</div>
+            </details>
+          ))}
+        </div>
+
         <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.15)' }}>
           <p className="text-white font-black mb-1">Add NDA generation to your platform</p>
           <p className="text-white/40 text-sm mb-4">Mutual/one-way, jurisdiction selector, non-solicit/non-compete options, AI-generated full document. One-time license.</p>

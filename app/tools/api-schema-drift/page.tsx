@@ -458,6 +458,27 @@ export default function ApiSchemaDriftPage() {
             ))}
           </div>
         </div>
+
+        {/* ── FAQ ─────────────────────────────────────────── */}
+        <div className="mt-10 mb-6 space-y-3">
+          <h2 className="text-sm font-black uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)' }}>Common questions</h2>
+          {[
+            { q: "What does schema drift mean?", a: "Schema drift happens when your API implementation diverges from the spec that describes it — endpoints get added or removed, field types change, required params become optional, or response shapes change without the OpenAPI file being updated. Consumers break silently until someone notices." },
+            { q: "What format does the spec need to be in?", a: "OpenAPI 3.0 or 3.1 in JSON or YAML. Paste the spec text directly into the field. Swagger 2.0 files work in most cases but some newer features won't be available." },
+            { q: "Does Queldrex store my API schema?", a: "No. Your specification text is processed for comparison and is not stored or retained after the results are generated. Don't paste specs containing hardcoded credentials or internal hostnames you don't want exposed." },
+            { q: "How often should I run drift checks?", a: "For active APIs, add a drift check to your CI/CD pipeline on every PR that touches route handlers or controllers. For stable APIs, run it before every minor release. The goal is catching drift before it reaches consumers, not after." },
+          ].map(({ q, a }) => (
+            <details key={q} className="rounded-xl border group" style={{ borderColor: 'rgba(255,255,255,0.07)', background: '#0d1117' }}>
+              <summary className="px-4 py-3.5 text-sm font-bold cursor-pointer list-none flex items-center justify-between" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                {q}
+                <svg className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-180" style={{ color: 'rgba(255,255,255,0.3)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div className="px-4 pb-4 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{a}</div>
+            </details>
+          ))}
+        </div>
       </main>
       <Footer />
     </div>

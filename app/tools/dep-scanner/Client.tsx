@@ -179,6 +179,28 @@ export default function DepScannerPage() {
             <li>• Open-source maintainers verifying their dependency tree is clean for contributors</li>
           </ul>
         </div>
+
+        {/* ── FAQ ─────────────────────────────────────────── */}
+        <div className="mt-10 mb-6 space-y-3">
+          <h2 className="text-sm font-black uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)' }}>Common questions</h2>
+          {[
+            { q: "Where does the CVE data come from?", a: "The OSV (Open Source Vulnerability) database — a Google-maintained open vulnerability database that powers GitHub's Dependabot alerts and npm audit. It aggregates from GitHub Security Advisories, PyPI, NVD, and dozens of other sources into one normalized format." },
+            { q: "How is this different from running npm audit?", a: "npm audit only scans npm packages and requires Node.js installed locally. This tool scans both npm and Python (PyPI) packages, works in the browser with no setup, and shows CVSS scores and fixed versions in a readable UI — not a wall of terminal output." },
+            { q: "What should I do when a vulnerability is found?", a: "Check the fixed version shown in the result and upgrade using your package manager: npm update packagename or pip install --upgrade packagename. Re-lock your dependencies and re-run the scan to confirm the vulnerability is resolved." },
+            { q: "What if there's no fix version available?", a: "Check the CVE advisory for workarounds — often there's a config flag or a code pattern to avoid the vulnerable code path. If the package is unmaintained, look for a maintained fork or alternative. Unpatched critical CVEs are a valid reason to replace a dependency." },
+          ].map(({ q, a }) => (
+            <details key={q} className="rounded-xl border group" style={{ borderColor: 'rgba(255,255,255,0.07)', background: '#0d1117' }}>
+              <summary className="px-4 py-3.5 text-sm font-bold cursor-pointer list-none flex items-center justify-between" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                {q}
+                <svg className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-180" style={{ color: 'rgba(255,255,255,0.3)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div className="px-4 pb-4 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{a}</div>
+            </details>
+          ))}
+        </div>
+
         <section className="mt-16 pt-8 border-t max-w-2xl" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-lg font-black text-white mb-4">Understanding CVEs, CVSS scores, and OSV</h2>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>This tool queries the OSV (Open Source Vulnerability) database — a Google-maintained, open vulnerability database that powers GitHub&apos;s Dependabot alerts and the npm audit command. OSV aggregates vulnerability reports from GitHub Security Advisories, PyPI, NVD, and dozens of other sources into a single normalized format. When you paste your package file, every name and version is sent to the OSV batch API and results come back within seconds.</p>

@@ -252,6 +252,28 @@ export default function JobDescriptionPage() {
             <li>• Agencies creating client job descriptions at scale with tone and level controls</li>
           </ul>
         </div>
+
+        {/* ── FAQ ─────────────────────────────────────────── */}
+        <div className="mt-10 mb-6 space-y-3">
+          <h2 className="text-sm font-black uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)' }}>Common questions</h2>
+          {[
+            { q: "Is the output compliant with equal opportunity employment law?", a: "The generator avoids protected-class language and uses inclusive phrasing by default. It's not a substitute for legal review — have your HR or legal team check descriptions for roles in regulated industries or jurisdictions with specific hiring disclosure requirements." },
+            { q: "Can I generate descriptions for multiple roles at once?", a: "One role per generation. For multiple roles, run the tool once per position. Each takes under 60 seconds, so generating 5–10 descriptions is still faster than writing them from scratch." },
+            { q: "Does Queldrex store the company information I enter?", a: "No. Company name, role details, and requirements are used to generate the description and are not stored or retained after the response is returned." },
+            { q: "What's the best way to customize the output?", a: "Copy it into your ATS or job board editor. Add your specific tech stack versions, team size, company perks, and compensation range — the AI intentionally leaves these as placeholders since they vary by role. Review the requirements section and trim anything that's a nice-to-have, not a must-have." },
+          ].map(({ q, a }) => (
+            <details key={q} className="rounded-xl border group" style={{ borderColor: 'rgba(255,255,255,0.07)', background: '#0d1117' }}>
+              <summary className="px-4 py-3.5 text-sm font-bold cursor-pointer list-none flex items-center justify-between" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                {q}
+                <svg className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-180" style={{ color: 'rgba(255,255,255,0.3)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div className="px-4 pb-4 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{a}</div>
+            </details>
+          ))}
+        </div>
+
         <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(6,214,255,0.04)', borderColor: 'rgba(6,214,255,0.12)' }}>
           <p className="text-white font-black mb-1">Add job description generation to your platform</p>
           <p className="text-white/40 text-sm mb-4">13 industries, 5 experience levels, 3 tones, work model, AI-generated with legal disclaimer. One-time license.</p>

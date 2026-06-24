@@ -285,6 +285,27 @@ export default function TosGeneratorPage() {
             </div>
           </div>
         )}
+        {/* ── FAQ ─────────────────────────────────────────── */}
+        <div className="mt-10 mb-6 space-y-3">
+          <h2 className="text-sm font-black uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)' }}>Common questions</h2>
+          {[
+            { q: "Is a generated Terms of Service legally binding?", a: "AI-generated terms use standard legal language and can be binding when properly displayed and accepted by users. Have a licensed attorney review before publishing, especially for regulated industries like fintech, healthcare, or edtech." },
+            { q: "What jurisdiction should I choose?", a: "Choose the state or country where your business is incorporated or primarily operates. This sets the governing law clause, which determines which courts handle disputes. Delaware is common for US companies; California is common for consumer-facing apps." },
+            { q: "Does the tool store my business information?", a: "No. Your company name, service description, and configuration options are used to generate the document and are discarded after. Nothing you enter is stored or used to train AI models." },
+            { q: "Do I need a new ToS for each product?", a: "Generally yes, if products have materially different user relationships, data handling, or liability scenarios. A single ToS can cover multiple products from the same company if the terms apply equally to all of them." },
+          ].map(({ q, a }) => (
+            <details key={q} className="rounded-xl border group" style={{ borderColor: 'rgba(255,255,255,0.07)', background: '#0d1117' }}>
+              <summary className="px-4 py-3.5 text-sm font-bold cursor-pointer list-none flex items-center justify-between" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                {q}
+                <svg className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-180" style={{ color: 'rgba(255,255,255,0.3)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div className="px-4 pb-4 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{a}</div>
+            </details>
+          ))}
+        </div>
+
         <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(6,214,255,0.04)', borderColor: 'rgba(6,214,255,0.12)' }}>
           <p className="text-white font-black mb-1">Add ToS generation to your platform</p>
           <p className="text-white/40 text-sm mb-4">AI-generated Terms of Service customized to your product type, industry, and jurisdiction. One-time license.</p>
