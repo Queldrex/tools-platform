@@ -1,15 +1,15 @@
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import PricingTiers from './PricingTiers'
+import GoProButton from '@/components/GoProButton'
 
 export const metadata = {
   title: 'Pricing — Queldrex',
-  description: '51 tools. Free to start, no account required. Pro is $79/month for unlimited access. Agency at $99/month for up to 25 client scans.',
+  description: '51 tools. Free to start, no account required. Buy individual tools once or go Pro at $79/mo for everything unlimited.',
   alternates: { canonical: 'https://queldrex.com/pricing' },
   openGraph: {
     title: 'Pricing — Queldrex',
-    description: '51 tools. Free to start, no account required. Pro is $79/month for unlimited access.',
+    description: '51 tools. Free to start. Buy one tool or get everything with Pro.',
     url: 'https://queldrex.com/pricing',
     siteName: 'Queldrex',
     type: 'website',
@@ -17,40 +17,46 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image' as const,
     title: 'Pricing — Queldrex',
-    description: '51 tools. Free to start, no account required. Pro is $79/month for unlimited access.',
+    description: '51 tools. Free to start. Buy one tool or get everything with Pro.',
   },
 }
 
 const FAQ = [
   {
-    q: 'Can I cancel anytime?',
-    a: 'Yes. Cancel directly from your Stripe billing portal. No forms, no calls, no waiting.',
+    q: 'What does "buy once" mean for a tool?',
+    a: 'One payment unlocks lifetime access to that tool on queldrex.com — no subscription, no renewal. Your access never expires.',
+  },
+  {
+    q: 'Can I cancel Pro anytime?',
+    a: 'Yes. Cancel directly from your Stripe billing portal. No forms, no calls, no waiting. You get a full refund within 7 days if you change your mind.',
   },
   {
     q: 'What does the AI Visibility Monitor do?',
     a: 'Every month we re-run the full 14-signal scan on your domain and email you the results. If your score drops 5+ points, you get an alert so you can fix it before AI assistants stop recommending you.',
   },
   {
-    q: 'Do the tools cost extra on Pro?',
-    a: 'No. Every tool on queldrex.com is included in Pro. One subscription, everything unlimited.',
-  },
-  {
-    q: 'What counts as a client scan on Agency?',
-    a: 'One full 14-signal AI visibility scan for one domain. Your counter resets to 25 each month. Need more? Email hello@queldrex.com.',
+    q: 'Do individual tool purchases include Pro features?',
+    a: 'No. A per-tool purchase unlocks unlimited use of that one tool. Pro ($79/mo) gives you every tool unlimited plus the AI monitor and every future tool we ship.',
   },
   {
     q: 'Is the $399 scanner a subscription?',
-    a: 'No. One payment. You get the full 14-signal scan, llms.txt, LocalBusiness JSON-LD schema, HTML report, and deployment instructions. The AI Monitor ($79/mo, included in Pro) is the recurring option if you want monthly rescans.',
+    a: 'No. One payment. You get the full 14-signal scan, llms.txt, LocalBusiness JSON-LD schema, HTML report, and deployment guide — emailed in minutes.',
   },
   {
     q: 'How does the free tier work?',
-    a: 'Every Pro tool gives you a free daily allowance with no account required. When you hit the daily limit, subscribe to Pro for unlimited access or buy just that tool.',
+    a: 'Open any tool and use it — no account, no card. Most tools give you 1–10 free uses per day tracked by IP. When you hit the limit, buy just that tool one-time or go Pro for everything.',
   },
   {
     q: 'How fast is delivery after paying for the scanner?',
     a: 'The llms.txt, JSON-LD schema, HTML report, and deployment guide are emailed within minutes of payment.',
   },
 ]
+
+const CheckIcon = ({ color }: { color: string }) => (
+  <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke={color} strokeWidth={2.5} viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+  </svg>
+)
 
 export default function PricingPage() {
   return (
@@ -59,9 +65,9 @@ export default function PricingPage() {
 
       <section className="max-w-7xl mx-auto px-6 pt-20 pb-8 text-center">
         <p className="text-xs font-bold tracking-[0.25em] uppercase mb-4" style={{ color: '#6d28d9' }}>Queldrex Pricing</p>
-        <h1 className="text-4xl lg:text-6xl font-black mb-4" style={{ color: '#FAFAFA' }}>51 tools. Pay for what you use.</h1>
-        <p className="text-lg max-w-lg mx-auto" style={{ color: '#A1A1AA' }}>
-          Every tool has a free tier. No account required to start. Upgrade when you need more.
+        <h1 className="text-4xl lg:text-6xl font-black mb-4" style={{ color: '#FAFAFA' }}>51 tools. Start free.<br/>Pay once or subscribe.</h1>
+        <p className="text-lg max-w-xl mx-auto" style={{ color: '#A1A1AA' }}>
+          Every tool has a free daily tier — no account needed. Buy a single tool forever or go Pro for unlimited access to everything.
         </p>
       </section>
 
@@ -90,8 +96,131 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* TIERS */}
-      <PricingTiers />
+      {/* 3-TIER COMPARISON */}
+      <section className="max-w-5xl mx-auto px-6 py-8">
+        <div className="grid md:grid-cols-3 gap-5 items-stretch">
+
+          {/* FREE */}
+          <div className="rounded-2xl border p-7 flex flex-col" style={{ background: '#0c0e14', borderColor: 'rgba(255,255,255,0.07)' }}>
+            <div className="mb-6">
+              <p className="text-[11px] font-black uppercase tracking-widest mb-3" style={{ color: '#4ade80' }}>Free</p>
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-4xl font-black" style={{ color: '#FAFAFA' }}>$0</span>
+              </div>
+              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>No card. No account. Open a tool and go.</p>
+            </div>
+            <ul className="space-y-3 flex-1 mb-7">
+              {[
+                'All 51 tools, free tier',
+                '1–10 uses per tool per day',
+                'No account required',
+                'Instant results',
+              ].map(f => (
+                <li key={f} className="flex items-start gap-2.5 text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                  <CheckIcon color="#4ade80" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <Link href="/tools"
+              className="block text-center py-3 rounded-xl text-sm font-black transition-all hover:scale-[1.02]"
+              style={{ background: 'rgba(74,222,128,0.08)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.2)' }}>
+              Browse free tools
+            </Link>
+          </div>
+
+          {/* PER TOOL — highlighted middle */}
+          <div className="rounded-2xl border p-7 flex flex-col relative"
+            style={{ background: 'rgba(6,214,255,0.04)', borderColor: 'rgba(6,214,255,0.3)', boxShadow: '0 0 40px rgba(6,214,255,0.07)' }}>
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-black uppercase tracking-wider text-black whitespace-nowrap"
+              style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>
+              Best for occasional use
+            </div>
+            <div className="mb-6">
+              <p className="text-[11px] font-black uppercase tracking-widest mb-3" style={{ color: '#06d6ff' }}>Per Tool</p>
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-4xl font-black" style={{ color: '#FAFAFA' }}>$15</span>
+                <span className="text-lg font-black" style={{ color: 'rgba(255,255,255,0.4)' }}>–$49</span>
+              </div>
+              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>One-time. Own that tool forever.</p>
+            </div>
+            <ul className="space-y-3 flex-1 mb-7">
+              {[
+                'Lifetime access to one tool',
+                'No subscription, no renewal',
+                'Pay once, use forever',
+                'Access on queldrex.com',
+                'Restore via email anytime',
+              ].map(f => (
+                <li key={f} className="flex items-start gap-2.5 text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                  <CheckIcon color="#06d6ff" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <Link href="#individual-tools"
+              className="block text-center py-3 rounded-xl text-sm font-black transition-all hover:scale-[1.02]"
+              style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)', color: '#000' }}>
+              See all tools + prices ↓
+            </Link>
+          </div>
+
+          {/* PRO */}
+          <div className="rounded-2xl border p-7 flex flex-col relative"
+            style={{ background: 'linear-gradient(160deg, rgba(109,40,217,0.1) 0%, rgba(109,40,217,0.04) 100%)', borderColor: 'rgba(124,58,237,0.4)', boxShadow: '0 0 48px rgba(109,40,217,0.12)' }}>
+            <div className="mb-6">
+              <p className="text-[11px] font-black uppercase tracking-widest mb-3" style={{ color: '#a78bfa' }}>Pro</p>
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-4xl font-black" style={{ color: '#FAFAFA' }}>$79</span>
+                <span className="text-sm font-normal" style={{ color: 'rgba(255,255,255,0.4)' }}>/mo</span>
+              </div>
+              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>or $99/yr — save 17% · every future tool included</p>
+            </div>
+            <ul className="space-y-3 flex-1 mb-7">
+              {[
+                'All 51 tools, unlimited',
+                'Every new tool, auto-included',
+                'AI Visibility Monitor (monthly)',
+                'Drop alerts if score falls',
+                '7-day full refund guarantee',
+                'Cancel anytime from Stripe',
+              ].map(f => (
+                <li key={f} className="flex items-start gap-2.5 text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>
+                  <CheckIcon color="#a78bfa" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <GoProButton
+              returnTo="/tools"
+              className="block w-full text-center py-3.5 rounded-xl text-sm font-black text-white transition-all hover:scale-[1.02]"
+              style={{ background: 'linear-gradient(135deg,#7c3aed,#6d28d9)', boxShadow: '0 0 24px rgba(109,40,217,0.35)' }}>
+              Get Pro — $79/mo
+            </GoProButton>
+            <p className="text-center text-xs mt-3" style={{ color: 'rgba(255,255,255,0.25)' }}>
+              or{' '}
+              <GoProButton billing="annual" returnTo="/tools" className="underline bg-transparent border-none p-0 cursor-pointer text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                $99/yr — save 17%
+              </GoProButton>
+            </p>
+          </div>
+        </div>
+
+        {/* Agency banner */}
+        <div className="mt-5 rounded-xl border p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          style={{ background: '#111318', borderColor: 'rgba(255,255,255,0.07)' }}>
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: '#A1A1AA' }}>Agency</p>
+            <p className="text-sm font-black" style={{ color: '#FAFAFA' }}>$199/mo · 25 client AI visibility scans + white-label reports</p>
+            <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>Everything in Pro plus bulk client dashboard and auto-reports.</p>
+          </div>
+          <Link href="/agency"
+            className="px-5 py-2.5 rounded-xl text-sm font-black whitespace-nowrap flex-shrink-0 transition-all hover:scale-105"
+            style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.75)', border: '1px solid rgba(255,255,255,0.12)' }}>
+            View Agency plan →
+          </Link>
+        </div>
+      </section>
 
       {/* DONE FOR YOU */}
       <section className="max-w-5xl mx-auto px-6 pb-10">
@@ -113,7 +242,7 @@ export default function PricingPage() {
       </section>
 
       {/* Individual Tool Pricing */}
-      <section className="max-w-5xl mx-auto px-6 pb-16">
+      <section id="individual-tools" className="max-w-5xl mx-auto px-6 pb-16">
         <div className="text-center mb-8">
           <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: '#A1A1AA' }}>Individual Tools</p>
           <h2 className="text-2xl font-black mb-3" style={{ color: '#FAFAFA' }}>Only need one tool? Pay once. Own it forever.</h2>
