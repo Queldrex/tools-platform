@@ -103,10 +103,14 @@ export default function NDAGeneratorPage() {
 
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#a78bfa', borderColor: 'rgba(167,139,250,0.3)', background: 'rgba(167,139,250,0.08)' }}>Legal</span>
-          <span className="text-sm font-bold text-white/30">1 free NDA/day · Unlimited with $79/month</span>
+          <span className="text-sm font-bold text-white/30">1 free NDA/day · Unlimited with Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">NDA <span style={{ color: '#a78bfa' }}>Generator</span></h1>
-        <p className="text-white/55 text-base mb-4 max-w-2xl">Generate a complete, professionally worded Non-Disclosure Agreement in seconds. Fill in the details — get a ready-to-sign document.</p>
+        <p className="text-white/55 text-base mb-3 max-w-2xl">Generate a complete, professionally worded Non-Disclosure Agreement in seconds. Fill in the details — get a ready-to-sign document.</p>
+        <div className="flex gap-3 flex-wrap mt-3 mb-4">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
         <div className="mb-6 px-4 py-3 rounded-xl border text-xs leading-relaxed" style={{ background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.2)', color: 'rgba(251,191,36,0.7)' }}>
           This tool generates document drafts using AI. Output is not legal advice and does not create an attorney-client relationship. Have a licensed attorney review any document before signing or publishing.
         </div>
@@ -232,6 +236,23 @@ export default function NDAGeneratorPage() {
           </div>
         )}
 
+        <div className="mt-10 mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• Founders protecting IP before sharing product details with contractors or partners</li>
+            <li>• Freelancers and consultants needing a mutual or one-way NDA before an engagement</li>
+            <li>• Small businesses exchanging confidential information without a legal team</li>
+            <li>• Agencies onboarding new clients who require an NDA before a proposal</li>
+          </ul>
+        </div>
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.15)' }}>
+          <p className="text-white font-black mb-1">Add NDA generation to your platform</p>
+          <p className="text-white/40 text-sm mb-4">Mutual/one-way, jurisdiction selector, non-solicit/non-compete options, AI-generated full document. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
         <section className="mt-16 pt-8 border-t max-w-2xl" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
           <h2 className="text-lg font-black text-white mb-4">What an NDA actually does (and doesn&apos;t do)</h2>
           <p className="text-sm leading-relaxed mb-4" style={{ color: '#A1A1AA' }}>An NDA (Non-Disclosure Agreement) creates a legal obligation for the receiving party to keep specified information confidential. It defines what counts as confidential information, how it may be used, and for how long the obligation lasts. What it does not do: it cannot prevent disclosure to courts under subpoena, protect information that was already public, or stop a determined bad actor — it only gives you legal recourse after a breach, not before.</p>
