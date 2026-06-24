@@ -98,13 +98,17 @@ export default function ContractScannerPage() {
 
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#a78bfa', borderColor: 'rgba(167,139,250,0.3)', background: 'rgba(167,139,250,0.08)' }}>Live</span>
-          <span className="text-sm font-bold text-white/30">Pro Tool · 1 free scan/day · Unlimited with $79/month</span>
+          <span className="text-sm font-bold text-white/30">Pro Tool · 1 free scan/day · Unlimited with Pro</span>
         </div>
 
         <h1 className="text-4xl font-black text-white mb-3">Contract <span style={{ color: '#a78bfa' }}>Risk Scanner</span></h1>
         <p className="text-white/55 text-base mb-4 max-w-2xl">
           Paste any contract, agreement, or terms document. AI instantly identifies risky clauses — one-sided IP grabs, overly broad non-competes, unlimited liability exposure, predatory auto-renewal, and more.
         </p>
+        <div className="flex gap-3 flex-wrap mb-4">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
         <div className="mb-6 px-4 py-3 rounded-xl border text-xs leading-relaxed" style={{ background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.2)', color: 'rgba(251,191,36,0.7)' }}>
           This tool flags potentially risky language for your review. Output is not legal advice and does not create an attorney-client relationship. Have a licensed attorney review any contract before signing.
         </div>
@@ -244,6 +248,16 @@ export default function ContractScannerPage() {
           </div>
         )}
 
+        <div className="mt-10 mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• Founders reviewing client or vendor contracts before signing</li>
+            <li>• Freelancers checking for non-compete, IP assignment, or payment clauses</li>
+            <li>• Small business owners identifying red flags without paying for a lawyer review</li>
+            <li>• Agencies scanning client agreements for liability and termination risks</li>
+          </ul>
+        </div>
+
         {!result && !loading && !paywall && (
           <div className="mt-8 rounded-xl border p-6" style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.06)' }}>
             <p className="text-xs font-black uppercase tracking-widest text-white/25 mb-4">What gets flagged</p>
@@ -269,6 +283,14 @@ export default function ContractScannerPage() {
             </div>
           </div>
         )}
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(99,102,241,0.05)', borderColor: 'rgba(99,102,241,0.15)' }}>
+          <p className="text-white font-black mb-1">Add contract scanning to your platform</p>
+          <p className="text-white/40 text-sm mb-4">Risk score, red flag detection, risky clause extraction with negotiation guidance. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
