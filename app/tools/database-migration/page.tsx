@@ -1,7 +1,8 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
+import BuyToolButton from '@/components/BuyToolButton'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
@@ -169,14 +170,12 @@ export default function DatabaseMigrationPage() {
         </div>
 
         <h1 className="text-4xl font-black text-white mb-3">Migration <span style={{ color: 'rgb(16,185,129)' }}>Safety Checker</span></h1>
-        <p className="text-white/55 text-base mb-4 max-w-2xl">Paste any SQL migration and get an instant risk analysis: lock types, downtime estimates, rollback SQL, and zero-downtime alternatives. Free scan here — license from $49, or all 51 tools from $99.</p>
+        <p className="text-white/55 text-base mb-4 max-w-2xl">Paste any SQL migration and get an instant risk analysis: lock types, downtime estimates, rollback SQL, and zero-downtime alternatives. Free scan here — license from $49, or all 51 tools from $149.</p>
 
         <div className="flex flex-wrap gap-3 mb-8">
-          <Link href="/pricing" className="inline-flex items-center gap-1.5 text-sm font-black px-4 py-2 rounded-xl transition-all hover:scale-[1.02]" style={{ background: 'linear-gradient(135deg,#10b981,#059669)', color: '#fff' }}>
-            Get this tool — $49 →
-          </Link>
+          <BuyToolButton toolId="database-migration" price={49} className="inline-flex items-center gap-1.5 text-sm font-black px-4 py-2 rounded-xl transition-all hover:scale-[1.02] cursor-pointer" style={{ background: 'linear-gradient(135deg,#10b981,#059669)', color: '#fff' }} />
           <Link href="/pricing" className="inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-xl border transition-all hover:border-white/20" style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)' }}>
-            All 51 tools — from $99 →
+            All 51 tools — from $149 →
           </Link>
         </div>
 
@@ -227,10 +226,10 @@ export default function DatabaseMigrationPage() {
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(16,185,129,0.05)', borderColor: 'rgba(16,185,129,0.2)' }}>
             <svg className="w-10 h-10 mx-auto mb-4 text-emerald-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
             <h3 className="text-xl font-black text-white mb-2">Unlimited checks with Pro</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">License this tool for your CI/CD pipeline for $49 one-time, or get all 51 tools from $99.</p>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">License this tool for your CI/CD pipeline for $49 one-time, or get all 51 tools from $149.</p>
             <div className="flex items-center justify-center gap-3 flex-wrap">
-              <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-white" style={{ background: 'linear-gradient(135deg,#10b981,#059669)' }}>Get this tool — $49</Link>
-              <Link href="/pricing" className="text-sm text-white/45 hover:text-white transition-colors">All 51 tools from $99 →</Link>
+              <BuyToolButton toolId="database-migration" price={49} label="Get this tool — $49" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-white cursor-pointer" style={{ background: 'linear-gradient(135deg,#10b981,#059669)' }} />
+              <Link href="/pricing" className="text-sm text-white/45 hover:text-white transition-colors">All 51 tools from $149 →</Link>
             </div>
           </div>
         )}

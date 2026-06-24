@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import PaywallCard from '@/components/PaywallCard'
+import BuyToolButton from '@/components/BuyToolButton'
 
 interface Vendor { name: string; category: string; totalSpend: number; transactions: number }
 interface Result {
@@ -81,8 +82,8 @@ export default function SaasSpendPage() {
         <h1 className="text-4xl font-black text-white mb-3">SaaS Spend <span style={{ color: '#4ade80' }}>Optimizer</span></h1>
         <p className="text-white/55 text-base mb-4 max-w-2xl">Paste your bank or credit card statement export and instantly see all SaaS subscriptions, total spend, category breakdown, and consolidation opportunities.</p>
         <div className="flex gap-3 flex-wrap mb-6">
-          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $49 →</Link>
-          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+          <BuyToolButton toolId="saas-spend" price={49} className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black cursor-pointer" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }} />
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $149 →</Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -211,8 +212,8 @@ export default function SaasSpendPage() {
           <p className="text-white font-black mb-1">Add SaaS spend analysis to your platform</p>
           <p className="text-white/40 text-sm mb-4">60+ vendor pattern matching, duplicate flags, category breakdown, CSV import. One-time license.</p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $49 →</Link>
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+            <BuyToolButton toolId="saas-spend" price={49} className="px-5 py-2.5 rounded-xl text-sm font-black text-black cursor-pointer" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }} />
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $149 →</Link>
           </div>
         </div>
       </main>

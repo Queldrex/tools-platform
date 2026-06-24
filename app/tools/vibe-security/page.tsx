@@ -1,7 +1,8 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
+import BuyToolButton from '@/components/BuyToolButton'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
@@ -242,10 +243,10 @@ export default function VibeSecurityPage() {
         </div>
 
         <h1 className="text-4xl font-black text-white mb-3">Vibe Coding <span style={{ color: 'rgb(245,158,11)' }}>Security Shield</span></h1>
-        <p className="text-white/55 text-base mb-3 max-w-2xl">Paste AI-generated code for an instant OWASP security scan. Free scan here — license this tool for your platform from $49, or get all 51 tools from $99.</p>
+        <p className="text-white/55 text-base mb-3 max-w-2xl">Paste AI-generated code for an instant OWASP security scan. Free scan here — license this tool for your platform from $49, or get all 51 tools from $149.</p>
         <div className="flex items-center gap-4 mb-8">
-          <Link href="/pricing" className="text-sm font-bold hover:opacity-80 transition-opacity" style={{ color: 'rgb(245,158,11)' }}>Get this tool — $49 →</Link>
-          <Link href="/pricing" className="text-sm text-white/40 hover:text-white/70 transition-colors">All 51 tools — from $99 →</Link>
+          <BuyToolButton toolId="vibe-security" price={49} className="text-sm font-bold hover:opacity-80 transition-opacity cursor-pointer bg-transparent border-0 p-0" style={{ color: 'rgb(245,158,11)' }} />
+          <Link href="/pricing" className="text-sm text-white/40 hover:text-white/70 transition-colors">All 51 tools — from $149 →</Link>
         </div>
 
         <div className="rounded-xl border px-4 py-3 mb-6 text-xs text-amber-200/70" style={{ background: 'rgba(245,158,11,0.06)', borderColor: 'rgba(245,158,11,0.15)' }}>
@@ -335,10 +336,8 @@ export default function VibeSecurityPage() {
             <h3 className="text-xl font-black text-white mb-2">Unlock unlimited scans</h3>
             <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">License this tool for your own platform or subscribe for access to all 51 tools. $49 one-time · or $99 for all 51 tools.</p>
             <div className="flex items-center justify-center gap-3 flex-wrap">
-              <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#f59e0b,#d97706)' }}>
-                Get this tool — $49
-              </Link>
-              <Link href="/pricing" className="text-sm text-white/45 hover:text-white transition-colors">All 51 tools from $99 →</Link>
+              <BuyToolButton toolId="vibe-security" price={49} label="Get this tool — $49" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black cursor-pointer" style={{ background: 'linear-gradient(135deg,#f59e0b,#d97706)' }} />
+              <Link href="/pricing" className="text-sm text-white/45 hover:text-white transition-colors">All 51 tools from $149 →</Link>
             </div>
           </div>
         )}

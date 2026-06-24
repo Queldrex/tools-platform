@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import PaywallCard from '@/components/PaywallCard'
+import BuyToolButton from '@/components/BuyToolButton'
 
 const SEV_COLOR: Record<string, string> = {
   critical: '#f87171',
@@ -106,8 +107,8 @@ export default function ContractScannerPage() {
           Paste any contract, agreement, or terms document. AI instantly identifies risky clauses — one-sided IP grabs, overly broad non-competes, unlimited liability exposure, predatory auto-renewal, and more.
         </p>
         <div className="flex gap-3 flex-wrap mb-4">
-          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $49 →</Link>
-          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+          <BuyToolButton toolId="contract-scanner" price={49} className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black cursor-pointer" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }} />
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $149 →</Link>
         </div>
         <div className="mb-6 px-4 py-3 rounded-xl border text-xs leading-relaxed" style={{ background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.2)', color: 'rgba(251,191,36,0.7)' }}>
           This tool flags potentially risky language for your review. Output is not legal advice and does not create an attorney-client relationship. Have a licensed attorney review any contract before signing.
@@ -287,8 +288,8 @@ export default function ContractScannerPage() {
           <p className="text-white font-black mb-1">Add contract scanning to your platform</p>
           <p className="text-white/40 text-sm mb-4">Risk score, red flag detection, risky clause extraction with negotiation guidance. One-time license.</p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $49 →</Link>
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+            <BuyToolButton toolId="contract-scanner" price={49} className="px-5 py-2.5 rounded-xl text-sm font-black text-black cursor-pointer" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }} />
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $149 →</Link>
           </div>
         </div>
       </main>
