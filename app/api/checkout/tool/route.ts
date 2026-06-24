@@ -6,7 +6,7 @@ import { TOOL_PRICING } from '@/lib/tool-pricing'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  const stripeKey = (process.env.STRIPE_SECRET_KEY || '').replace(/^\uFEFF/, '').trim()
+  const stripeKey = (process.env.STRIPE_SECRET_KEY || '').replace(/^﻿/, '').trim()
   if (!stripeKey) return Response.json({ error: 'Payment not configured' }, { status: 503 })
 
   let body: { toolId?: string; returnTo?: string }
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
 
   const { toolId = '', returnTo = '/tools' } = body
   const toolConfig = TOOL_PRICING[toolId]
-  if (!toolConfig) return Response.json({ error: 'Unknown tool' }, { status: 400 })
+  if (!toolConfig || toolConfig.oneTimePrice === 0) return Response.json({ error: 'Unknown tool' }, { status: 400 })
 
   const stripe = new Stripe(stripeKey)
   const baseUrl = env('NEXT_PUBLIC_BASE_URL', 'https://queldrex.com')
@@ -22,15 +22,14 @@ export async function POST(request: NextRequest) {
 
   try {
     const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
+      mode: 'payment',
       line_items: [{
         price_data: {
           currency: 'usd',
-          unit_amount: toolConfig.monthlyPrice * 100,
-          recurring: { interval: 'month' },
+          unit_amount: toolConfig.oneTimePrice * 100,
           product_data: {
             name: `Queldrex — ${toolConfig.name}`,
-            description: `Unlimited monthly access. Cancel anytime from your billing portal.`,
+            description: `Lifetime access. Pay once, use forever. No subscription.`,
           },
         },
         quantity: 1,

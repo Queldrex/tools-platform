@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -196,7 +196,7 @@ export default function JobDescriptionPage() {
           {/* Preview */}
           <div>
             {error && <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-4 text-sm text-red-400">{error}</div>}
-            {paywall && !loading && <PaywallCard toolId="job-description" toolName="Job Description Writer" monthlyPrice={12} freeLimit={2} accent="#06d6ff" />}
+            {paywall && !loading && <PaywallCard toolId="job-description" toolName="Job Description Writer" oneTimePrice={15} freeLimit={2} accent="#06d6ff" />}
             {!result && !loading && !error && !paywall && (
               <div className="rounded-2xl border p-8 text-center h-full flex items-center justify-center" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.05)' }}>
                 <p className="text-white/20 text-sm">Your job description will appear here</p>

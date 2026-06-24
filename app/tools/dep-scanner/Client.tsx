@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
@@ -116,7 +116,7 @@ export default function DepScannerPage() {
         </div>
 
         {error && <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>}
-        {paywall && !loading && <PaywallCard toolId="dep-scanner" toolName="Dependency CVE Scanner" monthlyPrice={19} freeLimit={2} accent="#f87171" />}
+        {paywall && !loading && <PaywallCard toolId="dep-scanner" toolName="Dependency CVE Scanner" oneTimePrice={29} freeLimit={2} accent="#f87171" />}
 
         {result && (
           <div className="space-y-5">

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
@@ -162,7 +162,7 @@ export default function OGPreviewerPage() {
         </div>
 
         {error && <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>}
-        {paywall && !loading && <PaywallCard toolId="og-previewer" toolName="OG Previewer" monthlyPrice={0} freeLimit={5} accent="#60a5fa" />}
+        {paywall && !loading && <PaywallCard toolId="og-previewer" toolName="OG Previewer" oneTimePrice={0} freeLimit={5} accent="#60a5fa" />}
 
         {result && (
           <div className="space-y-8">

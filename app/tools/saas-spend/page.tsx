@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -123,7 +123,7 @@ export default function SaasSpendPage() {
         </div>
 
         {error && <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>}
-        {paywall && !loading && <PaywallCard toolId="saas-spend" toolName="SaaS Spend Optimizer" monthlyPrice={19} freeLimit={1} accent="#4ade80" />}
+        {paywall && !loading && <PaywallCard toolId="saas-spend" toolName="SaaS Spend Optimizer" oneTimePrice={49} freeLimit={1} accent="#4ade80" />}
 
 
 

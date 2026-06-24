@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -152,7 +152,7 @@ export default function ContractScannerPage() {
           <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>
         )}
 
-        {paywall && !loading && <PaywallCard toolId="contract-scanner" toolName="Contract Risk Scanner" monthlyPrice={19} freeLimit={1} accent="#f87171" />}
+        {paywall && !loading && <PaywallCard toolId="contract-scanner" toolName="Contract Risk Scanner" oneTimePrice={49} freeLimit={1} accent="#f87171" />}
 
         {result && riskCfg && (
           <div className="space-y-5">

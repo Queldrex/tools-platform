@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -138,7 +138,7 @@ export default function AgencyReportPage() {
         </div>
 
         {error && <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>}
-        {paywall && !loading && <PaywallCard toolId="agency-report" toolName="Agency Report Generator" monthlyPrice={19} freeLimit={1} accent="#06d6ff" />}
+        {paywall && !loading && <PaywallCard toolId="agency-report" toolName="Agency Report Generator" oneTimePrice={49} freeLimit={1} accent="#06d6ff" />}
 
         {result && (
           <div className="space-y-5">

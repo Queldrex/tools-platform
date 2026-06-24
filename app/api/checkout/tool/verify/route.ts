@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     const stripe = new Stripe(stripeKey)
     const session = await stripe.checkout.sessions.retrieve(sessionId)
 
-    if (session.payment_status !== 'paid' && session.status !== 'complete') {
+    if (session.payment_status !== 'paid' && session.payment_status !== 'no_payment_required' && session.status !== 'complete') {
       return NextResponse.redirect(new URL(safeReturn, request.url))
     }
 
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
     <div style="color:white;font-size:22px;font-weight:800;">You're in.</div>
   </div>
   <div style="background:white;padding:32px;border-radius:0 0 16px 16px;box-shadow:0 4px 6px rgba(0,0,0,0.05);">
-    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Your subscription to <strong>${toolName}</strong> is active. Head back to the tool to use it.</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Your lifetime access to <strong>${toolName}</strong> is ready. Pay once, use forever.</p>
     <a href="https://queldrex.com/tools/${toolId}" style="display:block;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:white;text-decoration:none;text-align:center;padding:16px;border-radius:12px;font-weight:700;font-size:15px;margin-bottom:20px;">Open ${toolName} →</a>
     <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:20px;">
       <p style="margin:0 0 8px;font-size:13px;color:#374151;font-weight:600;">Important — save this email</p>
@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
       httpOnly: true,
       secure: true,
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 31,
+      maxAge: 60 * 60 * 24 * 3650,
       path: '/',
     })
     return response

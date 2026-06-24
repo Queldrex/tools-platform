@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -206,7 +206,7 @@ export default function NDAGeneratorPage() {
 
         {error && <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>}
 
-        {paywall && !loading && <PaywallCard toolId="nda-generator" toolName="NDA Generator" monthlyPrice={12} freeLimit={1} accent="#a78bfa" />}
+        {paywall && !loading && <PaywallCard toolId="nda-generator" toolName="NDA Generator" oneTimePrice={29} freeLimit={1} accent="#a78bfa" />}
 
         {result && (
           <div className="space-y-4">

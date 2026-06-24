@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -199,7 +199,7 @@ export default function ProposalGeneratorPage() {
 
         {error && <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>}
 
-        {paywall && !loading && <PaywallCard toolId="proposal-generator" toolName="Proposal Generator" monthlyPrice={19} freeLimit={1} accent="#4ade80" />}
+        {paywall && !loading && <PaywallCard toolId="proposal-generator" toolName="Proposal Generator" oneTimePrice={29} freeLimit={1} accent="#4ade80" />}
 
         {result && (
           <div className="rounded-2xl border p-6" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -152,7 +152,7 @@ export default function InvoiceFraudPage() {
         </div>
 
         {error && <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>}
-        {paywall && !loading && <PaywallCard toolId="invoice-fraud" toolName="Invoice Fraud Detector" monthlyPrice={12} freeLimit={2} accent="#f87171" />}
+        {paywall && !loading && <PaywallCard toolId="invoice-fraud" toolName="Invoice Fraud Detector" oneTimePrice={49} freeLimit={2} accent="#f87171" />}
 
         <div className="mt-10 mb-8">
           <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>

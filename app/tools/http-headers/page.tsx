@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
@@ -116,7 +116,7 @@ export default function HttpHeadersPage() {
         </div>
 
         {error && <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>}
-        {paywall && !loading && <PaywallCard toolId="http-headers" toolName="HTTP Header Inspector" monthlyPrice={0} freeLimit={10} accent="#34d399" />}
+        {paywall && !loading && <PaywallCard toolId="http-headers" toolName="HTTP Header Inspector" oneTimePrice={0} freeLimit={10} accent="#34d399" />}
 
         {result && (
           <div className="space-y-6">
