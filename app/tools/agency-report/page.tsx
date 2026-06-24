@@ -139,6 +139,42 @@ export default function AgencyReportPage() {
         </div>
 
         {error && <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>}
+        {/* ── SAMPLE OUTPUT ─────────────────────────────────── */}
+        <div className="rounded-2xl border overflow-hidden mb-6" style={{ borderColor: 'rgba(255,255,255,0.08)', background: '#0d1117' }}>
+          <div className="px-5 py-3 border-b flex items-center justify-between" style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.03)' }}>
+            <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.35)' }}>Example output — Monthly client report</span>
+            <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full" style={{ background: 'rgba(251,191,36,0.12)', color: '#fbbf24' }}>Preview</span>
+          </div>
+          <div className="p-5 space-y-4 text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            <div className="pb-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+              <p className="font-bold text-sm mb-0.5" style={{ color: 'rgba(255,255,255,0.8)' }}>Monthly Performance Report — May 2026</p>
+              <p style={{ color: 'rgba(255,255,255,0.3)' }}>Prepared for: Acme Retail Co. · Agency: Your Agency · Period: May 1–31, 2026</p>
+            </div>
+            <div>
+              <p className="font-bold mb-2" style={{ color: 'rgba(255,255,255,0.65)' }}>EXECUTIVE SUMMARY</p>
+              <p className="leading-relaxed">May was a strong month. Organic traffic grew 18% month-over-month, driven by the blog content campaign we launched in April. Paid search ROAS improved to 4.2x (up from 3.1x in April) following bid strategy adjustments. Three new landing pages launched and are indexed.</p>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              {([['Organic Traffic', '+18%', '#4ade80'], ['Paid ROAS', '4.2x', '#4ade80'], ['New Leads', '47', '#06d6ff']] as [string, string, string][]).map(([label, val, col]) => (
+                <div key={label} className="rounded-xl p-3 text-center border" style={{ background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.06)' }}>
+                  <div className="text-xl font-black mb-0.5" style={{ color: col }}>{val}</div>
+                  <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{label}</div>
+                </div>
+              ))}
+            </div>
+            <div>
+              <p className="font-bold mb-1.5" style={{ color: 'rgba(255,255,255,0.65)' }}>KEY WINS THIS MONTH</p>
+              <p>✓ Blog post &quot;How to Choose a CRM&quot; ranking #3 for target keyword (est. 2,400 searches/mo)</p>
+              <p>✓ Reduced cost-per-click 22% by pausing underperforming ad groups</p>
+              <p>✓ Email open rate improved to 31% (industry avg: 21%)</p>
+            </div>
+            <p style={{ color: 'rgba(255,255,255,0.2)' }}><em>Continues: Next month priorities, budget summary, campaign breakdown, recommendations...</em></p>
+          </div>
+          <div className="px-5 py-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}>
+            <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>Generated in ~30 seconds. Paste your metrics and wins — AI writes the narrative, formats the stats, and adds next-steps.</p>
+          </div>
+        </div>
+
         {paywall && !loading && <PaywallCard toolId="agency-report" toolName="Agency Report Generator" oneTimePrice={49} freeLimit={1} accent="#06d6ff" />}
 
         {result && (

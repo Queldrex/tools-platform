@@ -215,6 +215,34 @@ export default function TosGeneratorPage() {
 
         {error && <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>}
 
+        {/* ── SAMPLE OUTPUT ─────────────────────────────────── */}
+        <div className="rounded-2xl border overflow-hidden mb-6" style={{ borderColor: 'rgba(255,255,255,0.08)', background: '#0d1117' }}>
+          <div className="px-5 py-3 border-b flex items-center justify-between" style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.03)' }}>
+            <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.35)' }}>Example output — SaaS Terms of Service</span>
+            <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full" style={{ background: 'rgba(167,139,250,0.12)', color: '#a78bfa' }}>Preview</span>
+          </div>
+          <div className="p-5 font-mono text-xs leading-relaxed space-y-3" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            <p className="font-bold" style={{ color: 'rgba(255,255,255,0.75)', textAlign: 'center', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>TERMS OF SERVICE — [Your SaaS Name]</p>
+            <p style={{ color: 'rgba(255,255,255,0.3)', textAlign: 'center', fontSize: '11px' }}>Last updated: [Date] · Effective: [Date]</p>
+            <div>
+              <p className="font-bold mb-1" style={{ color: 'rgba(255,255,255,0.65)' }}>1. ACCEPTANCE OF TERMS</p>
+              <p>By accessing or using [SaaS Name] (&quot;Service&quot;), you agree to be bound by these Terms. If you do not agree, do not use the Service. These Terms apply to all users, including visitors, registered users, and customers...</p>
+            </div>
+            <div>
+              <p className="font-bold mb-1" style={{ color: 'rgba(255,255,255,0.65)' }}>2. ACCOUNTS AND SUBSCRIPTIONS</p>
+              <p>You are responsible for maintaining the security of your account credentials. Subscriptions auto-renew unless cancelled at least 24 hours before the renewal date. Refunds are governed by our Refund Policy...</p>
+            </div>
+            <div>
+              <p className="font-bold mb-1" style={{ color: 'rgba(255,255,255,0.65)' }}>3. ACCEPTABLE USE</p>
+              <p>You may not use the Service to: (a) violate any law; (b) infringe intellectual property rights; (c) transmit malware; (d) attempt unauthorized access to our systems...</p>
+            </div>
+            <p style={{ color: 'rgba(255,255,255,0.2)' }}><em>Continues: 4. Intellectual Property · 5. Limitation of Liability · 6. Indemnification · 7. Governing Law · 8. Dispute Resolution · 9. Changes to Terms · 10. Contact...</em></p>
+          </div>
+          <div className="px-5 py-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}>
+            <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>Full ToS typically 8–12 sections. Plain English. Structured to protect your business and be readable by your users.</p>
+          </div>
+        </div>
+
         {paywall && !loading && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(167,139,250,0.05)', borderColor: 'rgba(167,139,250,0.2)' }}>
             <h3 className="text-xl font-black text-white mb-2">Unlimited generations with Pro</h3>

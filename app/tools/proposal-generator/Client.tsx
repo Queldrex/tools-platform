@@ -200,6 +200,38 @@ export default function ProposalGeneratorPage() {
 
         {error && <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>}
 
+        {/* ── SAMPLE OUTPUT ─────────────────────────────────── */}
+        <div className="rounded-2xl border overflow-hidden mb-6" style={{ borderColor: 'rgba(255,255,255,0.08)', background: '#0d1117' }}>
+          <div className="px-5 py-3 border-b flex items-center justify-between" style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.03)' }}>
+            <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.35)' }}>Example output — Web redesign proposal</span>
+            <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full" style={{ background: 'rgba(6,214,255,0.12)', color: '#06d6ff' }}>Preview</span>
+          </div>
+          <div className="p-5 font-mono text-xs leading-relaxed space-y-4" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            <div>
+              <p className="font-bold mb-1" style={{ color: 'rgba(255,255,255,0.8)', fontFamily: 'inherit' }}>PROPOSAL: E-Commerce Website Redesign</p>
+              <p style={{ color: 'rgba(255,255,255,0.35)' }}>Prepared for: Acme Retail Co. · Prepared by: Your Studio · Date: June 2026</p>
+            </div>
+            <div>
+              <p className="font-bold mb-1.5" style={{ color: 'rgba(255,255,255,0.65)' }}>EXECUTIVE SUMMARY</p>
+              <p>Acme Retail Co. needs a modern e-commerce experience to reduce cart abandonment (currently 74%) and increase mobile conversion. This proposal outlines a full redesign of the checkout flow, product pages, and mobile experience, with estimated delivery in 8 weeks.</p>
+            </div>
+            <div>
+              <p className="font-bold mb-1.5" style={{ color: 'rgba(255,255,255,0.65)' }}>SCOPE OF WORK</p>
+              <p>✓ Discovery &amp; UX audit (Week 1–2) · ✓ Wireframes &amp; design system (Week 3–4)</p>
+              <p>✓ Frontend development (Week 5–7) · ✓ QA &amp; launch (Week 8)</p>
+            </div>
+            <div>
+              <p className="font-bold mb-1.5" style={{ color: 'rgba(255,255,255,0.65)' }}>INVESTMENT</p>
+              <p>Discovery: $2,500 · Design: $4,000 · Development: $8,500 · <strong style={{ color: 'rgba(255,255,255,0.7)' }}>Total: $15,000</strong></p>
+              <p style={{ color: 'rgba(255,255,255,0.3)' }}>50% deposit to begin · 50% on delivery · Payment via bank transfer or card</p>
+            </div>
+            <p style={{ color: 'rgba(255,255,255,0.2)' }}><em>Also includes: terms, revision policy, signature block, and next steps section...</em></p>
+          </div>
+          <div className="px-5 py-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}>
+            <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>Generated in ~90 seconds. Copy, paste into a doc, or download as formatted text. Ready to send.</p>
+          </div>
+        </div>
+
         {paywall && !loading && <PaywallCard toolId="proposal-generator" toolName="Proposal Generator" oneTimePrice={29} freeLimit={1} accent="#4ade80" />}
 
         {result && (

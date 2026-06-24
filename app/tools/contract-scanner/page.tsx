@@ -153,6 +153,33 @@ export default function ContractScannerPage() {
           <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>
         )}
 
+        {/* ── SAMPLE OUTPUT ─────────────────────────────────── */}
+        <div className="rounded-2xl border overflow-hidden mb-6" style={{ borderColor: 'rgba(255,255,255,0.08)', background: '#0d1117' }}>
+          <div className="px-5 py-3 border-b flex items-center justify-between" style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.03)' }}>
+            <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.35)' }}>Example output — Freelance contract scan</span>
+            <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full" style={{ background: 'rgba(239,68,68,0.12)', color: '#f87171' }}>Preview</span>
+          </div>
+          <div className="p-5 space-y-3">
+            {[
+              { level: 'HIGH', color: '#f87171', bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.2)', icon: '🔴', clause: 'Section 4.2 — IP Ownership', detail: '"Vendor hereby assigns all deliverables, inventions, and work product to Client in perpetuity." You retain zero ownership of your work.' },
+              { level: 'HIGH', color: '#f87171', bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.2)', icon: '🔴', clause: 'Section 11.1 — Non-Compete', detail: '24-month non-compete in the same industry. Industry standard is 6–12 months. This is unusually broad.' },
+              { level: 'MEDIUM', color: '#fbbf24', bg: 'rgba(251,191,36,0.06)', border: 'rgba(251,191,36,0.15)', icon: '🟡', clause: 'Section 7.3 — Payment Terms', detail: 'NET-60 payment terms. Industry standard for freelancers is NET-15 or NET-30. You may wait 60 days to get paid.' },
+              { level: 'OK', color: '#4ade80', bg: 'rgba(74,222,128,0.06)', border: 'rgba(74,222,128,0.15)', icon: '🟢', clause: 'Section 9.1 — Liability Cap', detail: 'Liability capped at total contract value. Standard and reasonable.' },
+            ].map(r => (
+              <div key={r.clause} className="rounded-xl border p-3.5" style={{ background: r.bg, borderColor: r.border }}>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[10px] font-black uppercase tracking-wider" style={{ color: r.color }}>{r.icon} {r.level} RISK</span>
+                  <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.65)' }}>{r.clause}</span>
+                </div>
+                <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{r.detail}</p>
+              </div>
+            ))}
+          </div>
+          <div className="px-5 py-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}>
+            <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>Your scan checks 25+ risk patterns: IP grabs, non-competes, liability gaps, payment terms, termination clauses, and more.</p>
+          </div>
+        </div>
+
         {paywall && !loading && <PaywallCard toolId="contract-scanner" toolName="Contract Risk Scanner" oneTimePrice={49} freeLimit={1} accent="#f87171" />}
 
         {result && riskCfg && (

@@ -207,6 +207,24 @@ export default function NDAGeneratorPage() {
 
         {error && <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>}
 
+        {/* ── SAMPLE OUTPUT ─────────────────────────────────── */}
+        <div className="rounded-2xl border overflow-hidden mb-6" style={{ borderColor: 'rgba(255,255,255,0.08)', background: '#0d1117' }}>
+          <div className="px-5 py-3 border-b flex items-center justify-between" style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.03)' }}>
+            <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.35)' }}>Example output — Mutual NDA</span>
+            <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full" style={{ background: 'rgba(167,139,250,0.12)', color: '#a78bfa' }}>Preview</span>
+          </div>
+          <div className="p-5 font-mono text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            <p className="font-bold mb-3" style={{ color: 'rgba(255,255,255,0.75)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>MUTUAL NON-DISCLOSURE AGREEMENT</p>
+            <p className="mb-2">This Mutual Non-Disclosure Agreement (&quot;Agreement&quot;) is entered into as of <span style={{ color: '#a78bfa' }}>[Date]</span> between <span style={{ color: '#a78bfa' }}>[Company A]</span>, a <span style={{ color: '#a78bfa' }}>[State]</span> corporation, and <span style={{ color: '#a78bfa' }}>[Company B]</span> (collectively, the &quot;Parties&quot;).</p>
+            <p className="mb-2"><strong style={{ color: 'rgba(255,255,255,0.65)' }}>1. CONFIDENTIAL INFORMATION.</strong> Each Party may disclose to the other certain confidential, proprietary, and/or trade secret information (&quot;Confidential Information&quot;). Confidential Information includes, without limitation, technical data, trade secrets, know-how, research, product plans, products, services, customers, markets, software, and other business information...</p>
+            <p className="mb-2"><strong style={{ color: 'rgba(255,255,255,0.65)' }}>2. OBLIGATIONS.</strong> Each Party agrees to: (a) hold the other Party&apos;s Confidential Information in strict confidence; (b) not disclose such information to any third parties without prior written consent; (c) use the Confidential Information solely for the purpose of evaluating a potential business relationship...</p>
+            <p style={{ color: 'rgba(255,255,255,0.2)' }}>3. TERM. 4. RETURN OF INFORMATION. 5. REMEDIES. 6. GOVERNING LAW... <em>(continues for {'{'}{'}'}jurisdiction{'{'}{'}'}law, {'{'}{'}'}term{'{'}{'}'}-month term)</em></p>
+          </div>
+          <div className="px-5 py-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}>
+            <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>Your generated NDA will include all clauses, jurisdiction-specific language, signature blocks, and be ready to send. Purple fields are replaced with your inputs.</p>
+          </div>
+        </div>
+
         {paywall && !loading && <PaywallCard toolId="nda-generator" toolName="NDA Generator" oneTimePrice={29} freeLimit={1} accent="#a78bfa" />}
 
         {result && (
