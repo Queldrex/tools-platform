@@ -1,6 +1,7 @@
-'use client'
+﻿'use client'
 import { useState } from 'react'
 import Link from 'next/link'
+import BuyToolButton from '@/components/BuyToolButton'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
@@ -316,8 +317,8 @@ export default function SchemaValidatorPage() {
         <h1 className="text-4xl font-black text-white mb-3">Schema.org <span style={{ color: '#06d6ff' }}>AI Visibility Validator</span></h1>
         <p className="text-white/55 text-base mb-2 max-w-xl">Paste any JSON-LD schema and get an instant health grade, AI citation score, E-E-A-T analysis, and fix suggestions. Free to validate here — license this tool from <strong className="text-white">$29</strong> or get all 51 tools from <strong className="text-white">$99</strong>.</p>
         <div className="flex gap-3 mb-8">
-          <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29</Link>
-          <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black border" style={{ color: '#06d6ff', borderColor: 'rgba(6,214,255,0.3)', background: 'rgba(6,214,255,0.05)' }}>All 51 tools — from $99</Link>
+          <BuyToolButton toolId="schema-validator" price={29} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }} />
+          <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black border" style={{ color: '#06d6ff', borderColor: 'rgba(6,214,255,0.3)', background: 'rgba(6,214,255,0.05)' }}>All 51 tools — from $149</Link>
         </div>
 
         <div className="flex gap-1 mb-6">
@@ -569,8 +570,8 @@ export default function SchemaValidatorPage() {
           <p className="text-white font-black mb-1">Add schema validation to your platform</p>
           <p className="text-white/40 text-sm mb-4">JSON-LD validation, E-E-A-T signal checking, per-block error expand with fix suggestions. One-time license.</p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+            <BuyToolButton toolId="schema-validator" price={29} className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }} />
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $149 →</Link>
           </div>
         </div>
       </main>

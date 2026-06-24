@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import BuyToolButton from '@/components/BuyToolButton'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import PaywallCard from '@/components/PaywallCard'
@@ -79,8 +80,8 @@ export default function JobDescriptionPage() {
         <h1 className="text-4xl font-black text-white mb-3">Job Description <span style={{ color: '#06d6ff' }}>Writer</span></h1>
         <p className="text-white/55 text-base mb-3 max-w-2xl">Enter your rough notes and get a complete, ready-to-post job description in seconds. Attract better candidates with professionally written postings.</p>
         <div className="flex gap-3 flex-wrap mt-3 mb-4">
-          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29 →</Link>
-          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+          <BuyToolButton toolId="job-description" price={15} className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }} />
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $149 →</Link>
         </div>
         <div className="mb-6 px-4 py-3 rounded-xl border text-xs leading-relaxed" style={{ background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.2)', color: 'rgba(251,191,36,0.7)' }}>
           AI-generated job descriptions are a starting point only. Review all output for compliance with federal and state employment law (including equal opportunity requirements and salary disclosure obligations) before posting. This tool does not provide legal or HR compliance advice.
@@ -255,8 +256,8 @@ export default function JobDescriptionPage() {
           <p className="text-white font-black mb-1">Add job description generation to your platform</p>
           <p className="text-white/40 text-sm mb-4">13 industries, 5 experience levels, 3 tones, work model, AI-generated with legal disclaimer. One-time license.</p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29 →</Link>
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+            <BuyToolButton toolId="job-description" price={15} className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }} />
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $149 →</Link>
           </div>
         </div>
       </main>

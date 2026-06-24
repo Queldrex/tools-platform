@@ -1,6 +1,7 @@
 ﻿'use client'
 import { useState } from 'react'
 import Link from 'next/link'
+import BuyToolButton from '@/components/BuyToolButton'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
@@ -72,8 +73,8 @@ export default function PrivacyAnalyzerPage() {
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Privacy Policy <span style={{ color: '#fb923c' }}>GDPR/CCPA Analyzer</span></h1>
         <div className="flex gap-3 flex-wrap mt-3 mb-4">
-          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#ea580c,#c2410c)' }}>Get this tool — $29 →</Link>
-          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+          <BuyToolButton toolId="privacy-analyzer" price={29} className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#ea580c,#c2410c)' }} />
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $149 →</Link>
         </div>
         <p className="text-white/55 text-base mb-4 max-w-xl">Paste a privacy policy URL or text. AI reads the actual document and scores it for GDPR and CCPA compliance — lawful basis, data retention, user rights, third-party disclosures, and red flags.</p>
         <div className="mb-6 px-4 py-3 rounded-xl border text-xs leading-relaxed" style={{ background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.2)', color: 'rgba(251,191,36,0.7)' }}>
@@ -228,8 +229,8 @@ export default function PrivacyAnalyzerPage() {
           <p className="text-white font-black mb-1">Add privacy policy analysis to your platform</p>
           <p className="text-white/40 text-sm mb-4">GDPR + CCPA scoring, data collection list, third-party detection, red flags and missing clauses. One-time license.</p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#ea580c,#c2410c)' }}>Get this tool — $29 →</Link>
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+            <BuyToolButton toolId="privacy-analyzer" price={29} className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#ea580c,#c2410c)' }} />
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $149 →</Link>
           </div>
         </div>
       </main>
