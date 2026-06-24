@@ -112,10 +112,14 @@ export default function PackageHallucinationPage() {
 
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#fb923c', borderColor: 'rgba(251,146,60,0.3)', background: 'rgba(251,146,60,0.08)' }}>Live</span>
-          <span className="text-sm font-bold text-white/30">Pro Tool · 2 free scans/day · Unlimited with $79/month</span>
+          <span className="text-sm font-bold text-white/30">Pro Tool · 2 free scans/day · Unlimited with Pro</span>
         </div>
 
         <h1 className="text-4xl font-black text-white mb-3">Hallucinated <span style={{ color: '#fb923c' }}>Package Detector</span></h1>
+        <div className="flex gap-3 flex-wrap mt-3 mb-5">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#f87171,#dc2626)' }}>Get this tool — $29 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
         <p className="text-white/55 text-base mb-8 max-w-2xl">
           AI coding assistants invent package names that don&apos;t exist — or reference packages so new they&apos;re likely malicious. Paste your <code className="text-orange-400">package.json</code> or <code className="text-orange-400">requirements.txt</code> and verify every dependency against the live registry.
         </p>
@@ -180,11 +184,9 @@ export default function PackageHallucinationPage() {
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(251,146,60,0.05)', borderColor: 'rgba(251,146,60,0.2)' }}>
             <svg className="w-10 h-10 mx-auto mb-4 text-orange-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
             <h3 className="text-xl font-black text-white mb-2">Unlimited checks with Pro</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Pro subscribers get unlimited package verification, all security tools, and monthly AI visibility monitoring — $79/month, cancel anytime.</p>
+            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Upgrade for unlimited package verification and all security tools.</p>
             <div className="flex items-center justify-center gap-3 flex-wrap">
-              <Link href="/monitor" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>
-                Start Pro — $79/month
-              </Link>
+              <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Upgrade to Pro →</Link>
               <Link href="/pricing" className="text-sm text-white/45 hover:text-white transition-colors">See all features →</Link>
             </div>
           </div>
@@ -263,6 +265,16 @@ export default function PackageHallucinationPage() {
           </div>
         )}
 
+        <div className="mt-10 mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• Vibe coders and AI-assisted developers verifying packages AI suggested before installing</li>
+            <li>• Security engineers checking package.json or requirements.txt for hallucinated names</li>
+            <li>• DevOps teams auditing AI-generated dependency lists before adding to CI pipelines</li>
+            <li>• CTOs setting up security reviews for AI-generated code at the dependency level</li>
+          </ul>
+        </div>
+
         {!result && !loading && !paywall && (
           <div className="mt-8 rounded-xl border p-6" style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.06)' }}>
             <p className="text-xs font-black uppercase tracking-widest text-white/25 mb-4">Why this matters</p>
@@ -284,6 +296,14 @@ export default function PackageHallucinationPage() {
             </div>
           </div>
         )}
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(248,113,113,0.04)', borderColor: 'rgba(248,113,113,0.15)' }}>
+          <p className="text-white font-black mb-1">Add hallucination checking to your platform</p>
+          <p className="text-white/40 text-sm mb-4">Live registry verification, NOT FOUND/VERY NEW/VERIFIED badges, npm and Python support. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#f87171,#dc2626)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
