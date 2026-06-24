@@ -5,6 +5,7 @@ import Footer from '@/components/Footer'
 import GoProButton from '@/components/GoProButton'
 import ScrollReveal from '@/components/ScrollReveal'
 import HomeDemo from './HomeDemo'
+import HomepageDemo from '@/components/HomepageDemo'
 import ScanCounter from './ScanCounter'
 import ToolCards from './ToolCards'
 import EmailCapture from '@/components/EmailCapture'
@@ -136,6 +137,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <HomepageDemo />
 
       {/* ── TRUST BAR ─────────────────────────────────────────────────────────── */}
       <div className="border-t border-b px-6 py-4" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
