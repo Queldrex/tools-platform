@@ -82,10 +82,14 @@ export default function InvoiceFraudPage() {
         </Link>
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <span className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border" style={{ color: '#f87171', borderColor: 'rgba(248,113,113,0.3)', background: 'rgba(248,113,113,0.08)' }}>Live</span>
-          <span className="text-sm font-bold text-white/30">Pro Tool · 2 free checks/day · Unlimited with $79/month</span>
+          <span className="text-sm font-bold text-white/30">Pro Tool · 2 free checks/day · Unlimited with Pro</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">Invoice <span style={{ color: '#f87171' }}>Fraud Detector</span></h1>
-        <p className="text-white/55 text-base mb-6 max-w-2xl">Instantly scan any invoice for fraud signals — round-number manipulation, BEC indicators, fake vendor patterns, urgency pressure, and more.</p>
+        <p className="text-white/55 text-base mb-4 max-w-2xl">Instantly scan any invoice for fraud signals — round-number manipulation, BEC indicators, fake vendor patterns, urgency pressure, and more.</p>
+        <div className="flex gap-3 flex-wrap mb-6">
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#f87171,#dc2626)' }}>Get this tool — $29 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="md:col-span-2 rounded-xl border p-5" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.07)' }}>
@@ -150,6 +154,16 @@ export default function InvoiceFraudPage() {
         {error && <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>}
         {paywall && !loading && <PaywallCard toolId="invoice-fraud" toolName="Invoice Fraud Detector" monthlyPrice={12} freeLimit={2} accent="#f87171" />}
 
+        <div className="mt-10 mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Who This Is For</p>
+          <ul className="space-y-2 text-sm text-white/55">
+            <li>• Finance teams screening vendor invoices for manipulation before approving payment</li>
+            <li>• Accounts payable staff flagging duplicate, inflated, or suspicious invoice patterns</li>
+            <li>• Small business owners catching fraudulent invoices without enterprise AP software</li>
+            <li>• Auditors running a quick pre-check before a deeper forensic review</li>
+          </ul>
+        </div>
+
         {result && riskCfg && (
           <div className="space-y-5">
             <div className="rounded-2xl border p-6" style={{ background: riskCfg.bg, borderColor: `${riskCfg.color}33` }}>
@@ -186,6 +200,14 @@ export default function InvoiceFraudPage() {
             )}
           </div>
         )}
+        <div className="mt-14 rounded-2xl border p-6 text-center" style={{ background: 'rgba(248,113,113,0.04)', borderColor: 'rgba(248,113,113,0.15)' }}>
+          <p className="text-white font-black mb-1">Add invoice fraud detection to your platform</p>
+          <p className="text-white/40 text-sm mb-4">20+ deterministic fraud rules, risk level (Clear → DO NOT PAY), sorted flags with action guidance. One-time license.</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#f87171,#dc2626)' }}>Get this tool — $29 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
