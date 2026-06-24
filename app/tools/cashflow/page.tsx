@@ -153,7 +153,7 @@ export default function CashFlowPage() {
         <h1 className="text-4xl font-black text-white mb-3">Cash Flow <span style={{ color: '#4ade80' }}>Forecaster</span></h1>
         <p className="text-white/55 text-base mb-6 max-w-2xl">Project your business cash position month by month. Model revenue growth, fixed costs, variable costs, and one-time expenses to see runway and break-even.</p>
         <div className="flex gap-3 flex-wrap mt-3 mb-6">
-          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#4ade80,#16a34a)' }}>Get this tool — $15 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#4ade80,#16a34a)' }}>Get this tool — $29 →</Link>
           <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
         </div>
 
@@ -331,7 +331,7 @@ export default function CashFlowPage() {
           <p className="text-white font-black mb-1">Add cashflow forecasting to your platform</p>
           <p className="text-white/40 text-sm mb-4">24-month forecast, runway alerts, break-even detection, one-time expense planning. One-time license.</p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#4ade80,#16a34a)' }}>Get this tool — $15 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#4ade80,#16a34a)' }}>Get this tool — $29 →</Link>
             <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
           </div>
         </div>

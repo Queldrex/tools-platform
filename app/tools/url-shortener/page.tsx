@@ -123,11 +123,11 @@ function UrlShortenerContent() {
           Free Tool · No Account · QR Included
         </div>
         <h1 className="text-3xl font-black text-white mb-1">URL Shortener</h1>
-        <p className="text-white/40 text-sm mb-4">Shorten any URL instantly — includes QR code generation and UTM parameter builder. License from $15, or get all 51 tools from $99.</p>
+        <p className="text-white/40 text-sm mb-4">Shorten any URL instantly — includes QR code generation and UTM parameter builder. License from $29, or get all 51 tools from $99.</p>
         <div className="flex gap-3 flex-wrap">
           <Link href="/pricing" className="inline-flex items-center px-4 py-2 rounded-lg text-xs font-black text-black transition-all"
             style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>
-            Get this tool — $15 →
+            Get this tool — $29 →
           </Link>
           <Link href="/pricing" className="inline-flex items-center px-4 py-2 rounded-lg text-xs font-black border text-white/60 transition-all"
             style={{ borderColor: 'rgba(255,255,255,0.12)' }}>
@@ -337,7 +337,7 @@ function UrlShortenerContent() {
         <p className="text-white font-black mb-1">Add URL shortening + QR to your platform</p>
         <p className="text-white/40 text-sm mb-4">Redis-backed short links, QR generation, UTM builder. One-time license.</p>
         <div className="flex gap-3 justify-center flex-wrap">
-          <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $15 →</Link>
+          <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
           <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
         </div>
       </div>
