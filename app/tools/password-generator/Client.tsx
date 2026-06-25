@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useCallback, useEffect } from 'react'
 import Link from 'next/link'
@@ -319,10 +319,10 @@ export default function PasswordGeneratorClient() {
             Free Tool · No API Key · Client-Side Only
           </div>
           <h1 className="text-3xl font-black text-white mb-2">Password Generator</h1>
-          <p className="text-white/40 text-sm mb-4">Generate cryptographically secure passwords and passphrases — with breach detection, entropy scoring, and bulk export. No account, no server, no data sent. License this tool for your platform from $15, or get all 51 tools from $99.</p>
+          <p className="text-white/40 text-sm mb-4">Generate cryptographically secure passwords and passphrases — with breach detection, entropy scoring, and bulk export. No account, no server, no data sent. License this tool for your platform from $15, or get all 51 tools from $149.</p>
           <div className="flex flex-wrap gap-3">
             <Link href="/pricing" className="text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors">Get this tool — $15 →</Link>
-            <Link href="/pricing" className="text-xs font-bold text-white/40 hover:text-white/60 transition-colors">All 51 tools — from $99 →</Link>
+            <Link href="/pricing" className="text-xs font-bold text-white/40 hover:text-white/60 transition-colors">All 51 tools — from $149 →</Link>
           </div>
         </div>
 

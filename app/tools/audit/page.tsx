@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
@@ -329,7 +329,7 @@ export default function AuditPage() {
           </p>
           <p className="text-white/25 text-xs mt-3">Last verified: June 2026 · 51 tools live · 24 core tools documented below · queldrex.com</p>
           <div className="flex gap-3 flex-wrap mt-4">
-            <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get all 51 tools — from $99 →</Link>
+            <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get all 51 tools — from $149 →</Link>
             <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>View pricing →</Link>
           </div>
         </div>

@@ -128,10 +128,10 @@ export default function OGPreviewerPage() {
         </div>
 
         <h1 className="text-4xl font-black text-white mb-3">OpenGraph <span style={{ color: '#60a5fa' }}>Preview</span></h1>
-        <p className="text-white/55 text-base mb-5 max-w-2xl">See exactly how any URL looks when shared on Twitter/X, LinkedIn, and Facebook. Inspect every OG and Twitter Card meta tag your page is sending. License from $15, or get all 51 tools from $99.</p>
+        <p className="text-white/55 text-base mb-5 max-w-2xl">See exactly how any URL looks when shared on Twitter/X, LinkedIn, and Facebook. Inspect every OG and Twitter Card meta tag your page is sending. License from $15, or get all 51 tools from $149.</p>
         <div className="flex gap-3 flex-wrap mb-8">
           <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#60a5fa,#2563eb)' }}>Get this tool — $15 →</Link>
-          <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+          <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $149 →</Link>
         </div>
 
         <div className="rounded-2xl border p-6 mb-6" style={{ background: '#111318', borderColor: 'rgba(255,255,255,0.08)' }}>
@@ -268,7 +268,7 @@ export default function OGPreviewerPage() {
           <p className="text-white/40 text-sm mb-4">Twitter/LinkedIn/Facebook previews, OG score, missing tag snippets. One-time license.</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $15 →</Link>
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $149 →</Link>
           </div>
         </div>
       </main>

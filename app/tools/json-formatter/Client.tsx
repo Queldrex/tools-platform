@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useCallback, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -353,10 +353,10 @@ function JsonFormatterContent() {
               Free Tool · No API Key · Browser Only
             </div>
             <h1 className="text-3xl font-black text-white mb-2">JSON Formatter</h1>
-            <p className="text-white/40 text-sm mb-3">Format, validate, diff, and convert JSON — plus generate TypeScript interfaces from any JSON structure. All client-side. License from $15, or get all 51 tools from $99.</p>
+            <p className="text-white/40 text-sm mb-3">Format, validate, diff, and convert JSON — plus generate TypeScript interfaces from any JSON structure. All client-side. License from $15, or get all 51 tools from $149.</p>
             <div className="flex gap-3 flex-wrap">
               <Link href="/pricing" className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors">Get this tool — $15 →</Link>
-              <Link href="/pricing" className="text-xs font-bold text-white/40 hover:text-white/60 transition-colors">All 51 tools — from $99 →</Link>
+              <Link href="/pricing" className="text-xs font-bold text-white/40 hover:text-white/60 transition-colors">All 51 tools — from $149 →</Link>
             </div>
           </div>
           {appMode === 'format' && (

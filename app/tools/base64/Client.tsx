@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -221,10 +221,10 @@ export default function Base64Page() {
             Free Tool · No API Key · Browser Only
           </div>
           <h1 className="text-3xl font-black text-white mb-2">Base64 Encoder / Decoder</h1>
-          <p className="text-white/40 text-sm mb-3">Encode and decode Base64 with URL-safe variant, image preview, file conversion, and batch mode. All client-side. License from $15, or get all 51 tools from $99.</p>
+          <p className="text-white/40 text-sm mb-3">Encode and decode Base64 with URL-safe variant, image preview, file conversion, and batch mode. All client-side. License from $15, or get all 51 tools from $149.</p>
           <div className="flex gap-3 flex-wrap">
             <Link href="/pricing" className="text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors">Get this tool — $15 →</Link>
-            <Link href="/pricing" className="text-xs font-bold text-white/40 hover:text-white/60 transition-colors">All 51 tools — from $99 →</Link>
+            <Link href="/pricing" className="text-xs font-bold text-white/40 hover:text-white/60 transition-colors">All 51 tools — from $149 →</Link>
           </div>
         </div>
 

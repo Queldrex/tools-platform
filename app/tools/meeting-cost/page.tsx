@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
@@ -134,7 +134,7 @@ export default function MeetingCostPage() {
             Free Tool · No Account · Browser Only
           </div>
           <h1 className="text-3xl font-black text-white mb-2">Meeting Cost Calculator</h1>
-          <p className="text-white/40 text-sm mb-4">See the real dollar cost of any meeting with a live ticker, per-role salaries, and annualized recurring projections. License from $15, or get all 51 tools from $99.</p>
+          <p className="text-white/40 text-sm mb-4">See the real dollar cost of any meeting with a live ticker, per-role salaries, and annualized recurring projections. License from $15, or get all 51 tools from $149.</p>
           <div className="flex gap-3 flex-wrap">
             <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-black text-black transition-all"
               style={{ background: 'linear-gradient(135deg,rgb(251,191,36),rgb(217,119,6))' }}>
@@ -142,7 +142,7 @@ export default function MeetingCostPage() {
             </Link>
             <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-black border text-white/60 transition-all"
               style={{ borderColor: 'rgba(255,255,255,0.12)' }}>
-              All 51 tools — from $99 →
+              All 51 tools — from $149 →
             </Link>
           </div>
         </div>
@@ -407,7 +407,7 @@ export default function MeetingCostPage() {
           <p className="text-white/40 text-sm mb-4">Live ticker, recurring projections, break-even analysis, copy summary. Client-side only.</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $15 →</Link>
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $149 →</Link>
           </div>
         </div>
 

@@ -59,7 +59,7 @@ export default function PromptInjectionPage() {
         <p className="text-white/55 text-base mb-4 max-w-xl">Test your AI application against 15 deterministic attack patterns — instruction overrides, DAN jailbreaks, token smuggling, encoding attacks, and more. Zero AI hallucination: pure regex, instant results.</p>
         <div className="flex gap-3 flex-wrap mb-6">
           <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29 →</Link>
-          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+          <Link href="/pricing" className="inline-flex items-center gap-1 text-sm font-black px-4 py-2 rounded-xl border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $149 →</Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -175,7 +175,7 @@ export default function PromptInjectionPage() {
           <p className="text-white/40 text-sm mb-4">20+ injection pattern detection, risk score 0–100, severity classification, example payloads. One-time license.</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29 →</Link>
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $149 →</Link>
           </div>
         </div>
       </main>

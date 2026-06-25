@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -510,7 +510,7 @@ export default function RobotsTxtGeneratorPage() {
           </p>
           <div className="flex gap-3 flex-wrap">
             <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29 →</Link>
-            <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $99 →</Link>
+            <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>All 51 tools — from $149 →</Link>
           </div>
         </div>
 
@@ -1368,7 +1368,7 @@ export default function RobotsTxtGeneratorPage() {
           <p className="text-white/40 text-sm mb-4">30+ crawlers, AI training blocker, LLMs.txt, URL tester. One-time license.</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Get this tool — $29 →</Link>
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $149 →</Link>
           </div>
         </div>
       </main>

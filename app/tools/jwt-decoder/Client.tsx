@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
@@ -188,10 +188,10 @@ export default function JwtDecoderPage() {
             Free Tool · No API Key · Browser Only
           </div>
           <h1 className="text-3xl font-black text-white mb-2">JWT Decoder</h1>
-          <p className="text-white/40 text-sm mb-3">Decode and security-audit any JWT instantly. Flags expired tokens, algorithm vulnerabilities, and missing claims — all client-side. License from $15, or get all 51 tools from $99.</p>
+          <p className="text-white/40 text-sm mb-3">Decode and security-audit any JWT instantly. Flags expired tokens, algorithm vulnerabilities, and missing claims — all client-side. License from $15, or get all 51 tools from $149.</p>
           <div className="flex flex-wrap gap-3">
             <Link href="/pricing" className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors">Get this tool — $15 →</Link>
-            <Link href="/pricing" className="text-xs font-bold text-white/40 hover:text-white/60 transition-colors">All 51 tools — from $99 →</Link>
+            <Link href="/pricing" className="text-xs font-bold text-white/40 hover:text-white/60 transition-colors">All 51 tools — from $149 →</Link>
           </div>
         </div>
 

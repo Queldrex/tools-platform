@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -95,10 +95,10 @@ export default function TechStackPage() {
             Free Tool · No Extension Required · Server-Side Scan
           </div>
           <h1 className="text-3xl font-black text-white mb-2">Tech Stack Detector</h1>
-          <p className="text-white/40 text-sm mb-4">Detect frameworks, CMS, hosting, CDN, analytics, and more from any URL's public response headers and source — no browser plugin needed. License from $29, or get all 51 tools from $99.</p>
+          <p className="text-white/40 text-sm mb-4">Detect frameworks, CMS, hosting, CDN, analytics, and more from any URL's public response headers and source — no browser plugin needed. License from $29, or get all 51 tools from $149.</p>
           <div className="flex gap-3 flex-wrap">
             <Link href="/pricing" className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
-            <Link href="/pricing" className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-black border text-white/60" style={{ borderColor: 'rgba(255,255,255,0.12)' }}>All 51 tools — from $99 →</Link>
+            <Link href="/pricing" className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-black border text-white/60" style={{ borderColor: 'rgba(255,255,255,0.12)' }}>All 51 tools — from $149 →</Link>
           </div>
         </div>
 
@@ -322,7 +322,7 @@ export default function TechStackPage() {
           <p className="text-white/40 text-sm mb-4">License the full source — tech stack detection, security headers, export. One-time payment.</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>Get this tool — $29 →</Link>
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $149 →</Link>
           </div>
         </div>
 

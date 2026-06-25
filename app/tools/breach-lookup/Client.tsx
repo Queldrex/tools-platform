@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -170,11 +170,11 @@ function BreachLookupContent() {
           </div>
           <h1 className="text-3xl font-black text-white mb-2">Breach Lookup</h1>
           <p className="text-white/45 text-sm leading-relaxed mb-4">
-            Check if a password has been exposed in known data breaches, or audit your domain&apos;s email security posture. License from $29, or get all 51 tools from $99.
+            Check if a password has been exposed in known data breaches, or audit your domain&apos;s email security posture. License from $29, or get all 51 tools from $149.
           </p>
           <div className="flex gap-3 flex-wrap">
             <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#f87171,#dc2626)' }}>Get this tool — $29 →</Link>
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $149 →</Link>
           </div>
         </div>
 
@@ -377,7 +377,7 @@ function BreachLookupContent() {
           <p className="text-white/40 text-sm mb-4">k-anonymity password check, domain security audit, DMARC/SPF/HSTS. One-time license.</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#f87171,#dc2626)' }}>Get this tool — $29 →</Link>
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $149 →</Link>
           </div>
         </div>
       </main>

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
@@ -381,7 +381,7 @@ export default function CronBuilderPage() {
             Free Tool · No API Key · Browser Only
           </div>
           <h1 className="text-3xl font-black text-white mb-2">Cron Expression Builder</h1>
-          <p className="text-white/40 text-sm mb-4">Build cron expressions visually with next-run preview, timezone support, and multi-platform output for Linux, GitHub Actions, AWS EventBridge, Kubernetes, and Vercel. License from $29, or get all 51 tools from $99.</p>
+          <p className="text-white/40 text-sm mb-4">Build cron expressions visually with next-run preview, timezone support, and multi-platform output for Linux, GitHub Actions, AWS EventBridge, Kubernetes, and Vercel. License from $29, or get all 51 tools from $149.</p>
           <div className="flex flex-wrap gap-3">
             <Link href="/pricing"
               className="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-lg transition-all"
@@ -391,7 +391,7 @@ export default function CronBuilderPage() {
             <Link href="/pricing"
               className="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-lg transition-all"
               style={{ background: 'rgba(99,102,241,0.1)', color: 'rgb(129,140,248)', border: '1px solid rgba(99,102,241,0.25)' }}>
-              All 51 tools — from $99 →
+              All 51 tools — from $149 →
             </Link>
           </div>
         </div>
@@ -575,7 +575,7 @@ export default function CronBuilderPage() {
             <Link href="/pricing"
               className="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-lg transition-all"
               style={{ background: 'rgba(99,102,241,0.1)', color: 'rgb(129,140,248)', border: '1px solid rgba(99,102,241,0.25)' }}>
-              All 51 tools — from $99 →
+              All 51 tools — from $149 →
             </Link>
           </div>
         </div>

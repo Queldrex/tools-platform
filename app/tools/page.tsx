@@ -28,7 +28,7 @@ export default function ToolsPage() {
       <ToolsClient categories={CATEGORIES} />
 
       {/* Request a tool */}
-      <section className="py-20 px-6" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <section id="request-tool" className="py-20 px-6" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-2xl mx-auto text-center mb-10">
           <p className="text-[11px] font-black uppercase tracking-widest mb-3" style={{ color: '#a78bfa' }}>
             Don&apos;t see what you need?

@@ -127,12 +127,19 @@ export default function HomePage() {
             >
               Try any tool free →
             </Link>
-            <Link
-              href="/pricing"
-              className="px-9 py-4 rounded-xl text-base font-black transition-all border"
-              style={{ color: 'rgba(255,255,255,0.55)', borderColor: 'rgba(255,255,255,0.14)', background: 'rgba(255,255,255,0.03)' }}
+            <GoProButton
+              returnTo="/"
+              className="px-9 py-4 rounded-xl text-base font-black transition-all hover:scale-[1.03]"
+              style={{ background: 'rgba(124,58,237,0.12)', border: '1.5px solid rgba(167,139,250,0.4)', color: '#a78bfa' }}
             >
-              See pricing →
+              Go Pro · $79/mo
+            </GoProButton>
+            <Link
+              href="/tools#request-tool"
+              className="px-7 py-4 rounded-xl text-base font-black transition-all border hover:bg-white/[0.04]"
+              style={{ color: 'rgba(255,255,255,0.4)', borderColor: 'rgba(255,255,255,0.1)', background: 'transparent' }}
+            >
+              Request a tool →
             </Link>
           </div>
         </div>

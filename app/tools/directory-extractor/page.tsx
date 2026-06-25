@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -126,10 +126,10 @@ export default function DirectoryExtractorPage() {
         </div>
 
         <h1 className="text-4xl font-black text-white mb-3">Directory <span style={{ color: 'rgb(236,72,153)' }}>Extractor</span></h1>
-        <p className="text-white/55 text-base mb-4 max-w-2xl">Enter any domain. We fetch its sitemap and return a full structured directory tree of every public page — with priority, changefreq, and lastmod metadata — exportable as JSON or CSV. Test free here — license from $29, or get all 51 tools from $99.</p>
+        <p className="text-white/55 text-base mb-4 max-w-2xl">Enter any domain. We fetch its sitemap and return a full structured directory tree of every public page — with priority, changefreq, and lastmod metadata — exportable as JSON or CSV. Test free here — license from $29, or get all 51 tools from $149.</p>
         <div className="flex gap-3 mb-8 flex-wrap">
           <Link href="/pricing" className="px-4 py-2 rounded-xl text-sm font-black text-white" style={{ background: 'linear-gradient(135deg,#ec4899,#be185d)' }}>Get this tool — $29 →</Link>
-          <Link href="/pricing" className="px-4 py-2 rounded-xl text-sm font-black border text-white/60" style={{ borderColor: 'rgba(255,255,255,0.12)' }}>All 51 tools — from $99 →</Link>
+          <Link href="/pricing" className="px-4 py-2 rounded-xl text-sm font-black border text-white/60" style={{ borderColor: 'rgba(255,255,255,0.12)' }}>All 51 tools — from $149 →</Link>
         </div>
 
         <div className="rounded-2xl border p-6 mb-6" style={{ background: '#0d1117', borderColor: 'rgba(255,255,255,0.08)' }}>
@@ -304,7 +304,7 @@ export default function DirectoryExtractorPage() {
           <p className="text-white/40 text-sm mb-4">Full source — tree view, CSV export, priority/changefreq parsing. One-time license.</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black text-white" style={{ background: 'linear-gradient(135deg,#ec4899,#be185d)' }}>Get this tool — $29 →</Link>
-            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $99 →</Link>
+            <Link href="/pricing" className="px-5 py-2.5 rounded-xl text-sm font-black border text-white/70" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>All 51 tools — from $149 →</Link>
           </div>
         </div>
       </main>

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
@@ -161,7 +161,7 @@ export default function HashGeneratorClient() {
             Free Tool · No API Key · Browser Only
           </div>
           <h1 className="text-3xl font-black text-white mb-2">Hash Generator</h1>
-          <p className="text-white/40 text-sm mb-3">Generate SHA-256, SHA-512, and HMAC hashes from text or files. Verify download checksums, sign webhook payloads — all client-side. License this tool from $15, or get all 51 tools from $99.</p>
+          <p className="text-white/40 text-sm mb-3">Generate SHA-256, SHA-512, and HMAC hashes from text or files. Verify download checksums, sign webhook payloads — all client-side. License this tool from $15, or get all 51 tools from $149.</p>
           <div className="flex flex-wrap gap-3">
             <Link href="/pricing" className="text-xs font-bold px-3 py-1.5 rounded-lg transition-all hover:scale-[1.02]"
               style={{ background: 'rgba(99,102,241,0.15)', color: 'rgb(129,140,248)', border: '1px solid rgba(99,102,241,0.3)' }}>
@@ -169,7 +169,7 @@ export default function HashGeneratorClient() {
             </Link>
             <Link href="/pricing" className="text-xs font-bold px-3 py-1.5 rounded-lg transition-all hover:scale-[1.02]"
               style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.1)' }}>
-              All 51 tools — from $99 →
+              All 51 tools — from $149 →
             </Link>
           </div>
         </div>
