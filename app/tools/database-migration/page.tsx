@@ -127,11 +127,11 @@ export default function DatabaseMigrationPage() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<MigrationResult | null>(null)
   const [error, setError] = useState('')
-  const [checkCount, setCheckCount] = useState(0)
+  const [paywall, setPaywall] = useState(false)
 
   const check = async () => {
     if (!sql.trim()) return
-    if (checkCount >= 1) return
+    if (paywall) return
     setLoading(true)
     setError('')
     setResult(null)
@@ -142,9 +142,9 @@ export default function DatabaseMigrationPage() {
         body: JSON.stringify({ sql, dialect }),
       })
       const data = await res.json()
+      if (res.status === 402) { setPaywall(true); setLoading(false); return }
       if (!res.ok) throw new Error(data.error || 'Check failed')
       setResult(data)
-      setCheckCount(c => c + 1)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Check failed')
     }
@@ -222,7 +222,7 @@ export default function DatabaseMigrationPage() {
 
         {error && <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-5 py-4 mb-6 text-sm text-red-400">{error}</div>}
 
-        {checkCount >= 1 && (
+        {paywall && (
           <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(16,185,129,0.05)', borderColor: 'rgba(16,185,129,0.2)' }}>
             <svg className="w-10 h-10 mx-auto mb-4 text-emerald-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
             <h3 className="text-xl font-black text-white mb-2">Unlimited checks with Pro</h3>
@@ -234,7 +234,7 @@ export default function DatabaseMigrationPage() {
           </div>
         )}
 
-        {!result && !loading && checkCount === 0 && (
+        {!result && !loading && !paywall && (
           <div className="mt-10">
             <div className="flex items-center gap-3 mb-4">
               <div className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.06)' }} />

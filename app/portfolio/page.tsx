@@ -94,7 +94,7 @@ const PROJECTS = [
     name: 'Agency Multi-Client Dashboard',
     type: 'B2B SaaS Dashboard',
     stack: ['Next.js 16', 'Redis', 'Stripe', 'TypeScript'],
-    desc: 'A $99/month agency product where users manage AI visibility scanning for up to 25 client domains from a single dashboard. White-label HTML reports let agencies deliver branded results directly to their clients.',
+    desc: 'A $199/month agency product where users manage AI visibility scanning for up to 25 client domains from a single dashboard. White-label HTML reports let agencies deliver branded results directly to their clients.',
     highlights: [
       'Magic-link authentication — no passwords, no OAuth complexity',
       'Quota system: 25 scans/month with real-time usage tracking per agency',

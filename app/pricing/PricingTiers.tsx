@@ -15,7 +15,7 @@ const FREE_FEATURES = [
 
 const FREE_LOCKED = [
   'Unlimited uses per day',
-  'All 48 tools',
+  'All 51 tools',
   'Priority support',
 ]
 
@@ -53,8 +53,8 @@ export default function PricingTiers() {
 
   const proMonthly = billing === 'annual' ? 66 : 79
   const proBilled = billing === 'annual' ? '($790/yr)' : null
-  const agencyMonthly = billing === 'annual' ? 83 : 99
-  const agencyYearly = 996
+  const agencyMonthly = billing === 'annual' ? 166 : 199
+  const agencyYearly = 1990
 
   return (
     <section className="max-w-5xl mx-auto px-6 py-8">
@@ -221,7 +221,7 @@ export default function PricingTiers() {
             className="block text-center py-3 rounded-xl text-sm font-bold transition-colors"
             style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.75)', border: '1px solid rgba(255,255,255,0.14)' }}
           >
-            {billing === 'annual' ? 'Start Agency Plan · $996/yr' : 'Start Agency Plan'}
+            {billing === 'annual' ? 'Start Agency Plan · $1,990/yr' : 'Start Agency Plan'}
           </Link>
           {billing === 'annual' && (
             <p className="text-center text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>

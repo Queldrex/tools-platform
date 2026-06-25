@@ -4,11 +4,11 @@ import Footer from '@/components/Footer'
 
 export const metadata = {
   title: 'About Queldrex — Built in Castle Rock, CO',
-  description: 'Queldrex LLC builds developer and business tools. 48 tools live. Castle Rock, Colorado.',
+  description: 'Queldrex LLC builds developer and business tools. 51 tools live. Castle Rock, Colorado.',
   alternates: { canonical: 'https://queldrex.com/about' },
   openGraph: {
     title: 'About Queldrex — Built in Castle Rock, CO',
-    description: 'Queldrex LLC builds developer and business tools. 48 tools live. Castle Rock, Colorado.',
+    description: 'Queldrex LLC builds developer and business tools. 51 tools live. Castle Rock, Colorado.',
     url: 'https://queldrex.com/about',
     siteName: 'Queldrex',
     type: 'website',
@@ -16,14 +16,14 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image' as const,
     title: 'About Queldrex — Built in Castle Rock, CO',
-    description: 'Queldrex LLC builds developer and business tools. 48 tools live. Castle Rock, Colorado.',
+    description: 'Queldrex LLC builds developer and business tools. 51 tools live. Castle Rock, Colorado.',
   },
 }
 
 const WHAT_WE_BUILD = [
   {
     title: 'Tool Suite',
-    desc: '48 tools for developers and businesses. Security scanning, legal documents, business analytics, developer utilities. Free to start.',
+    desc: '51 tools for developers and businesses. Security scanning, legal documents, business analytics, developer utilities. Free to start.',
     color: 'rgba(109,40,217,0.07)',
     border: 'rgba(109,40,217,0.2)',
     accent: '#7c3aed',
@@ -54,7 +54,7 @@ const WHAT_WE_BUILD = [
 const FACTS = [
   { label: 'Castle Rock, CO', sub: 'Colorado LLC' },
   { label: 'Founded 2024', sub: 'Ship every week' },
-  { label: '48 Tools Live', sub: 'All working, all real' },
+  { label: '51 Tools Live', sub: 'All working, all real' },
   { label: 'Real Data Only', sub: 'No simulated results, ever' },
 ]
 
@@ -82,7 +82,7 @@ export default function AboutPage() {
             When someone asks ChatGPT "what's the best plumber in Denver?" the businesses that show up are the ones AI can find and trust. Most businesses have no idea if they're in that group. We built the tools to find out, monitor it, and fix it.
           </p>
           <p className="text-base leading-relaxed max-w-3xl mt-4" style={{ color: 'rgba(255,255,255,0.4)' }}>
-            And while we were building, we added everything else a developer or small business owner reaches for on a Tuesday: CVE scanners, NDA generators, cash flow forecasters, invoice fraud detectors. 48 tools, all live, all producing real output.
+            And while we were building, we added everything else a developer or small business owner reaches for on a Tuesday: CVE scanners, NDA generators, cash flow forecasters, invoice fraud detectors. 51 tools, all live, all producing real output.
           </p>
         </div>
       </section>
@@ -170,7 +170,7 @@ export default function AboutPage() {
           <div className="flex gap-3">
             <Link href="/tools" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white"
               style={{ background: 'linear-gradient(135deg,#7c3aed,#6d28d9)', boxShadow: '0 0 20px rgba(109,40,217,0.3)' }}>
-              Browse 48 tools
+              Browse 51 tools
             </Link>
             <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold border hover:border-white/25 transition-colors"
               style={{ color: 'rgba(255,255,255,0.55)', borderColor: 'rgba(255,255,255,0.1)' }}>

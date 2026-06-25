@@ -175,7 +175,7 @@ export default function PricingPage() {
                 <span className="text-4xl font-black" style={{ color: '#FAFAFA' }}>$79</span>
                 <span className="text-sm font-normal" style={{ color: 'rgba(255,255,255,0.4)' }}>/mo</span>
               </div>
-              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>or $99/yr — save 17% · every future tool included</p>
+              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>or $790/yr — save 17% · every future tool included</p>
             </div>
             <ul className="space-y-3 flex-1 mb-7">
               {[
@@ -201,7 +201,7 @@ export default function PricingPage() {
             <p className="text-center text-xs mt-3" style={{ color: 'rgba(255,255,255,0.25)' }}>
               or{' '}
               <GoProButton billing="annual" returnTo="/tools" className="underline bg-transparent border-none p-0 cursor-pointer text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                $99/yr — save 17%
+                $790/yr — save 17%
               </GoProButton>
             </p>
           </div>
@@ -258,7 +258,7 @@ export default function PricingPage() {
                 <span className="text-base font-bold" style={{ color: 'rgba(255,255,255,0.35)' }}>one-time</span>
               </div>
               <p className="text-sm max-w-lg leading-relaxed" style={{ color: '#A1A1AA' }}>
-                Every current paid tool — unlocked forever. Contract scanner, NDA generator, vibe security shield, CVE scanner, agency reports, and all 14 others. Pay once, use all of them on this browser forever.
+                Every current paid tool — unlocked forever. Contract scanner, NDA generator, vibe security shield, CVE scanner, agency reports, and all 12 others. Pay once, use all of them on this browser forever.
               </p>
               <ul className="mt-3 space-y-1.5">
                 {[

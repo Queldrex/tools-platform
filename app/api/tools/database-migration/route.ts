@@ -204,7 +204,7 @@ const DIALECT_NOTES: Record<string, Record<string, string>> = {
 }
 
 export async function POST(request: NextRequest) {
-  const access = await hasFreeOrProAccess(request, 'db-migration', 2)
+  const access = await hasFreeOrProAccess(request, 'database-migration', 2)
   if (!access.allowed) return Response.json({ paywall: true, remaining: 0 }, { status: 402 })
 
   let body: { sql?: string; dialect?: string }

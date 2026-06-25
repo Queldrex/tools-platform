@@ -94,7 +94,7 @@ export default function OgImage() {
 
         {/* Pills */}
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-          {['48 tools', 'Free to start', 'No account'].map(label => (
+          {['51 tools', 'Free to start', 'No account'].map(label => (
             <div
               key={label}
               style={{

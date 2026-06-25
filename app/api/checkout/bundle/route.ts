@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
           unit_amount: 14900,
           product_data: {
             name: 'Queldrex — All Tools Bundle',
-            description: 'Lifetime access to all 51 current paid tools on queldrex.com. Pay once, use forever. Does not include future tools added after purchase.',
+            description: 'Lifetime access to all 17 current paid tools on queldrex.com. Pay once, use forever. Does not include future tools added after purchase.',
           },
         },
         quantity: 1,

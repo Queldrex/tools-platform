@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
               ? '25 client scans/month + all Pro tools. Billed yearly. Cancel anytime.'
               : '25 client scans/month + all Pro tools. Cancel anytime.',
           },
-          unit_amount: isAnnual ? 99600 : 9900,
+          unit_amount: isAnnual ? 199000 : 19900,
           recurring: { interval: isAnnual ? 'year' : 'month' },
         },
         quantity: 1,

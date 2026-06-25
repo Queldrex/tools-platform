@@ -35,7 +35,7 @@ async function doRestore(email: string) {
   for (const sub of subs.data) {
     const amount = sub.items.data[0]?.price?.unit_amount ?? 0
     if (amount === 7900) {
-      purchases.push({ type: 'pro', id: sub.id, label: 'Queldrex Pro — all 48 tools' })
+      purchases.push({ type: 'pro', id: sub.id, label: 'Queldrex Pro — all 51 tools' })
     } else {
       purchases.push({ type: 'tool', id: sub.id, label: `Tool subscription ($${(amount / 100).toFixed(2)}/mo)` })
     }

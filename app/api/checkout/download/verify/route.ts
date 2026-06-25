@@ -64,14 +64,14 @@ export async function GET(request: NextRequest) {
   </div>
   <div style="background:white;padding:32px;border-radius:0 0 16px 16px;box-shadow:0 4px 6px rgba(0,0,0,0.05);">
     <p style="margin:0 0 16px;color:#374151;font-size:15px;">Thanks for your purchase. Your download is ready.</p>
-    <a href="https://queldrex.com/downloads/${productId}" style="display:block;background:linear-gradient(135deg,#16a34a,#15803d);color:white;text-decoration:none;text-align:center;padding:16px;border-radius:12px;font-weight:700;font-size:15px;margin-bottom:20px;">Download ${product.name} &rarr;</a>
+    <a href="https://queldrex.com/api/download/product/${token}" style="display:block;background:linear-gradient(135deg,#16a34a,#15803d);color:white;text-decoration:none;text-align:center;padding:16px;border-radius:12px;font-weight:700;font-size:15px;margin-bottom:20px;">Download ${product.name} &rarr;</a>
     <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:16px;">
       <p style="margin:0 0 8px;font-size:13px;color:#374151;font-weight:600;">What's included</p>
       <p style="margin:0 0 10px;font-size:13px;color:#6b7280;line-height:1.6;">${product.description}</p>
       <ul style="margin:0;padding-left:16px;">${itemsList}</ul>
     </div>
-    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px;margin-bottom:20px;">
-      <p style="margin:0;font-size:13px;color:#78350f;line-height:1.6;">Access is tied to this browser and lasts one year. Save this email. To restore access, contact <a href="mailto:hello@queldrex.com" style="color:#92400e;">hello@queldrex.com</a> with your order details.</p>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;margin-bottom:20px;">
+      <p style="margin:0;font-size:13px;color:#14532d;line-height:1.6;">The download link above works from any browser for 1 year. Bookmark this email. To re-download on a new device, just click the button above — no account needed.</p>
     </div>
     <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center;">Queldrex LLC &middot; Castle Rock, CO &middot; <a href="https://queldrex.com" style="color:#9ca3af;">queldrex.com</a></p>
   </div>

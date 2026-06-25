@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
         }
         await saveAgency(agency)
         await sendAgencyWelcomeEmail(email, agencyName)
-        sendSmsAlert(`[Queldrex] 💰 New Agency subscriber ($99/mo): ${agencyName} — ${email}`).catch(() => {})
+        sendSmsAlert(`[Queldrex] 💰 New Agency subscriber ($199/mo): ${agencyName} — ${email}`).catch(() => {})
         sendAdminAgencyAlert(email, agencyName).catch(() => {})
         break
       }
@@ -121,7 +121,7 @@ async function sendAdminAgencyAlert(email: string, agencyName: string) {
       html: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;background:#f8fafc;padding:32px;">
 <div style="max-width:420px;margin:0 auto;background:#0f172a;padding:28px;border-radius:12px;">
   <div style="font-size:11px;color:#22d3ee;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:12px;">Queldrex · New Agency Subscriber</div>
-  <div style="font-size:24px;font-weight:800;color:#4ade80;margin-bottom:4px;">$99/month</div>
+  <div style="font-size:24px;font-weight:800;color:#4ade80;margin-bottom:4px;">$199/month</div>
   <div style="font-size:15px;font-weight:600;color:white;margin-bottom:4px;">Agency Plan</div>
   <div style="font-size:13px;color:#94a3b8;margin-bottom:4px;">${agencyName}</div>
   <div style="font-size:13px;color:#64748b;margin-bottom:24px;">${email}</div>

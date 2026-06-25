@@ -11,6 +11,11 @@ const CATEGORY_LABELS: Record<string, string> = {
   legal: 'Legal',
 }
 
+const FILE_FORMAT_LABELS: Record<string, string> = {
+  txt: 'Plain Text',
+  csv: 'CSV Spreadsheet',
+}
+
 export const metadata = {
   title: 'Downloads — Queldrex',
   description: 'Checklists, templates, and playbooks. Buy once, use forever.',
@@ -61,7 +66,10 @@ export default function DownloadsPage() {
                   >
                     {CATEGORY_LABELS[product.category]}
                   </span>
-                  <span className="text-2xl font-black text-white">${product.price}</span>
+                  <div className="text-right">
+                    <span className="text-2xl font-black text-white">${product.price}</span>
+                    <p className="text-[10px] text-white/30 mt-0.5">{FILE_FORMAT_LABELS[product.fileExt] ?? product.fileExt.toUpperCase()}</p>
+                  </div>
                 </div>
 
                 <h2 className="text-lg font-black text-white mb-2">{product.name}</h2>
@@ -90,7 +98,7 @@ export default function DownloadsPage() {
         <div className="mt-16 rounded-2xl border p-8 text-center" style={{ background: '#111318', borderColor: 'rgba(124,58,237,0.2)' }}>
           <h2 className="text-2xl font-black text-white mb-3">Need everything?</h2>
           <p className="text-white/50 mb-6 max-w-xl mx-auto">
-            The Pro plan gives you unlimited access to all 48 tools. Combined with these downloads,
+            The Pro plan gives you unlimited access to all 51 tools. Combined with these downloads,
             it covers your full security, legal, and business workflow.
           </p>
           <Link
