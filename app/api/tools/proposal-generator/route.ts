@@ -113,5 +113,5 @@ Write a compelling proposal that wins the client. Return ONLY valid JSON (no mar
     return Response.json({ error: 'Generation failed. Please try again.' }, { status: 500 })
   }
 
-  return Response.json({ ...result, yourCompany: body.yourCompany, clientCompany: body.clientCompany, projectTitle: body.projectTitle, generatedAt: new Date().toISOString() })
+  return Response.json({ ...result, yourCompany: body.yourCompany, clientCompany: body.clientCompany, projectTitle: body.projectTitle, hasAccess: access.isPro, generatedAt: new Date().toISOString() })
 }

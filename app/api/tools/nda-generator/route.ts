@@ -76,5 +76,5 @@ Write a complete, professional NDA. Use standard legal formatting. Return ONLY v
     return Response.json({ error: 'Generation failed. Please try again.' }, { status: 500 })
   }
 
-  return Response.json({ ...result, type, parties: { disclosing: disclosingParty, receiving: receivingParty }, duration, jurisdiction, generatedAt: new Date().toISOString() })
+  return Response.json({ ...result, type, parties: { disclosing: disclosingParty, receiving: receivingParty }, duration, jurisdiction, hasAccess: access.isPro, generatedAt: new Date().toISOString() })
 }

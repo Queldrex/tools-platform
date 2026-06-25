@@ -92,5 +92,5 @@ Return ONLY valid JSON:
     return Response.json({ error: 'Generation failed. Please try again.' }, { status: 500 })
   }
 
-  return Response.json({ ...result, companyName: body.companyName, effectiveDate: today, generatedAt: new Date().toISOString() })
+  return Response.json({ ...result, companyName: body.companyName, effectiveDate: today, hasAccess: access.isPro, generatedAt: new Date().toISOString() })
 }

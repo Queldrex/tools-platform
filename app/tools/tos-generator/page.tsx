@@ -5,6 +5,7 @@ import Link from 'next/link'
 import BuyToolButton from '@/components/BuyToolButton'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import PaywallCard from '@/components/PaywallCard'
 
 const BUSINESS_TYPES = [
   { value: 'saas', label: 'SaaS / Software' },
@@ -15,10 +16,20 @@ const BUSINESS_TYPES = [
   { value: 'app', label: 'Mobile App' },
 ]
 
-interface Result { title: string; effectiveDate: string; document: string; wordCount: number; disclaimer: string }
+interface Result { title: string; effectiveDate: string; document: string; wordCount: number; disclaimer: string; hasAccess: boolean }
 
 function renderDocument(doc: string) {
   return doc.split('\n\n').map((para, i) => {
+    const boldified = para.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    return <p key={i} className="mb-4 text-sm text-white/65 leading-relaxed" dangerouslySetInnerHTML={{ __html: boldified }} />
+  })
+}
+
+function renderDocumentPreview(doc: string, endFraction: number, startFraction = 0) {
+  const paras = doc.split('\n\n')
+  const start = Math.floor(paras.length * startFraction)
+  const end = Math.floor(paras.length * endFraction)
+  return paras.slice(start, end).map((para, i) => {
     const boldified = para.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     return <p key={i} className="mb-4 text-sm text-white/65 leading-relaxed" dangerouslySetInnerHTML={{ __html: boldified }} />
   })
@@ -243,13 +254,7 @@ export default function TosGeneratorPage() {
           </div>
         </div>
 
-        {paywall && !loading && (
-          <div className="rounded-2xl border p-8 text-center mb-6" style={{ background: 'rgba(167,139,250,0.05)', borderColor: 'rgba(167,139,250,0.2)' }}>
-            <h3 className="text-xl font-black text-white mb-2">Unlimited generations with Pro</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-sm mx-auto">Upgrade for unlimited document generation and access to all tools.</p>
-            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black text-black" style={{ background: 'linear-gradient(135deg,#06d6ff,#0891b2)' }}>Upgrade to Pro →</Link>
-          </div>
-        )}
+        {paywall && !loading && <PaywallCard toolId="tos-generator" toolName="Terms of Service Generator" oneTimePrice={29} freeLimit={1} accent="#a78bfa" />}
 
         {result && (
           <div className="space-y-4">
@@ -267,20 +272,44 @@ export default function TosGeneratorPage() {
                 <div className="flex gap-2">
                   <button onClick={copy} className="px-4 py-2 rounded-lg text-xs font-black transition-all"
                     style={copied ? { background: 'rgba(74,222,128,0.15)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.3)' } : { background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                    {copied ? 'Copied!' : 'Copy'}
+                    {copied ? 'Copied!' : 'Copy Text'}
                   </button>
-                  <button onClick={download} className="px-4 py-2 rounded-lg text-xs font-black transition-all" style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                    Download .txt
-                  </button>
-                  <button onClick={() => window.print()} className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-black transition-all hover:bg-white/5" style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                    ⬇ Save as PDF
-                  </button>
+                  {result.hasAccess && (
+                    <>
+                      <button onClick={download} className="px-4 py-2 rounded-lg text-xs font-black transition-all" style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                        Download .txt
+                      </button>
+                      <button onClick={() => window.print()} className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-black transition-all hover:bg-white/5" style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                        ⬇ Save as PDF
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="border-t pt-5 print-content" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
                 <p className="text-xs text-white/25 mb-4">Generated on {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-                {renderDocument(result.document)}
-                <p className="text-xs mt-8 pt-4 border-t" style={{ color: 'rgba(255,255,255,0.2)', borderColor: 'rgba(255,255,255,0.06)' }}>Generated by Queldrex · queldrex.com</p>
+                {result.hasAccess ? (
+                  <>
+                    {renderDocument(result.document)}
+                    <p className="text-xs mt-8 pt-4 border-t" style={{ color: 'rgba(255,255,255,0.2)', borderColor: 'rgba(255,255,255,0.06)' }}>Generated by Queldrex · queldrex.com</p>
+                  </>
+                ) : (
+                  <>
+                    {renderDocumentPreview(result.document, 0.25)}
+                    <div className="relative mt-4">
+                      <div className="select-none pointer-events-none" style={{ filter: 'blur(6px)', opacity: 0.4, maxHeight: 280, overflow: 'hidden' }}>
+                        {renderDocumentPreview(result.document, 1.0, 0.25)}
+                      </div>
+                      <div className="absolute inset-x-0 top-0 h-20" style={{ background: 'linear-gradient(to bottom, transparent, #0d1117)' }} />
+                      <div className="absolute inset-0 flex items-center justify-center px-4">
+                        <div className="w-full max-w-md">
+                          <PaywallCard toolId="tos-generator" toolName="Terms of Service Generator" oneTimePrice={29} freeLimit={1} accent="#a78bfa" />
+                        </div>
+                      </div>
+                      <div style={{ height: 360 }} />
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
